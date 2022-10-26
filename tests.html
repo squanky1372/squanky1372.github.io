@@ -1,0 +1,321 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			camera.position.z = 15;
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+			var globalt = 0;
+
+			window.addEventListener('resize', function(){
+				var width = window.innerWidth;
+				var height = window.innerHeight;
+				renderer.setSize(width, height);
+				camera.aspect = width/height;
+				camera.updateProjectionMatrix();
+			});
+
+			const light = new THREE.HemisphereLight(
+				'white', // bright sky color
+				'darkslategrey', // dim ground color
+				1, // intensity
+			);
+			light.position.set(10, 10, 10);
+			scene.add(light);
+
+			var lightboxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+			var lightboxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+			var lightbox = new THREE.Mesh(lightboxgeo, lightboxmat);
+			scene.add(lightbox);
+			function makePivotTemplate(len, wid, hig, color=0x0000FF, wireframe=false) {
+				var pivotg = new THREE.BoxGeometry(0.01,0.01,0.01);
+				var pivotm = new THREE.MeshBasicMaterial({ color:0xFF0000, wireframe:true});
+				var pivot = new THREE.Mesh(pivotg, pivotm);
+				
+				fingerg = new THREE.BoxGeometry(len,wid,hig);
+				var fingerm = new THREE.MeshStandardMaterial({ color:color, wireframe:wireframe});
+				finger = new THREE.Mesh(fingerg, fingerm);
+				pivot.add(finger);
+				finger.position.y += wid/2;
+				var pivot_template = pivot.clone()
+				return pivot_template
+			}
+			
+			function Hand(parity=1){
+				//var geometry = new THREE.BoxGeometry(1,1,0.25);
+				//var material = new THREE.MeshStandardMaterial({ color:0x0000FF, wireframe:false});
+				this.hand = makePivotTemplate(1,1,0.25,0x0000FF)
+				//scene.add(this.hand);
+
+				this.makeFinger = function(){
+					var pivottime = makePivotTemplate(0.2,0.4,0.2, 0x00FF00)
+					var pivot2 = makePivotTemplate(0.2,0.4,0.2, 0x00F900)
+					pivottime.add(pivot2);
+					pivot2.position.y += 0.4;
+
+					var pivot3 = pivot2.clone()
+					pivot2.add(pivot3);
+					return pivottime
+				}
+				this.makeThumb = function(){
+					var pivottime = makePivotTemplate(0.25,0.4,0.25, 0x00FF00)
+					var pivot2 = makePivotTemplate(0.27,0.4,0.27, 0x00F000)
+					pivottime.children[0].add(pivot2);
+					pivot2.position.y += 0.2;
+					pivottime.position.x += .45 * parity
+					pivottime.position.y += 0.5
+					pivottime.rotation.z = -Math.PI/3 * parity
+					return pivottime
+				}
+				this.fingers = [this.makeFinger(),this.makeFinger(),this.makeFinger(),this.makeFinger(),this.makeThumb()]
+				this.hand.add(this.fingers[0], this.fingers[1], this.fingers[2], this.fingers[3], this.fingers[4]);
+				
+				for(let i = 0; i < 4; i++){
+					this.fingers[i].position.y += 1;
+					this.fingers[i].position.x += -0.5 + 0.25/2 + 0.25*i
+				}
+
+				this.bendFinger = function(target, amount){
+					target.rotation.x += amount;
+					target.children[1].rotation.x += amount;
+					target.children[1].children[1].rotation.x += amount;
+				}
+				this.bendFingerTo = function(index, position){
+					target = this.fingers[index]
+					target.rotation.x = position;
+					target.children[1].rotation.x = position;
+					target.children[1].children[1].rotation.x = position;
+				}
+				this.bendThumbTo = function(position){
+					target = this.fingers[4]
+					target.children[0].rotation.x = position
+					target.children[0].children[0].rotation.x = position
+				}
+			}
+			function Arm(parity=1){
+				this.hand = new Hand(parity)
+				this.bicept = makePivotTemplate(0.8, 3, 0.6, 0x00FFFF)
+				this.forearm = makePivotTemplate(0.7, 3, 0.5, 0xFF00FF)
+				this.bicept.children[0].add(this.forearm)
+				this.forearm.children[0].add(this.hand.hand)
+				this.forearm.position.y += 3/2
+				this.hand.hand.position.y += 3/2
+
+				this.bendElbowTo = function(position){
+					this.forearm.rotation.x = position
+				}
+				this.bendWristTo = function(position){
+					this.hand.hand.rotation.x = position
+				}
+				this.turnHandTo = function(position){
+					this.forearm.rotation.y = position
+				}
+				this.rotateHandTo = function(position){
+					this.hand.hand.rotation.z = position
+				}
+				this.setHandRotation = function(angle, i=0){
+					if(i==0)this.hand.hand.rotation.x = angle
+					if(i==1)this.hand.hand.rotation.y = angle
+					if(i==2)this.hand.hand.rotation.z = angle
+				}
+			}
+			function Body(){
+				this.chest = makePivotTemplate(3, 4, 1.5, 0x5F50F0)
+				this.armR = new Arm()
+				this.armL = new Arm(-1)
+				this.armL.bicept.position.x += 1.8
+				this.armL.bicept.position.y += 3.9
+				this.armL.bicept.rotation.x = Math.PI
+				this.armL.bicept.rotation.y = -Math.PI
+				this.armL.turnHandTo(Math.PI/2)
+				
+				this.armR.bicept.position.x -= 1.8
+				this.armR.bicept.position.y += 3.9
+				this.armR.bicept.rotation.x = Math.PI
+				this.armR.bicept.rotation.y = -Math.PI
+				this.armR.turnHandTo(-Math.PI/2)
+
+				this.legL = new Leg()
+				this.legR = new Leg()
+				this.legL.thigh.position.x += 1
+				this.legR.thigh.position.x -= 1
+				this.legL.thigh.rotation.z = Math.PI
+				this.legR.thigh.rotation.z = Math.PI
+
+				this.chest.add(this.armL.bicept, this.armR.bicept, this.legL.thigh, this.legR.thigh)
+
+				this.raiseArmL = function(angle){
+					this.armL.bicept.rotation.x = Math.PI - angle
+				}
+				this.sideArmL = function(angle){
+					this.armL.bicept.rotation.z = angle
+				}
+				this.rotateArmL = function(angle){
+					this.armL.bicept.rotation.y = Math.PI - angle
+				}
+
+				this.raiseArmR = function(angle){
+					this.armR.bicept.rotation.x = Math.PI - angle
+				}
+				this.sideArmR = function(angle){
+					this.armR.bicept.rotation.z = -angle
+				}
+				this.rotateArmR = function(angle){
+					this.armR.bicept.rotation.y = Math.PI + angle
+				}
+
+				this.raiseLegL = function(angle){
+					this.legL.thigh.rotation.x = -angle
+				}
+				this.raiseLegR = function(angle){
+					this.legR.thigh.rotation.x = -angle
+				}
+
+				this.rotateLegL = function(angle){
+					this.legL.thigh.rotation.y = angle
+				}
+				this.rotateLegR = function(angle){
+					this.legR.thigh.rotation.y = -angle
+				}
+
+				this.splayLegL = function(angle){
+					this.legL.thigh.children[0].rotation.y = -angle
+				}
+				this.splayLegR = function(angle){
+					this.legR.thigh.children[0].rotation.y = angle
+				}
+				this.bendKneeL = function(angle){
+					this.legL.calf.rotation.x = -angle
+				}
+				this.bendKneeR = function(angle){
+					this.legR.calf.rotation.x = -angle
+				}
+				this.bendAnkleL = function(angle){
+					this.legL.foot.rotation.x = -angle
+				}
+				this.bendAnkleR = function(angle){
+					this.legR.foot.rotation.x = -angle
+				}
+			}
+			function Leg(){
+				this.thigh = makePivotTemplate(0.8, 3, 0.6, 0xFFFF00)
+				this.calf = makePivotTemplate(0.8, 3, 0.6, 0xFF9c00)
+				this.foot = makePivotTemplate(1, 1, 2, 0xFF0000)
+				this.thigh.children[0].add(this.calf)
+				this.calf.children[0].add(this.foot)
+				this.calf.position.y += 1.5
+				this.foot.position.y += 1.5
+				this.foot.position.z += 0.5
+			}
+			var body = new Body()
+			body.chest.position.y += 1
+			scene.add(body.chest)
+			body.chest.position.y -= 3
+			
+			function makeAngle(period, min, max, offset){
+				return ((max-min)*Math.sin(globalt*period/Math.PI/2 + offset) + (max+min))/2
+			}			
+		</script>
+		<script> //images
+			var imgsize = 3
+			var imgfunc = function(tex) {				
+				imgratio = tex.image.width/ tex.image.height
+				var geometry = new THREE.BoxGeometry( imgsize/imgratio, imgsize, 0 );
+				var material = new THREE.MeshBasicMaterial();
+				twi = new THREE.Mesh( geometry, material );
+				twi.material.map = tex
+				twi.position.y = twi.position.z + 3.7;
+				scene.add( twi );
+			}
+			var loadImage = function(path, size = 1, location){
+				imgsize = size
+				var texture = new THREE.TextureLoader().load(path, imgfunc)
+			}
+			loadImage("img/twilight1.jpg", 3)
+		
+		</script>
+		<script>
+			var update = function(){
+				for(let i = 0; i < 4; i++){body.armR.hand.bendFingerTo(i, makeAngle(0.5, 0, Math.PI/8, 0.2*i))}
+				body.armR.hand.bendThumbTo(makeAngle(0.5, 0, Math.PI/8, 0))
+				body.rotateArmR(Math.PI/6)
+				body.raiseArmR(Math.PI/3)
+				body.armR.bendElbowTo(2*Math.PI/3)
+				body.armR.setHandRotation(makeAngle(1, -Math.PI/5, 0, 0), 2)
+				body.armR.turnHandTo(6.5*Math.PI/6)				
+				
+				body.raiseArmL(makeAngle(0.5, -0.5, 0.5, Math.PI))
+
+				let walk_amount = Math.PI/10
+				body.bendKneeL(makeAngle(0.5, 0, Math.PI/4, Math.PI))
+				body.raiseLegL(makeAngle(0.5, -walk_amount, walk_amount, 0))
+				body.bendAnkleL(makeAngle(0.5, -Math.PI/3, Math.PI/10, 0))
+
+				body.bendKneeR(makeAngle(0.5, 0, Math.PI/4, 0))
+				body.raiseLegR(makeAngle(0.5, -walk_amount, walk_amount, Math.PI))
+				body.bendAnkleR(makeAngle(0.5, -Math.PI/3, Math.PI/10, Math.PI))
+
+				lightbox.position.x = makeAngle(0.5, -2, 2, 0)
+				lightbox.position.z = makeAngle(0.5, -2, 2, Math.PI/2)
+				light.position.x = makeAngle(0.5, -2, 2, 0)
+				light.position.z = makeAngle(0.5, -2, 2, Math.PI/2)
+				globalt += 1;
+				let gamepad = navigator.getGamepads()[0]
+				if(gamepad != null){					
+					let buttonsPressed = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+					let axes = [gamepad.axes[0], gamepad.axes[1], gamepad.axes[2], gamepad.axes[5]]
+					for(let i = 0; i < 16; i++){
+						buttonsPressed[i] = gamepad.buttons[i].pressed
+					}
+					console.log(buttonsPressed)
+					console.log(axes)
+					body.raiseArmL(Math.PI*axes[3])
+					body.sideArmL(Math.PI*axes[2])
+					
+					scene.rotation.x += 0.02*Math.PI*axes[1]
+					scene.rotation.y += 0.02*Math.PI*axes[0]
+				}
+				else{	
+					scene.rotation.y += 0.01
+				}
+			}
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+		<script> //Google Sheets stuff
+			let SHEET_ID = '1Q4F3_n6eOAG54LE8b79BPbJlAmA62qH8Pw1nyO8AVec' //part of the URL of the sheet
+			let SHEET_TITLE = 'STATES' //name of the sheet (tab) being accessed
+			let SHEET_RANGE = 'B2:C8'
+
+			let FULL_URL = ('https://docs.google.com/spreadsheets/d/' 
+			+ SHEET_ID 
+			+ '/gviz/tq?sheet=' + SHEET_TITLE 
+			+ '&range=' + SHEET_RANGE)
+			fetch(FULL_URL)
+			.then(res => res.text())
+			.then(rep => {
+				let data = JSON.parse(rep.substr(47).slice(0,-2))
+				const js0 = JSON.parse(rep.substr(47).slice(0,-2))
+				console.log(js0)
+			})
+		</script>
+	</body>
+</html>
