@@ -317,5 +317,33 @@
 				console.log(js0)
 			})
 		</script>
+		<script>
+			class LineTrain{
+				constructor({runnum, dest, next, prdt, arrT, lat, lon, heading}){
+					this.runnum = runnum;
+					this.dest = dest;
+					this.next = next;
+					this.prdt = prdt;
+					this.arrT = arrT;
+					this.lat = lat;
+					this.lon = lon;
+					this.heading = heading;
+				}
+			}
+			var reloadTrains = function(id, index){
+				async function loadLineSync(name) {
+					let url = `https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?key=26c8b70b58a740168f700535f8fd7046&rt=${name}&outputType=JSON`;
+					var lines = await fetch(url);
+					return lines.json()
+				}
+				var loaded = loadLineSync(id)
+				
+				loaded.then((out) => {
+					let newtrains = out.ctatt.route[0].train.map((c) => new LineTrain({runnum:c.rn, dest:c.destNm, next:c.nextStaNm, prdt:c.prdt, arrT:c.arrT, lat:c.lat, lon:c.lon, heading:c.heading}))
+					console.log(newtrains)
+				})
+        	}
+			reloadTrains("g", 0);
+		</script>
 	</body>
 </html>
