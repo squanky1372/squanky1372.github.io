@@ -1,0 +1,48 @@
+{
+  "ctatt": {
+    "tmst": "2022-11-13T17:45:09",
+    "errCd": "0",
+    "errNm": null,
+    "route": [
+      {
+        "@name": "p",
+        "train": [
+          {
+            "rn": "1000",
+            "destSt": "30203",
+            "destNm": "Loop",
+            "trDr": "5",
+            "nextStaId": "40690",
+            "nextStpId": "30134",
+            "nextStaNm": "Dempster",
+            "prdt": "2022-11-13T17:44:32",
+            "arrT": "2022-11-13T17:46:32",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "42.04771",
+            "lon": "-87.68354",
+            "heading": "183"
+          },
+          {
+            "rn": "510",
+            "destSt": "30203",
+            "destNm": "Linden",
+            "trDr": "1",
+            "nextStaId": "40690",
+            "nextStpId": "30133",
+            "nextStaNm": "Dempster",
+            "prdt": "2022-11-13T17:44:52",
+            "arrT": "2022-11-13T17:46:52",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "42.03346",
+            "lon": "-87.67954",
+            "heading": "337"
+          }
+        ]
+      }
+    ]
+  }
+}

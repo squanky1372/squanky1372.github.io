@@ -1,0 +1,48 @@
+{
+  "ctatt": {
+    "tmst": "2022-11-13T21:33:12",
+    "errCd": "0",
+    "errNm": null,
+    "route": [
+      {
+        "@name": "y",
+        "train": [
+          {
+            "rn": "593",
+            "destSt": "30176",
+            "destNm": "Howard",
+            "trDr": "5",
+            "nextStaId": "40900",
+            "nextStpId": "30176",
+            "nextStaNm": "Howard",
+            "prdt": "2022-11-13T21:32:54",
+            "arrT": "2022-11-13T21:37:54",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "0",
+            "lon": "0",
+            "heading": "90"
+          },
+          {
+            "rn": "594",
+            "destSt": "30176",
+            "destNm": "Skokie",
+            "trDr": "1",
+            "nextStaId": "41680",
+            "nextStpId": "30297",
+            "nextStaNm": "Oakton-Skokie",
+            "prdt": "2022-11-13T21:32:47",
+            "arrT": "2022-11-13T21:36:47",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "42.02223",
+            "lon": "-87.69245",
+            "heading": "277"
+          }
+        ]
+      }
+    ]
+  }
+}

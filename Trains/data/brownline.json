@@ -1,0 +1,82 @@
+{
+  "ctatt": {
+    "tmst": "2022-11-13T21:11:13",
+    "errCd": "0",
+    "errNm": null,
+    "route": [
+      {
+        "@name": "brn",
+        "train": [
+          {
+            "rn": "413",
+            "destSt": "30249",
+            "destNm": "Kimball",
+            "trDr": "1",
+            "nextStaId": "40800",
+            "nextStpId": "30155",
+            "nextStaNm": "Sedgwick",
+            "prdt": "2022-11-13T21:10:59",
+            "arrT": "2022-11-13T21:12:59",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.90108",
+            "lon": "-87.6367",
+            "heading": "355"
+          },
+          {
+            "rn": "415",
+            "destSt": "30249",
+            "destNm": "Loop",
+            "trDr": "5",
+            "nextStaId": "41310",
+            "nextStpId": "30254",
+            "nextStaNm": "Paulina",
+            "prdt": "2022-11-13T21:10:58",
+            "arrT": "2022-11-13T21:12:58",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.94702",
+            "lon": "-87.67474",
+            "heading": "177"
+          },
+          {
+            "rn": "417",
+            "destSt": "30249",
+            "destNm": "Kimball",
+            "trDr": "1",
+            "nextStaId": "40530",
+            "nextStpId": "30103",
+            "nextStaNm": "Diversey",
+            "prdt": "2022-11-13T21:10:33",
+            "arrT": "2022-11-13T21:12:33",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.92505",
+            "lon": "-87.65287",
+            "heading": "358"
+          },
+          {
+            "rn": "418",
+            "destSt": "30249",
+            "destNm": "Loop",
+            "trDr": "5",
+            "nextStaId": "40710",
+            "nextStpId": "30138",
+            "nextStaNm": "Chicago",
+            "prdt": "2022-11-13T21:10:53",
+            "arrT": "2022-11-13T21:11:53",
+            "isApp": "1",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.89678",
+            "lon": "-87.63595",
+            "heading": "127"
+          }
+        ]
+      }
+    ]
+  }
+}

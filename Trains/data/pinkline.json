@@ -1,0 +1,65 @@
+{
+  "ctatt": {
+    "tmst": "2022-11-13T21:04:04",
+    "errCd": "0",
+    "errNm": null,
+    "route": [
+      {
+        "@name": "pink",
+        "train": [
+          {
+            "rn": "310",
+            "destSt": "30114",
+            "destNm": "Loop",
+            "trDr": "1",
+            "nextStaId": "40780",
+            "nextStpId": "30151",
+            "nextStaNm": "Central Park",
+            "prdt": "2022-11-13T21:03:17",
+            "arrT": "2022-11-13T21:04:17",
+            "isApp": "1",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.85386",
+            "lon": "-87.72431",
+            "heading": "89"
+          },
+          {
+            "rn": "312",
+            "destSt": "30114",
+            "destNm": "54th/Cermak",
+            "trDr": "5",
+            "nextStaId": "40150",
+            "nextStpId": "30029",
+            "nextStaNm": "Pulaski",
+            "prdt": "2022-11-13T21:03:20",
+            "arrT": "2022-11-13T21:05:20",
+            "isApp": "0",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.85413",
+            "lon": "-87.70541",
+            "heading": "269"
+          },
+          {
+            "rn": "313",
+            "destSt": "30114",
+            "destNm": "54th/Cermak",
+            "trDr": "1",
+            "nextStaId": "41160",
+            "nextStpId": "30222",
+            "nextStaNm": "Clinton",
+            "prdt": "2022-11-13T21:03:46",
+            "arrT": "2022-11-13T21:04:46",
+            "isApp": "1",
+            "isDly": "0",
+            "flags": null,
+            "lat": "41.88571",
+            "lon": "-87.63799",
+            "heading": "269"
+          }
+        ]
+      }
+    ]
+  }
+}
