@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Proj C-LATEST</title>
+  </head>
+
+  <body onload="main()" onresize="drawResize()">
+    <canvas id="webgl" width="600" height="600">
+    Please use a browser that supports "canvas"
+    </canvas>
+    CONTROLS<br>
+	<table>
+		<tr>
+		  <td><u>Keyboard position buttons:</u><br>
+			---W: move forward in the view direction<br>
+			---S: move backward in the view direction<br>
+			---A: Strafe left perpendicular to the view direction<br>
+			---D: Strafe right perpendicular to the view direction<br>
+			________________________________________________<br>
+		  </td>
+		  <td><u>Keyboard angle buttons:</u><br>
+        ---UP: Look upwards<br>
+        ---DOWN: Look downwards<br>
+        ---LEFT: Look left<br>
+        ---RIGHT: Look right<br>
+        ___________________________<br>
+        </td>
+      <td><u>Light toggle buttons:</u><br>
+      <button type="button" onClick='toggleAmbient()'>Ambient</button><BR>
+      <button type="button" onClick='toggleDiffuse()'>Diffuse</button><BR>
+      <button type="button" onClick='toggleSpecular()'>Specular</button><BR>
+        ____________________<br>
+      </td>
+      <td><u>Shading + Lighting buttons:</u><br>
+        <button type="button" onclick="VBO1toggle()">Gouraud + Phong</button><BR>
+        <button type="button" onclick="VBO2toggle()">Phong + Phong</button><BR>
+        <!--<button type="button" onclick="VBO3toggle()">Color Only</button><BR>-->
+        <button type="button" onclick="VBO4toggle()">Gouraud + Blinn-Phong</button><BR>
+        <button type="button" onclick="VBO5toggle()">Phong + Blinn-Phong</button><BR>
+      </td>
+      </td>
+      <td><u>Show/Hide buttons:</u><br>
+        <button type="button" onclick="VBO0toggle()">Ground</button><BR>
+        <button type="button" onclick="PlanetsToggle()">Planets</button><BR>
+        <button type="button" onclick="TreesToggle()">Trees</button><BR>
+        <button type="button" onclick="FingersToggle()">Fingers</button><BR>
+      </td>
+		</tr>
+	  </table>
+
+    <BR>
+      Light Controls: Type in your chosen RGB or XYZ values, and then press one of the SET buttons to set that parameter of the light source<BR>
+    
+      ---Set values: 
+      R/X:<input id='input1' size=3> 
+      G/Y:<input id='input2' size=3> 
+      B/Z:<input id='input3' size=3> 
+      (NOTE: Maximum RGB value is ONE, not 255! White is (1,1,1)!<BR> 
+      ---As values for: 
+      <button type="button" onClick='setAmbient()'>Ambient</button>
+      <button type="button" onClick='setDiffuse()'>Diffuse</button>
+      <button type="button" onClick='setSpecular()'>Specular</button>
+      <button type="button" onClick='setLightPos()'>Position</button>
+
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script src="lib/cuon-matrix-quat03.js"></script>
+	  <script src="planets_vbo.js"></script>
+    <script src="planets.js"></script>
+  </body>
+</html>

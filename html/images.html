@@ -1,0 +1,112 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../js/src/three.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			camera.position.z = 15;
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+			var globalt = 0;
+
+			window.addEventListener('resize', function(){
+				var width = window.innerWidth;
+				var height = window.innerHeight;
+				renderer.setSize(width, height);
+				camera.aspect = width/height;
+				camera.updateProjectionMatrix();
+			});
+
+			const light = new THREE.HemisphereLight('white', 'darkslategrey', 1,);
+			light.position.set(0, 0, 0);
+			scene.add(light);
+
+			var lightboxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+			var lightboxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+			var lightbox = new THREE.Mesh(lightboxgeo, lightboxmat);
+			scene.add(lightbox);
+			
+			function makeAngle(period, min, max, offset){
+				return ((max-min)*Math.sin(globalt*period/Math.PI/2 + offset) + (max+min))/2
+			}			
+		</script>
+		<script> //images
+			function imagehandler(path, size){
+				let localratio = 0
+				let needsLoading = true
+				this.size = size
+				let mesh = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial())
+				this.getMesh = function(){ return mesh }
+				this.getlocalratio = function(){ return localratio }
+				var imgfunc = function(tex) { localratio = tex.image.width/ tex.image.height }
+				var loadImage = function(){ return new THREE.TextureLoader().load(path, imgfunc) }
+				this.init = function(){
+					if(needsLoading) {
+						mesh.material.map = loadImage()
+						needsLoading = false
+					}
+					if(localratio > 0){ mesh.geometry = new THREE.BoxGeometry(size,size*localratio,0) }
+				}
+			}
+			var imgholder = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial())		
+			var twi1 = new imagehandler("img/twilight2.jpg",5)
+			var twi2 = new imagehandler("img/twilight1.jpg",5)
+			var ground = new imagehandler("img/grid.png",320)
+			scene.add(twi1.getMesh(), twi2.getMesh(), ground.getMesh())
+			twi1.getMesh().position.x = 5
+			ground.getMesh().rotation.x = Math.PI/2
+			
+
+		
+		</script>
+		<script>
+			var update = function(){
+				globalt += 1;
+				twi1.init()
+				twi2.init()
+				ground.init()
+				// imgholder.children.forEach(initelement)
+				// function initelement(element){
+				// 	element.init()
+				// }
+				let gamepad = navigator.getGamepads()[0]
+				if(gamepad != null){					
+					let buttonsPressed = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+					let axes = [gamepad.axes[0], gamepad.axes[1], gamepad.axes[2], gamepad.axes[5]]
+					for(let i = 0; i < 16; i++){
+						buttonsPressed[i] = gamepad.buttons[i].pressed
+					}
+					console.log(buttonsPressed)
+					console.log(axes)
+					scene.rotation.x += 0.02*Math.PI*axes[1]
+					scene.rotation.y += 0.02*Math.PI*axes[0]
+					scene.rotation.x -= 0.02*buttonsPressed[12]
+					scene.rotation.x += 0.02*buttonsPressed[13]
+					scene.rotation.y -= 0.02*buttonsPressed[14]
+					scene.rotation.y += 0.02*buttonsPressed[15]
+				}
+				else{	
+					scene.rotation.y += 0.01
+				}
+			}
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,75 @@
+:root {
+    --color-bg: #FFDF8C;
+    --color-text-main: #000000;
+    --color-primary: #FFFF00;
+    --wrapper-height: 87vh;
+    --image-max-width: 300px;
+    --image-margin: 3rem;
+    --font-family: "HK Grotesk";
+    --font-family-header: "HK Grotesk";
+  }
+  
+  /* Navigation grid */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem auto 0;
+    padding: 1rem 0 0.75rem 0;
+    width: 100%;
+    flex-wrap: wrap;
+    border-top: 4px solid #ffffff;
+  }
+  
+  /******************************************************************************
+  END Glitch hello-app default styles
+  ******************************************************************************/
+  
+  body {
+    background-color: var(--color-bg);
+  }
+  
+  /* Page structure */
+  .wrapper {
+    min-height: var(--wrapper-height);
+    max-height: var(--wrapper-height);
+    display: grid;
+    place-items: center;
+    margin: 0 1rem;
+  }
+
+  
+  /* Very light scaling for our illustration */
+  .title {
+    color: #2800FF;
+    font-family: HK Grotesk;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 80px;
+    line-height: 105%;
+    margin: 0;
+  }
+  
+  /* Very light scaling for our illustration */
+  .illustration {
+    max-width: 80%;
+    max-height: var(--image-max-width);
+    border-radius: 400px;
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Subheading */
+  h2 {
+    color: #2800FF;
+  }
+  
+  .column {
+    float: left;
+    width: 30%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }

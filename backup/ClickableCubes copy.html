@@ -1,0 +1,148 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="js/three.js"></script>
+		<script type="module">
+			let raycaster;
+
+			let INTERSECTED;
+			let theta = 0;
+
+			const pointer = new THREE.Vector2();
+			const radius = 100;
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document .body.appendChild(renderer.domElement);
+
+			var geometry = new THREE.BoxGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial({
+				color:0x0000FF, 
+				wireframe:true
+			});
+			var cube = new THREE.Mesh(geometry, material);
+			//scene.add(cube);
+
+			var numcubes = 9;
+			var materials = [material.clone(), material.clone(), material.clone(),material.clone(), material.clone(), material.clone(),material.clone(), material.clone(), material.clone()];
+			var cubes = [cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone()]
+			for(var i = 0; i < numcubes; i++){
+				materials[i].color = material.color.clone();
+				scene.add(cubes[i]);
+				cubes[i].scale.x *= 0.4;
+				cubes[i].scale.y *= 0.4;
+				cubes[i].scale.z *= 0.4;
+				cubes[i].position.x += Math.floor(i/3)*1.4 -1.4;
+				cubes[i].position.y += i%3 * 1.4 - 1.4 + 0.3;
+				cubes[i].material = materials[i];
+			}
+			camera.position.z = 3;
+
+			raycaster = new THREE.Raycaster();
+			document.addEventListener( 'mousemove', onPointerMove );
+			window.addEventListener( 'resize', onWindowResize );
+			document.addEventListener('mousedown', onMouseClick, false);
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+			function onPointerMove( event ) {
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			}
+			function onMouseClick(e){
+  				e.preventDefault();
+				console.log(e.clientX, e.clientY)
+				if(isHovered(cubes[3])) console.log("eya")
+			}
+			function highlightMouseHover(){ //turns the closest object to the mouse red
+				camera.updateMatrixWorld();
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObjects( scene.children, false );
+				if ( intersects.length > 0 ) { //If there is an intersection
+					if ( INTERSECTED != intersects[ 0 ].object ) { //If it's a new intersection
+						if(INTERSECTED != null) INTERSECTED.material.color.setHex( 0x00FFFF );
+						INTERSECTED = intersects[ 0 ].object;
+						INTERSECTED.material.color.setHex( 0xFF0000 );
+					}
+				} else { //If there are no intersections:
+					if(INTERSECTED != null)INTERSECTED.material.color.setHex( 0x00FFFF );
+					INTERSECTED = null;
+				}
+			}
+			function isHovered(object){
+				camera.updateMatrixWorld();
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObject( object, false );
+				if ( intersects.length > 0 ) { //If there is an intersection
+					return true;
+				} 
+				return false;
+			}
+
+			function makeText(string, x, y){
+				var text2 = document.createElement('div');
+				text2.style.position = 'absolute';
+				text2.style.width = 15 * string.length;
+				text2.style.height = 50;
+				text2.style.backgroundColor = "#111111";
+				text2.style.color = "#00FF00";
+				text2.innerHTML = string;
+				text2.style.top = y + 'px';
+				text2.style.left = (x - 15*string.length/2)+ 'px';
+				text2.style.textAlign = 'center';
+				document.body.appendChild(text2);
+			}
+			window.innerWidth/window.innerHeight
+			makeText("WWWWWWWWW", window.innerWidth/2, window.innerHeight/2);
+
+			function fontStuff(){
+				const loader = new Three.FontLoader();
+				loader.load('fonts/FFF.json', function(font){
+					const txtgeometry = new Three.TextGeometry('hello', {
+						font:font, 
+						size:6,
+						height:2,
+					})
+				})
+				const textMesh = new Three.Mesh(txtgeometry, material)
+				scene.add(textMesh);
+			}
+
+			var update = function(){
+				for(var i = 0; i < numcubes; i++){
+					cubes[i].rotation.x += 0.01;
+					cubes[i].rotation.y += 0.01;
+					if(isHovered(cubes[i])) {
+						cubes[i].material.color.setHex(0xFF0000) 
+						console.log(i)
+					}
+					else cubes[i].material.color.setHex(0x00FF00)
+				}
+				
+				//if(isHovered(cubes[1])) window.location.href = "index.html";
+			};
+			var render = function(){
+				//highlightMouseHover();
+				renderer.render(scene, camera);
+			}
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+	</body>
+</html>
