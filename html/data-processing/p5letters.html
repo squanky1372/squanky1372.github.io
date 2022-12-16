@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			var sync = false;
+			fetch('../data/valid-wordle-words.txt')
+				.then(response => response.text())
+				.then(text => letterCount(text.split("\n")))
+
+			var total = 0;
+			var letterdata = function(letter=0){
+				this.letter = letter
+				this.lettercounts = Array(6).fill(0)
+				this.percents = Array(6).fill(0)
+			}
+			var alphabetData = Array(26).fill(0)
+			for(var a = 0; a < 26; a++) {alphabetData[a] = new letterdata(String.fromCharCode(a+97))}
+			var alphabetical = []
+			var letterCount = function(text){
+				alphabetical = []
+				for(var a = 0; a < 26; a++) {alphabetData[a] = new letterdata(String.fromCharCode(a+97))}
+				total = 0;
+				text.forEach(word => {
+					for(var i = 0; i<5; i++){
+						alphabetData[word[i].charCodeAt(0)-97].lettercounts[i] += 1
+						alphabetData[word[i].charCodeAt(0)-97].lettercounts[5] += 1
+					}
+					total += 1
+					var ab = true;
+					for(var i = 0; i<4; i++){
+						if(word[i] >= word[i+1]) ab = false
+					}
+					if(ab) alphabetical.push(word)
+				});
+				console.log(alphabetData)
+				printdata(alphabetData)
+				sync = true
+			}
+			var printdata = function(data){
+				data.forEach((e,i) => {
+					for(var i = 0; i < 5; i++){e.percents[i] = e.lettercounts[i] / total}
+					e.percents[5] = e.lettercounts[5] / (total * 5)
+					console.log(e.letter, e.lettercounts[0], e.lettercounts[1], e.lettercounts[2], e.lettercounts[3], e.lettercounts[4], e.lettercounts[5] )
+				
+				})
+				
+			}
+
+			function setup() {
+				createCanvas(1000, 600);
+				
+				background(220);
+				colorMode(HSB, 100);
+				// letterCount(alphabetical)
+				// console.log(alphabetical)
+			}
+
+			function draw() {
+				if(sync){
+					drawAlphabetBars()
+				}
+			}
+
+			function drawAlphabetBars(){
+				var runningcounts = Array(6).fill(0);
+					alphabetData.forEach((element, i) => {
+						fill(10*(i%10),100,100)
+						rect(10+i/26 * 980, 80*6 + 10, 1/26*980, 70)//element.percents[j]*980)
+						fill(0)
+						text(element.letter, 10+i/26 * 980 + 980/52 - 4,  80*6 + 10 + 35 +3)
+						runningcounts.forEach((value, j) => {
+							fill(10*(i%10),100,100)
+							rect(10 + runningcounts[j], 80*j + 10, element.percents[j]*980, 70)//element.percents[j]*980)
+							fill(0)
+							text(element.letter, 10 + runningcounts[j] + element.percents[j]*980 / 2 - 5,  80*j + 10 + 70 / 2)
+							runningcounts[j] = runningcounts[j] + element.percents[j]*980
+						})
+					})
+			}
+		</script>
+		
+	</body>
+</html>

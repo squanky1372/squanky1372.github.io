@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script>
+			fetch('../data/valid-wordle-words.txt')
+				.then(response => response.text())
+				.then(text => letterCount(text.split("\n")))
+
+			var lettercounts = [Array(26).fill(0), Array(26).fill(0), Array(26).fill(0), Array(26).fill(0), Array(26).fill(0), Array(26).fill(0)]
+			console.log(lettercounts)
+			var total = 0;
+			var letterCount = function(text){
+				console.log(text)
+				text.forEach(element => {
+					//console.log(element[0].charCodeAt(0)-97)
+					for(var i = 0; i<5; i++){
+						lettercounts[i][element[i].charCodeAt(0)-97] += 1
+						lettercounts[5][element[i].charCodeAt(0)-97] += 1
+					}
+					total += 1
+				});
+				var data = makeLetterDataArray(lettercounts, total)
+				printdata(data)
+
+			}
+			var letterdata = function(){
+				this.letter = 0
+				this.lettercounts = Array(6).fill(0)
+				this.percents = Array(6).fill(0)
+			}
+			var makeLetterDataArray= function(lettercounts, total){
+				var alphabetData = Array(6).fill(0)
+				for(var a = 0; a < 26; a++) alphabetData[a] = new letterdata();
+				lettercounts.forEach((row, i) => {
+					row.forEach((letter, j) => {
+						alphabetData[j].letter = String.fromCharCode(j+97)
+						alphabetData[j].lettercounts[i] = letter
+						if(i == 5) total = total * 5
+						alphabetData[j].percents[i] = parseInt(letter/total * 1000)/10
+					})
+				})
+				return alphabetData
+			}
+			var printdata = function(data){
+				data.forEach((e,i) => {
+					console.log(e.letter, e.lettercounts[0], e.lettercounts[1], e.lettercounts[2], e.lettercounts[3], e.lettercounts[4], e.lettercounts[5] )
+				})
+			}
+		</script>
+	</body>
+</html>

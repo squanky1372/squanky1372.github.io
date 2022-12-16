@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+
+			function loadWeather(){	
+				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/evanston?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
+				"method": "GET",
+				"headers": {}})
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data)
+
+					data.days.forEach((day, dindex) => {
+						day.hours.forEach((hour, hindex) => {
+							var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
+							var picset = ["❄️", "💦", "🌫️", "🌀", "☁️", "🌤️", "🌤️", "☀️", "🌙"]
+							var iconint = iconset.findIndex(element => element == hour.icon)
+							push()
+							translate(30 + hindex*40,10+dindex*40)
+							text(hour.feelslike,0,0 )
+							textSize(20)
+							rect(0,0,30,30)
+							text(picset[iconint], 0,20)
+							//showIcon(iconint);
+							pop()
+						})
+					})
+				});
+			}
+
+			function setup() {
+				createCanvas(1000, 600);
+				background(220);
+				colorMode(HSB, 100);
+
+				loadWeather();
+			}
+
+			function draw() {
+				
+			}
+
+		</script>
+	</body>
+</html>

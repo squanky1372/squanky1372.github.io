@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		Hello my name is felipe
+		<p id="p1">Hello World!</p>
+		<script>
+			document.getElementById("p1").innerHTML = "Felipe J!";
+		</script>
+
+		<form>
+			<label for="fname">Input 1:</label><br>
+			<input type="text" id="fname" name="fname"><br>
+			<label for="lname">Input 2:</label><br>
+			<input type="text" id="lname" name="lname">
+		</form>
+
+		<div id="p2" style="height:200px;width:200px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+			As you can see, once there's enough text in this box, the box will grow scroll bars... that's why we call it a scroll box! You could also place an image into the scroll box.
+		</div>
+		<script src="../js/src/p5.js"></script>
+		<script>
+			function setup() {
+				createCanvas(200, 200);
+				var words = ["aaaaa", "bbbbb", "ccccc"]
+				document.getElementById("p2").innerHTML = words
+				background(220);
+			}
+
+			function draw() {
+				background(220);
+				rect(width/4, height/4, width/2, height/2)
+				var x = document.getElementById("fname").value;
+				text(x,20,20)
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+	</body>
+</html>

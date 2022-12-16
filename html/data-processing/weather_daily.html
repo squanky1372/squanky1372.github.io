@@ -1,0 +1,184 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+
+			function loadWeather(){	
+				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/evanston?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
+				"method": "GET",
+				"headers": {}})
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data)
+
+					var day = data.days[0]
+					day.hours.forEach((hour, hindex) => {
+						var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
+						var picset = ["❄️", "💦", "🌫️", "🌀", "☁️", "🌤️", "🌤️", "☀️", "🌙"]
+						var iconint = iconset.findIndex(element => element == hour.icon)
+						push()
+						translate(30 + hindex*40,10)
+						text(hour.feelslike,0,0)
+						textSize(20)
+						rect(0,0,30,30)
+						text(picset[iconint], 0,20)
+						// showIcon(iconint);
+						pop()
+					})
+				});
+			}
+
+			var fakeweather = [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1,0,1,2,3,4,5,6,7]
+			fakeweather = [0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,2,2,2,2,0,1,0,1]
+
+			/*
+			snow:0
+			rain:1
+			clouds:014
+			small-clouds:56
+
+			background
+			snow
+			if(not snow) cover snow
+			rain 
+			if(not rain) cover rain
+			clouds
+			if(not 014) clover clouds
+			*/
+
+			function setup() {
+				createCanvas(1000, 600);
+				background(220);
+				colorMode(HSB, 100);
+				//loadWeather();
+			}
+
+			var dims = [1000,600]
+			var canvasw = dims[0]
+			var canvash = dims[1]
+			function draw() {
+				globaltime += 1
+				drawBackground();
+				drawSnow();
+				// drawRain()
+				drawClouds();	
+				fakeweather.forEach((hour, index) => {
+					if(hour != 0){
+						noStroke()
+						clearSky(index)
+					}
+				})
+				// drawRain();
+				// fakeweather.forEach((hour, index) => {
+				// 	if(hour != 1){
+				// 		clearSky(index)
+				// 	}
+				// })
+				// fakeweather.forEach((hour, index) => {
+				// 	if(hour != 1){
+				// 		clearSky(index)
+				// 	}
+				// })
+				// drawGrid();
+				drawHills()
+				// copy(0,0,100,100,100,100,100,100)
+			}
+			function clearSky(index){
+				fill(50,200,255)
+				if(index%2 == 1)fill(50,205,255)
+				rect(index*(canvasw)/24, 0, (canvasw)/24, canvash)
+				colorMode(RGB,255);
+				fill(50,200,255)
+			}
+			var globaltime = 0
+			function drawGrid(){
+				push()
+				noFill()
+				for(var i = 0; i < 24; i++){
+					rect(i*(canvasw)/24, 0, (canvasw)/24, canvash)
+				}
+				pop()
+			}
+			function drawBackground(){
+				for(var i = 0; i < 24; i++){
+					clearSky(i)
+				}
+			}
+			function drawHills(){	
+				push()
+				colorMode(RGB,255);
+				fill(0,155,0)
+				for(var i = 0; i < 8; i++){
+					circle(i/2*canvasw/3, canvash*1.15, canvasw/3)
+				}
+				pop()
+			}
+			function drawSnow(){
+				t = globaltime*1.5
+				push()
+				strokeWeight(1)
+				colorMode(RGB,255);
+				stroke(255,255,255)
+				var size = 10
+				for(var j = 0; j < canvash; j = j + size*4){
+					for(var i = 0; i < canvasw; i = i + size*4){
+						push()
+						var x = (i+size + t/2 + j%(size*3))%canvasw
+						var y = (j+t)%(canvash) + canvash/10*3 - canvash/15 * 10*i%(size*3)
+						translate(x,y)
+						line(0, 0, size, size)
+						line(0, size, size, 0)
+						line(size/2, 0, size/2, size)
+						line(0, size/2, size, size/2)
+						pop()
+					}
+				}
+				pop()
+			}
+			function drawClouds(){
+				t = globaltime
+				for(var i = 0; i < 60; i++){
+					push()
+					colorMode(RGB,255);
+					fill(255,255,255)
+					translate(((canvasw/30)*i+t)%(canvasw*2) - canvasw/2, canvash/10*(i%3) + canvash/15)
+					noStroke()
+					circle(0,0,30)
+					circle(20,0,30)
+					circle(40,0,30)
+					circle(15,-15,30)
+					circle(30,-15,30)
+					pop()
+				}
+			}
+			function drawRain(){
+				t = globaltime*4
+				push()
+				strokeWeight(3)
+				colorMode(RGB,255);
+				stroke(0,0,255)
+				var size = 10
+				for(var j = 0; j < canvash; j = j + size*4){
+					for(var i = 0; i < canvasw; i = i + size*4){
+						var x = (i+size + t)%canvasw
+						var y = (j+t)%canvash + canvash/10*3 - canvash/15 * 10*i%(size*3)
+						push()
+						translate(x, y)
+						line(0, 0, size, size)
+						pop()
+					}
+				}
+				pop()
+			}
+
+		</script>
+	</body>
+</html>

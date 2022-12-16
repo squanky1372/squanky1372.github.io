@@ -28,12 +28,13 @@ let stationslist = stationsdata.response.row[0].row.map((c)=>new Station({id:c.s
 console.log(stationslist)
 
 class TrainLine{
-  constructor({name, color, trains, index, id}){
+  constructor({name, color, trains, index, id, color_hex}){
     this.name = name;
     this.color = color;
     this.trains = trains;
     this.index = index;
     this.id = id;
+    this.color_hex = color_hex;
   }
 }
 class LineTrain{
@@ -71,7 +72,8 @@ for(var i = 0; i < 8; i++){
     color:hexToHSL(colors[i]),
     trains:linedata[i].ctatt.route[0].train.map((c) => new LineTrain({runnum:c.rn, dest:c.destNm, next:c.nextStaNm, prdt:c.prdt, arrT:c.arrT, lat:c.lat, lon:c.lon, heading:c.heading})),
     index:indices[i],
-    id:ids[i]
+    id:ids[i],
+    color_hex:colors[i]
   })
 }
 
