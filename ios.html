@@ -57,11 +57,20 @@
 				for(var i = 0; i < numlinks; i++){
 					image(imgs[i], (i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize)
 				}
+
+				for (var touch = 0; touch < touches.length; touch++) {
+      				ellipse(touches[touch].x - offsets[0], touches[touch].y - offsets[1], 100, 50);
+					for(var i = 0; i < numlinks; i++){
+						if(overlapsRect((i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize, touches[touch].x - offsets[0], touches[touch].y - offsets[1])){
+							console.log("Ye")
+							window.location.href = links[i*2]
+						}
+					}
+  				}
+
 				pop();
 
-				for (var i = 0; i < touches.length; i++) {
-      				ellipse(touches[i].x, touches[i].y, 100, 50);
-  }
+				
 				
 			}
 
