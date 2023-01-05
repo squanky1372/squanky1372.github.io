@@ -42,10 +42,10 @@
 
 			function draw() {
 				background(220);
-				const isMobile = navigator.userAgentData.mobile; //resolves true/false
-				if(isMobile){
-					rect(width/5, height/5, width/2, height/2)
-				}
+				// const isMobile = navigator.userAgentData.mobile; //resolves true/false
+				// if(isMobile){
+				// 	rect(width/5, height/5, width/2, height/2)
+				// }
 				var squaresize = Math.ceil(Math.sqrt(numlinks))*Math.ceil(Math.sqrt(numlinks))
 				var size = ((width > height) ? height : width) / (Math.ceil(Math.sqrt(numlinks)) * 1.2)
 
