@@ -14,6 +14,7 @@
 	<body>
 		<script src="../js/src/p5.js"></script>
 		<script>
+			//to add a new link, add the URL and the image to a new line in the array.
 			var links = [ "./html/twilight-head.html", "/html/img/Boxes3.png",
 						"./html/images.html", "/html/img/Boxes2.png",
 						"./planets/Planets.html","/html/img/Boxes4.png",
@@ -22,21 +23,15 @@
 						"/weather/weather_basic.html", "/html/img/Boxes6.png",
 						"/html/data-processing/p5letters.html", "/html/img/Boxes7.png",
 						"/html/data-processing/p5letters input.html", "/html/img/Boxes8.png",
-						"index.html"];
+						"index.html", "/html/img/Boxes9.png"];
 
-			var numlinks = 8
+			var numlinks = 9
 			var imgs = Array(numlinks)
 			function preload() {
-				imgs = [
-  				loadImage(links[0*2+1]),
-  				loadImage(links[1*2+1]),
-  				loadImage(links[2*2+1]),
-  				loadImage(links[3*2+1]),
-  				loadImage(links[4*2+1]),
-  				loadImage(links[5*2+1]),
-  				loadImage(links[6*2+1]),
-  				loadImage(links[7*2+1]),
-  				/*loadImage('html/img/Boxes9.png')*/]
+				for(var i = 0; i < numlinks; i++){
+					imgs[i] = loadImage(links[i*2 + 1])
+				}
+				console.log(imgs)
 			}
 			function setup() {
 				createCanvas(windowWidth, windowHeight);
