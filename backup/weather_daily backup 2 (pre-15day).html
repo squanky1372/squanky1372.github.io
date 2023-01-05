@@ -1,0 +1,219 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			var hours = Array(24).fill(new myhour(7,0,0,0,0,0))
+			hours.fill(new myhour(0,0,0,0,0,0),3,4).fill(new myhour(1,0,0,0,0,0),6,7).fill(new myhour(2,0,0,0,0,0),9,10).fill(new myhour(4,0,0,0,0,0),12,13)
+			function myhour(icon, feelslike, temp, snowdepth, windgust, windspeed, precip, precipprob, snow, snowdepth){
+				this.icon = icon
+				this.feelslike = feelslike
+				this.temp = temp
+				this.snowdepth = snowdepth
+				this.windgust = windgust
+				this.windspeed = windspeed
+				this.precip = precip
+				this.precipprob = precipprob
+				this.snow = snow
+				this.snowdepth = snowdepth
+			}
+			function loadWeather(){	
+				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/evanston?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
+				"method": "GET",
+				"headers": {}})
+				.then((response) => response.json()).then((data) => {
+					data.days[0].hours.forEach((hour, hindex) => {
+						var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
+						var iconint = iconset.findIndex(element => element == hour.icon)
+						hours[hindex] = (new myhour(iconint, hour.feelslike, hour.temp, hour.snowdepth, hour.windgust, hour.windspeed, hour.precip, hour.precipprob, hour.snow, hour.snowdepth))
+					})
+					console.log(data)
+					console.log(hours)
+				});
+			}
+			loadWeather()
+			var barcolors = [[50,200,255],[50,205,255], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+				background(220);
+				colorMode(HSB, 100);
+				for(var i = 0; i < 12; i++){
+					var value = 100 / (1 + Math.pow(5, -(i-6)));
+					barcolors[i] = [50,100+value,255]
+					barcolors[23-i] = [50,100+value,255]
+					console.log(value)
+				}
+				loadWeather();
+			}
+			function draw() {
+				globaltime += 4
+				drawBackground();
+				graphs()
+				drawClouds();
+				for(var i = 0; i < 24; i++){
+					push()
+					translate(i*width/24,0)
+					drawBar(hours[i].icon, i)
+					stroke(0)
+					pop()
+				}
+				drawHills()
+			}
+			function graphs(){
+				push()
+				colorMode(RGB, 256)
+				drawLines()
+				stroke(0,255,0)
+				line(0,tempToGrid(0),width,tempToGrid(0))
+				var feelslikearray = Array(24)
+				var temparray = Array(24)
+				var windgustarray = Array(24)
+				var windspeedarray = Array(24)
+				for(var i = 0; i < 24; i++){
+					feelslikearray[i] = hours[i].feelslike
+					temparray[i] = hours[i].temp
+					windgustarray[i] = hours[i].windgust
+					windspeedarray[i] = hours[i].windspeed
+				}
+				graphLine(windgustarray, -10, [0,255,255], false)
+				graphLine(windspeedarray, -10, [0,255,0], false)
+				graphLine(feelslikearray, - 10, [255,0,0])
+				graphLine(temparray, + 5, [255,100,0])
+				pop()
+			}
+
+			function graphLine(array, offset, color, showtext=true){
+				for(var i = 0; i < 23; i++){
+					//feels like graph
+					stroke(color).strokeWeight(3)
+					line(width/24 * (i+0.5), tempToGrid(array[i]),width/24 * (i+1.5),  tempToGrid(array[i+1]))
+					circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
+					stroke(0).strokeWeight(1)
+					if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 8, tempToGrid(array[i] + offset))
+				}
+				stroke(color).strokeWeight(3)
+				circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
+				stroke(0).strokeWeight(1)
+				if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 8, tempToGrid(array[i] + offset))
+			}
+			function drawLines(){
+				// stroke(100)
+				// stroke(0,0,255)
+				for(var i = 0; i < 15; i++){
+					var base_h = 2 * height / 3
+					var my_h = base_h - i*(height/3)/15
+					line(0,tempToGrid((i*10)-30),width,tempToGrid((i*10)-30))
+				}
+			}
+			function tempToGrid(temp){
+				return ((2 * height / 3) - ((temp+30)/10)*(height/3)/15)
+			}
+			function clearSky(index, here=false){
+				colorMode(RGB,255);
+				noStroke()
+				fill(barcolors[index])
+				if(here)index=0
+				rect(index*(width)/24, 0, (width)/24 + 1, height)
+				noFill()
+				stroke(100)
+				rect(index*(width)/24, 0, (width)/24 + 1, height)
+			}
+			var globaltime = 0
+			function drawBar(bartype, barnum){
+				if(bartype == 0){
+					for(var j = floor(height/4/20); j < height/16; j++){
+						var i = j*height/16
+						push()
+						translate(0,height * 2/7)
+						translate((width/24)/4, (i+globaltime)%height)
+						if(j%2 > 0) translate(height/32, 0)
+						drawSnowflake()
+						pop()
+					}
+				}
+				else if(bartype == 1){
+					for(var j = floor(height/4/20); j < height/16; j++){
+						var i = j*height/16
+						push()
+						translate(0,height * 2/7)
+						translate((width/24)/4, (i+globaltime)%height)
+						if(j%2 > 0) translate(height/32, 0)
+						drawRaindrop()
+						pop()
+					}
+				}
+				else if(bartype == 2){
+					// clearSky(barnum, true)
+					noStroke()
+					for(var j = floor(height/4/20); j < height/16; j++){
+						var i = j*height/16
+						push()
+						translate(0, (i)%height)
+						fill(140,140,140, 10)
+						rect(0,0,width/24, height)
+						pop()
+					}
+				}
+				else if([4,5,6].includes(bartype)){
+					//don't erase clouds (see else)
+				}
+				else{
+					clearSky(barnum, true) //erase clouds (for any of the cases not shown above)
+				}
+			}		
+			function drawSnowflake(){
+				var size = width/24/4
+				stroke(255)
+				line(-size/2, -size/2, size/2, size/2)
+				line(-size/2, size/2, size/2, -size/2)
+				line(0, -size/2, 0, size/2)
+				line(-size/2, 0, size/2, 0)
+			}
+			function drawRaindrop(){	
+				var size = width/24/4
+				strokeWeight(3)
+				colorMode(RGB,255);
+				stroke(0,0,255)
+				line(-size/2, -size/2, size/2, size/2)
+			}
+			function drawBackground(){
+				for(var i = 0; i < 24; i++){
+					clearSky(i)
+				}
+			}
+			function drawHills(){	
+				push()
+				colorMode(RGB,255);
+				fill(0,155,0)
+				for(var i = 0; i < 7; i++){
+					circle(i/2*width/3, height*1.1, width/3)
+				}
+				pop()
+			}
+			function drawClouds(){
+				t = globaltime/4
+				for(var i = 0; i < 60; i++){
+					push()
+					fill(255)
+					translate(((width/30)*i+t)%(width*2) - width/2, height/10*(i%3) + height/15)
+					noStroke()
+					var size = height/18
+					circle(0,0,size)
+					circle(size*0.8,0,size)
+					circle(size*1.6,0,size)
+					circle(size*0.4,-size/2,size)
+					circle(size*1,-size/2,size)
+					pop()
+				}
+			}
+		</script>
+	</body>
+</html>

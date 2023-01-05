@@ -44,52 +44,33 @@
 			rain:1
 			clouds:014
 			small-clouds:56
-
-			background
-			snow
-			if(not snow) cover snow
-			rain 
-			if(not rain) cover rain
-			clouds
-			if(not 014) clover clouds
 			*/
-
-			function setup() {
-				createCanvas(1000, 600);
-				background(220);
-				colorMode(HSB, 100);
-				//loadWeather();
-			}
 
 			var dims = [1000,600]
 			var canvasw = dims[0]
 			var canvash = dims[1]
+
+			function setup() {
+				dims = [windowWidth, windowHeight]
+				canvasw = dims[0]
+				canvash = dims[1]
+				createCanvas(dims[0], dims[1]);
+				background(220);
+				colorMode(HSB, 100);
+				//loadWeather();
+			}
 			function draw() {
 				globaltime += 1
 				drawBackground();
-				drawSnow();
+				// drawSnow();
 				// drawRain()
-				drawClouds();	
-				fakeweather.forEach((hour, index) => {
-					if(hour != 0){
-						noStroke()
-						clearSky(index)
-					}
-				})
-				// drawRain();
-				// fakeweather.forEach((hour, index) => {
-				// 	if(hour != 1){
-				// 		clearSky(index)
-				// 	}
-				// })
-				// fakeweather.forEach((hour, index) => {
-				// 	if(hour != 1){
-				// 		clearSky(index)
-				// 	}
-				// })
-				// drawGrid();
+				drawBar(1)
+				push()
+				translate(width/24,0)
+				drawBar(2)
+				pop()
+				// drawClouds();
 				drawHills()
-				// copy(0,0,100,100,100,100,100,100)
 			}
 			function clearSky(index){
 				fill(50,200,255)
@@ -99,6 +80,32 @@
 				fill(50,200,255)
 			}
 			var globaltime = 0
+			function drawBar(bartype){
+				globaltime += 1
+				push()
+				// translate(bar*width/24,0)
+				fill(100)
+				// circle(0,0,10)
+				var size = width/24/4
+				for(var j = 0; j < height/20; j++){
+					var i = j*height/20
+					push()
+					translate((width/24)/4, (i+globaltime)%height)
+					console.log(j%2)
+					if(j%2 > 0) translate(height/40, 0)
+					if(bartype == 1){
+						line(-size/2, -size/2, size/2, size/2)
+						line(-size/2, size/2, size/2, -size/2)
+						line(0, -size/2, 0, size/2)
+						line(-size/2, 0, size/2, 0)
+					}
+					if(bartype == 2){
+						line(-size/2, -size/2, size/2, size/2)
+					}
+					pop()
+				}
+				pop()
+			}
 			function drawGrid(){
 				push()
 				noFill()
@@ -128,11 +135,14 @@
 				colorMode(RGB,255);
 				stroke(255,255,255)
 				var size = 10
-				for(var j = 0; j < canvash; j = j + size*4){
-					for(var i = 0; i < canvasw; i = i + size*4){
+				for(var j = 0; j < height; j = j + height/20){
+					for(var i = 0; i < width; i = i + width/24){
 						push()
-						var x = (i+size + t/2 + j%(size*3))%canvasw
-						var y = (j+t)%(canvash) + canvash/10*3 - canvash/15 * 10*i%(size*3)
+						// var x = (i+size + t/2 + j%(size*3))%canvasw
+						// var y = (j+t)%(canvash) + canvash/10*3 - canvash/15 * 10*i%(size*3)
+						var cloudheight = 180
+						var x = (canvasw/(24*8) * i + t)%canvasw
+						var y = (canvash/(60*8) * j + t)%canvash + cloudheight
 						translate(x,y)
 						line(0, 0, size, size)
 						line(0, size, size, 0)
@@ -160,7 +170,7 @@
 				}
 			}
 			function drawRain(){
-				t = globaltime*4
+				t = globaltime*1.5
 				push()
 				strokeWeight(3)
 				colorMode(RGB,255);

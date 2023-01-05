@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script src="arduinos.js"></script>
+		<script>
+			var i2c = [new atmega()]
+			var esp32 = new esp32();
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+				rect(width/4, height/4, width/2, height/2)
+				
+				background(220);
+				for(var i = 0; i < 10; i++){
+					i2c.push(new atmega())
+				}
+			}
+
+			function draw() {
+				i2c.forEach((e,i) => {e.drawAt(100 + 30*i,100)})
+
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+	</body>
+</html>

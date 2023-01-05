@@ -24,7 +24,7 @@
 		<div class="row">
 			<div class="column" style="background-color:#9595ff;">
 				<h2>Valid Words</h2>
-				<div id="outputbox" style="height:300px;width:100%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+				<div id="outputbox" style="height:325px;width:100%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
 					Add some allowed and rejected letters in the fields provided, then hit submit to see all valid words with those constraints!	
 				</div>
 			</div>
@@ -42,7 +42,9 @@
 						<label for="a4">4:</label>
 						<input type="text" id="a4" name="a4"><br>
 						<label for="a5">5:</label>
-						<input type="text" id="a5" name="a5"><br><br><br>
+						<input type="text" id="a5" name="a5"><br>
+						<label for="a6">T:</label>
+						<input type="text" id="a6" name="a6"><br><br><br>
 					</div>
 					<div class="column" style="background-color:#ff9191;">
 						<h2>Reject:</h2>	
@@ -55,7 +57,9 @@
 						<label for="r4">4:</label>
 						<input type="text" id="r4" name="r4"><br>
 						<label for="r5">5:</label>
-						<input type="text" id="r5" name="r5"><br><br><br>
+						<input type="text" id="r5" name="r5"><br>
+						<label for="r6">T:</label>
+						<input type="text" id="r6" name="r6"><br><br><br>
 					</div>
 				</div><br><br>
 				<button onclick="onButtonPressed()">Submit</button><br><br><br>
@@ -72,6 +76,10 @@
 						if(document.getElementById(ids[i]).value.length > 0 && 
 						  !document.getElementById(ids[i]).value.includes(word[i]))return false;
 						if(document.getElementById(ids[i+5]).value.includes(word[i]))return false;
+						
+						if(document.getElementById("a6").value.length > 0 && 
+						  !document.getElementById("a6").value.includes(word[i]))return false;
+						if(document.getElementById("r6").value.includes(word[i]))return false;
 					}
 					return true;
 				})
