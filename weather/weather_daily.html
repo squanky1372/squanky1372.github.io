@@ -61,6 +61,7 @@
 					console.log(value)
 				}
 				loadWeather();
+				rotate(90)
 			}
 			function draw() {
 				globaltime += 4
@@ -69,7 +70,6 @@
 				for(var i = 0; i < 24; i++){
 					push()
 					translate(i*width/24,0)
-					// drawBar(hours2[currentday*24 + i].icon, i)
 					drawBar(hours2[currenthour + i].icon, i)
 					stroke(0)
 					pop()
