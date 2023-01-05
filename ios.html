@@ -41,21 +41,21 @@
 			}
 
 			var imgsize = 0;
+			var offsets = [0,0]
 			function draw() {
 				background(220);
-				// const isMobile = navigator.userAgentData.mobile; //resolves true/false
-				// if(isMobile){
-				// 	fill(100)
-				// 	rect(width/5, height/5, width/2, height/2)
-				// }
 				var squaresize = Math.ceil(Math.sqrt(numlinks))*Math.ceil(Math.sqrt(numlinks))
 				imgsize = ((width > height) ? height : width) / (Math.ceil(Math.sqrt(numlinks)) * 1.2)
 
 				push();
-				//(width > height) ? translate((width-(Math.ceil(Math.sqrt(numlinks))*size*1.2))/2,size*0.1) : translate(size*0.1,(height-(Math.ceil(Math.sqrt(numlinks))*size*1.2))/2)
+				offsets = [0,0];
+				offsets[0] = (width > height) ? ((width-(Math.ceil(Math.sqrt(numlinks))*imgsize*1.2))/2) : 0;
+				offsets[1] = (width < height) ? (height-(Math.ceil(Math.sqrt(numlinks))*imgsize*1.2))/2 : 0;
+				offsets[0] += imgsize*0.1
+				offsets[1] += imgsize*0.1
+				translate(offsets[0], offsets[1])
 				for(var i = 0; i < numlinks; i++){
 					image(imgs[i], (i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize)
-					// rect((i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize)
 				}
 				pop();
 				
@@ -68,7 +68,7 @@
 			function mouseClicked() {
 				console.log(mouseX, mouseY)
 				for(var i = 0; i < numlinks; i++){
-					if(overlapsRect((i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize, mouseX, mouseY)){
+					if(overlapsRect((i%3)*imgsize*1.2, (floor(i/3))*imgsize*1.2, imgsize,imgsize, mouseX - offsets[0], mouseY - offsets[1])){
 						console.log("Ye")
 						window.location.href = links[i*2]
 					}
