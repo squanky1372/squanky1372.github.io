@@ -42,8 +42,6 @@
 					})
 					
 					console.log(data)
-					console.log(hours)
-					console.log(hours2)
 				});
 			}
 			loadWeather()
@@ -76,6 +74,12 @@
 				}
 				drawHills()
 				graphs()
+				var dt = datetime()
+				circle((dt[3] + dt[4]/60)*width/24, 100, 15)
+			}
+			function datetime(){
+				var today = new Date();
+				return [today.getFullYear(),today.getMonth()+1,today.getDate(),today.getHours(),today.getMinutes(),today.getSeconds()]
 			}
 			function keyPressed() {
 				console.log(keyCode)
