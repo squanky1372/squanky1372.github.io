@@ -78,6 +78,40 @@
 				graphs()
 				var dt = datetime()
 				circle((dt[3] + dt[4]/60)*width/24, 100, 15)
+				fill(0)
+				if(touches[0]){
+					parseClick(touches[0].x, touches[0].y)
+				}
+				else{
+					touchEnabled = true;
+				}
+			}
+			var touchEnabled = true;
+			function parseClick(x, y){
+				if(!touchEnabled){
+					return;
+				}
+				touchEnabled = false;
+				if(overlapsRect(0,0,3*width/24,height/3,x,y)){
+					console.log("back")
+					currenthour--
+				}
+				if(overlapsRect(0,height/3,3*width/24,height/3,x,y)){
+					console.log("back2")
+					currenthour-=24
+				}
+				if(overlapsRect(width - 3*width/24,0,3*width/24,height/3,x,y)){
+					console.log("forward")
+					currenthour++
+				}
+				if(overlapsRect(width - 3*width/24,height/3,3*width/24,height/3,x,y)){
+					console.log("forward2")
+					currenthour+=24
+				}
+				if(currentday >= 15) currentday = 14
+				if(currentday < 0) currentday = 0
+				if(currenthour >= 360-24) currenthour = 360 - 24
+				if(currenthour < 0) currenthour = 0
 			}
 			function datetime(){
 				var today = new Date();
@@ -86,17 +120,13 @@
 			function keyPressed() {
 				console.log(keyCode)
 				if (keyCode === LEFT_ARROW) {
-					currentday--
 					currenthour--
 				} else if (keyCode === RIGHT_ARROW) {
-					currentday++
 					currenthour++
 				}
 				if (keyCode === UP_ARROW) {
-					currentday--
 					currenthour+=24
 				} else if (keyCode === DOWN_ARROW) {
-					currentday++
 					currenthour-=24
 				}
 				if(currentday >= 15) currentday = 14
@@ -234,12 +264,20 @@
 				colorMode(RGB,255);
 				fill(0,155,0)
 				for(var i = 0; i < 7; i++){
-					circle(i/2*width/3, height*1.1, width/3)
-					if(touches[0] && dist(touches[0].x, touches[0].y, i/2*width/3, height*1.1) < width/3){
+					var x = i/2*width/3
+					var y = height*1.1
+					var r = width/3
+					circle(x, y, r)
+					if(touches[0] && dist(touches[0].x, touches[0].y, x, y) < r/2){
+						// console.log(dist(tx, ty, x, y))
 						console.log("touched circle", i)
 					}
 				}
 				pop()
+			}
+			function overlapsRect(x,y,w,h,x1,y1){
+				console.log(x,y)
+				if(x1 > x && x1 < x+w && y1 > y && y1 < y+h) return true; return false
 			}
 			function drawClouds(){
 				t = globaltime/4
