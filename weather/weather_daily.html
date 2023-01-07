@@ -126,7 +126,6 @@
 				graphLine(temparray, + 5, [255,100,0])
 				pop()
 			}
-
 			function graphLine(array, offset, color, showtext=true){
 				stroke(color).strokeWeight(3)
 				line(0, tempToGrid(array[0]),width/48,  tempToGrid(array[0]))
@@ -236,6 +235,9 @@
 				fill(0,155,0)
 				for(var i = 0; i < 7; i++){
 					circle(i/2*width/3, height*1.1, width/3)
+					if(touches[0] && dist(touches[0].x, touches[0].y, i/2*width/3, height*1.1) < width/3){
+						console.log("touched circle", i)
+					}
 				}
 				pop()
 			}
