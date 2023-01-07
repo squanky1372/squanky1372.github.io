@@ -23,13 +23,11 @@
 			}
 		</script>
 		<script type="module">
-			console.log("starting main")
 			import * as THREE from 'three';
 
 			import { FontLoader } from 'addons/loaders/FontLoader.js';
 			import { TextGeometry } from 'addons/geometries/TextGeometry.js';
 
-			console.log("imports done")
 			let raycaster;
 
 			let INTERSECTED;
@@ -47,8 +45,6 @@
 
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document .body.appendChild(renderer.domElement);
-			
-			console.log("scene created")
 
 			var geometry = new THREE.BoxGeometry(1,1,1);
 			var material = new THREE.MeshStandardMaterial({
@@ -72,15 +68,11 @@
 				cubes[i].material = materials[i];
 			}
 			camera.position.z = 3;
-			
-			console.log("cubes and camera")
 
 			raycaster = new THREE.Raycaster();
 			document.addEventListener( 'mousemove', onPointerMove );
 			window.addEventListener( 'resize', onWindowResize );
 			document.addEventListener('mousedown', onMouseClick, false);
-
-			console.log("events added")
 
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
@@ -88,19 +80,16 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
 			function onPointerMove( event ) {
-				console.log("pointer")
 				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 			}
 			function onMouseClick(e){
-				console.log("mouse")
   				e.preventDefault();
 				console.log(e.clientX, e.clientY)
 				if(isHovered(cubes[3])) console.log("eya")
 				checkLinks();
 			}
 			function highlightMouseHover(){ //turns the closest object to the mouse red
-				console.log("hover")
 				camera.updateMatrixWorld();
 				raycaster.setFromCamera( pointer, camera );
 				const intersects = raycaster.intersectObjects( scene.children, false );
@@ -116,7 +105,6 @@
 				}
 			}
 			function isHovered(object, recursive=false){
-				console.log("hover2")
 				camera.updateMatrixWorld();
 				raycaster.setFromCamera( pointer, camera );
 				const intersects = raycaster.intersectObject( object, recursive );
@@ -143,7 +131,6 @@
 			//makeText("Welcome", window.innerWidth/2, window.innerHeight/2);
 
 			function makeText(string, obj){
-				console.log("text")
 				const loader = new FontLoader();
 				var obj;
 				loader.load('/fonts/FFF.json', function(font){
@@ -214,7 +201,6 @@
 			}
 
 			var update = function(){
-				console.log("update")
 				for(var i = 0; i < numcubes; i++){
 					cubes[i].rotation.x += 0.01;
 					cubes[i].rotation.y += 0.01;
@@ -227,12 +213,10 @@
 				//felipeobj.rotation.x += 0.01;
 			};
 			var render = function(){
-				console.log("render")
 				//highlightMouseHover();
 				renderer.render(scene, camera);
 			}
 			var GameLoop = function(){
-				console.log("gameloop")
 				requestAnimationFrame(GameLoop);
 				update();
 				render();
