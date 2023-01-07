@@ -1,10 +1,8 @@
 <!-- https://www.1001fonts.com/pixel-fonts.html?page=8 -->
 <!-- https://gero3.github.io/facetype.js/ -->
 <html>
-	Hello, welcome to my page!
 	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Logo.png">
 	<link rel="icon" href="/html/img/Logo.png">
-	Logos should have loaded now
 	<head>
 		<title>Felipe</title>
 		<style>
@@ -12,7 +10,6 @@
 			canvas {width: 100%; height: 100%}
 		</style>
 	</head>
-	Now the style is set up
 
 	<body>
 		<script type="importmap">
@@ -23,13 +20,12 @@
 				}
 			}
 		</script>
-		Import maps are loaded
 		<script type="module">
 			console.log("starting main")
-			import * as THREE from 'three';
+			import * as THREE from '/js/src/three.module.js';
 
-			import { FontLoader } from 'addons/loaders/FontLoader.js';
-			import { TextGeometry } from 'addons/geometries/TextGeometry.js';
+			import { FontLoader } from '/js/examples/jsm/loaders/FontLoader.js';
+			import { TextGeometry } from '/js/examples/jsm/geometries/TextGeometry.js';
 
 			console.log("imports done")
 			let raycaster;
