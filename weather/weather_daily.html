@@ -12,6 +12,7 @@
 	<body>
 		<script src="../../js/src/p5.js"></script>
 		<script>
+			var isRotated = false
 			var hours = Array(15).fill(0)
 			var hours2 = Array(15*24).fill(0)
 			for(var i = 0; i < 15; i++) hours[i] = Array(24).fill(new myhour(7,0,0,0,0,0))
@@ -48,10 +49,25 @@
 			}
 			loadWeather()
 			var barcolors = [[0,0,0],[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+			var rand100 = [60, 28, 89, 99, 46, 26,,8, 15, 72,100, 75, 80, 79, 23, 27, 78, 77, 13, 96, 61, 53, 58,2, 68, 55, 59, 37, 63, 48, 62, 86, 56, 17, 34, 67, 12, 49, 81, 14, 43, 25, 83, 92, 44,4, 32, 69, 31, 18,,9, 47, 91, 42, 29, 51, 16, 90, 95, 87, 45,3, 88, 19, 76,,5, 24, 65,6, 73,,7, 33, 71, 38,,1, 50, 84, 10, 22, 52, 82, 85, 97, 64, 40, 39, 70, 93, 66, 11, 98, 30, 20, 35, 57, 41, 54, 36, 74, 94, 21]
 			var currentday = 0;
 			var currenthour = 0;
 			function setup() {
-				createCanvas(windowWidth, windowHeight);
+				if(windowWidth < windowHeight){
+					// createCanvas(windowHeight, windowWidth)
+					isRotated = true;
+				}
+					createCanvas(windowWidth, windowHeight);
+				if(windowWidth < windowHeight){
+					// resizeCanvas(windowHeight, windowWidth)
+					isRotated = true;
+					temp = height
+					height = width
+					width = temp
+				}
+				else{
+					isRotated = false;
+				}
 				background(220);
 				colorMode(HSB, 100);
 				for(var i = 0; i < 12; i++){
@@ -63,17 +79,26 @@
 				loadWeather();
 				rotate(90)
 			}
+			var dims = [0,0]
 			function draw() {
+				push()
+				if(isRotated){
+					translate(height/2, width/2)
+					rotate(Math.PI/2)
+					translate(-width/2, -height/2)
+				}
+				console.log(height, width)
 				globaltime += 4
 				drawBackground();
 				drawClouds();
 				for(var i = 0; i < 24; i++){
 					push()
 					translate(i*width/24,0)
-					drawBar(hours2[currenthour + i].icon, i)
+					drawBar(hours2[currenthour + i].icon, i, hours2[currenthour+i].precipprob)
 					stroke(0)
 					pop()
 				}
+				console.log(height, width)
 				drawHills()
 				graphs()
 				var dt = datetime()
@@ -85,6 +110,9 @@
 				else{
 					touchEnabled = true;
 				}
+				console.log(height, width)
+				console.log("d")
+				pop()
 			}
 			var touchEnabled = true;
 			function parseClick(x, y){
@@ -197,7 +225,8 @@
 				rect(index*(width)/24, 0, (width)/24 + 1, height)
 			}
 			var globaltime = 0
-			function drawBar(bartype, barnum){
+			function drawBar(bartype, barnum, prob){
+				if(prob > 10) bartype == 1;
 				if(bartype == 0){
 					for(var j = floor(height/4/20); j < height/16; j++){
 						var i = j*height/16
@@ -205,7 +234,7 @@
 						translate(0,height * 2/7)
 						translate((width/24)/4, (i+globaltime)%height)
 						if(j%2 > 0) translate(height/32, 0)
-						drawSnowflake()
+						drawSnowflake(prob)
 						pop()
 					}
 				}
@@ -216,7 +245,7 @@
 						translate(0,height * 2/7)
 						translate((width/24)/4, (i+globaltime)%height)
 						if(j%2 > 0) translate(height/32, 0)
-						drawRaindrop()
+						drawRaindrop(prob)
 						pop()
 					}
 				}
@@ -239,16 +268,16 @@
 					clearSky(barnum, true) //erase clouds (for any of the cases not shown above)
 				}
 			}		
-			function drawSnowflake(){
-				var size = width/24/4
+			function drawSnowflake(prob){
+				var size = width/24/4 * (prob/100)
 				stroke(255)
 				line(-size/2, -size/2, size/2, size/2)
 				line(-size/2, size/2, size/2, -size/2)
 				line(0, -size/2, 0, size/2)
 				line(-size/2, 0, size/2, 0)
 			}
-			function drawRaindrop(){	
-				var size = width/24/4
+			function drawRaindrop(prob){	
+				var size = width/24/4 * (prob/100)
 				strokeWeight(3)
 				colorMode(RGB,255);
 				stroke(0,0,255)
@@ -296,7 +325,18 @@
 				}
 			}
 			function windowResized() {
-				resizeCanvas(windowWidth, windowHeight);
+					console.log(windowWidth, windowHeight)
+					resizeCanvas(windowWidth, windowHeight);
+				if(windowWidth < windowHeight){
+					// resizeCanvas(windowHeight, windowWidth)
+					isRotated = true;
+					temp = height
+					height = width
+					width = temp
+				}
+				else{
+					isRotated = false;
+				}
 			}
 		</script>
 	</body>
