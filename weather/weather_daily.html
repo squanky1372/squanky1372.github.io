@@ -12,12 +12,10 @@
 	<body>
 		<script src="../../js/src/p5.js"></script>
 		<script>
+			var toggles = Array(7)
 			var isRotated = false
-			var hours = Array(15).fill(0)
 			var hours2 = Array(15*24).fill(0)
-			for(var i = 0; i < 15; i++) hours[i] = Array(24).fill(new myhour(7,0,0,0,0,0))
 			for(var i = 0; i < 15*24; i++) hours2[i] = new myhour(7,0,0,0,0,0)
-			// hours.fill(new myhour(0,0,0,0,0,0),3,4).fill(new myhour(1,0,0,0,0,0),6,7).fill(new myhour(2,0,0,0,0,0),9,10).fill(new myhour(4,0,0,0,0,0),12,13)
 			function myhour(icon, feelslike, temp, snowdepth, windgust, windspeed, precip, precipprob, snow, snowdepth){
 				this.icon = icon
 				this.feelslike = feelslike
@@ -39,7 +37,6 @@
 						day.hours.forEach((hour, hindex) => {
 							var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
 							var iconint = iconset.findIndex(element => element == hour.icon)
-							hours[dindex][hindex] = (new myhour(iconint, hour.feelslike, hour.temp, hour.snowdepth, hour.windgust, hour.windspeed, hour.precip, hour.precipprob, hour.snow, hour.snowdepth))
 							hours2[dindex*24 + hindex] = (new myhour(iconint, hour.feelslike, hour.temp, hour.snowdepth, hour.windgust, hour.windspeed, hour.precip, hour.precipprob, hour.snow, hour.snowdepth))
 						})
 					})
@@ -49,8 +46,6 @@
 			}
 			loadWeather()
 			var barcolors = [[0,0,0],[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-			var rand100 = [60, 28, 89, 99, 46, 26,,8, 15, 72,100, 75, 80, 79, 23, 27, 78, 77, 13, 96, 61, 53, 58,2, 68, 55, 59, 37, 63, 48, 62, 86, 56, 17, 34, 67, 12, 49, 81, 14, 43, 25, 83, 92, 44,4, 32, 69, 31, 18,,9, 47, 91, 42, 29, 51, 16, 90, 95, 87, 45,3, 88, 19, 76,,5, 24, 65,6, 73,,7, 33, 71, 38,,1, 50, 84, 10, 22, 52, 82, 85, 97, 64, 40, 39, 70, 93, 66, 11, 98, 30, 20, 35, 57, 41, 54, 36, 74, 94, 21]
-			var currentday = 0;
 			var currenthour = 0;
 			function setup() {
 				if(windowWidth < windowHeight){
@@ -79,15 +74,15 @@
 				loadWeather();
 				rotate(90)
 			}
-			var dims = [0,0]
 			function draw() {
+				
+				textSize(20)
 				push()
 				if(isRotated){
 					translate(height/2, width/2)
 					rotate(Math.PI/2)
 					translate(-width/2, -height/2)
 				}
-				console.log(height, width)
 				globaltime += 4
 				drawBackground();
 				drawClouds();
@@ -98,11 +93,10 @@
 					stroke(0)
 					pop()
 				}
-				console.log(height, width)
 				drawHills()
 				graphs()
 				var dt = datetime()
-				circle((dt[3] + dt[4]/60)*width/24, 100, 15)
+				circle((dt[3] + dt[4]/60 - currenthour)*width/24, height/10, 15)
 				fill(0)
 				if(touches[0]){
 					parseClick(touches[0].x, touches[0].y)
@@ -110,8 +104,6 @@
 				else{
 					touchEnabled = true;
 				}
-				console.log(height, width)
-				console.log("d")
 				pop()
 			}
 			var touchEnabled = true;
@@ -136,8 +128,6 @@
 					console.log("forward2")
 					currenthour+=24
 				}
-				if(currentday >= 15) currentday = 14
-				if(currentday < 0) currentday = 0
 				if(currenthour >= 360-24) currenthour = 360 - 24
 				if(currenthour < 0) currenthour = 0
 			}
@@ -157,8 +147,6 @@
 				} else if (keyCode === DOWN_ARROW) {
 					currenthour-=24
 				}
-				if(currentday >= 15) currentday = 14
-				if(currentday < 0) currentday = 0
 				if(currenthour >= 360-24) currenthour = 360 - 24
 				if(currenthour < 0) currenthour = 0
 			}
@@ -178,9 +166,9 @@
 					windgustarray[i] = hours2[currenthour + i].windgust
 					windspeedarray[i] = hours2[currenthour + i].windspeed
 				}
-				graphLine(windgustarray, -10, [0,255,255], false)
-				graphLine(windspeedarray, -10, [0,255,0], false)
-				graphLine(feelslikearray, - 10, [255,0,0])
+				graphLine(windgustarray, -15, [0,255,255], false)
+				graphLine(windspeedarray, -15, [0,255,0], false)
+				graphLine(feelslikearray, - 15, [255,0,0])
 				graphLine(temparray, + 5, [255,100,0])
 				pop()
 			}
@@ -192,15 +180,15 @@
 					stroke(color).strokeWeight(3)
 					line(width/24 * (i+0.5), tempToGrid(array[i]),width/24 * (i+1.5),  tempToGrid(array[i+1]))
 					circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
-					stroke(0).strokeWeight(1)
-					if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 8, tempToGrid(array[i] + offset))
+					stroke(0).strokeWeight(2)
+					if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 10, tempToGrid(array[i] + offset))
 				}
 				stroke(color).strokeWeight(3)
 				line(width, tempToGrid(array[23]),width - width/48,  tempToGrid(array[23]))
 				stroke(color).strokeWeight(3)
 				circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
-				stroke(0).strokeWeight(1)
-				if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 8, tempToGrid(array[i] + offset))
+				stroke(0).strokeWeight(2)
+				if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 10, tempToGrid(array[i] + offset))
 			}
 			function drawLines(){
 				// stroke(100)
@@ -297,10 +285,12 @@
 					var y = height*1.1
 					var r = width/3
 					circle(x, y, r)
+					touchedCircle = -1
 					if(touches[0] && dist(touches[0].x, touches[0].y, x, y) < r/2){
-						// console.log(dist(tx, ty, x, y))
 						console.log("touched circle", i)
+						touchedCircle = i
 					}
+					parseToggle(touchedCircle)
 				}
 				pop()
 			}
@@ -337,6 +327,12 @@
 				else{
 					isRotated = false;
 				}
+			}
+			function parseToggle(num){
+				if(num == -1){
+					return
+				}
+				toggles[num] = !toggles[num]
 			}
 		</script>
 	</body>
