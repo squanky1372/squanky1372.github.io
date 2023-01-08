@@ -12,7 +12,7 @@
 	<body>
 		<script src="../../js/src/p5.js"></script>
 		<script>
-			var toggles = Array(7)
+			var toggles = [true, true, true, true, true, true, true]
 			var isRotated = false
 			var hours2 = Array(15*24).fill(0)
 			for(var i = 0; i < 15*24; i++) hours2[i] = new myhour(7,0,0,0,0,0)
@@ -75,8 +75,6 @@
 				rotate(90)
 			}
 			function draw() {
-				
-				textSize(20)
 				push()
 				if(isRotated){
 					translate(height/2, width/2)
@@ -154,7 +152,7 @@
 			function graphs(){
 				push()
 				colorMode(RGB, 256)
-				drawLines()
+				if(toggles[0]) drawLines()
 				stroke(0,255,0)
 				line(0,tempToGrid(0),width,tempToGrid(0))
 				var feelslikearray = Array(24)
@@ -167,10 +165,10 @@
 					windgustarray[i] = hours2[currenthour + i].windgust
 					windspeedarray[i] = hours2[currenthour + i].windspeed
 				}
-				graphLine(windgustarray, -15, [0,255,255], false)
-				graphLine(windspeedarray, -15, [0,255,0], false)
-				graphLine(feelslikearray, - 15, [255,0,0])
-				graphLine(temparray, + 5, [255,100,0])
+				if(toggles[1]) graphLine(windgustarray, -15, [0,255,255], false)
+				if(toggles[1]) graphLine(windspeedarray, -15, [0,255,0], false)
+				if(toggles[2]) graphLine(feelslikearray, - 15, [255,0,0])
+				if(toggles[2]) graphLine(temparray, + 5, [255,100,0])
 				pop()
 			}
 			function graphLine(array, offset, color, showtext=true){
@@ -181,14 +179,14 @@
 					stroke(color).strokeWeight(3)
 					line(width/24 * (i+0.5), tempToGrid(array[i]),width/24 * (i+1.5),  tempToGrid(array[i+1]))
 					circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
-					stroke(0).strokeWeight(2)
+					if(toggles[3]) textSize(20).strokeWeight(2).stroke(0); else textSize(12).strokeWeight(1).stroke(0)
 					if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 10, tempToGrid(array[i] + offset))
 				}
 				stroke(color).strokeWeight(3)
 				line(width, tempToGrid(array[23]),width - width/48,  tempToGrid(array[23]))
 				stroke(color).strokeWeight(3)
 				circle(width/24 * (i+0.5), tempToGrid(array[i]),5)
-				stroke(0).strokeWeight(2)
+				if(toggles[3]) textSize(20).strokeWeight(2).stroke(0); else textSize(10).strokeWeight(1).stroke(0)
 				if(showtext)text(Math.floor(array[i]), width/24 * (i+0.5) - 10, tempToGrid(array[i] + offset))
 			}
 			function drawLines(){
@@ -287,7 +285,7 @@
 					var r = width/3
 					circle(x, y, r)
 					touchedCircle = -1
-					if(touches[0] && dist(touches[0].x, touches[0].y, x, y) < r/2){
+					if(touchEnabled && touches[0] && dist(touches[0].x, touches[0].y, x, y) < r/2){
 						console.log("touched circle", i)
 						touchedCircle = i
 					}
