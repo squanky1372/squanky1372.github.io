@@ -154,7 +154,7 @@
 				colorMode(RGB, 256)
 				if(toggles[0]) drawLines()
 				stroke(0,255,0)
-				line(0,tempToGrid(0),width,tempToGrid(0))
+				if(toggles[0])line(0,tempToGrid(0),width,tempToGrid(0))
 				var feelslikearray = Array(24)
 				var temparray = Array(24)
 				var windgustarray = Array(24)
@@ -209,7 +209,7 @@
 				rect(index*(width)/24, 0, (width)/24 + 1, height)
 				noFill()
 				stroke(100)
-				rect(index*(width)/24, 0, (width)/24 + 1, height)
+				if(toggles[4]) rect(index*(width)/24, 0, (width)/24 + 1, height)
 			}
 			var globaltime = 0
 			function drawBar(bartype, barnum, prob){
