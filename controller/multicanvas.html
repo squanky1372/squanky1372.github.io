@@ -1,0 +1,119 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../js/src/p5.js"></script>
+		<script src="controller.js"></script>
+		<script>
+			var rb;
+			var lb;
+
+			var road
+			function preload(){
+				road = loadImage("road.png")
+                bw  = loadImage("bw.png")
+			}
+
+			var pos = [200,200]
+			var theta = 0;
+			var vel = [0,0]
+
+			var accel = 0.05
+			var friction = 0.99
+			var turnspeed = 0.03//dist(vel[0], vel[1], 0, 0)/100
+
+            function player(playernum){
+                this.playernum = playernum
+                this.pos = [0,0]
+                this.theta = 0;
+                this.vel = [0,0]
+
+                this.update = function(){
+                    var myinputs = getControls(this.playernum);
+                    // console.log(myinputs)
+
+                    if(myinputs.abxyss[0]){
+                        this.vel[0] += accel * Math.cos(this.theta)
+                        this.vel[1] += accel * Math.sin(this.theta)
+                    }
+                    if(myinputs.abxyss[1]){
+                        this.vel[0] -= accel * Math.cos(this.theta)
+                        this.vel[1] -= accel * Math.sin(this.theta)
+                    }
+                    if(myinputs.left()) this.theta-=turnspeed
+                    if(myinputs.right()) this.theta+=turnspeed
+
+                    this.vel[0] = this.vel[0] * friction
+                    this.vel[1] = this.vel[1] * friction
+
+                    this.pos[0] += this.vel[0]
+                    this.pos[1] += this.vel[1]
+
+                    // console.log(this.pos, dist(this.vel[0], this.vel[1], 0, 0))
+			    }
+            }
+
+            var p1 = new player(0)
+            var p2 = new player(-1)
+
+            function setup() {
+                // 800 x 400 (double width to make room for each "sub-canvas")
+                createCanvas(windowWidth, windowHeight);
+                // Create both of your off-screen graphics buffers
+                lb = createGraphics(windowWidth/2, windowHeight);
+                rb = createGraphics(windowWidth/2, windowHeight);
+            }
+
+            function draw() {
+                // Draw on your buffers however you like
+                drawLeftBuffer();
+                drawRightBuffer();
+                // Paint the off-screen buffers onto the main canvas
+                image(lb, 0, 0);
+                image(rb, windowWidth/2, 0);
+                
+                // console.log(get(mouseX, mouseY));
+                // console.log(mouseX, mouseY)
+                // console.log(p1.pos)
+                console.log(get(p2.pos[0] + lb.width/2, p2.pos[1] + lb.height/2))
+                p1.update()
+                p2.update()
+            }
+
+            function drawLeftBuffer() {
+				lb.background(220);
+				var scale = 2
+				lb.image(road,p1.pos[0], p1.pos[1],1000*scale, 1000*scale)
+				lb.fill(10)
+				drawPlayer(lb, p1, p1)
+                drawPlayer(lb, p1, p2)
+                
+            }
+
+            function drawRightBuffer() {
+				rb.background(220);
+				var scale = 2
+				rb.image(road,p2.pos[0], p2.pos[1],1000*scale, 1000*scale)
+				rb.fill(10)
+				// rb.circle(rb.width/2, lb.height/2,10)
+				// rb.line(rb.width/2, rb.height/2, rb.width/2+10*Math.cos(p2.theta), rb.height/2+10*Math.sin(p2.theta))
+                drawPlayer(rb, p2, p2)
+                drawPlayer(rb, p2, p1)
+            }
+
+            function drawPlayer(mycanvas, me, other){
+                var otherpos = [mycanvas.width/2 + me.pos[0] - other.pos[0], mycanvas.height/2 + me.pos[1] - other.pos[1]]
+				mycanvas.circle(otherpos[0], otherpos[1],10)
+                mycanvas.line(otherpos[0], otherpos[1], otherpos[0] + 10*Math.cos(other.theta) , otherpos[1] + 10*Math.sin(other.theta) )
+            }
+
+            
+		</script>
+	</body>
+</html>

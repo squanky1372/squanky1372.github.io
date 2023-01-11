@@ -22,8 +22,8 @@
 				}
 			}
 		</script>
-		<script src="links.js"></script>
 		<script type="module">
+			console.log("non-web file")
 			import * as THREE from 'three';
 
 			import { FontLoader } from 'addons/loaders/FontLoader.js';
@@ -55,25 +55,20 @@
 			var cube = new THREE.Mesh(geometry, material);
 			//scene.add(cube);
 
-			var numcubes = links_database.length;
-			var cubes = Array(numcubes)
+			var numcubes = 9;
+			var materials = [material.clone(), material.clone(), material.clone(),material.clone(), material.clone(), material.clone(),material.clone(), material.clone(), material.clone()];
+			var cubes = [cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone(), cube.clone()]
 			for(var i = 0; i < numcubes; i++){
-				cubes[i] = cube.clone()
-				var mymaterial = material.clone();
-				mymaterial.color = material.color.clone();
+				materials[i].color = material.color.clone();
 				scene.add(cubes[i]);
-				cubes[i].scale.set(0.5,0.5,0.5)
-				// cubes[i].position.x += Math.floor(i/3)*1.4 -1.4;
-				// cubes[i].position.y += i%3 * 1.4 - 1.4// + 0.3;
-				var size = Math.ceil(Math.sqrt(numcubes))
-				cubes[i].position.y -= Math.floor(i/size);
-				cubes[i].position.x += i%size;
-				cubes[i].material = mymaterial;
+				cubes[i].scale.x *= 0.5;
+				cubes[i].scale.y *= 0.5;
+				cubes[i].scale.z *= 0.5;
+				cubes[i].position.x += Math.floor(i/3)*1.4 -1.4;
+				cubes[i].position.y += i%3 * 1.4 - 1.4// + 0.3;
+				cubes[i].material = materials[i];
 			}
-			
 			camera.position.z = 3;
-			camera.position.x = (Math.ceil(Math.sqrt(numcubes))-1)/2;
-			camera.position.y = -(Math.round(Math.sqrt(numcubes))-1)/2;
 
 			raycaster = new THREE.Raycaster();
 			document.addEventListener( 'mousemove', onPointerMove );
@@ -92,6 +87,7 @@
 			function onMouseClick(e){
   				e.preventDefault();
 				console.log(e.clientX, e.clientY)
+				if(isHovered(cubes[3])) console.log("eya")
 				checkLinks();
 			}
 			function highlightMouseHover(){ //turns the closest object to the mouse red
@@ -118,12 +114,53 @@
 				} 
 				return false;
 			}
-			
-			var links = Array(numcubes)
-			for(var i = 0; i < numcubes; i++){
-				links[i] = new Link(cubes[i], links_database[i][0], links_database[i][1])
-			}
 
+			// function makeText(string, x, y){
+			// 	var text2 = document.createElement('div');
+			// 	text2.style.position = 'absolute';
+			// 	text2.style.width = 15 * string.length;
+			// 	text2.style.height = 50;
+			// 	text2.style.backgroundColor = "#000000";
+			// 	text2.style.color = "#00FF00";
+			// 	text2.innerHTML = string;
+			// 	text2.style.top = (y+10) + 'px';
+			// 	text2.style.left = (x - 15*string.length/2)+ 'px';
+			// 	text2.style.textAlign = 'center';
+			// 	document.body.appendChild(text2);
+			// }
+			// window.innerWidth/window.innerHeight
+			//makeText("Welcome", window.innerWidth/2, window.innerHeight/2);
+
+			function makeText(string, obj){
+				const loader = new FontLoader();
+				var obj;
+				loader.load('/fonts/FFF.json', function(font){
+					var textgeo = new TextGeometry(string, {
+						font:font,
+						size: 0.1,
+						height: 0
+					})
+					const textMesh = new THREE.Mesh(textgeo, new THREE.MeshStandardMaterial({color:0x00FF00, wireframe:false}))
+					scene.add(textMesh);
+					textMesh.position.x -= 0.2
+					textMesh.position.y -= 0.6
+					obj = textMesh;
+				})
+				return obj;
+			}
+			var felipeobj;
+			//makeText("Niv!", felipeobj);			
+
+			var links = [
+						 new Link(cubes[0], "./html/twilight-head.html", "/html/img/Boxes3.png"),
+						 new Link(cubes[1], "./html/images.html", "/html/img/Boxes2.png"),
+						 new Link(cubes[2], "./planets/Planets.html","/html/img/Boxes4.png"),
+						 new Link(cubes[3], "/Trains/index.html", "/html/img/Boxes1.png"),
+						 new Link(cubes[4], "/weather/weather_daily.html", "/html/img/Boxes5.png"),
+						 new Link(cubes[5], "/weather/weather_basic.html", "/html/img/Boxes6.png"),
+						 new Link(cubes[6], "/html/data-processing/p5letters.html", "/html/img/Boxes7.png"),	
+						 new Link(cubes[7], "/html/data-processing/p5letters input.html", "/html/img/Boxes8.png"),
+						 new Link(cubes[8], "index.html")];
 			function Link(object, dest, defaultMap=null, selectedMap=null){
 				this.object = object;
 				this.dest = dest;
@@ -174,8 +211,10 @@
 					}
 					else links[i].setMatDefault();
 				}
-			}
+				//felipeobj.rotation.x += 0.01;
+			};
 			var render = function(){
+				//highlightMouseHover();
 				renderer.render(scene, camera);
 			}
 			var GameLoop = function(){
