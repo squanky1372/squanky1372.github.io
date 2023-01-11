@@ -53,15 +53,16 @@ function getControls(controllerNum=0){
 function getController(controllerNum=0){
     let gamepad = navigator.getGamepads()[controllerNum]
     let myinputs = new inputs(controllerNum)
+    console.log(gamepad)
     if(gamepad != null){	
         if(gamepad.id == 'Xbox 360 Controller (XInput STANDARD GAMEPAD)')	{
             console.log("mini")
             //dpad (up down left right)
-            myinputs.dpad[0] = (gamepad.axes[1] <-0.5)
-            myinputs.dpad[1] = (gamepad.axes[1] > 0.5)
-            myinputs.dpad[2] = (gamepad.axes[0] <-0.5)
-            myinputs.dpad[3] = (gamepad.axes[0] > 0.5)
-            myinputs.joysticks = [gamepad.axes[1], gamepad.axes[0], 0, 0]
+            myinputs.dpad[0] = gamepad.buttons[12].pressed
+            myinputs.dpad[1] = gamepad.buttons[13].pressed
+            myinputs.dpad[2] = gamepad.buttons[14].pressed
+            myinputs.dpad[3] = gamepad.buttons[15].pressed
+            myinputs.joysticks = [gamepad.axes[1], gamepad.axes[0], gamepad.axes[3], gamepad.axes[2]]
             //buttons (abxy)
             myinputs.abxyss[0] = gamepad.buttons[1].pressed
             myinputs.abxyss[1] = gamepad.buttons[0].pressed
@@ -78,4 +79,8 @@ function getController(controllerNum=0){
     else{}
     
     return myinputs
+}
+
+function getRaw(controllerNum=0){
+    return navigator.getGamepads()[controllerNum]
 }

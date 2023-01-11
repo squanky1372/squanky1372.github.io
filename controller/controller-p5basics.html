@@ -26,11 +26,18 @@
 				background(220);
 				noFill()
 				rect(width/4, height/4, width/2, height/2)
+				if(getRaw(0)){
+					var loc = [width/4, height/4]
+					var controller = getRaw(0)
+					text(controller.id, loc[0], loc[1] + 15)
+					controller.buttons.forEach((button, i) => { text(button.pressed ? 1 : 0, loc[0] + 15 + 10*i, loc[1] + 30) })
+					controller.axes.forEach((axis, i) => {text(axis, loc[0] + 15, loc[1]+45+15*i)})
+				}
 				var myinputs = getControls(0);
-				console.log(myinputs)
+				// console.log(myinputs)
 				var labels = ["up", "down", "left", "right", "a", "b", "x", "y", "select", "start", "L1", "R1", "L2", "R2"]
 				var inputarray = myinputs.dpad.concat(myinputs.abxyss).concat(myinputs.shoulders);
-				console.log(inputarray)
+				// console.log(inputarray)
 				textSize(12)
 				inputarray.forEach((button, i) => {
 					stroke(1)
@@ -40,7 +47,6 @@
 					}	
 				})
 				var dirs = [myinputs.up(), myinputs.down(), myinputs.left(), myinputs.right()]
-				console.log(dirs)
 				dirs.forEach((button2, j) => {
 					stroke(1)
 					if(button2) {
