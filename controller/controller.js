@@ -55,24 +55,26 @@ function getController(controllerNum=0){
     let myinputs = new inputs(controllerNum)
     console.log(gamepad)
     if(gamepad != null){	
-        if(gamepad.id == 'Xbox 360 Controller (XInput STANDARD GAMEPAD)')	{
-            console.log("mini")
-            //dpad (up down left right)
-            myinputs.dpad[0] = gamepad.buttons[12].pressed
-            myinputs.dpad[1] = gamepad.buttons[13].pressed
-            myinputs.dpad[2] = gamepad.buttons[14].pressed
-            myinputs.dpad[3] = gamepad.buttons[15].pressed
-            myinputs.joysticks = [gamepad.axes[1], gamepad.axes[0], gamepad.axes[3], gamepad.axes[2]]
-            //buttons (abxy)
-            myinputs.abxyss[0] = gamepad.buttons[1].pressed
-            myinputs.abxyss[1] = gamepad.buttons[0].pressed
-            myinputs.abxyss[2] = gamepad.buttons[3].pressed
-            myinputs.abxyss[3] = gamepad.buttons[2].pressed
-            myinputs.abxyss[4] = gamepad.buttons[8].pressed
-            myinputs.abxyss[5] = gamepad.buttons[9].pressed
-            //shoulders (lr l2r2)
-            myinputs.shoulders = [gamepad.buttons[4].pressed, gamepad.buttons[5].pressed, 0, 0]
-        }
+        console.log("controller ID:", gamepad.id)
+        var standardized = ['Xbox 360 Controller (XInput STANDARD GAMEPAD)', 'Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 05c4)', 'Wireless Controller Extended Gamepad']
+        if(!standardized.includes(gamepad.id))console.log("unknown controller type! defaults loaded")
+        console.log("mini")
+        //dpad (up down left right)
+        myinputs.dpad[0] = gamepad.buttons[12].pressed
+        myinputs.dpad[1] = gamepad.buttons[13].pressed
+        myinputs.dpad[2] = gamepad.buttons[14].pressed
+        myinputs.dpad[3] = gamepad.buttons[15].pressed
+        myinputs.joysticks = [gamepad.axes[1], gamepad.axes[0], gamepad.axes[3], gamepad.axes[2]]
+        //buttons (abxy)
+        myinputs.abxyss[0] = gamepad.buttons[1].pressed
+        myinputs.abxyss[1] = gamepad.buttons[0].pressed
+        myinputs.abxyss[2] = gamepad.buttons[3].pressed
+        myinputs.abxyss[3] = gamepad.buttons[2].pressed
+        myinputs.abxyss[4] = gamepad.buttons[8].pressed
+        myinputs.abxyss[5] = gamepad.buttons[9].pressed
+        //shoulders (lr l2r2)
+        myinputs.shoulders = [gamepad.buttons[4].pressed, gamepad.buttons[5].pressed, gamepad.buttons[6].pressed, gamepad.buttons[7].pressed]
+        
         // console.log(myinputs)
         // console.log(gamepad)
     }
