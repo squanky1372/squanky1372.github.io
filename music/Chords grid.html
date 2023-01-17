@@ -40,6 +40,7 @@
 						
 						var y = (i+1)*height/13
 						fill(255)
+						if(chords[i][j]/10 - floor(chords[i][j]/10) > 0) fill(230,230,255)
 						if(floor(chords[i][j]/10) < 2) fill(255,200,200)
 						rect(x,y, width/7, height/13)
 						fill(0)

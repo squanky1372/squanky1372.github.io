@@ -10,46 +10,115 @@
 	<body>
 		<script src="../js/src/p5.js"></script>
 		<script>
-
-
 			var chords = []
 			var chordnames = ["    C", "C#/Bb", "    D", "D#/Eb", "    E", "    F", "F#/Gb", "    G", "G#/Ab", "    A", "A#/Bb", "    B"]
 			for(var i = 0; i < 12; i++){
-				chords[i] = [(i)*10 % 120, (i+2.1)*10 % 120, (i+4.1)*10 % 120, (i+5)*10 % 120, (i+7)*10 % 120, (i+9.1)*10 % 120, (i+11.2)*10 % 120]
+				chords[i] = [(i)*10 % 120, (i+2.1)*10 % 120, (i+4.1)*10 % 120, (i+5)*10 % 120, (i+7)*10 % 120, (i+9.1)*10 % 120, (i+11.1)*10 % 120]
 			}
-			var titlebar = ["  I", " ii", " iii", "IV", " V", " vi", "vii*"]
-			console.log(chords)
+			var titlebar = ["  I", " ii", " iii", "IV", " V", " vi", "vii*", "Prob"]
+			var selected = [Array(12).fill(0),Array(12).fill(0)]
+			var selectors_minmax;
+			var usedChords = []
+			var keyProb = Array(12)
 			//C C# D D# E F F# G G# A A# B
 			//0 1  2 3  4 5 6  7 8  9 10 11
-
 			function setup() {
 				createCanvas(windowWidth, windowHeight);
 				stroke(0)
 				textSize(30)
+				selectors_minmax = [[width/2, 0],[width/2, width/3]]
 			}
 
 			function draw() {
-				for(var j = 0; j < 7; j++){
-					var x = j*width/7
-					fill(000,000,200)
-					rect(x,0, width/7, height/13)
-					fill(255)
-					text(titlebar[j],x + 45,0+35)
-					
-					for(var i = 0; i < 12; i++){
-						
-						var y = (i+1)*height/13
-						fill(255)
-						if(floor(chords[i][j]/10) < 2) fill(255,200,200)
-						rect(x,y, width/7, height/13)
-						fill(0)
-						text(chordnames[floor(chords[i][j]/10)],x + 20,y+38)
-					}
-				}
+				selectors_minmax = [[width/2, 0],[width/2, height]]
+				drawTable()
+				drawCheckboxes()
+				getChords()
 			}
 
+			function getChords(){
+				usedChords = []
+
+				for(var i = 0; i < 12; i++){
+					if(selected[0][i] == 1) usedChords.push(i)
+					if(selected[1][i] == 1) usedChords.push(i+0.1)
+				}
+			}
+			function drawTable(){
+				push()
+				scale(0.5)
+				keyProb = Array(12).fill(0)
+				for(var j = 0; j < 8; j++){
+					var x = j*width/8
+					fill(000,000,200)
+					rect(x,0, width/8, height/13)
+					fill(255)
+					text(titlebar[j],x + 45,0+35)
+					for(var i = 0; i < 12; i++){
+						var y = (i+1)*height/13
+						fill(255)
+						if(chords[i][j]/10 - floor(chords[i][j]/10) > 0) fill(230,230,255)
+						if(usedChords.includes(chords[i][j]/10)){
+							fill(255,0,0)
+							keyProb[i]++
+						} 
+						rect(x,y, width/8, height/13)
+						fill(0)
+						text(chordnames[floor(chords[i][j]/10)],x + 20,y+38)
+						if(selected[0].reduce(function(a,b){return a + b}, 0) + selected[1].reduce(function(a,b){return a + b}, 0) == keyProb[i]){
+							fill(0,255,000)
+						}
+						text(keyProb[i] + " / ", 7*width/8 + 28, y+38)
+						text(selected[0].reduce(function(a,b){return a + b}, 0) + selected[1].reduce(function(a,b){return a + b}, 0), 7*width/8 + 68, y+38)
+						
+					}
+					
+				}
+				console.log(keyProb)
+				pop()
+			}
+			function drawCheckboxes(){
+				translate(selectors_minmax[0][0], selectors_minmax[0][1])
+				scale(selectors_minmax[1][0]/width)
+				for(var i = 0; i < 12; i++){
+					fill(255,230,230)
+					if(selected[0][i]) fill(230,255,230)
+					rect(i*width/12,0,width/12, width/12)
+					fill(0)
+					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) fill(255)
+					text(chordnames[i],i*width/12 + 10,58)
+					
+					fill(230,230,255)
+					if(selected[1][i]) fill(230,255,230)
+					rect(i*width/12,width/12,width/12, width/12)
+					fill(0)
+					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) fill(255)
+					text(chordnames[i],i*width/12 + 10,width/12 + 58)
+				}
+			}
+			function mouseInsideRect(x, y, w, h, translateX = 0, translateY = 0, scaleX = 0, scaleY = scaleX){
+				x = (x*scaleX + translateX)
+				y = (y*scaleY + translateY)
+				w = w * scaleX
+				h = h * scaleY
+				return (mouseX > x && mouseX < x+w && mouseY > y && mouseY < y+h)
+			}
 			function windowResized() {
 				resizeCanvas(windowWidth, windowHeight);
+			}
+			function mouseClicked() {
+				for(var i = 0; i < 12; i++){
+					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)){
+						selected[0][i] = selected[0][i]==0 ? 1 : 0
+					}
+					
+					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) {
+						selected[1][i] = selected[1][i]==0 ? 1 : 0
+					}
+					
+				}
+
+				console.log(selected)
 			}
 		</script>
 	</body>
