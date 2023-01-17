@@ -30,11 +30,24 @@
 			}
 
 			function draw() {
+				background(255)
 				selectors_minmax = [[width/2, 0],[width/2, height]]
 				selectors_minmax = [[0,height*0.75], [width, height*0.75]]
+				getNumCorrect()
 				drawTable()
 				drawCheckboxes()
 				getChords()
+			}
+
+			function getNumCorrect(){
+				keyProb = Array(12).fill(0)
+				for(var i = 0; i < 12; i++){
+					for(var j = 0; j < 7; j++){
+						if(usedChords.includes(chords[i][j]/10)){
+							keyProb[i]++
+						} 
+					}
+				}
 			}
 
 			function getChords(){
@@ -48,40 +61,29 @@
 			function drawTable(){
 				push()
 				scale(1, 0.75)
-				keyProb = Array(12).fill(0)
 				for(var j = 0; j < 8; j++){
 					var x = j*width/8
-					fill(000,000,200)
-					rect(x,0, width/8, height/13)
-					fill(255)
-					text(titlebar[j],x + 45,0+35)
+					fill(0,0,200).rect(x,0, width/8, height/13)
+					fill(255).text(titlebar[j],x + 45,0+35)
 					push()
 					for(var i = 0; i < 12; i++){
-						var y = (i+1)*height/13
 						var numCorrect = keyProb[i]
 						var numSelected = selected[0].reduce(function(a,b){return a + b}, 0) + selected[1].reduce(function(a,b){return a + b}, 0)
-						var drawLine = (numSelected > 0) && numCorrect / numSelected >= 0.4
+						var drawLine = ((numSelected > 0) && numCorrect / numSelected >= 0.4) || (numSelected == 0)
 						fill(255)
-						if(drawLine) fill(200)
-						if(chords[i][j]/10 - floor(chords[i][j]/10) > 0) fill(230,230,255)
-						if(usedChords.includes(chords[i][j]/10)){
-							fill(255,0,0)
-							keyProb[i]++
-						} 
-						rect(x,y, width/8, height/13)
-						fill(0)
-						text(chordnames[floor(chords[i][j]/10)],x + 20,y+38)
-						if(numSelected == numCorrect){
-							fill(0,255,000)
-						}
-						text(numCorrect + " / ", 7*width/8 + 28, y+38)
-						text(numSelected, 7*width/8 + 68, y+38)
-						
+						if(drawLine){
+							translate(0,height/13)
+							if(chords[i][j]/10 - floor(chords[i][j]/10) > 0) fill(230,230,255)
+							if(usedChords.includes(chords[i][j]/10)){ fill(255,0,0)	} 
+							rect(x,0, width/8, height/13)
+							fill(0)
+							text(chordnames[floor(chords[i][j]/10)],x + 20,0+38)
+							if(numSelected == numCorrect){ fill(0,255,000) }
+							text(numCorrect + " / ", 7*width/8 + 28, 0+38)
+							text(numSelected, 7*width/8 + 68, 0+38)}
 					}
 					pop()
-					
 				}
-				console.log(keyProb)
 				pop()
 			}
 			function drawCheckboxes(){
@@ -92,14 +94,14 @@
 					if(selected[0][i]) fill(230,255,230)
 					rect(i*width/12,0,width/12, width/12)
 					fill(0)
-					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) fill(255)
+					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
 					text(chordnames[i],i*width/12 + 10,58)
 					
 					fill(230,230,255)
 					if(selected[1][i]) fill(230,255,230)
 					rect(i*width/12,width/12,width/12, width/12)
 					fill(0)
-					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) fill(255)
+					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
 					text(chordnames[i],i*width/12 + 10,width/12 + 58)
 				}
 			}
@@ -115,11 +117,11 @@
 			}
 			function mouseClicked() {
 				for(var i = 0; i < 12; i++){
-					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)){
+					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)){
 						selected[0][i] = selected[0][i]==0 ? 1 : 0
 					}
 					
-					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width)) {
+					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) {
 						selected[1][i] = selected[1][i]==0 ? 1 : 0
 					}
 					
