@@ -20,23 +20,20 @@
 			var selectors_minmax;
 			var usedChords = []
 			var keyProb = Array(12)
-			//C C# D D# E F F# G G# A A# B
-			//0 1  2 3  4 5 6  7 8  9 10 11
 			function setup() {
 				createCanvas(windowWidth, windowHeight);
 				stroke(0)
 				textSize(30)
-				selectors_minmax = [[width/2, 0],[width/2, width/3]]
 			}
 
 			function draw() {
 				background(255)
-				selectors_minmax = [[width/2, 0],[width/2, height]]
 				selectors_minmax = [[0,height*0.75], [width, height*0.75]]
 				getNumCorrect()
 				drawTable()
 				drawCheckboxes()
 				getChords()
+				parseTouchscreen()
 			}
 
 			function getNumCorrect(){
@@ -49,7 +46,6 @@
 					}
 				}
 			}
-
 			function getChords(){
 				usedChords = []
 
@@ -94,40 +90,53 @@
 					if(selected[0][i]) fill(230,255,230)
 					rect(i*width/12,0,width/12, width/12)
 					fill(0)
-					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
+					if(insideRect(mouseX, mouseY, i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
 					text(chordnames[i],i*width/12 + 10,58)
 					
 					fill(230,230,255)
 					if(selected[1][i]) fill(230,255,230)
 					rect(i*width/12,width/12,width/12, width/12)
 					fill(0)
-					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
+					if(insideRect(mouseX, mouseY, i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
 					text(chordnames[i],i*width/12 + 10,width/12 + 58)
 				}
 			}
-			function mouseInsideRect(x, y, w, h, translateX = 0, translateY = 0, scaleX = 0, scaleY = scaleX){
+			function insideRect(posx, posy, x, y, w, h, translateX = 0, translateY = 0, scaleX = 0, scaleY = scaleX){
 				x = (x*scaleX + translateX)
 				y = (y*scaleY + translateY)
 				w = w * scaleX
 				h = h * scaleY
-				return (mouseX > x && mouseX < x+w && mouseY > y && mouseY < y+h)
+				return (posx > x && posx < x+w && posy > y && posy < y+h)
 			}
 			function windowResized() {
 				resizeCanvas(windowWidth, windowHeight);
 			}
 			function mouseClicked() {
+				//parseClick(mouseX, mouseY, true)
+				console.log(selected)
+			}
+			function parseClick(x,y,valid){
+				if(!valid) return
 				for(var i = 0; i < 12; i++){
-					if(mouseInsideRect(i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)){
+					if(insideRect(x,y,i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)){
 						selected[0][i] = selected[0][i]==0 ? 1 : 0
 					}
-					
-					if(mouseInsideRect(i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) {
+					if(insideRect(x,y,i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) {
 						selected[1][i] = selected[1][i]==0 ? 1 : 0
 					}
-					
 				}
-
-				console.log(selected)
+			}
+			var touchEnabled = true
+			function parseTouchscreen(){
+				console.log(touchEnabled, touches[0] != undefined)
+				if(!touchEnabled && !touches[0]) {
+					touchEnabled = true; 
+					return;
+				}
+				if(touches[0] != undefined) {
+					parseClick(touches[0].x, touches[0].y, touchEnabled); 
+					touchEnabled=false;
+				}
 			}
 		</script>
 	</body>
