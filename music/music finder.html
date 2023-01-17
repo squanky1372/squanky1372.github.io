@@ -112,8 +112,7 @@
 				resizeCanvas(windowWidth, windowHeight);
 			}
 			function mouseClicked() {
-				parseClick(mouseX, mouseY, true)
-				console.log(selected)
+				if(touchEnabled) parseClick(mouseX, mouseY, true)
 			}
 			function parseClick(x,y,valid){
 				if(!valid) return
