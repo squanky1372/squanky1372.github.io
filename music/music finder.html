@@ -31,6 +31,7 @@
 
 			function draw() {
 				selectors_minmax = [[width/2, 0],[width/2, height]]
+				selectors_minmax = [[0,height*0.75], [width, height*0.75]]
 				drawTable()
 				drawCheckboxes()
 				getChords()
@@ -46,7 +47,7 @@
 			}
 			function drawTable(){
 				push()
-				scale(0.5)
+				scale(1, 0.75)
 				keyProb = Array(12).fill(0)
 				for(var j = 0; j < 8; j++){
 					var x = j*width/8
