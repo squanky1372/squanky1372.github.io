@@ -9,7 +9,8 @@ var links_database = [
     ["/html/data-processing/p5letters input.html", "/html/img/Boxes8.png"], //5-letter word constraints app
     ["/controller/controller-p5basics.html", "/html/img/Boxes12.png"], //controller tester
     ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
-    ["/music/music finder.html", "/html/img/Boxes13.png"]
+    ["/music/music finder.html", "/html/img/Boxes13.png"],
+    ["/stereogram/dual-stereogram.html", "/html/img/Boxes14.png"]
     
     // ["index.html", "/html/img/Boxes9.png"] //this page
 ]

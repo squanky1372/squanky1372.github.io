@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../js/src/p5.js"></script>
+		<script>
+            var randcanvas;
+            var canvasSize = 150
+            var interval = 2.5
+            var offset = interval*2
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+				randcanvas = createGraphics(canvasSize,canvasSize);
+				background(220);
+                randcanvas.colorMode(RGB, 100);
+                noStroke()
+			}
+
+			function draw() {
+                drawRandCanvas()
+                image(randcanvas, 100, 100)
+                stereoRandCanvas()
+                image(randcanvas, 100+canvasSize*1.1, 100)
+			}
+
+            function drawRandCanvas(){
+                // randcanvas.background(0)
+                randcanvas.noStroke()
+                for(var i = 0; i < (canvasSize/interval); i++){
+                    for(var j = 0; j < canvasSize/interval; j++){
+                        // randcanvas.fill(100*Math.random(), 100,100)
+                        var rand = Math.random();
+                        (rand < 1/3) ? randcanvas.fill(100,0,0) : (rand < 2/3) ? randcanvas.fill(0,100,0) : randcanvas.fill(0,0,100)
+                        randcanvas.rect((interval*i)%canvasSize, (interval*j)%canvasSize, interval+1, interval+1)
+                    }
+                    
+                }
+
+                // randcanvas.image(randcanvas, (xpos ypos), (w h), (canvasx canvasy), (canvasw canvash)))
+                }
+            var t = 0
+            function stereoRandCanvas(){
+                t = t + 0.1
+                var pos = [(interval * 30) + interval*10*sin(t), (interval * 30) + interval*10*cos(t)]
+                var size = interval * 10
+                randcanvas.image(randcanvas, pos[0], pos[1], size, size, pos[0] + 10, pos[1], size, size)
+            
+            }
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+	</body>
+</html>
