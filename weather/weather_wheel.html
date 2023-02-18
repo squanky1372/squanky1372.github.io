@@ -23,62 +23,32 @@
 				.then((response) => response.json())
 				.then((data) => {
 					console.log(data)
-					console.log(dims)
-					console.log(mindim)
-					background(100)
-					rect(0,0,mindim, mindim)
 					push()
 					translate(mindim/2, mindim/2)
-					//drawFan(data)
-					fill(70,10,50)
-					rect(-mindim/2,-mindim/2,mindim,mindim/2)
-					fill(55,10,100)
-					rect(-mindim/2,0, mindim, mindim/2)
+					fill(70,10,50).rect(-mindim/2,-mindim/2,mindim,mindim/2)
+					fill(55,10,100).rect(-mindim/2,0, mindim, mindim/2)
 					fill(0)
+					drawHourLine()
 					for(var i = 0; i < 24; i++){
 						var hour = data.days[0].hours[i]
 						var iconint = iconset.findIndex(element => element == hour.icon)
 						push()
-						line(0,0,0,-mindim/2.5)
 						push()
 						translate(0,-mindim/2.5)
 						circle(0,0,5)
-						textSize(50)
-						text(picset[iconint], -35,0)
-						textSize(20)
-						text(hour.feelslike,0,20 )
+						textSize(50).text(picset[iconint], -35,0)
+						textSize(20).text(hour.feelslike,0,20 )
 						pop()
-						noStroke()
-						fill(100 * (1-((hour.temp + 40) / 150)), 100, 100)
-						beginShape()
-						vertex(0,0)
-						vertex(0,-mindim/2.5 * ((hour.temp + 40) / 150))
-						vertex(-mindim/2.5 * ((hour.temp + 40) / 150) * sin(-Math.PI/12),
-						-mindim/2.5 * ((hour.temp + 40) / 150) * cos(-Math.PI/12))
-						endShape()
-						fill(100 * (1-((hour.feelslike + 40) / 150)), 100, 100)
-						beginShape()
-						vertex(0,0)
-						vertex(0,-mindim/2.5 * ((hour.feelslike + 40) / 150))
-						vertex(-mindim/2.5 * ((hour.feelslike + 40) / 150) * sin(-Math.PI/12),
-						-mindim/2.5 * ((hour.feelslike + 40) / 150) * cos(-Math.PI/12))
-						endShape()
+						drawSliver(hour.temp)
+						drawSliver(hour.feelslike)
 						fill(0)
 						circle(0,0,50)
 						stroke(0)
-						line(0,0,0,-mindim/2.5)
 						pop()
 						rotate(Math.PI / 12)
-					}for(var i = 0; i < 24; i++){
-						var hour = data.days[0].hours[i]
-						var iconint = iconset.findIndex(element => element == hour.icon)
-						push()
 						line(0,0,0,-mindim/2.5)
-						pop()
-						rotate(Math.PI / 12)
 					}
 					pop()
-					//drawAllHours(data);
 				});
 			}
 
@@ -95,56 +65,28 @@
 			function draw() {
 			}
 
-			function drawAllHours(data){
-				data.days.forEach((day, dindex) => {
-					day.hours.forEach((hour, hindex) => {
-						var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
-						var picset = ["❄️", "💦", "🌫️", "🌀", "☁️", "🌤️", "🌤️", "☀️", "🌙"]
-						var iconint = iconset.findIndex(element => element == hour.icon)
-						push()
-						translate(30 + hindex*40,10+dindex*40)
-						text(hour.feelslike,0,0 )
-						textSize(20)
-						rect(0,0,30,30)
-						text(picset[iconint], 0,20)
-						//showIcon(iconint);
-						pop()
-					})
-				})
+			function drawSliver(value){
+				noStroke()
+				fill(100 * (1-((value + 40) / 150)), 100, 100)
+				beginShape()
+				vertex(0,0)
+				vertex(0,-mindim/2.5 * ((value + 40) / 150))
+				vertex(-mindim/2.5 * ((value + 40) / 150) * sin(-Math.PI/12),
+				-mindim/2.5 * ((value + 40) / 150) * cos(-Math.PI/12))
+				endShape()
 			}
-			function drawFan(data){
-				for(var i = 0; i < 24; i++){
-						var hour = data.days[0].hours[i]
-						var iconint = iconset.findIndex(element => element == hour.icon)
-						push()
-						line(0,0,0,-mindim/2.5)
-						push()
-						translate(0,-mindim/2.5)
-						circle(0,0,5)
-						textSize(50)
-						text(picset[iconint], -35,0)
-						textSize(20)
-						text(hour.feelslike,0,20 )
-						pop()
-						noStroke()
-						fill(100 * (1-((hour.temp + 40) / 150)), 100, 100)
-						rect(-20,0,40,-mindim/2.5 * ((hour.temp + 40) / 150), 5)
-						fill(100 * (1-((hour.feelslike + 40) / 150)), 100, 100)
-						rect(-20,0,40,-mindim/2.5 * ((hour.feelslike + 40) / 150), 5)
-						fill(0)
-						circle(0,0,50)
-						stroke(0)
-						line(0,0,0,-mindim/2.5)
-						pop()
-						rotate(Math.PI / 12)
-					}for(var i = 0; i < 24; i++){
-						var hour = data.days[0].hours[i]
-						var iconint = iconset.findIndex(element => element == hour.icon)
-						push()
-						line(0,0,0,-mindim/2.5)
-						pop()
-						rotate(Math.PI / 12)
-					}
+			function datetime(){
+				var today = new Date();
+				return [today.getFullYear(),today.getMonth()+1,today.getDate(),today.getHours(),today.getMinutes(),today.getSeconds()]
+			}
+			function drawHourLine(){
+				push()
+				var dt = datetime()
+				console.log((dt[3] + dt[4]/60))
+				rotate((dt[3] + dt[4]/60)*Math.PI*2/24)
+				strokeWeight(10)
+				line(0,0,0,-200)
+				pop()
 			}
 		</script>
 	</body>
