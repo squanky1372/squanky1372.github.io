@@ -39,7 +39,6 @@
 				loadWeather();
 				button = new cycleButton(0,mindim + (mindim/5),0,15, mindim/5,mindim/5)
 			}
-
 			function draw() {
 				if(mydata == null){
 					console.log("waiting")
@@ -116,6 +115,7 @@
 				}
 			}
 			function parseButtons(){
+				
 				button.draw();
 				button.press();
 				myday = button.value
@@ -133,7 +133,11 @@
 				this.w = w;
 				this.h = h;
 				this.press = function(){
-					if(posTouched[2] && overlapsRect(this.x, this.y, this.w,this.h,posTouched[0], posTouched[1])){
+					if(posTouched[2] && overlapsRect(this.x, this.y, this.w/2,this.h,posTouched[0], posTouched[1])){
+						this.value = (this.value-1) % this.max;
+						if(this.value < this.min) this.value = this.max-1
+					}
+					if(posTouched[2] && overlapsRect(this.x + this.w/2, this.y, this.w/2,this.h,posTouched[0], posTouched[1])){
 						this.value = (this.value+1) % this.max;
 					}
 				}
