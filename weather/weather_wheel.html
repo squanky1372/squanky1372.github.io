@@ -16,6 +16,9 @@
 			var dims = [0,0]
 			var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
 			var picset = ["❄️", "💦", "🌫️", "🌀", "☁️", "🌤️", "🌤️", "☀️", "🌙"]
+			var mydata = null;
+			var button;
+			var myday = 0;
 			function loadWeather(){	
 				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/evanston?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
 				"method": "GET",
@@ -23,36 +26,9 @@
 				.then((response) => response.json())
 				.then((data) => {
 					console.log(data)
-					push()
-					translate(mindim/2, mindim/2)
-					fill(70,10,50).rect(-mindim/2,-mindim/2,mindim,mindim/2)
-					fill(55,10,100).rect(-mindim/2,0, mindim, mindim/2)
-					fill(0)
-					drawHourLine()
-					for(var i = 0; i < 24; i++){
-						var hour = data.days[0].hours[i]
-						var iconint = iconset.findIndex(element => element == hour.icon)
-						push()
-						push()
-						translate(0,-mindim/2.5)
-						circle(0,0,5)
-						textSize(mindim/10).text(picset[iconint], -mindim/20,0)
-						textSize(mindim/20).text(Math.floor(hour.feelslike),0, mindim/20 )
-						pop()
-						drawSliver(hour.temp)
-						drawSliver(hour.feelslike)
-						fill(0)
-						console.log(mindim)
-						circle(0,0,mindim / 10)
-						stroke(0)
-						pop()
-						rotate(Math.PI / 12)
-						line(0,0,0,-mindim/2.5)
-					}
-					pop()
+					mydata = data;
 				});
 			}
-
 			function setup() {
 				createCanvas(windowWidth, windowHeight);
 				background(220);
@@ -61,11 +37,46 @@
 				mindim = (width < height) ? width : height
 				
 				loadWeather();
+				button = new cycleButton(0,mindim + (mindim/5),0,15, mindim/5,mindim/5)
 			}
 
 			function draw() {
+				if(mydata == null){
+					console.log("waiting")
+					return;
+				}
+				drawData(mydata)
+				parseTouches();
+				parseButtons();
 			}
-
+			function drawData(data){
+				push()
+				translate(mindim/2, mindim/2)
+				fill(70,10,50).rect(-mindim/2,-mindim/2,mindim,mindim/2)
+				fill(55,10,100).rect(-mindim/2,0, mindim, mindim/2)
+				fill(0)
+				drawHourLine()
+				for(var i = 0; i < 24; i++){
+					var hour = data.days[myday].hours[i]
+					var iconint = iconset.findIndex(element => element == hour.icon)
+					push()
+					push()
+					translate(0,-mindim/2.5)
+					circle(0,0,5)
+					textSize(mindim/10).text(picset[iconint], -mindim/20,0)
+					textSize(mindim/20).text(Math.floor(hour.feelslike),0, mindim/20 )
+					pop()
+					drawSliver(hour.temp)
+					drawSliver(hour.feelslike)
+					fill(0)
+					circle(0,0,mindim / 10)
+					stroke(0)
+					pop()
+					rotate(Math.PI / 12)
+					line(0,0,0,-mindim/2.5)
+				}
+				pop()
+			}
 			function drawSliver(value){
 				noStroke()
 				fill(100 * (1-((value + 40) / 150)), 100, 100)
@@ -83,11 +94,60 @@
 			function drawHourLine(){
 				push()
 				var dt = datetime()
-				console.log((dt[3] + dt[4]/60))
+				//console.log((dt[3] + dt[4]/60))
 				rotate((dt[3] + dt[4]/60)*Math.PI*2/24)
 				strokeWeight(10)
 				line(0,0,0,-mindim/2.5)
 				pop()
+			}
+			var touchEnabled = true;
+			var posTouched = [0,0,true];
+			function parseTouches(){
+				if(!touches[0]){
+					touchEnabled = true;
+					posTouched[2] = false;
+				}
+				else if(touches[0] && touchEnabled){
+					touchEnabled = false;
+					posTouched = [touches[0].x, touches[0].y, true]
+				}
+				else if(touches[0]){
+					posTouched[2] = false;
+				}
+			}
+			function parseButtons(){
+				button.draw();
+				button.press();
+				myday = button.value
+			}
+			function overlapsRect(x,y,w,h,x1,y1){
+				console.log(x,y)
+				if(x1 > x && x1 < x+w && y1 > y && y1 < y+h) return true; return false
+			}
+			function cycleButton(x, y, min, max, w, h){
+				this.x = x;
+				this.y = y;
+				this.min = min;
+				this.max = max;
+				this.value = min;
+				this.w = w;
+				this.h = h;
+				this.press = function(){
+					if(posTouched[2] && overlapsRect(this.x, this.y, this.w,this.h,posTouched[0], posTouched[1])){
+						this.value = (this.value+1) % this.max;
+					}
+				}
+				this.draw = function(){
+					push()
+					textAlign(CENTER, CENTER);
+					textSize(100)
+					translate(x, y)
+					stroke(0)
+					strokeWeight(10)
+					rect(0,0,this.w,this.h, this.w/10)
+					text(this.value, this.w/2, this.h/2)
+					pop()
+				}
 			}
 		</script>
 	</body>
