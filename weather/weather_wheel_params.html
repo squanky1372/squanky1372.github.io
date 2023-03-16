@@ -19,12 +19,15 @@
 			var mydata = null;
 			var button;
 			var myday = 0;
+			var location_param;
+			var location_full_name;
 			function loadWeather(){	
 				var params = window.location.search
 				console.log("location")
 				if(params == "") params = "evanston"
 				else params = params.split("?")[1]
 				console.log(params)
+				location_param = params;
 				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + 
 				params +
 				"?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
@@ -34,6 +37,8 @@
 				.then((data) => {
 					console.log(data)
 					mydata = data;
+					console.log(data.resolvedAddress)
+					location_full_name = data.resolvedAddress;
 				});
 			}
 			function setup() {
@@ -44,7 +49,7 @@
 				mindim = (width < height) ? width : height
 				
 				loadWeather();
-				button = new cycleButton(mindim * 2/5,mindim + (mindim/5),0,15, mindim/5,mindim/5)
+				button = new cycleButton(mindim * 2/5,mindim * 1.2,0,15, mindim/5,mindim/5)
 			}
 			function draw() {
 				if(mydata == null){
@@ -52,8 +57,9 @@
 					return;
 				}
 				drawData(mydata)
+				drawLocationName();
 				parseTouches();
-				parseButtons();
+				handleButtons();
 			}
 			function drawData(data){
 				push()
@@ -93,6 +99,16 @@
 				-mindim/2.5 * ((value + 40) / 150) * cos(-Math.PI/12))
 				endShape()
 			}
+			function drawLocationName(){
+				push()
+				translate(mindim/2, mindim * 1.1)
+				textSize(mindim/15)
+				textAlign(CENTER);
+				text(location_full_name, 0,0)
+				translate(0,mindim*0.075)
+				text("Days from now:",0,0)
+				pop()
+			}
 			function datetime(){
 				var today = new Date();
 				return [today.getFullYear(),today.getMonth()+1,today.getDate(),today.getHours(),today.getMinutes(),today.getSeconds()]
@@ -121,8 +137,7 @@
 					posTouched[2] = false;
 				}
 			}
-			function parseButtons(){
-				
+			function handleButtons(){
 				button.draw();
 				button.press();
 				myday = button.value

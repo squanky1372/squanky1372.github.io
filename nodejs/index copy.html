@@ -16,9 +16,7 @@
         <script>
         var socket = io();
         socket.on('data', function(data) {
-            dims = data.split(" ")
-            console.log(dims);
-            console.log(words)
+            console.log(data);
             //document.getElementById('sample').style.opacity = data+"%"; 
         });
         </script>
