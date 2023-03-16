@@ -1,0 +1,48 @@
+Test
+<button data-playing="false" role="switch" aria-checked="false">
+    <span>Play/Pause</span>
+  </button>
+<script>
+    // create web audio api context
+    const ctx = new AudioContext();
+
+    // create Oscillator node
+    const osc = ctx.createOscillator();
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(128, ctx.currentTime); // value in hertz
+    osc.connect(ctx.destination);
+    osc.start();
+    osc.disconnect(ctx.destination);
+
+    const gainNode = ctx.createGain();
+    let source;
+    gainNode.connect(ctx.destination);
+    gainNode.gain.value = 0.3;
+
+    const playButton = document.querySelector("button");
+
+    var toggle = false;
+
+    playButton.addEventListener(
+    "click",
+    () => {
+        // Check if context is in suspended state (autoplay policy)
+        if (ctx.state === "suspended") {
+            ctx.resume();
+        }
+
+        if(toggle){
+            //osc.stop();
+            osc.disconnect(ctx.destination);
+            toggle = false;
+        } 
+        else if(!toggle){
+            osc.connect(ctx.destination);
+            //osc.start();
+            toggle = true;
+        } 
+    },
+    false
+    );
+</script>

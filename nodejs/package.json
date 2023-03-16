@@ -1,0 +1,9 @@
+{
+    "name": "basic-socket",
+    "version": "0.0.1",
+    "description": "arduino serial",
+    "dependencies": {
+        "serialport": "^9.0.1",
+        "socket.io": "2.04"
+    }
+}
