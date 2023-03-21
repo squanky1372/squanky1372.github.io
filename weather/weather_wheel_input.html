@@ -10,6 +10,7 @@
 	</head>
 
 	<body>
+		<div id="first">
 		<script src="../../js/src/p5.js"></script>
 		<script>
 
@@ -42,12 +43,12 @@
 				});
 			}
 			function setup() {
-				createCanvas(windowWidth, windowWidth*1.45);
+				var canvas = createCanvas(windowWidth, windowWidth*1.45);
 				background(220);
 				colorMode(HSB, 100);
 				dims = [width, height]
 				mindim = (width < height) ? width : height
-				
+				canvas.parent("first");
 				loadWeather();
 				button = new cycleButton(mindim * 2/5,mindim * 1.2,0,15, mindim/5,mindim/5)
 			}
@@ -177,11 +178,10 @@
 				
 			}
 		</script>
+		</div>
 		<input style="margin: 0; display: flex; 
 					justify-content: center; 
 					align-items: center;
-					position: fixed;
-    				bottom: 0;
     				width: 100%;
 					font-size: 100;"
 				onkeydown="changeLocation(this)"
