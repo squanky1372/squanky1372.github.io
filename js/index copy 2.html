@@ -35997,14 +35997,11 @@
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document .body.appendChild(renderer.domElement);
-			const light = new THREE.PointLight( 0xFFFFFF, 2, 100 );
-			light.position.set( 0, 0, 50 );
-			scene.add( light );
 
 			var geometry = new THREE.BoxGeometry(1,1,1);
-			var material = new THREE.MeshPhongMaterial({
+			var material = new THREE.MeshBasicMaterial({
 				color:0x0000FF, 
-				wireframe:false
+				wireframe:true
 			});
 			var cube = new THREE.Mesh(geometry, material);
 			scene.add(cube);
@@ -36013,9 +36010,10 @@
 
 			var update = function(){
 				console.log(dims)
-				cube.rotation.x = -dims[1] * Math.PI/180;
-				cube.rotation.y = dims[2] * Math.PI/180;
-				cube.rotation.z = -dims[0] * Math.PI/180;
+				pitch = Math.atan(dims[1]/Math.sqrt(dims[0]*dims[0] + dims[2]*dims[2]))
+				roll = Math.atan(dims[0]/Math.sqrt(dims[1]*dims[1] + dims[2]*dims[2]))
+				cube.rotation.x = -pitch;
+				cube.rotation.z = -roll;
 			};
 			var render = function(){
 				renderer.render(scene, camera);

@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script src="validate+letters.js"></script>
+		<script src="drawbars.js"></script>
+		<script>
+			var alphabetical = new wordset(function(word){for(var i = 0; i<4; i++){ if(word[i] >= word[i+1]) return false } return true});
+			var camelvowels = new wordset(function(word){
+				if("aeiou".includes(word[0]))return false;
+				if(!"aeiou".includes(word[1]))return false;
+				if("aeiou".includes(word[2]))return false;
+				if(!"aeiou".includes(word[3]))return false;
+				if("aeiou".includes(word[4]))return false;
+				return true;
+			})
+			gtext.then(gtext => {
+				console.log(gtext)
+				var anagram_values = []
+				gtext.forEach((word, i) => {
+					av = getAnagramValue(word)
+					if(anagram_values[av] == null){
+						anagram_values[av] = new anVal(word)
+					}else{
+						anagram_values[av].wordsList.push(word)
+						anagram_values[av].wordsCount++;
+					}
+				})
+				var anagramCounts = []
+				for(var i = 0; i < 20; i++){
+					anagramCounts[i] = new anVal(null)
+					anagramCounts[i].wordsCount--
+				}
+				anagram_values.forEach((val, i) => {
+					anagramCounts[val.wordsCount].wordsList.push(val)
+					anagramCounts[val.wordsCount].wordsCount++
+				})
+				console.log(anagramCounts)
+
+				var a = window.document.createElement('a');
+				a.href = window.URL.createObjectURL(new Blob(anagramCounts, {type: 'text/csv'}));
+				a.download = 'test.csv';
+				
+				// Append anchor to body.
+				document.body.appendChild(a);
+				a.click();
+				
+				// Remove anchor from body
+				document.body.removeChild(a);
+			})
+			var getAnagramValue = function(word){
+				var value = 0;
+				for(var i = 0; i < 5; i++){
+					value += Math.pow(2, word.charCodeAt(i)-97)
+				}
+				return(value)
+			}
+			var anVal = function(word){
+				this.wordsList = (word==null)?[]:[word]
+				this.wordsCount = 1;
+			}
+		</script>
+		
+	</body>
+</html>

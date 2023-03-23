@@ -1,0 +1,16 @@
+<body>
+    <script>
+
+    var a = window.document.createElement('a');
+    a.href = window.URL.createObjectURL(new Blob(['Test,Text'], {type: 'text/csv'}));
+    a.download = 'test.csv';
+    
+    // Append anchor to body.
+    document.body.appendChild(a);
+    a.click();
+    
+    // Remove anchor from body
+    document.body.removeChild(a);
+    
+    </script>
+</body>

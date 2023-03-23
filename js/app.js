@@ -10,7 +10,7 @@ const parser = new parsers.Readline({
     delimiter: '\r\n'
 });
 
-var port = new SerialPort('COM15', {
+var port = new SerialPort('COM14', {
     baudRate: 9600, 
     dataBits: 8,
     parity: 'none',
