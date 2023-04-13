@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebSocket Example</title>
+</head>
+<body>
+	<label for="input">Enter your input:</label>
+	<input type="text" id="input">
+	<button onclick="sendData()">Send</button>
+	<div id="output"></div>
+	<script>
+		var ws = new WebSocket("ws://172.20.10.14:8888/websocket");
+		ws.addEventListener("message", function(event) {
+			var output = document.getElementById("output");
+			output.innerHTML += event.data + "<br>";
+		});
+
+		function sendData() {
+			var input = document.getElementById("input").value;
+			ws.send(input);
+		}
+	</script>
+</body>
+</html>
