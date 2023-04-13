@@ -9,7 +9,7 @@
 	<button onclick="sendData()">Send</button>
 	<div id="output"></div>
 	<script>
-		var ws = new WebSocket("ws://172.20.10.14:8888/websocket");
+		var ws = new WebSocket("ws://18.223.136.101:8888/websocket");
 		ws.addEventListener("message", function(event) {
 			var output = document.getElementById("output");
 			output.innerHTML += event.data + "<br>";
