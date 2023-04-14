@@ -42,10 +42,13 @@ var mini = function(){
     var valid = []
     var criss_cross = function(text){
         // return;
+        var startTime = Date.now();
         text.forEach(A => {
         letters[  A[0].charCodeAt(0)-97].forEach(One => {
         letters[One[1].charCodeAt(0)-97].forEach(B => {
-            console.log(`A: ${A} One: ${One} B: ${B}`);
+            var dt = Math.floor((Date.now() - startTime) / 1000);
+            var format_dt = [Math.floor(dt/3600), Math.floor((dt/60) % 60), dt%60]
+            console.log(`Time: ${format_dt} A: ${A} One: ${One} B: ${B}`);
             console.log(valid);
         letters2[  A[1].charCodeAt(0)-97][  B[1].charCodeAt(0)-97].forEach(Two => {
         letters2[One[2].charCodeAt(0)-97][Two[2].charCodeAt(0)-97].forEach(C => {
