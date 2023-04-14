@@ -26,5 +26,5 @@ server.listen(port, function(error){
     else{
         console.log("server is listening on port " + port)
     }
-    moduletestinstance.printtest()
+    moduletestinstance.mini()
 })
