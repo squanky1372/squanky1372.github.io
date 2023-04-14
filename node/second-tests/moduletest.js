@@ -39,6 +39,7 @@ var mini = function(){
         // return;
         var startTime = Date.now();
         text.forEach(A => {
+            console.log(valid)
         letters[  A[0].charCodeAt(0)-97].forEach(One => {
             
             var dt = Math.floor((Date.now() - startTime) / 1000);
@@ -46,16 +47,16 @@ var mini = function(){
             console.log(`${valid_count} Time: ${format_dt} A: ${A} One: ${One}`);
             //console.log(valid);
 
-        letters[One[1].charCodeAt(0)-97].forEach(B => {
+        if(A != One) letters[One[1].charCodeAt(0)-97].forEach(B => {
             
         letters2[  A[1].charCodeAt(0)-97][  B[1].charCodeAt(0)-97].forEach(Two => {
-        letters2[One[2].charCodeAt(0)-97][Two[2].charCodeAt(0)-97].forEach(C => {
+        if(B != Two) letters2[One[2].charCodeAt(0)-97][Two[2].charCodeAt(0)-97].forEach(C => {
 
         letters2[  A[2].charCodeAt(0)-97][  B[2].charCodeAt(0)-97].filter(word  => checkLetter(word , 2,  C, 2)).forEach(Three => {
-        letters2[One[3].charCodeAt(0)-97][Two[3].charCodeAt(0)-97].filter(word2 => checkLetter(word2, 2, Three, 3)).forEach(D => {
+        if(C != Three) letters2[One[3].charCodeAt(0)-97][Two[3].charCodeAt(0)-97].filter(word2 => checkLetter(word2, 2, Three, 3)).forEach(D => {
 
         letters2[  A[3].charCodeAt(0)-97][  B[3].charCodeAt(0)-97].filter(word3 => checkLetter(word3, 2, C, 3)).filter(word4 => checkLetter(word4, 3,   D, 3)).forEach(Four => {
-        letters2[One[4].charCodeAt(0)-97][Two[4].charCodeAt(0)-97].filter(word5 => checkLetter(word5, 2, Three, 4)).filter(word6 => checkLetter(word6, 3, Four, 4)).forEach(E => {
+        if(D != Four) letters2[One[4].charCodeAt(0)-97][Two[4].charCodeAt(0)-97].filter(word5 => checkLetter(word5, 2, Three, 4)).filter(word6 => checkLetter(word6, 3, Four, 4)).forEach(E => {
         
         letters2[A[4].charCodeAt(0)-97][B[4].charCodeAt(0)-97].filter(word5 => checkLetter(word5, 2, C, 4)).filter(word6 => checkLetter(word6, 3, D, 4)).filter(word6 => checkLetter(word6, 4, E, 4)).forEach(Five => {
             valid.push([A,B,C,D,E,One,Two,Three,Four,Five])
