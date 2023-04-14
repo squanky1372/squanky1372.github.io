@@ -15,6 +15,7 @@ const server = http.createServer(function(req, res){
         
         res.end()
     })
+    console.log("output1")
 })
 
 server.listen(port, function(error){
@@ -23,5 +24,7 @@ server.listen(port, function(error){
     }
     else{
         console.log("server is listening on port " + port)
+        console.log("output2")
     }
+    console.log("output3")
 })

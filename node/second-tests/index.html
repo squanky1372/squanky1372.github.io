@@ -14,15 +14,6 @@
     <body>
         <!-- <h1>Communicating from an Arduino to Node.js</h1> -->
         <div id="sample"></div>
-        <script>
-		var dims = [0,0,0]
-        var socket = io();
-            socket.on('data', function(data) {
-                dims = data.split(" ")
-                //console.log(dims)
-                //document.getElementById('sample').style.opacity = data+"%"; 
-            });
-        </script>
 		<script>
 		/**
 			* @license
@@ -36013,9 +36004,9 @@
 
 			var update = function(){
 				console.log(dims)
-				cube.rotation.x = -dims[1] * Math.PI/180;
-				cube.rotation.y = dims[2] * Math.PI/180;
-				cube.rotation.z = -dims[0] * Math.PI/180;
+				cube.rotation.x += 0.1
+				cube.rotation.y += 0.1
+				cube.rotation.z += 0.1
 			};
 			var render = function(){
 				renderer.render(scene, camera);
