@@ -1,6 +1,6 @@
 const http = require("http")
 const fs = require('fs')
-var moduletestinstance = require("moduletest.js")
+var moduletestinstance = require("./moduletest.js")
 const port = 8888
 
 const server = http.createServer(function(req, res){
