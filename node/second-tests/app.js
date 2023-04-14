@@ -1,5 +1,6 @@
 const http = require("http")
 const fs = require('fs')
+var moduletestinstance = require("moduletest.js")
 const port = 8888
 
 const server = http.createServer(function(req, res){
@@ -24,7 +25,6 @@ server.listen(port, function(error){
     }
     else{
         console.log("server is listening on port " + port)
-        console.log("output2")
     }
-    console.log("output3")
+    moduletestinstance.printtest()
 })
