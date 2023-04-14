@@ -20,11 +20,22 @@ const server = http.createServer(function(req, res){
 })
 
 server.listen(port, function(error){
+    
     if(error){
         console.log("error")
     }
     else{
         console.log("server is listening on port " + port)
     }
-    moduletestinstance.mini()
+    var solutions = moduletestinstance.mini()
+    console.log(solutions)
+
+    
+    fs.appendFile('log.txt', solutions, function (err) {
+        if (err) {
+            console.log("yikes")
+        } else {
+            console.log("success")
+        }
+        })
 })
