@@ -1,0 +1,268 @@
+{
+    "NumCats": 5,
+    "NumQs": 5,
+    "Categories2": [
+        {
+            "Name": "Sets",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "These are the THREE Stooges.",
+                    "Answer": "Larry, Moe, Curly"
+                },
+                {
+                    "Question": "These are the FOUR faces on Mount Rushmore.",
+                    "Answer": "George Washington, Thomas Jefferson, Abraham Lincoln, Theodore Roosevelt"
+                },
+                {
+                    "Question": "These are the FIVE Great Lakes.",
+                    "Answer": "Superior, Michigan, Huron, Erie, Ontario."
+                },
+                {
+                    "Question": "In engineering, these SIX simple machines are the basis of all machinery.",
+                    "Answer": "Lever, pulley, wheel and axle, inclined plane, wedge, screw. "
+                },
+                {
+                    "Question": "These SEVEN titular characters appear alongside Snow White. List them.",
+                    "Answer": "Grumpy, Happy, Sleepy, Bashful, Sneezy, Dopey, Doc."
+                }
+            ]
+        },
+        {
+            "Name": "CATegory",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "This historical weapon would be used to hurl large stones.",
+                    "Answer": "Catapult"
+                },
+                {
+                    "Answer": "Decathlon",
+                    "Question": "This aptly-named word describes a ten-event competition."
+                },
+                {
+                    "Answer": "Vacation",
+                    "Question": "On a break from work or school, a person might decide to go on one of these."
+                },
+                {
+                    "Answer": "Predicate",
+                    "Question": "This part of a sentence contains the action performed by the subject."
+                },
+                {
+                    "Answer": "Mastication",
+                    "Question": "This is the more medical term for chewing."
+                }
+            ]
+        },
+        {
+            "Name": "Periodically",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Answer": "Potassium",
+                    "Question": "K then, this element is the reason bananas are slightly radioactive."
+                },
+                {
+                    "Answer": "Fluorine",
+                    "Question": "This is element number 9."
+                },
+                {
+                    "Answer": "Iron",
+                    "Question": "This attractive element has the symbol Fe."
+                },
+                {
+                    "Answer": "118",
+                    "Question": "This is the total number of elements on the periodic table."
+                },
+                {
+                    "Answer": "Oxygen",
+                    "Question": "Surprisingly, this element is NOT the most abundant in Earth's atmosphere, but IS the most abundant in Earth's crust."
+                }
+            ]
+        },
+        {
+            "Name": "State-ment",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "Welcome to...now leaving! This tiny state has the smallest land area.",
+                    "Answer": "Rhode Island"
+                },
+                {
+                    "Question": "Nobody's home! This state has the smallest population.",
+                    "Answer": "Wyoming"
+                },
+                {
+                    "Question": "Outta Time! This is the only state that chooses not to observe Daylight Savings Time.",
+                    "Answer": "Arizona"
+                },
+                {
+                    "Question": "Sorry, beachgoers! This is the only triple-landlocked state, meaning you can't get to an ocean without passing through three states!",
+                    "Answer": "Nebraska"
+                },
+                {
+                    "Question": "Hello over there! This is the closest state to Africa.",
+                    "Answer": "Maine"
+                }
+            ]
+        },
+        {
+            "Name": "Extremes!",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "This company has the largest net worth in the world.",
+                    "Answer": "Apple"
+                },
+                {
+                    "Question": "This is the smallest country by both area and population",
+                    "Answer": "Vatican City"
+                },
+                {
+                    "Question": "Represented by a single dot in Morse code, this letter is the most used in the English language.",
+                    "Answer": "E"
+                },
+                {
+                    "Question": "This planet is the lightest, weighing only 0.055 times as much as Earth!",
+                    "Answer": "Mercury"
+                },
+                {
+                    "Question": "This is the city with the largest population in the world.",
+                    "Answer": "Tokyo"
+                }
+            ]
+        }
+    ],
+    "Categories": [
+        {
+            "Name": "Sets 2",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "Out of this world! List the EIGHT planets in order!",
+                    "Answer": "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune."
+                },
+                {
+                    "Question": "Watch out, Grandma! These NINE reindeer pull Santa's sleigh.",
+                    "Answer": "Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Donner, Blitzen, Rudolph."
+                },
+                {
+                    "Question": "These TEN events make up the Decathlon.",
+                    "Answer": "100m dash, long jump, shot put, high jump, 400m dash, 110m hurdles, discus, pole vault, javelin, 1500m run."
+                },
+                {
+                    "Question": "These ELEVEN states seceded from the Union during the Civil War.",
+                    "Answer": "South Carolina, Mississippi, Florida, Alabama, Georgia, Louisiana, Texas, Virginia, Arkansas, North Carolina, Tennessee."
+                },
+                {
+                    "Question": "These TWELVE Greek gods were the main Olympians.",
+                    "Answer": "Zeus, Hera, Poseidon, Demeter, Athena, Apollo, Artemis, Ares, Aphrodite, Hephaestus, Hermes, Dionysus."
+                }
+            ]
+        },
+        {
+            "Name": "Skill Issue",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "TEST OF REACTION",
+                    "Answer": "Catch"
+                },
+                {
+                    "Question": "TEST OF SPEED",
+                    "Answer": "Race"
+                },
+                {
+                    "Question": "TEST OF ENDURANCE",
+                    "Answer": "Balance"
+                },
+                {
+                    "Question": "TEST OF PRECISION",
+                    "Answer": "Cup pong"
+                },
+                {
+                    "Question": "TEST OF STRENGTH",
+                    "Answer": "Pushups"
+                }
+            ]
+        },
+        {
+            "Name": "Price is Right",
+            "Is_Photos": true,
+            "Questions": [
+                {
+                    "Question": "Images/2_trump.png",
+                    "Answer": "$9.99"
+                },
+                {
+                    "Question": "Images/2_bounce.png",
+                    "Answer": "$256.49"
+                },
+                {
+                    "Question": "Images/2_lobotomy.png",
+                    "Answer": "$80.00"
+                },
+                {
+                    "Question": "Images/2_zealand.png",
+                    "Answer": "$2,271.90"
+                },
+                {
+                    "Question": "Images/2_amogus.png",
+                    "Answer": "$99,997.00"
+                }
+            ]
+        },
+        {
+            "Name": "Retrieval",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "Play the theme song from 'Tetris' out loud.",
+                    "Answer": "Audio"
+                },
+                {
+                    "Question": "What high school did I go to?",
+                    "Answer": "Saint Brendan High School."
+                },
+                {
+                    "Question": "Make one module of the origami cube and place it in my hand.",
+                    "Answer": "Folds"
+                },
+                {
+                    "Question": "What is the 25th digit of pi?",
+                    "Answer": "3"
+                },
+                {
+                    "Question": "Bribe me.  Most money wins.",
+                    "Answer": "$"
+                }
+            ]
+        },
+        {
+            "Name": "So Close",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "This is the second most-owned pet.",
+                    "Answer": "Cat"
+                },
+                {
+                    "Question": "This company has the second highest net worth in the world.",
+                    "Answer": "Microsoft"
+                },
+                {
+                    "Question": "Despite recent events, this person is the second richest in the world.",
+                    "Answer": "Elon Musk"
+                },
+                {
+                    "Question": "This country has the second largest land area.",
+                    "Answer": "Canada"
+                },
+                {
+                    "Question": "This state has the honor of being second in both population and land area.",
+                    "Answer": "Texas"
+                }
+            ]
+        }
+    ]
+}

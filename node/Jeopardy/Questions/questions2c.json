@@ -1,0 +1,16 @@
+{
+    "NumCats": 1,
+    "NumQs": 1,
+    "Categories": [
+        {
+            "Name": "Final Jeopardy",
+            "Is_Photos": false,
+            "Questions": [
+                {
+                    "Question": "What were the first 5 categories?",
+                    "Answer": ""
+                }
+            ]
+        }
+    ]
+}

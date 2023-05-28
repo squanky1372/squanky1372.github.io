@@ -1,0 +1,90 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes8.png">
+	<link rel="icon" href="/html/img/Boxes8.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+			.column {
+				float: left;
+				text-align:center;
+				width: 50%;
+			}
+			.column_letters {
+				float: left;
+				text-align:center;
+				width: 20%;
+			}
+			.row:after {
+				content: "";
+				display: table;
+				clear: both;
+			}
+		</style>
+	</head>
+
+	<body style="text-align:center;background-color:#ffdf95;">
+		<br>
+		<h1 style="text-align:center;"> Word Finder </h1>
+		<br>
+		<div class="row">
+			<div class="column" style="background-color:#9595ff;">
+				<h2>Valid Words</h2>
+				<div id="outputbox" style="height:325px;width:100%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+					Add some allowed and rejected letters in the fields provided, then hit submit to see all valid words with those constraints!	
+				</div>
+			</div>
+			<div class="column" style="background-color:#00ffee;">
+				<h2>Constraints</h2>
+				<input size = 1 type="text" id="a1" name="a1">
+				<input size = 1 type="text" id="a2" name="a2">
+				<input size = 1 type="text" id="a3" name="a3">
+				<input size = 1 type="text" id="a4" name="a4">
+				<input size = 1 type="text" id="a5" name="a5">
+				<br>
+				<input size = 1 type="text" id="b1" name="b1">
+				<input size = 1 type="text" id="b2" name="b2">
+				<input size = 1 type="text" id="b3" name="b3">
+				<input size = 1 type="text" id="b4" name="b4">
+				<input size = 1 type="text" id="b5" name="b5">
+				<br>
+				<input size = 1 type="text" id="c1" name="c1">
+				<input size = 1 type="text" id="c2" name="c2">
+				<input size = 1 type="text" id="c3" name="c3">
+				<input size = 1 type="text" id="c4" name="c4">
+				<input size = 1 type="text" id="c5" name="c5">
+				<br>
+				<input size = 1 type="text" id="d1" name="d1">
+				<input size = 1 type="text" id="d2" name="d2">
+				<input size = 1 type="text" id="d3" name="d3">
+				<input size = 1 type="text" id="d4" name="d4">
+				<input size = 1 type="text" id="d5" name="d5">
+				<br>
+				<input size = 1 type="text" id="e1" name="e1">
+				<input size = 1 type="text" id="e2" name="e2">
+				<input size = 1 type="text" id="e3" name="e3">
+				<input size = 1 type="text" id="e4" name="e4">
+				<input size = 1 type="text" id="e5" name="e5">
+				<br>
+				<button onclick="onButtonPressed()">Submit</button><br><br><br>
+			</div>
+		</div>
+		<script src="../../js/src/p5.js"></script>
+		<script src="find_minis_params.js"></script>
+		<script>
+			function onButtonPressed(){
+				var ids = [["a1","a2","a3","a4","a5"],["b1","b2","b3","b4","b5"],["c1","c2","c3","c4","c5"],["d1","d2","d3","d4","d5"],["e1","e2","e3","e4","e5"]]
+				for(var i = 0; i < 5; i++){
+					for(var j = 0; j < 5; j++){
+						input = document.getElementById(ids[i][j]).value
+						if(input.length > 0) word_grid[i][j] = input
+						else word_grid[i][j] = " "
+					}
+				}
+				mini()
+				return true;
+			}
+		</script>
+	</body>
+</html>

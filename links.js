@@ -12,8 +12,8 @@ var links_database = [
     ["/music/music finder.html", "/html/img/Boxes13.png"],
     ["/stereogram/dual-stereogram.html", "/html/img/Boxes14.png"],
     ["/weather/weather_wheel_input.html", "/html/img/Boxes15.png"],
-    ["/sabodash/index.html", "/html/img/Boxes16.png"],
-    ["/pool/index.html", "/html/img/Boxes17.png"]
+    ["Unity/sabodash/index.html", "/html/img/Boxes16.png"],
+    ["Unity/pool/index.html", "/html/img/Boxes17.png"]
     
     // ["index.html", "/html/img/Boxes9.png"] //this page
 ]
