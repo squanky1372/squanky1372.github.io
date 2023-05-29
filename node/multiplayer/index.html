@@ -51,6 +51,8 @@
         function setup() {
             //createCanvas(windowWidth, windowHeight);
             createCanvas(500, 500);
+            createCanvas(500,500).parent("canvasParent").id("drawingCanvas");
+            stopTouchScrolling(document.getElementById('drawingCanvas'));
             
             background(220);
             textAlign(CENTER, CENTER);
@@ -183,6 +185,26 @@
         function overlapsRect(x,y,w,h,x1,y1){
             console.log(x,y)
             if(x1 > x && x1 < x+w && y1 > y && y1 < y+h) return true; return false
+        }
+
+        function stopTouchScrolling(canvas){
+            // Prevent scrolling when touching the canvas
+            document.body.addEventListener("touchstart", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            document.body.addEventListener("touchend", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            document.body.addEventListener("touchmove", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
         }
     </script>
   </body>
