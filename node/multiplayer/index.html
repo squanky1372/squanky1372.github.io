@@ -67,6 +67,7 @@
             clear()
             drawPlayers(playerData)
             movePlayer()
+            parseTouches()
         }
 
         function windowResized() {
@@ -124,6 +125,64 @@
                 socket.emit('moved', {x: x, y: y})
             }
 
+        }
+
+        function parseTouches(){
+            
+            console.log(touches)
+            console.log(windowWidth, windowHeight)
+            for (var touch = 0; touch < touches.length; touch++) {
+                ellipse(touches[touch].x, touches[touch].y, 50, 50);
+                if(overlapsRect(windowWidth/2 - windowWidth/4, 0, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
+                    console.log("up")
+                    y -= 5;
+                    moved = true;
+                }
+                if(overlapsRect(windowWidth/2 - windowWidth/4, windowHeight/2 + windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
+                    console.log("dn")
+                    y += 5;
+                    moved = true;
+                }
+                if(overlapsRect(0, windowHeight/2 - windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
+                    console.log("l")
+                    x -= 5;
+                    moved = true;
+                }
+                if(overlapsRect(windowWidth/2 + windowWidth/4, windowHeight/2 - windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
+                    console.log("r")
+                    x += 5;
+                    moved = true;
+                }
+            }
+            if (keyIsDown(LEFT_ARROW)) {
+                x -= 5;
+                moved = true;
+            }
+
+            if (keyIsDown(RIGHT_ARROW)) {
+                x += 5;
+                moved = true;
+            }
+
+            if (keyIsDown(UP_ARROW)) {
+                y -= 5;
+                moved = true;
+            }
+
+            if (keyIsDown(DOWN_ARROW)) {
+                y += 5;
+                moved = true;
+            }
+            if(moved){
+                moved = false;
+                socket.emit('moved', {x: x, y: y})
+            }
+            
+        }
+
+        function overlapsRect(x,y,w,h,x1,y1){
+            console.log(x,y)
+            if(x1 > x && x1 < x+w && y1 > y && y1 < y+h) return true; return false
         }
     </script>
   </body>
