@@ -58,7 +58,8 @@
             textAlign(CENTER, CENTER);
 
             
-        canvas.onselectstart = function () { return false; }   
+            canvas.onselectstart = function () { return false; }   
+            canvas.style['-webkit-user-select'] = 'none';
         }
 
         function setParams(){
@@ -188,6 +189,14 @@
         function overlapsRect(x,y,w,h,x1,y1){
             console.log(x,y)
             if(x1 > x && x1 < x+w && y1 > y && y1 < y+h) return true; return false
+        }
+
+        function touchStarted(event) {
+            rect(mouseX, mouseY, 5, 5);
+            // prevent default
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
         }
     </script>
   </body>
