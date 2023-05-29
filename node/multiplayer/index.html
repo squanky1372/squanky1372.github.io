@@ -43,7 +43,7 @@
         });
     </script>
     <script>
-
+ 
         var playerData = []
         var myname = "no name set";
         var mycolor = "#000000";
@@ -56,6 +56,9 @@
             
             background(220);
             textAlign(CENTER, CENTER);
+
+            
+        canvas.onselectstart = function () { return false; }   
         }
 
         function setParams(){
