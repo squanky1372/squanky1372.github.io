@@ -160,6 +160,7 @@
         }
 
         function drawPlayer(){
+            push()
             fill(mycolor)
             // translate(player.x, player.y)
             // circle(0, 0, 10)
@@ -167,6 +168,7 @@
             // text(myname, 0, -10);
             // pop()
             circle(player.x, player.y, 10)
+            pop()
         }
         
         function parseTouches(){
