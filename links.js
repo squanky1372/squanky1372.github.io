@@ -1,6 +1,6 @@
 var links_database = [
     ["./html/twilight-head.html", "/html/img/Boxes3.png"], //Body waving w twilight's head
-    ["./html/images.html", "/html/img/Boxes2.png"], //Rotating images of cats
+//    ["./html/images.html", "/html/img/Boxes2.png"], //Rotating images of cats
     ["./planets/Planets.html","/html/img/Boxes4.png"], //Final graphics solar system project
     ["/Trains/index.html", "/html/img/Boxes1.png"], //CTA Trains project
     ["/weather/weather_daily.html", "/html/img/Boxes5.png"], //Animated weather project

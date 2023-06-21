@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../js/src/p5.js"></script>
+		<script>
+			var grid = {
+				'length' : 32,
+				'width' : 32,
+				'size' : 15,
+				'getValue' : function(x, y){
+					return this.img[x][y]
+				},
+				'getPosValue' : function(x, y){
+					return this.img[floor(y/this.size)][floor(x/this.size)]
+				},
+				'img' : ["11111111111111111111111111111111","10000000000100000000000000000001","10000000000100000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000111111100100011111111","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100000000001","10000000000100000000100000000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000100000000000010000001","10000000000100000000000010000001","11111111111111111111111111111111"]
+			}
+
+			var player = {
+				'x' : 100,
+				'y' : 100,
+				'speed' : 2
+			}
+
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+				
+				background(220);
+				// ellipse(50,50,80,80);
+				// textSize(32);
+				// text('word', 10, 30);
+				// fill(0, 102, 153);
+				// text('word', 10, 60);
+			}
+
+			function drawGridImg() {
+				for(var i = 0; i < grid.length; i++){
+					for(var j = 0; j < grid.width; j++){
+						if(grid.getValue(i, j) == '1'){
+							rect(j*grid.size, i*grid.size, grid.size, grid.size)
+						}
+					}
+				}
+			}
+
+			function drawPlayer(){
+				circle(player.x, player.y, 10)
+			}
+
+			function getInputs(){
+				moved = false;
+				newPos = [player.x, player.y]
+				if (keyIsDown(LEFT_ARROW)) {
+					newPos[0] -= player.speed;
+					moved = true;
+				}
+				if (keyIsDown(RIGHT_ARROW)) {
+					newPos[0] += player.speed;
+					moved = true;
+				}
+				if(grid.getPosValue(newPos[0], player.y) == 0){
+					player.x = newPos[0]
+					player.y = newPos[1]
+				}
+
+				newPos = [player.x, player.y]
+				if (keyIsDown(UP_ARROW)) {
+					newPos[1] -= player.speed;
+					moved = true;
+				}
+				if (keyIsDown(DOWN_ARROW)) {
+					newPos[1] += player.speed;
+					moved = true;
+				}
+				if(grid.getPosValue(player.x, newPos[1]) == 0){
+					player.y = newPos[1]
+				}
+			}
+
+			function draw(){
+				background(200,255,255)
+				getInputs();
+				push();
+				translate(-player.x + width/2, -player.y + height/2)
+				drawGridImg();
+				drawPlayer();
+				var pos = [floor(player.x / grid.size), floor(player.y / grid.size)]
+				console.log(pos)
+				console.log(grid.getPosValue(player.x, player.y))
+				pop();
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+	</body>
+</html>
