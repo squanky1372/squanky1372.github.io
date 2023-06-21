@@ -82,6 +82,7 @@
             push();
 			translate(-player.x + width/2, -player.y + height/2)
 			drawPlayers(playerData)
+            drawPlayer();
             drawGridImg()
             pop();
         }
@@ -94,12 +95,12 @@
             players.forEach(player => {
                 push()
                 if(player.id.localeCompare(socket.id) == 0){
-                    fill(mycolor)
-                    translate(player.x, player.y)
-                    circle(0, 0, 10)
-                    textSize(10);
-                    text(myname, 0, -10);
-                    pop()
+                    // fill(mycolor)
+                    // translate(player.x, player.y)
+                    // circle(0, 0, 10)
+                    // textSize(10);
+                    // text(myname, 0, -10);
+                    // pop()
                 }
                 else{
                     fill(player.color)
@@ -159,6 +160,12 @@
         }
 
         function drawPlayer(){
+            fill(mycolor)
+            // translate(player.x, player.y)
+            // circle(0, 0, 10)
+            // textSize(10);
+            // text(myname, 0, -10);
+            // pop()
             circle(player.x, player.y, 10)
         }
         
