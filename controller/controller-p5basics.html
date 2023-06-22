@@ -20,15 +20,27 @@
 			function draw() {
 				background(220);
 				noFill()
-				rect(width/4, height/4, width/2, height/2)
+				rect(width/2, 0, width/2, height)
 				if(getRaw(0)){
-					var loc = [width/2, 0]
-					var controller = getRaw(0)
+					var loc = [width/2, i]
+					var controller = getRaw(i)
 					text(controller.id, loc[0], loc[1] + 15)
 					controller.buttons.forEach((button, i) => { text(button.pressed ? 1 : 0, loc[0] + 15 + 10*i, loc[1] + 30) })
 					controller.axes.forEach((axis, i) => {text(axis, loc[0] + 15, loc[1]+45+15*i)})
 				}
 				for(var i = 0; i < getNumGamepads(); i++){
+					if(getRaw(i)){
+						push()
+						translate(width/2, height/getNumGamepads() * i)
+						var controller = getRaw(i)
+						var loc = [0,0]
+						console.log(controller.id)
+						stroke(0)
+						text(controller.id, loc[0], loc[1] + 15)
+						controller.buttons.forEach((button, i) => { text(button.pressed ? 1 : 0, loc[0] + 15 + 10*i, loc[1] + 30) })
+						controller.axes.forEach((axis, i) => {text(axis.toFixed(3), loc[0] + 15 + (i%2)*50, loc[1]+45+ 15*(floor(i/2)))})
+						pop()
+					}
 					var myinputs = getControls(i);
 					console.log(myinputs)
 					myinputs.buttons.forEach((button, index) => {
