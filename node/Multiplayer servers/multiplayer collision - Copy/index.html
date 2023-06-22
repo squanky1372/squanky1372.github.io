@@ -1,32 +1,10 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <ul id="messages"></ul>
-    <!-- <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form> -->
-    <form id="form" onsubmit="return false">
-        <input id="name" autocomplete="off" placeholder="new user"/>
-        <input id="color" autocomplete="off" placeholder = "#000000"/>
-        <button onclick="setParams()">Set</button>
-    </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
     <script>
         var socket = io();
-
-        var messages = document.getElementById('messages');
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-
-        socket.on('chat message', function(msg) {
-            console.log("chat messaage")
-            console.log(msg)
-            var item = document.createElement('li');
-            item.textContent = msg;
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
 
         socket.on('positions', function(msg) {
             playerData = msg
@@ -36,12 +14,12 @@
         var grid = {
             'length' : 32,
             'width' : 32,
-            'size' : 15,
+            'scale' : 15,
             'getValue' : function(x, y){
                 return this.img[x][y]
             },
             'getPosValue' : function(x, y){
-                return this.img[floor(y/this.size)][floor(x/this.size)]
+                return this.img[floor(y/this.scale)][floor(x/this.scale)]
             },
             'img' : ["11111111111111111111111111111111","10000000000100000000000000000001","10000000000100000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000000000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000100000000000000000001","10000000000111111100100011111111","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100000000001","10000000000100000000100000000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000100000000100010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000000000000000010000001","10000000000100000000000010000001","10000000000100000000000010000001","11111111111111111111111111111111"]
         }
@@ -59,26 +37,30 @@
         }
 
         function setup() {
-            //createCanvas(windowWidth, windowHeight);
-            createCanvas(500, 500);
+            createCanvas(windowWidth*.95, windowHeight*.95);
+            //createCanvas(500, 500);
             
             background(220);
             textAlign(CENTER, CENTER);
-            canvas.onselectstart = function () { return false; }   
-            canvas.style['-webkit-user-select'] = 'none';
+            // canvas.onselectstart = function () { return false; }   
+            // canvas.style['-webkit-user-select'] = 'none';
+
+            myname = prompt("Input your name:")
+            mycolor = prompt("Input a color in #RRGGBB format:")
+
+            setParams();
         }
 
         function setParams(){
-            myname = document.getElementById('name').value;
-            mycolor = document.getElementById('color').value;
-            console.log(`${myname}, ${mycolor}`)
             socket.emit('configured', {color: mycolor, name: myname})
         }
 
         function draw() {
             clear()
-            getInputs()
-            //parseTouches()
+            resetButtons()
+            getTouches()
+            getKeyboard()
+            parseInputs()
             push();
 			translate(-player.x + width/2, -player.y + height/2)
 			drawPlayers(playerData)
@@ -115,14 +97,15 @@
         }
 
         var moved = false;
-        function getInputs(){
+
+        function parseInputs(){
             moved = false;
             newPos = [player.x, player.y]
-            if (keyIsDown(LEFT_ARROW)) {
+            if (buttons[2]) {
                 newPos[0] -= player.speed;
                 moved = true;
             }
-            if (keyIsDown(RIGHT_ARROW)) {
+            if (buttons[3]) {
                 newPos[0] += player.speed;
                 moved = true;
             }
@@ -132,11 +115,11 @@
             }
 
             newPos = [player.x, player.y]
-            if (keyIsDown(UP_ARROW)) {
+            if (buttons[0]) {
                 newPos[1] -= player.speed;
                 moved = true;
             }
-            if (keyIsDown(DOWN_ARROW)) {
+            if (buttons[1]) {
                 newPos[1] += player.speed;
                 moved = true;
             }
@@ -153,7 +136,7 @@
             for(var i = 0; i < grid.length; i++){
                 for(var j = 0; j < grid.width; j++){
                     if(grid.getValue(i, j) == '1'){
-                        rect(j*grid.size, i*grid.size, grid.size, grid.size)
+                        rect(j*grid.scale, i*grid.scale, grid.scale, grid.scale)
                     }
                 }
             }
@@ -171,56 +154,37 @@
             pop()
         }
         
-        function parseTouches(){
+        var buttons = [0,0,0,0]
+        function resetButtons(){buttons = [0,0,0,0]}
+        function getKeyboard(){
+            if(keyIsDown(LEFT_ARROW)) buttons[2] = true
+            if(keyIsDown(RIGHT_ARROW)) buttons[3] = true
+            if(keyIsDown(UP_ARROW)) buttons[0] = true
+            if(keyIsDown(DOWN_ARROW)) buttons[1] = true
+        }
+
+        function getTouches(){
             console.log(touches)
             console.log(windowWidth, windowHeight)
             for (var touch = 0; touch < touches.length; touch++) {
                 ellipse(touches[touch].x, touches[touch].y, 50, 50);
                 if(overlapsRect(windowWidth/2 - windowWidth/4, 0, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
                     console.log("up")
-                    y -= 5;
-                    moved = true;
+                    buttons[0] = true
                 }
                 if(overlapsRect(windowWidth/2 - windowWidth/4, windowHeight/2 + windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
                     console.log("dn")
-                    y += 5;
-                    moved = true;
+                    buttons[1] = true
                 }
                 if(overlapsRect(0, windowHeight/2 - windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
                     console.log("l")
-                    x -= 5;
-                    moved = true;
+                    buttons[2] = true
                 }
                 if(overlapsRect(windowWidth/2 + windowWidth/4, windowHeight/2 - windowHeight/4, windowWidth/2, windowHeight/4, touches[0].x, touches[0].y)){
                     console.log("r")
-                    x += 5;
-                    moved = true;
+                    buttons[3] = true
                 }
-            }
-            if (keyIsDown(LEFT_ARROW)) {
-                x -= 5;
-                moved = true;
-            }
-
-            if (keyIsDown(RIGHT_ARROW)) {
-                x += 5;
-                moved = true;
-            }
-
-            if (keyIsDown(UP_ARROW)) {
-                y -= 5;
-                moved = true;
-            }
-
-            if (keyIsDown(DOWN_ARROW)) {
-                y += 5;
-                moved = true;
-            }
-            if(moved){
-                moved = false;
-                socket.emit('moved', {x: x, y: y})
-            }
-            
+            }            
         }
 
         function overlapsRect(x,y,w,h,x1,y1){
