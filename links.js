@@ -13,7 +13,8 @@ var links_database = [
     ["/stereogram/dual-stereogram.html", "/html/img/Boxes14.png"],
     ["/weather/weather_wheel_input.html", "/html/img/Boxes15.png"],
     ["Unity/sabodash/index.html", "/html/img/Boxes16.png"],
-    ["Unity/pool/index.html", "/html/img/Boxes17.png"]
+    ["Unity/pool/index.html", "/html/img/Boxes17.png"],
+    ["https://bit.ly/3NlbFah", "/html/img/Boxes18.png"]
     
     // ["index.html", "/html/img/Boxes9.png"] //this page
 ]
