@@ -1,0 +1,506 @@
+[
+    {
+      "Name": "Acadia National Park",
+      "Status": "Not Visited",
+      "State": "Maine",
+      "Region": "NE",
+      "Latitude": 44.35,
+      "Longitude": -68.21
+    },
+    {
+      "Name": "Arches National Park",
+      "Status": "Visited",
+      "State": "Utah",
+      "Region": "W",
+      "Latitude": 38.68,
+      "Longitude": -109.57
+    },
+    {
+      "Name": "Badlands National Park",
+      "Status": "Visited",
+      "State": "South Dakota",
+      "Region": "MW",
+      "Latitude": 43.75,
+      "Longitude": -102.5
+    },
+    {
+      "Name": "Big Bend National Park",
+      "Status": "Not Visited",
+      "State": "Texas",
+      "Region": "S",
+      "Latitude": 29.25,
+      "Longitude": -103.25
+    },
+    {
+      "Name": "Biscayne National Park",
+      "Status": "Planned",
+      "State": "Florida",
+      "Region": "S",
+      "Latitude": 25.65,
+      "Longitude": -80.08
+    },
+    {
+      "Name": "Black Canyon of the Gunnison National Park",
+      "Status": "Not Visited",
+      "State": "Colorado",
+      "Region": "W",
+      "Latitude": 38.57,
+      "Longitude": -107.72
+    },
+    {
+      "Name": "Bryce Canyon National Park",
+      "Status": "Visited",
+      "State": "Utah",
+      "Region": "W",
+      "Latitude": 37.57,
+      "Longitude": -112.18
+    },
+    {
+      "Name": "Canyonlands National Park",
+      "Status": "Visited",
+      "State": "Utah",
+      "Region": "W",
+      "Latitude": 38.2,
+      "Longitude": -109.93
+    },
+    {
+      "Name": "Capitol Reef National Park",
+      "Status": "Visited",
+      "State": "Utah",
+      "Region": "W",
+      "Latitude": 38.2,
+      "Longitude": -111.17
+    },
+    {
+      "Name": "Carlsbad Caverns National Park",
+      "Status": "Visited",
+      "State": "New Mexico",
+      "Region": "W",
+      "Latitude": 32.17,
+      "Longitude": -104.44
+    },
+    {
+      "Name": "Channel Islands National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 34.01,
+      "Longitude": -119.42
+    },
+    {
+      "Name": "Congaree National Park",
+      "Status": "Not Visited",
+      "State": "South Carolina",
+      "Region": "S",
+      "Latitude": 33.78,
+      "Longitude": -80.78
+    },
+    {
+      "Name": "Crater Lake National Park",
+      "Status": "Not Visited",
+      "State": "Oregon",
+      "Region": "W",
+      "Latitude": 42.94,
+      "Longitude": -122.1
+    },
+    {
+      "Name": "Cuyahoga Valley National Park",
+      "Status": "Not Visited",
+      "State": "Ohio",
+      "Region": "MW",
+      "Latitude": 41.24,
+      "Longitude": -81.55
+    },
+    {
+      "Name": "Death Valley National Park",
+      "Status": "Visited",
+      "State": "California and Nevada",
+      "Region": "W",
+      "Latitude": 36.24,
+      "Longitude": -116.82
+    },
+    {
+      "Name": "Denali National Park and Preserve",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 63.33,
+      "Longitude": -150.5
+    },
+    {
+      "Name": "Dry Tortugas National Park",
+      "Status": "Planned",
+      "State": "Florida",
+      "Region": "S",
+      "Latitude": 24.63,
+      "Longitude": -82.87
+    },
+    {
+      "Name": "Everglades National Park",
+      "Status": "Visited",
+      "State": "Florida",
+      "Region": "S",
+      "Latitude": 25.32,
+      "Longitude": -80.93
+    },
+    {
+      "Name": "Gates of the Arctic National Park",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 67.78,
+      "Longitude": -153.3
+    },
+    {
+      "Name": "Gateway Arch National Park",
+      "Status": "Visited",
+      "State": "Missouri",
+      "Region": "MW",
+      "Latitude": 38.63,
+      "Longitude": -90.19
+    },
+    {
+      "Name": "Glacier Bay National Park",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 58.5,
+      "Longitude": -137
+    },
+    {
+      "Name": "Glacier National Park",
+      "Status": "Visited",
+      "State": "Montana",
+      "Region": "W",
+      "Latitude": 48.8,
+      "Longitude": -114
+    },
+    {
+      "Name": "Grand Canyon National Park",
+      "Status": "Visited",
+      "State": "Arizona",
+      "Region": "W",
+      "Latitude": 36.06,
+      "Longitude": -112.14
+    },
+    {
+      "Name": "Grand Teton National Park",
+      "Status": "Visited",
+      "State": "Wyoming",
+      "Region": "W",
+      "Latitude": 43.73,
+      "Longitude": -110.8
+    },
+    {
+      "Name": "Great Basin National Park",
+      "Status": "Not Visited",
+      "State": "Nevada",
+      "Region": "W",
+      "Latitude": 38.98,
+      "Longitude": -114.3
+    },
+    {
+      "Name": "Great Sand Dunes National Park and Preserve",
+      "Status": "Not Visited",
+      "State": "Colorado",
+      "Region": "W",
+      "Latitude": 37.73,
+      "Longitude": -105.51
+    },
+    {
+      "Name": "Great Smoky Mountains National Park",
+      "Status": "Visited",
+      "State": "North Carolina and Tennessee",
+      "Region": "S",
+      "Latitude": 35.68,
+      "Longitude": -83.53
+    },
+    {
+      "Name": "Guadalupe Mountains National Park",
+      "Status": "Visited",
+      "State": "Texas",
+      "Region": "S",
+      "Latitude": 31.92,
+      "Longitude": -104.87
+    },
+    {
+      "Name": "Haleakala National Park",
+      "Status": "Not Visited",
+      "State": "Hawaii",
+      "Region": "W",
+      "Latitude": 20.72,
+      "Longitude": -156.17
+    },
+    {
+      "Name": "Hawaii Volcanoes National Park",
+      "Status": "Not Visited",
+      "State": "Hawaii",
+      "Region": "W",
+      "Latitude": 19.38,
+      "Longitude": -155.2
+    },
+    {
+      "Name": "Hot Springs National Park",
+      "Status": "Not Visited",
+      "State": "Arkansas",
+      "Region": "S",
+      "Latitude": 34.51,
+      "Longitude": -93.05
+    },
+    {
+      "Name": "Indiana Dunes National Park",
+      "Status": "Planned",
+      "State": "Indiana",
+      "Region": "MW",
+      "Latitude": 41.6533,
+      "Longitude": -87.0524
+    },
+    {
+      "Name": "Isle Royale National Park",
+      "Status": "Not Visited",
+      "State": "Michigan",
+      "Region": "MW",
+      "Latitude": 48.1,
+      "Longitude": -88.55
+    },
+    {
+      "Name": "Joshua Tree National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 33.79,
+      "Longitude": -115.9
+    },
+    {
+      "Name": "Katmai National Park and Preserve",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 58.5,
+      "Longitude": -155
+    },
+    {
+      "Name": "Kenai Fjords National Park",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 59.92,
+      "Longitude": -149.65
+    },
+    {
+      "Name": "Kings Canyon National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 36.8,
+      "Longitude": -118.55
+    },
+    {
+      "Name": "Kobuk Valley National Park",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 67.55,
+      "Longitude": -159.28
+    },
+    {
+      "Name": "Lake Clark National Park",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 60.97,
+      "Longitude": -153.42
+    },
+    {
+      "Name": "Lassen Volcanic National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 40.49,
+      "Longitude": -121.51
+    },
+    {
+      "Name": "Mammoth Cave National Park",
+      "Status": "Visited",
+      "State": "Kentucky",
+      "Region": "S",
+      "Latitude": 37.18,
+      "Longitude": -86.1
+    },
+    {
+      "Name": "Mesa Verde National Park",
+      "Status": "Visited",
+      "State": "Colorado",
+      "Region": "W",
+      "Latitude": 37.18,
+      "Longitude": -108.49
+    },
+    {
+      "Name": "Mount Rainier National Park",
+      "Status": "Visited",
+      "State": "Washington",
+      "Region": "W",
+      "Latitude": 46.85,
+      "Longitude": -121.75
+    },
+    {
+      "Name": "National Park of American Samoa",
+      "Status": "Not Visited",
+      "State": "American Samoa",
+      "Region": "",
+      "Latitude": -14.25,
+      "Longitude": -170.68
+    },
+    {
+      "Name": "New River Gorge National Park",
+      "Status": "Not Visited",
+      "State": "West Virginia",
+      "Region": "S",
+      "Latitude": 37.8707,
+      "Longitude": 81.0531
+    },
+    {
+      "Name": "North Cascades National Park",
+      "Status": "Visited",
+      "State": "Washington",
+      "Region": "W",
+      "Latitude": 48.7,
+      "Longitude": -121.2
+    },
+    {
+      "Name": "Olympic National Park",
+      "Status": "Visited",
+      "State": "Washington",
+      "Region": "W",
+      "Latitude": 47.97,
+      "Longitude": -123.5
+    },
+    {
+      "Name": "Petrified Forest National Park",
+      "Status": "Visited",
+      "State": "Arizona",
+      "Region": "W",
+      "Latitude": 35.07,
+      "Longitude": -109.78
+    },
+    {
+      "Name": "Pinnacles National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 36.48,
+      "Longitude": -121.16
+    },
+    {
+      "Name": "Redwood National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 41.3,
+      "Longitude": -124
+    },
+    {
+      "Name": "Rocky Mountain National Park",
+      "Status": "Not Visited",
+      "State": "Colorado",
+      "Region": "W",
+      "Latitude": 40.4,
+      "Longitude": -105.58
+    },
+    {
+      "Name": "Saguaro National Park",
+      "Status": "Not Visited",
+      "State": "Arizona",
+      "Region": "W",
+      "Latitude": 32.25,
+      "Longitude": -110.5
+    },
+    {
+      "Name": "Sequoia National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 36.43,
+      "Longitude": -118.68
+    },
+    {
+      "Name": "Shenandoah National Park",
+      "Status": "Not Visited",
+      "State": "Virginia",
+      "Region": "S",
+      "Latitude": 38.53,
+      "Longitude": -78.35
+    },
+    {
+      "Name": "Theodore Roosevelt National Park",
+      "Status": "Visited",
+      "State": "North Dakota",
+      "Region": "MW",
+      "Latitude": 46.97,
+      "Longitude": -103.45
+    },
+    {
+      "Name": "Virgin Islands National Park",
+      "Status": "Not Visited",
+      "State": "Virgin Islands",
+      "Region": "",
+      "Latitude": 18.33,
+      "Longitude": -64.73
+    },
+    {
+      "Name": "Voyageurs National Park",
+      "Status": "Not Visited",
+      "State": "Minnesota",
+      "Region": "MW",
+      "Latitude": 48.5,
+      "Longitude": -92.88
+    },
+    {
+      "Name": "White Sands National Park",
+      "Status": "Visited",
+      "State": "New Mexico",
+      "Region": "W",
+      "Latitude": 32.7872,
+      "Longitude": 106.3257
+    },
+    {
+      "Name": "Wind Cave National Park",
+      "Status": "Visited",
+      "State": "South Dakota",
+      "Region": "MW",
+      "Latitude": 43.57,
+      "Longitude": -103.48
+    },
+    {
+      "Name": "Wrangell-St. Elias National Park and Preserve",
+      "Status": "Not Visited",
+      "State": "Alaska",
+      "Region": "W",
+      "Latitude": 61,
+      "Longitude": -142
+    },
+    {
+      "Name": "Yellowstone National Park",
+      "Status": "Visited",
+      "State": "Wyoming and Idaho",
+      "Region": "W",
+      "Latitude": 44.6,
+      "Longitude": -110.5
+    },
+    {
+      "Name": "Yosemite National Park",
+      "Status": "Not Visited",
+      "State": "California",
+      "Region": "W",
+      "Latitude": 37.83,
+      "Longitude": -119.5
+    },
+    {
+      "Name": "Zion National Park",
+      "Status": "Visited",
+      "State": "Utah",
+      "Region": "W",
+      "Latitude": 37.3,
+      "Longitude": -113.05
+    }
+  ]

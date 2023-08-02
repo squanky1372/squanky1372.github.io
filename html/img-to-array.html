@@ -1,0 +1,138 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+        <input type="file" id="img1" name="UploadFiles" accept=".png"> <br>
+        <input type="file" id="img2" name="UploadFiles" accept=".png">
+        <button onclick="parseImages()">Submit</button>
+		<script src="../js/src/p5.js"></script>
+		<script>
+
+            var array_colors
+            var array_types
+            var img_len
+            var img_hig
+            var img_scale = 25;
+
+
+            function parseImages(){
+                parseImageColors();
+                
+            }
+
+            function download(filename, text) {
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(text)));
+                element.setAttribute('download', filename);
+
+                element.style.display = 'none';
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+            }
+
+            function parseImageColors(){
+                var input = document.getElementById("img1");
+                loadImage(URL.createObjectURL(input.files[0]), myimage => {
+                    console.log(myimage)
+                    img_array = Array(myimage.width)
+                    for(var i = 0; i < myimage.width; i++){
+                        img_array[i] = Array(myimage.height)
+                    }
+                    console.log(img_array)
+                    img_len = myimage.width
+                    img_hig = myimage.height
+                    
+                    for(var i = 0; i < myimage.width; i++){
+                        for(var j = 0; j < myimage.height; j++){
+                            console.log(i, j)
+                            console.log(myimage.get(i,j))
+                            img_array[i][j] = myimage.get(i,j)
+                        }
+                    }
+                    console.log(img_array)
+
+                    array_colors = img_array
+
+                    //download("grid_colors", img_array)
+
+                    parseImageTypes();
+                })
+            }
+
+            var types = [[0,0,0,0],[255,0,0,255],[255,255,0,255],[0,255,0,255],[0,255,255,255],[0,0,255,255],[255,0,255,255],[255,255,255,255]]
+            function parseImageTypes(){
+                var input2 = document.getElementById("img2");
+                img_array = []
+                loadImage(URL.createObjectURL(input2.files[0]), myimage => {
+                    console.log(myimage)
+                    img_array = Array(myimage.width)
+                    for(var i = 0; i < myimage.width; i++){
+                        img_array[i] = Array(myimage.height)
+                    }
+                    console.log(img_array)
+                    
+                    for(var i = 0; i < myimage.width; i++){
+                        for(var j = 0; j < myimage.height; j++){
+                            //console.log(myimage.get(i,j))
+                            var found = false;
+                            types.forEach((type, k) => {
+                                console.log(`comparing ${myimage.get(i,j)} with ${type}`)
+                                if(myimage.get(i,j)[0] == type[0] &&
+                                   myimage.get(i,j)[1] == type[1] &&
+                                   myimage.get(i,j)[2] == type[2] &&
+                                   myimage.get(i,j)[3] == type[3]){
+                                    console.log("success")
+                                    found = true;
+                                    img_array[i][j] = k
+                                }
+                            })
+                            if(!found){
+                                console.log("error")
+                                img_array[i][j] = -1
+                            }
+                        }
+                    }
+                    console.log(img_array)
+                    array_types = img_array
+
+                    downloadImages();
+                })
+            }
+
+            function downloadImages(){
+                var jsonobj = {
+                    'length': img_len,
+                    'width': img_hig,
+                    'scale': img_scale,
+                    'img': array_types,
+                    'colors': array_colors,
+                }
+                console.log(jsonobj)
+                console.log(JSON.stringify(jsonobj))
+                download("jsonfile", jsonobj)
+            }
+
+
+			function setup() {
+				//createCanvas(windowWidth, windowHeight);
+			}
+
+			function draw() {
+				background(220);
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+	</body>
+</html>

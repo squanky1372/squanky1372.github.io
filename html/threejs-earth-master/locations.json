@@ -1,0 +1,97 @@
+[
+    {
+      "Location": "Orlando",
+      "Latitude": 28.538336,
+      "Longitude": -81.379234
+    },
+    {
+      "Location": "Chicago",
+      "Latitude": 41.878113,
+      "Longitude": -87.629799
+    },
+    {
+      "Location": "MIT",
+      "Latitude": 42.360092,
+      "Longitude": -71.094162
+    },
+    {
+      "Location": "Upper Peninsula",
+      "Latitude": 46.41108529,
+      "Longitude": -86.64984084
+    },
+    {
+      "Location": "New York City",
+      "Latitude": 40.71123897,
+      "Longitude": -74.02084072
+    },
+    {
+      "Location": "Minneapolis",
+      "Latitude": 44.98216513,
+      "Longitude": -93.29716608
+    },
+    {
+      "Location": "Hinsdale, MT",
+      "Latitude": 48.39469021,
+      "Longitude": -107.0867481
+    },
+    {
+      "Location": "Seattle",
+      "Latitude": 47.60490834,
+      "Longitude": -122.332476
+    },
+    {
+      "Location": "Vegas",
+      "Latitude": 36.17295706,
+      "Longitude": -115.1912962
+    },
+    {
+      "Location": "El Paso",
+      "Latitude": 31.76254234,
+      "Longitude": -106.4713841
+    },
+    {
+      "Location": "Dallas",
+      "Latitude": 32.76455266,
+      "Longitude": -96.79767061
+    },
+    {
+      "Location": "Houston",
+      "Latitude": 29.76623691,
+      "Longitude": -95.37536091
+    },
+    {
+      "Location": "San Antonio",
+      "Latitude": 29.42546925,
+      "Longitude": -98.51448512
+    },
+    {
+      "Location": "New Orleans",
+      "Latitude": 29.95163452,
+      "Longitude": -90.0503013
+    },
+    {
+      "Location": "Marianna, FL",
+      "Latitude": 30.77535712,
+      "Longitude": -85.22822021
+    },
+    {
+      "Location": "Tampa",
+      "Latitude": 27.95004023,
+      "Longitude": -82.47082538
+    },
+    {
+      "Location": "Key West",
+      "Latitude": 24.55446065,
+      "Longitude": -81.77934881
+    },
+    {
+      "Location": "Reykjavik",
+      "Latitude": 64.14925712,
+      "Longitude": -21.94579356
+    },
+    {
+      "Location": "Austin",
+      "Latitude": 30.25945675,
+      "Longitude": -97.73942174
+    }
+  ]

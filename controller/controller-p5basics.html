@@ -21,13 +21,6 @@
 				background(220);
 				noFill()
 				rect(width/2, 0, width/2, height)
-				if(getRaw(0)){
-					var loc = [width/2, i]
-					var controller = getRaw(i)
-					text(controller.id, loc[0], loc[1] + 15)
-					controller.buttons.forEach((button, i) => { text(button.pressed ? 1 : 0, loc[0] + 15 + 10*i, loc[1] + 30) })
-					controller.axes.forEach((axis, i) => {text(axis, loc[0] + 15, loc[1]+45+15*i)})
-				}
 				for(var i = 0; i < getNumGamepads(); i++){
 					if(getRaw(i)){
 						push()
@@ -39,18 +32,33 @@
 						text(controller.id, loc[0], loc[1] + 15)
 						controller.buttons.forEach((button, i) => { text(button.pressed ? 1 : 0, loc[0] + 15 + 10*i, loc[1] + 30) })
 						controller.axes.forEach((axis, i) => {text(axis.toFixed(3), loc[0] + 15 + (i%2)*50, loc[1]+45+ 15*(floor(i/2)))})
+						
+						translate(-width/2, 0)
+
+						console.log(getNumGamepads())
+
+						var myinputs = getControls(i);
+						console.log(myinputs)
+						myinputs.buttons.forEach((button, index) => {
+							noFill()
+							if(button){
+								fill(100,0,0)
+							}
+							var rectSize = width / myinputs.buttons.length / 2
+							rect(index*rectSize, 0, rectSize, rectSize)
+						})
+						controller.axes.forEach((axis, index) => {
+							if(axis <= 1 && axis >= -1){
+								fill(230,300,230)
+								var rectSize = width / myinputs.buttons.length / 2
+								rect(index*rectSize, rectSize, rectSize, height/getNumGamepads() - rectSize)
+								fill(0,100,0)
+								rect(index*rectSize, (height/getNumGamepads() - rectSize)/2 + rectSize, rectSize, (height/getNumGamepads() - rectSize)/2 * axis)
+							}
+							
+						})
 						pop()
 					}
-					var myinputs = getControls(i);
-					console.log(myinputs)
-					myinputs.buttons.forEach((button, index) => {
-						noFill()
-						if(button){
-							fill(100,0,0)
-						}
-						var rectSize = 25
-						rect(index*rectSize, i*rectSize, rectSize, rectSize)
-					})
 				}
 				var myinputs = getControls(0);
 				
