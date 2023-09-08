@@ -11,8 +11,9 @@ var links_database = [
     ["/stereogram/dual-stereogram.html", "/html/img/Boxes14.png"], //Dual stereogram test program
     ["Unity/sabodash/index.html", "/html/img/Boxes16.png"], //Sabodash game
     ["Unity/pool/index.html", "/html/img/Boxes17.png"], //Pool game
-    ["https://bit.ly/3NlbFah", "/html/img/Boxes18.png"], //Link to AWS server
-    ["http://ec2-18-218-65-88.us-east-2.compute.amazonaws.com:3001/", "/html/img/Boxes19.png"], //Link to AWS server
+    ["https://bit.ly/3NlbFah", "/html/img/Boxes18.png"], //Server-Multiplayer
+    ["http://ec2-18-218-65-88.us-east-2.compute.amazonaws.com:3001/", "/html/img/Boxes19.png"], //Server-Earth
+    ["http://ec2-18-218-65-88.us-east-2.compute.amazonaws.com:3003/", "/html/img/Boxes20.png"], //Server-Earth
     ["./html/twilight-head.html", "/html/img/Boxes3.png"], //Body waving w twilight's head
     
     
