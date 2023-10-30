@@ -11,7 +11,7 @@ var params;
 function loadWeather(){	
     params = new URLSearchParams(window.location.search);
     myday = ((params.get("date") == null) || params.get("date") >= 15) ? 0 : params.get("date");
-    location_param = (params.get("place") == null) ? "evanston" : params.get("place");
+    location_param = (params.get("place") == null) ? "Somerville" : params.get("place");
     console.log(location_param)
     console.log("day")
     console.log(myday)
