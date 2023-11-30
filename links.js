@@ -15,7 +15,7 @@ var links_database = [
     ["http://ec2-18-218-65-88.us-east-2.compute.amazonaws.com:3001/", "/html/img/Boxes19.png"], //Server-Earth
     ["http://ec2-18-218-65-88.us-east-2.compute.amazonaws.com:3003/", "/html/img/Boxes20.png"], //Server-Earth
     ["./html/twilight-head.html", "/html/img/Boxes3.png"], //Body waving w twilight's head
-    ["squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
+    ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
     
     
     // ["/weather/weather_basic.html", "/html/img/Boxes6.png"], //simplified 15-day forecast

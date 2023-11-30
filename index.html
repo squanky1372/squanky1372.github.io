@@ -57,6 +57,7 @@
 
 			var numcubes = links_database.length;
 			var cubes = Array(numcubes)
+			var size = Math.ceil(Math.sqrt(numcubes))
 			for(var i = 0; i < numcubes; i++){
 				cubes[i] = cube.clone()
 				var mymaterial = material.clone();
@@ -65,15 +66,14 @@
 				cubes[i].scale.set(0.5,0.5,0.5)
 				// cubes[i].position.x += Math.floor(i/3)*1.4 -1.4;
 				// cubes[i].position.y += i%3 * 1.4 - 1.4// + 0.3;
-				var size = Math.ceil(Math.sqrt(numcubes))
-				cubes[i].position.y -= Math.floor(i/size);
-				cubes[i].position.x += i%size;
+				cubes[i].position.x += +Math.floor(i/size);
+				cubes[i].position.y += -i%size;
 				cubes[i].material = mymaterial;
 			}
-			
-			camera.position.z = 3;
-			camera.position.x = (Math.ceil(Math.sqrt(numcubes))-1)/2;
-			camera.position.y = -(Math.round(Math.sqrt(numcubes))-1)/2;
+			camera.position.z =  size * 700/window.innerWidth;
+			console.log(window.innerWidth)
+			camera.position.y = -(Math.ceil(Math.sqrt(numcubes))-1)/2;
+			camera.position.x = +(Math.round(Math.sqrt(numcubes))-1)/2;
 
 			raycaster = new THREE.Raycaster();
 			document.addEventListener( 'mousemove', onPointerMove );
