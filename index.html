@@ -66,14 +66,27 @@
 				cubes[i].scale.set(0.5,0.5,0.5)
 				// cubes[i].position.x += Math.floor(i/3)*1.4 -1.4;
 				// cubes[i].position.y += i%3 * 1.4 - 1.4// + 0.3;
-				cubes[i].position.x += +Math.floor(i/size);
-				cubes[i].position.y += -i%size;
+				if(window.innerWidth < window.innerHeight){
+					cubes[i].position.x += +Math.floor(i/size);
+					cubes[i].position.y += -i%size;
+				}
+				else{
+					cubes[i].position.y += -Math.floor(i/size);
+					cubes[i].position.x += +i%size;
+				}
 				cubes[i].material = mymaterial;
 			}
 			camera.position.z =  size * 700/window.innerWidth;
 			console.log(window.innerWidth)
-			camera.position.y = -(Math.ceil(Math.sqrt(numcubes))-1)/2;
-			camera.position.x = +(Math.round(Math.sqrt(numcubes))-1)/2;
+
+			if(window.innerWidth < window.innerHeight){
+				camera.position.y = -(Math.ceil(Math.sqrt(numcubes))-1)/2;
+				camera.position.x = +(Math.round(Math.sqrt(numcubes))-1)/2;
+			}
+			else{
+				camera.position.x = +(Math.ceil(Math.sqrt(numcubes))-1)/2;
+				camera.position.y = -(Math.round(Math.sqrt(numcubes))-1)/2;
+			}
 
 			raycaster = new THREE.Raycaster();
 			document.addEventListener( 'mousemove', onPointerMove );
