@@ -11,11 +11,11 @@
 		<script src="../js/src/p5.js"></script>
 		<script>
 			var chords = []
-			var chordnames = ["    C", "C#/Bb", "    D", "D#/Eb", "    E", "    F", "F#/Gb", "    G", "G#/Ab", "    A", "A#/Bb", "    B"]
+			var chordnames = ["C", "C#/Bb", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"]
 			for(var i = 0; i < 12; i++){
 				chords[i] = [(i)*10 % 120, (i+2.1)*10 % 120, (i+4.1)*10 % 120, (i+5)*10 % 120, (i+7)*10 % 120, (i+9.1)*10 % 120, (i+11.1)*10 % 120]
 			}
-			var titlebar = ["  I", " ii", " iii", "IV", " V", " vi", "vii*", "Prob"]
+			var titlebar = ["I", "ii", "iii", "IV", "V", "vi", "vii*", "Prob"]
 			var selected = [Array(12).fill(0),Array(12).fill(0)]
 			var selectors_minmax;
 			var usedChords = []
@@ -23,7 +23,9 @@
 			function setup() {
 				createCanvas(windowWidth, windowHeight);
 				stroke(0)
-				textSize(30)
+				console.log(windowWidth)
+				textAlign(CENTER, CENTER)
+				textSize(windowWidth/42)
 			}
 
 			function draw() {
@@ -61,12 +63,11 @@
 				for(var j = 0; j < 8; j++){
 					var x = j*width/8
 					fill(0,0,200).rect(x,0, width/8, height/13)
-					fill(255).text(titlebar[j],x + 45,0+35)
+					fill(255).text(titlebar[j],x + width/16, height/13/2)
 					push()
 					for(var k = numSelected; k >= 0; k--){
 					for(var i = 0; i < 12; i++){
 						var numCorrect = keyProb[i]
-						
 						var drawLine = ((numSelected > 0) && numCorrect / numSelected >= 0.4 && numCorrect == k) || (numSelected == 0)
 						fill(255)
 						if(drawLine){
@@ -75,9 +76,9 @@
 							if(usedChords.includes(chords[i][j]/10)){ fill(255,0,0)	} 
 							rect(x,0, width/8, height/13)
 							fill(0)
-							text(chordnames[floor(chords[i][j]/10)],x + width/16 - 42,height/13/2 + 25 - 15)
+							text(chordnames[floor(chords[i][j]/10)],x + width/16,height/13/2)
 							if(numSelected == numCorrect){ fill(0,255,000) }							
-							text(numCorrect + " / " + numSelected, 7*width/8 + width/16 - 30, height/13/2 + 25 - 15)
+							text(numCorrect + " / " + numSelected, 7*width/8 + width/16, height/13/2)
 						}
 					}}
 					pop()
@@ -93,7 +94,7 @@
 					rect(i*width/12,0,width/12, width/12)
 					fill(0)
 					if(insideRect(mouseX, mouseY, i*width/12,0,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
-					text(chordnames[i],i*width/12 + width/24 - 42,0+width/24 + 10)
+					text(chordnames[i],i*width/12 + width/24,0+width/24)
 					// text(chordnames[i], 7*width/8 + width/16 - 30, height/13/2 + 25 - 15)
 					
 					fill(230,230,255)
@@ -101,7 +102,7 @@
 					rect(i*width/12,width/12,width/12, width/12)
 					fill(0)
 					if(insideRect(mouseX, mouseY, i*width/12,width/12,width/12, width/12, selectors_minmax[0][0], selectors_minmax[0][1], selectors_minmax[1][0]/width, selectors_minmax[1][1]/height)) fill(255)
-					text(chordnames[i],i*width/12 + width/24 - 42,width/12+width/24 + 10)
+					text(chordnames[i],i*width/12 + width/24,width/12+width/24)
 				}
 			}
 			function insideRect(posx, posy, x, y, w, h, translateX = 0, translateY = 0, scaleX = 0, scaleY = scaleX){
