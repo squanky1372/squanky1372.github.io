@@ -15,6 +15,7 @@
 			var toggles = [true, true, true, true, true, true, true]
 			var isRotated = false
 			var hours2 = Array(15*24).fill(0)
+			var moonphase = 0;
 			for(var i = 0; i < 15*24; i++) hours2[i] = new myhour(7,0,0,0,0,0)
 			function myhour(icon, feelslike, temp, snowdepth, windgust, windspeed, precip, precipprob, snow, snowdepth){
 				this.icon = icon
@@ -33,6 +34,7 @@
 				"method": "GET",
 				"headers": {}})
 				.then((response) => response.json()).then((data) => {
+					moonphase = data.days[0].moonphase
 					data.days.forEach((day, dindex) => {
 						day.hours.forEach((hour, hindex) => {
 							var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
@@ -93,10 +95,7 @@
 				}
 				drawHills()
 				graphs()
-				var dt = datetime()
-				fill(255,255,0)
-				circle((dt[3] + dt[4]/60 - currenthour)*width/24, height/9.8, height/50)
-				fill(0)
+				drawSun()
 				if(touches[0]){
 					parseClick(touches[0].x, touches[0].y)
 				}
@@ -292,6 +291,25 @@
 					parseToggle(touchedCircle)
 				}
 				pop()
+			}
+			function drawSun(){
+				var dt = datetime()
+				push()
+				textSize(height/20)
+				fill(255,255,0)
+				var time = (dt[3] + dt[4]/60 - currenthour)
+				translate(time*width/24, height/9.8)
+				if(time < 6 || time > 18){
+					moonphases = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"]
+					text(moonphases[Math.floor(moonphase*8)],0,0,)
+				}
+				else{
+					text("☀️",0,0,)
+				}
+				//phases: 
+				// circle(0,0,height/20)
+				pop()
+				fill(0)
 			}
 			function overlapsRect(x,y,w,h,x1,y1){
 				console.log(x,y)
