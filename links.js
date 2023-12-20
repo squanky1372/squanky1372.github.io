@@ -6,7 +6,7 @@ var links_database = [
     ["/Trains/index.html", "/html/img/Boxes1.png"], //CTA Trains project
     ["/html/data-processing/p5letters.html", "/html/img/Boxes7.png"], //wordle word visualizer
     ["/html/data-processing/p5letters input.html", "/html/img/Boxes8.png"], //5-letter word constraints app
-    ["/html/data-processing/p5letters.html", "/html/img/Boxes7.png"], //Mini-Finder
+    ["/html/data-processing/minifinder.html", "/html/img/Boxes7.png"], //Mini-Finder
     ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
     ["/stereogram/dual-stereogram.html", "/html/img/Boxes14.png"], //Dual stereogram test program
     ["Unity/sabodash/index.html", "/html/img/Boxes16.png"], //Sabodash game
