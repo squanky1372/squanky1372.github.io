@@ -30,6 +30,16 @@
 				this.snowdepth = snowdepth
 			}
 			function loadWeather(){	
+				params = new URLSearchParams(window.location.search);
+				console.log("Params:")
+				console.log(params)
+				toggles_params = params.get("toggles")
+				if(toggles_params != null){
+					console.log(toggles_params)
+					console.log(toggles_params[0])
+					toggles = [toggles_params[0] == "1", toggles_params[1] == "1",toggles_params[2] == "1",toggles_params[3] == "1",toggles_params[4] == "1",toggles_params[5] == "1",toggles_params[6] == "1"]
+					console.log(toggles)
+				}
 				fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/evanston?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Clatitude%2Clongitude%2Ctempmax%2Ctempmin%2Ctemp%2Cfeelslikemax%2Cfeelslikemin%2Cfeelslike%2Cprecip%2Cprecipprob%2Cprecipcover%2Cpreciptype%2Csnow%2Csnowdepth%2Cwindgust%2Cwindspeed%2Csunrise%2Csunset%2Cmoonphase%2Cconditions%2Cdescription%2Cicon&include=days%2Chours&key=2WKEX8NVUHXNVV7SYHEX3EQBL&contentType=json", {
 				"method": "GET",
 				"headers": {}})
@@ -350,6 +360,16 @@
 					return
 				}
 				toggles[num] = !toggles[num]
+				toggles_string = "".concat(
+					toggles[0] ? "1" : "0",
+					toggles[1] ? "1" : "0",
+					toggles[2] ? "1" : "0",
+					toggles[3] ? "1" : "0",
+					toggles[4] ? "1" : "0",
+					toggles[5] ? "1" : "0",
+					toggles[6] ? "1" : "0",
+				)
+				document.location.href = "/weather/weather_daily.html?toggles=" + toggles_string;
 			}
 		</script>
 	</body>
