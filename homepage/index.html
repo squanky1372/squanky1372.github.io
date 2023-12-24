@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/jquery"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css"/>
+</head>
+<template id="greetings">
+    ________ _______   ___       ___  ________  _______      
+    |\  _____\\  ___ \ |\  \     |\  \|\   __  \|\  ___ \     
+    \ \  \__/\ \   __/|\ \  \    \ \  \ \  \|\  \ \   __/|    
+     \ \   __\\ \  \_|/_\ \  \    \ \  \ \   ____\ \  \_|/__  
+      \ \  \_| \ \  \_|\ \ \  \____\ \  \ \  \___|\ \  \_|\ \ 
+       \ \__\   \ \_______\ \_______\ \__\ \__\    \ \_______\
+        \|__|    \|_______|\|_______|\|__|\|__|     \|_______|
+   </template>
+<body>
+    <script>
+    var commands = [
+        ["hello", "name (String)", "Says hello to you."],
+        ["hi", "none", "Says hi to you."],
+        ["cat", "x (int), y (int)", "Prints a cat image of the requested size."],
+    ]
+    $('body').terminal({
+        help: function(){
+            commands.forEach(command => {
+                this.echo(command[0] + " | arguments: " + command[1]) 
+                this.echo("  > " + command[2])
+            })
+        },
+        hello: function(what) {
+            this.echo('Hello, ' + what +
+                      '. Welcome to this terminal.');
+        },
+        hi: function() {
+            this.echo("Hi")
+        },
+        cat: function(width, height) {
+            const img = $('<img src="https://placekitten.com/' +
+                        width + '/' + height + '">');
+            this.echo(img);
+        }
+    }, {
+        greetings: greetings.innerHTML
+    });
+    </script>
+</body>
+
+</html>
