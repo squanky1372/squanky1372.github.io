@@ -35,10 +35,32 @@
         hi: function() {
             this.echo("Hi")
         },
+        link: function() {
+            var link = $("<a href='google.com'>Link</a>");
+            var a = "hello there"
+            this.echo(link);
+            this.echo("hello");
+            this.echo("hing3");
+            this.echo(a);
+            this.echo("hello blue", {
+                finalize: function(div) {
+                    div.css("color", "blue");
+                }
+            });
+            this.echo(this.cols)
+
+        },
         cat: function(width, height) {
             const img = $('<img src="https://placekitten.com/' +
                         width + '/' + height + '">');
             this.echo(img);
+        },
+        img: function() {
+            const img = $('<img src="homepage/images/wordle.png">');
+            this.echo(img);
+        },
+        raw: function(){
+            this.echo(`<a href="http://google.com">Link</a> <a href="http://squanky1372.github.io">Link</a> <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br>`, {raw:true})
         }
     }, {
         greetings: greetings.innerHTML
