@@ -1,0 +1,32 @@
+[
+  {
+    "Project_Name": "Trains",
+    "Project_Number": "1",
+    "Overview": "",
+    "Next_Steps": "It would be nice to eventually go back and repair the program that started it all- the Chicago train program. Now that the Boston one is working, it pains me to see the Chicago one get abandoned before reaching its full potential."
+  },
+  {
+    "Project_Name": "Open House",
+    "Project_Number": "2",
+    "Overview": "This project is not something I will be sharing information about on this page, since it is a personal gift for someone very close to me.  It’s an ongoing project, which has spanned over several years, and is still in the works.  While I will not describe it, I will still document when weeks of my time have been dedicated to this project, just for completion’s sake.",
+    "Next_Steps": "I’ll be continuing this project in the next year, and to the indefinite future."
+  },
+  {
+    "Project_Name": "Minis",
+    "Project_Number": "3",
+    "Overview": "I'm a big fan of word games.  I enjoy games like the NYT Mini Crossword (LINK) and Scrabble, and I was really into Wordle even before Wordle existed (I used to play it one-on-one on paper, or against AI) (LINK).  I also like analyzing data.  Because of this, I’ve become interested in using word analysis tools.  I have frequented this website (LINK: codebreaker website) to use their tools in making my own little puzzles or just making interesting word grids and such.  However, I realized it would also be interesting to make my own tools for specialized purposes. <br><br>In 2022, I made a program that analyzes all of the words in the dictionary that Wordle uses, and which creates a graph to display the frequency of letters in different positions.  Below is an image of the result: the first five rows correspond to the five different letters in the words, and the sixth row corresponds to the overall frequencies of letters.  The last row is just a monospaced row for reference.<br><br><br><div style=\"text-align: center\"><img src=\"./images/wordle.png\" width=\"50%\" height=\"50%\"><div><br> Image of wordle words",
+    "Next_Steps": "This program can be revamped in several ways.  First of all, it makes much more sense to pre-process the 5x5 grids across all words, and then have the user interface simply search among the pre-processed list for grids that abide by the constraints.<br><br>It would also be nice to run through the full list of 5 letter words using something akin to an out-of-use laptop for processing.  That would work nicely with the previous statement as well.<br><br>In addition, I would like to be able to input non-words into the grid.  For example, if I put the constraints that the top row should read “qwxyz”, I will get no matches because no words have those letters in that order.  However, I would like to modify my code so that if a user specifies an entire row or column, this word will be added as a valid entry, allowing the user to functionally add their own words into the mix.  This would be helpful for creating puzzles with a personal twist, using inside jokes or proper nouns.  However, this conflicts with the previous statements because this cannot be pre-processed."
+  },
+  {
+    "Project_Name": "Weather",
+    "Project_Number": "4",
+    "Overview": "After discovering the wonders of APIs, the first and most prevalent type of data I found to be available was weather data.  Since I’ve always been interested in unconventional representation of information, I decided to make my own ways to view weather information.  I quickly found a provider of weather data via API (<a href=’https://www.visualcrossing.com/’>VisualCrossing</a>) and began experimenting with different ways to convey the data provided.<br><br>Data provided by this API includes hourly information for the next 15 days, including precipitation, temperature, “feels like” temperature, wind gust, wind speed, snow depth, precipitation probability, and snow.  It also provides information on daily sunrise, sunset, and moon phases.",
+    "Next_Steps": "There are several pieces of data that can be requested from the VisualCrossing weather API.  It apparently has the capability to provide past weather data for any date range, as well as provide future weather data at any point in the future based on past years and predictions.  I have always had it in the back of my mind to expand my weather app’s functionality to allow you to see average weathers for any location at any time of year, just for things like future trips or moving to a new city."
+  },
+  {
+    "Project_Name": "Discord",
+    "Project_Number": "5",
+    "Overview": "All of the input and output methods I have used, whether it be through interactive webpages, or wireless terminal access, or even an LED ring, have been very interesting.  However, the way that most people like to get their information and interact with lies outside of all of these systems.  Most people want to put in as little effort as possible to see things like the weather, or the train schedule.  One of the easiest ways to get information to people is by sending them a message on their phone.  I recently realized that Discord bots can easily be integrated with NodeJS, and decided to try to incorporate this into my system.  ",
+    "Next_Steps": "I hope to be able to implement several aspects of my Router system into a Discord bot.  Namely, I would be able to do the following: <br>    -Retrieve the weather data, either for specifically Boston, or from a location of the user’s choosing, depending on the level of complexity. <br>    -Retrieve the train data, either for specifically my two most used stations, or for two stations of the user’s choosing, depending on the level of complexity.<br>    -Send a message into the Router system.  This would include things like the “weather” and “train” commands, which would then change the Neopixel ring.  It would also include the “lights” command, which would actuate the lights."
+  }
+]

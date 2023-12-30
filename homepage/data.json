@@ -1,0 +1,79 @@
+[
+    {
+      "Week": "48",
+      "Shortname": "",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "Somehow, I failed to properly link the train page onto the spinning cubes homepage. I’ve now fixed that. In addition, I fixed a bug where if you repeatedly pressed the toggle buttons, the whole app would crash. I had left some debugging code in the program which was still requesting updates repeatedly, but now that’s been removed."
+    },
+    {
+      "Week": "47",
+      "Shortname": "",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "I added the train program to my homepage as a spinning cube link.  Now I can access it easier!"
+    },
+    {
+      "Week": "46",
+      "Shortname": "",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "I fixed a small bug that was causing the train app to crash frequently.  I’m not entirely sure what the bug was in the end, but the app doesn’t crash every day like it did before.  Now, it only crashes about once a week.  But such is the life of a programmer, I guess."
+    },
+    {
+      "Week": "2",
+      "Shortname": "",
+      "Project_Number": "2",
+      "Project_Name": "Open House",
+      "Text": "N/A"
+    },
+    {
+      "Week": "3",
+      "Shortname": "",
+      "Project_Number": "2",
+      "Project_Name": "Open House",
+      "Text": "N/A"
+    },
+    {
+      "Week": "4",
+      "Shortname": "",
+      "Project_Number": "2",
+      "Project_Name": "Open House",
+      "Text": "N/A"
+    },
+    {
+      "Week": "6",
+      "Shortname": "",
+      "Project_Number": "2",
+      "Project_Name": "Open House",
+      "Text": "N/A"
+    },
+    {
+      "Week": "14",
+      "Shortname": "",
+      "Project_Number": "2",
+      "Project_Name": "Open House",
+      "Text": "N/A"
+    },
+    {
+      "Week": "39",
+      "Shortname": "",
+      "Project_Number": "4",
+      "Project_Name": "Weather",
+      "Text": "After moving to Boston, I decided to change the default location for the weather app to be Boston.  This was not strictly necessary- I could always have just remade my web app shortcut on my iPhone to include the URL parameters for Boston and it would have had the same effect.  However, I was lazy, and decided instead to go into the server, try to remember how my code works, and change the default position parameter, all just to avoid remaking my shortcut.  I think it ended up being much more effort, but sometimes doing less effort for a longer time makes it feel like less effort overall, even when it’s not."
+    },
+    {
+      "Week": "50",
+      "Shortname": "",
+      "Project_Number": "5",
+      "Project_Name": "Discord",
+      "Text": "At first, I found <a href=’https://dev.to/melvnl/send-message-to-discord-server-via-javascript-4gc6’>this website</a> which describes how to send a message to Discord via JavaScript.  It’s quite simple, and literally worked on the first try.  However, it is extremely limited in its scope, only allowing you to send static messages to Discord.  This works well for quick and dirty implementations, but I wanted something more substantial.<br><br>After a brief continuation of my search, I found <a href=’https://discord.js.org/’>this website</a> which describes how to use a NodeJS plugin called DiscordJS.  I decided to follow the tutorial, and was surprised by how simple it was to set up.  Now, I have a way to run a server that acts as a Discord bot full-time.  It can respond to user inputs with “slash commands”, and users can see a list of all available commands by just typing the slash character.  Furthermore, it’s completely modular, so it’s easy to add more commands.  I look forward to hopefully implementing control of my Router system into a Discord bot."
+    },
+    {
+      "Week": "3",
+      "Shortname": "",
+      "Project_Number": "6",
+      "Project_Name": "Chords",
+      "Text": "I started by designing a simple grid which displays all of the possible major keys that a song could be in, and shows what chords are present in that key.  I won’t give a full explanation of the music theory of keys and chords, but I’ll provide a basic explanation.  In essence, if you play a major scale on the piano, you’ll play 7 distinct notes.  Each of these notes is part of a chord in that key, but some are major and some are minor.  My graph shows you what notes are played in the scale, and then highlights them in purple if the key uses them as a minor chord.  In order to identify which key a song is in, first look up what chords are in the song (I use <a href=’https://www.ultimate-guitar.com/’>this site</a>).  Then, find the row that shares the most chords with that song.  On its own, this graph was already very helpful, but could be a bit tedious to use, so I decided to add some user input. <br><br>I added a bar at the bottom which is composed of two rows: a red “major” row and a purple “minor” row.  Clicking on any of the cells here will highlight that cell and add it to the list of chords that are in the song you are identifying.  Then, I added a probability column on the right which displays for each key what fraction of the inputted chords are in that key, while also highlighting those chords in red.  Then, I made it so that the rows of keys are sorted in order of most probable to least probable, removing any keys that have fewer than ½ of the inputted chords.  I also made it usable on mobile, since it’s usually easier for me to have my phone with me at the piano than to bring my whole computer. <br><br><br><div style=\"text-align: center\"><img src=\"images/chords-1.png\" width=\"50%\" height=\"50%\"><div><br> Chords page before any user selections. <br><br><br><div style=\"text-align: center\"><img src=\"images/chords-2.png\" width=\"50%\" height=\"50%\"><div><br> Chords page after the user selects C major, G major, and D minor.  The program suggests C as the most likely key, with alternatives of F and G."
+    }
+  ]

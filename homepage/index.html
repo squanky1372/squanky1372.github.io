@@ -16,6 +16,22 @@
    </template>
 <body>
     <script>
+    var weekly_data = null
+    fetch('./data.json')
+    .then((response) => response.json())
+    .then((json) => {
+        console.log(json)
+        weekly_data = json
+    });
+
+    var project_data = null
+    fetch('./projects.json')
+    .then((response) => response.json())
+    .then((json) => {
+        console.log(json)
+        project_data = json
+    });
+
     var commands = [
         ["hello", "name (String)", "Says hello to you."],
         ["hi", "none", "Says hi to you."],
@@ -60,9 +76,89 @@
             this.echo(img);
         },
         raw: function(){
-            this.echo(`<a href="http://google.com">Link</a> <a href="http://squanky1372.github.io">Link</a> <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br>`, {raw:true})
+            this.echo(`
+            <a href="http://google.com">Link to Google</a> 
+            <a href="http://squanky1372.github.io">Link to Squanky</a> 
+            <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br> Image of wordle words`, {raw:true})
+        },
+        wordle: function(){
+            this.echo(`
+            <div style="font-size: 20px; padding: 0% 10% 00% 10%">
+            I'm a big fan of word games.  I enjoy games like the NYT Mini Crossword (LINK) and Scrabble, and I was really into Wordle even before Wordle existed (I used to play it one-on-one on paper, or against AI) (LINK).  I also like analyzing data.  Because of this, I’ve become interested in using word analysis tools.  I have frequented this website (LINK: codebreaker website) to use their tools in making my own little puzzles or just making interesting word grids and such.  However, I realized it would also be interesting to make my own tools for specialized purposes.  
+            <br><br>
+            In 2022, I made a program that analyzes all of the words in the dictionary that Wordle uses, and which creates a graph to display the frequency of letters in different positions.  Below is an image of the result: the first five rows correspond to the five different letters in the words, and the sixth row corresponds to the overall frequencies of letters.  The last row is just a monospaced row for reference.  
+            <br><br>
+            <br><div style="text-align: center"><img src="homepage/images/wordle.png" width="50%" height="50%"><div><br> Image of wordle words
+            </div>
+            `, {raw:true})
+        },
+        weekly: function(){
+            weekly_data.forEach((event, i) => {
+                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                    Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
+                <div>`, {raw:true})
+                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                this.echo(`
+                <div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                ${event.Text}
+                <div>`, {raw:true})
+            })
+        },
+        projects: function(){
+            //list all project names and numbers, pulling from the second json file
+            project_data.forEach((event, i) => {
+                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        Project ${event.Project_Number} - ${event.Project_Name}
+                    <div>`, {raw:true})
+            })
+        },
+        project: function(project_number){ //list all data points from a given project number
+            project_data.forEach((event, i) => {
+                if(event.Project_Number == project_number){
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        Project ${event.Project_Number} - ${event.Project_Name}
+                    <div>`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================
+                        <br>
+                        Overview
+                        <br>
+                        ========================================================================================
+                        ${event.Overview}
+                        ========================================================================================
+                    <div>`, {raw:true})
+                }
+            })
+            weekly_data.forEach((event, i) => {
+                if(event.Project_Number == project_number){
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
+                    <div>`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                    this.echo(`
+                    <div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                    ${event.Text}
+                    <div>`, {raw:true})
+                }
+            })
+            project_data.forEach((event, i) => {
+                if(event.Project_Number == project_number){
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        Next Steps
+                        <br>
+                        ========================================================================================
+                        <br>
+                        ${event.Next_Steps}
+                    <div>`, {raw:true})
+                }
+            })
         }
+        
     }, {
+        scrollOnEcho: false,
         greetings: greetings.innerHTML
     });
     </script>
