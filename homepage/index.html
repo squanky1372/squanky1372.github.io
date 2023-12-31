@@ -38,8 +38,11 @@
 
     var commands = [
         ["hello", "name (String)", "Says hello to you."],
-        ["hi", "none", "Says hi to you."],
-        ["cat", "x (int), y (int)", "Prints a cat image of the requested size."],
+        // ["hi", "none", "Says hi to you."],
+        // ["cat", "x (int), y (int)", "Prints a cat image of the requested size."],
+        ["projects", "none", "Lists all projects and their ID numbers"],
+        ["project", "n (int)", "Prints all material for a given project ID number"],
+        ["weekly", "none", "Prints all material for all projects in chronological order"],
     ]
     $('body').terminal({
         help: function(){
