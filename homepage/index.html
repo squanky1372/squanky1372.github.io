@@ -13,9 +13,13 @@
       \ \  \_| \ \  \_|\ \ \  \____\ \  \ \  \___|\ \  \_|\ \ 
        \ \__\   \ \_______\ \_______\ \__\ \__\    \ \_______\
         \|__|    \|_______|\|_______|\|__|\|__|     \|_______|
-   </template>
+</template>
+
+
 <body>
     <script>
+    //<a href='google.com'>Link</a>
+    //<img src="homepage/images/stereogram-1.png'>
     var weekly_data = null
     fetch('./data.json')
     .then((response) => response.json())
@@ -79,7 +83,10 @@
             this.echo(`
             <a href="http://google.com">Link to Google</a> 
             <a href="http://squanky1372.github.io">Link to Squanky</a> 
-            <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br> Image of wordle words`, {raw:true})
+            <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br> Image of wordle words
+            <br><br><br><div style="text-align: center"><img src="images/chords-1.png" width="50%" height="50%"><br> Chords page before any user selections.</div> <br>
+            `, {raw:true})
+            
         },
         wordle: function(){
             this.echo(`
@@ -125,19 +132,18 @@
                         <br>
                         Overview
                         <br>
-                        ========================================================================================
+                        ----------------------------------------------------------------------------------------
                         ${event.Overview}
-                        ========================================================================================
                     <div>`, {raw:true})
                 }
             })
             weekly_data.forEach((event, i) => {
                 if(event.Project_Number == project_number){
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
                     this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        <br>========================================================================================<br>
                         Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
                     <div>`, {raw:true})
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
+                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">----------------------------------------------------------------------------------------`, {raw:true})
                     this.echo(`
                     <div style="font-size: 20px; padding: 0% 10% 00% 10%">
                     ${event.Text}
@@ -147,10 +153,9 @@
             project_data.forEach((event, i) => {
                 if(event.Project_Number == project_number){
                     this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+                        <br>========================================================================================<br>
                         Next Steps
-                        <br>
-                        ========================================================================================
-                        <br>
+                        <br>----------------------------------------------------------------------------------------<br>
                         ${event.Next_Steps}
                     <div>`, {raw:true})
                 }

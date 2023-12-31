@@ -1,79 +1,428 @@
 [
     {
-      "Week": "48",
-      "Shortname": "",
+      "Week": "39",
       "Project_Number": "1",
       "Project_Name": "Trains",
-      "Text": "Somehow, I failed to properly link the train page onto the spinning cubes homepage. I’ve now fixed that. In addition, I fixed a bug where if you repeatedly pressed the toggle buttons, the whole app would crash. I had left some debugging code in the program which was still requesting updates repeatedly, but now that’s been removed."
+      "Text": "I finally got around to creating a version of my Chicago train tracker for the Boston train system.  Boston’s <a href=”https://www.mbta.com/developers”>API</a> works very similarly to Chicago’s, and in fact they may even use the same structure for their data.  However, I decided against reusing code from the Chicago version since it was rather hastily made and formatted very strangely, so I started from scratch.  The benefit of this was that I got a brand new perspective on things, and managed to add some new features.  For example, since the stations are provided in order for each colored train line, I could connect those points with a colored line to visualize the path the trains take.  Soon enough, I had a fully working system.  <br><br><br><div style=\"text-align: center\"><img src=\"images/trains-1.png\" width=\"50%\" height=\"50%\"><br>All lines displayed, with stations as smaller circles.</div> <br><br>In order to combat some CORS issues I was experiencing in my Chicago train map, I created a NodeJS server to request the train data from the API and then serve it to the client’s webpage.  Every time the client loads the webpage, it sends a request to the server to request new data from the API and then forward it back to the client.  The server also automatically requests and sends new API data every ten or so seconds to keep the data up to date.  The client page will blur the screen each time it receives new data and then draw the new train positions on top of the old, blurred ones.  This creates an effect of “ghost” trains where they used to be, showing the passage of time.  <br><br>I then worked on creating some buttons to allow movement around the screen.  However, I soon ran into issues with the way I was handling requests.  Each time the user pressed one of the zoom buttons, I was reloading the page, which re-requested the data.  However, the train API has a limit to how many times you can request data in a minute, and I was repeatedly getting locked out until the next minute due to repeated requests.  Because of this, I revamped the system to have the server only request new train data automatically, but never by client request.  I also removed the ability to zoom the screen via toggle, relying instead on most browsers’ innate ability to zoom in on the content present.  The downside of this is that you have to wait several seconds every time you load the page, but it prevents clients from locking up the system.  I also stopped re-requesting the station data every time alongside the train data, and instead only having the server request the station positions from the API once and just reissuing that same data.  Unless the stations start moving, this system should be good.  <br><br>I also created a separate application that requests only the information for my two most frequented stations, the Porter and MIT stations, and displays the amount of time before various trains arrive at those stations in the direction I’ll be traveling in.  I plan to integrate this fully with the other app in the near future.<br><br><br><div style=\"text-align: center\"><img src=\"images/trains-2.png\" width=\"50%\" height=\"50%\"><br> Station times app.</div> <br>"
     },
     {
-      "Week": "47",
-      "Shortname": "",
+      "Week": "43",
       "Project_Number": "1",
       "Project_Name": "Trains",
-      "Text": "I added the train program to my homepage as a spinning cube link.  Now I can access it easier!"
+      "Text": "After getting everything running on the computer, I moved on to getting everything working well on mobile.  I wanted to make it easy to use this on the go, or to check the trains quickly before leaving the house.  For that reason, I transitioned to a vertical display.  I oriented the main train map in the top portion of the screen, taking up the upper square of the screen.  The lower region of the screen displays the data from my other app, showing arrival times for my two most used stations.  I also removed many of the extraneous outputs from the console.  In addition, I added the ability to toggle each line on and off to allow users to focus on whichever lines they need.<br><br><br><div style=\"text-align: center\"><img src=\"images/trains-3.png\" width=\"50%\" height=\"50%\"><br> All lines except red toggled off.</div> <br> "
+    },
+    {
+      "Week": "45",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "I created a quick quality-of-life update for the train app.  Basically, when they are visible, it creates way too much visual clutter.  However, sometimes I’m not sure which station is which.  I created a workaround by allowing the user to toggle the station names on and off.<br><br><br><div style=\"text-align: center\"><img src=\"images/trains-4.png\" width=\"50%\" height=\"50%\"><br> All lines except red toggled off, station names toggled on.</div> <br>"
     },
     {
       "Week": "46",
-      "Shortname": "",
       "Project_Number": "1",
       "Project_Name": "Trains",
       "Text": "I fixed a small bug that was causing the train app to crash frequently.  I’m not entirely sure what the bug was in the end, but the app doesn’t crash every day like it did before.  Now, it only crashes about once a week.  But such is the life of a programmer, I guess."
     },
     {
+      "Week": "47",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "I added the train program to my homepage as a spinning cube link.  Now I can access it easier!"
+    },
+    {
+      "Week": "48",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "Somehow, I failed to properly link the train page onto the spinning cubes homepage. I’ve now fixed that. In addition, I fixed a bug where if you repeatedly pressed the toggle buttons, the whole app would crash. I had left some debugging code in the program which was still requesting updates repeatedly, but now that’s been removed."
+    },
+    {
+      "Week": "49",
+      "Project_Number": "1",
+      "Project_Name": "Trains",
+      "Text": "I created an integration for this train data to be displayed on a Neopixel ring.  For more information, check out this link (PINK)."
+    },
+    {
       "Week": "2",
-      "Shortname": "",
       "Project_Number": "2",
       "Project_Name": "Open House",
       "Text": "N/A"
     },
     {
       "Week": "3",
-      "Shortname": "",
       "Project_Number": "2",
       "Project_Name": "Open House",
       "Text": "N/A"
     },
     {
       "Week": "4",
-      "Shortname": "",
       "Project_Number": "2",
       "Project_Name": "Open House",
       "Text": "N/A"
     },
     {
       "Week": "6",
-      "Shortname": "",
       "Project_Number": "2",
       "Project_Name": "Open House",
       "Text": "N/A"
     },
     {
       "Week": "14",
-      "Shortname": "",
       "Project_Number": "2",
       "Project_Name": "Open House",
       "Text": "N/A"
     },
     {
+      "Week": "15",
+      "Project_Number": "3",
+      "Project_Name": "Words",
+      "Text": "During this week, I decided to make a little tool to help me create new 5x5 mini crosswords.  I created a program that iterates over a list of words and tries to assemble them into 5x5 grids, compiling a list of all successful combinations.  At first, I was using the full dictionary list of 5 letter words, but this soon proved to require an immense amount of processing power which my AWS server did not possess.  I couldn’t just use my personal computer because I couldn’t leave the program running for days at a time without accidentally stopping it.  My temporary solution was to reduce the list of words to only the most common.  This drastically reduced the runtime, and in the end I was left with a list of valid 5x5 word grids with common words.  <br><br>Next, I created a user interface to dynamically search through the list of words with certain constraints.  There is an input of 25 boxes, which you can add letters into to constrain that space to be that letter.  It then does the same iteration over all the words to find valid grids while abiding by the user input.  Here is what the end result looks like, with an example input:  <br><br><br><div style=\"text-align: center\"><img src=\"images/words-2.png\" width=\"50%\" height=\"50%\"><br> All 5x5 word grids with “aloes” as the top row.</div> <br>"
+    },
+    {
+      "Week": "1",
+      "Project_Number": "4",
+      "Project_Name": "Weather",
+      "Text": "During the first week of the year, I decided to fully dedicate myself to displaying several of the pieces of information provided by the weather API in a novel way.  The idea I came up with was to mimic what it would look like to look out the window and see more than just the current time.  I decided to create a view that effectively showed time as the x-axis, and used the y-axis to show the weather data at those specific times.  The precipitation would be shown by a visual imitation of that precipitation, and a line graph would show the numeric data.<br><br>I designed some animated precipitation for rain and snow, as well as clouds and fog, and made it so that they would be isolated and aligned to the vertical bar assigned to that hour of the day.  I then created a line graph that goes across the screen and shows the temperature, “feels like” temperature, wind gust, and wind speed.  I also added a sun in the sky, which is placed at the horizontal position that represents the current time.  I then added a function which changes the sun’s icon into a moon during night hours, and which shows the approximate moon phase.  It’s difficult to explain in words, but here is a photo of the end result:<br><br><br><div style=\"text-align: center\"><img src=\"images/weather-1.png\" width=\"50%\" height=\"50%\"><br> The day’s weather forecast, with the sun showing that it is currently a little past noon.</div> <br><br>Once I had a single day implemented, I moved on to including the ability to see multiple days at once, and adding extra features.  I made it so that there was a horizontal scroll feature which allows the user to move horizontally through time, seeing future hours up to 15 days in the future.  The user can scroll either by single-hour increments or by one full day at a time using the arrow keys.  I also added mobile support, replacing code that would not run on mobile, as well as forcing a fullscreen horizontal orientation to prevent it from looking cramped. <br><br><br><div style=\"text-align: center\"><img src=\"images/weather-2.png\" width=\"50%\" height=\"50%\"><br> A future day with rain.</div> <br><br><div style=\"text-align: center\"><img src=\"images/weather-3.png\" width=\"50%\" height=\"50%\"><br> A future day with fog.</div> <br><br>I then added a few extra quality-of-life features.  I made it so that various aspects of the interface could be toggled.  This was done to reduce visual clutter if the user desired.  I then made it so that these toggles were saved in the URL of the webpage so that users could save the page with their toggles intact.<br><br><br><div style=\"text-align: center\"><img src=\"images/weather-4.png\" width=\"50%\" height=\"50%\"><br> The weather forecast, with all optional features toggled off.</div> <br>"
+    },
+    {
+      "Week": "11",
+      "Project_Number": "4",
+      "Project_Name": "Weather",
+      "Text": "During this week, I decided to create a second approach to visualizing the day’s weather, and this is one that I strongly prefer for daily use.  This weather app consists of a “weather wheel”, which is a round icon somewhat similar to a clock which divides the screen into 24 slices.  In each slice is a bar whose heights and colors represent the temperature and the “feels like” temperature, with the latter overlapping the former.  The colors are represented in HSV, with redder values representing hotter temperatures, and purpler values representing colder temperatures.  Around the outer edge of the ring are icons representing the precipitation or cloudiness for those particular hours, as well as a numerical value for the “feels like” temperature.  <br><br><br><div style=\"text-align: center\"><img src=\"images/weather-5.png\" width=\"50%\" height=\"50%\"><br> A day’s weather wheel.</div> <br><br>I also added the ability to scroll between full-day increments to see future days’ weather predictions.  I also added an input bar at the bottom of the screen which allows you to input a custom location to fetch weather data from, in case of travel or moving.  This parameter gets stored in the URL, allowing you to bookmark the page for a specific location and not have to re-enter it every time.  Go to this link for more information on how URL parameters work. (LINK: parameter storing in the URL)<br><br><br><div style=\"text-align: center\"><img src=\"images/weather-6.png\" width=\"50%\" height=\"50%\"><br>Weather wheel showing one day into the future.</div> <br><br><br><br><div style=\"text-align: center\"><img src=\"images/weather-7.png\" width=\"50%\" height=\"50%\"><br> Weather wheel for a different (warmer) location.</div> <br><br>I particularly like this form of weather representation due to its ability to easily be read at a glance.  From just one quick look I can parse both the individual colors and their relativity to each other to tell important information on how warm or cold it will be, whether it is getting warmer or colder, and even begin to infer if tomorrow will be warmer or colder than today. I can also just look at the precipitation icons briefly to know if it’s going to rain.  In under five seconds, I know how heavy of a coat I should wear (based on how dark the colors are) and whether I should bring a raincoat or umbrella (if I see rain icons).  I can even tell in general how windy it will be by comparing the actual and “feels like” temperature bars.  This app has become a part of my daily routine, and I can tell what temperature it is just by the colors by now."
+    },
+    {
       "Week": "39",
-      "Shortname": "",
       "Project_Number": "4",
       "Project_Name": "Weather",
       "Text": "After moving to Boston, I decided to change the default location for the weather app to be Boston.  This was not strictly necessary- I could always have just remade my web app shortcut on my iPhone to include the URL parameters for Boston and it would have had the same effect.  However, I was lazy, and decided instead to go into the server, try to remember how my code works, and change the default position parameter, all just to avoid remaking my shortcut.  I think it ended up being much more effort, but sometimes doing less effort for a longer time makes it feel like less effort overall, even when it’s not."
     },
     {
+      "Week": "49",
+      "Project_Number": "4",
+      "Project_Name": "Weather",
+      "Text": "I created an integration for this weather data to be displayed on a Neopixel ring.  For more information, check out my Ring project (PINK)."
+    },
+    {
       "Week": "50",
-      "Shortname": "",
       "Project_Number": "5",
       "Project_Name": "Discord",
       "Text": "At first, I found <a href=’https://dev.to/melvnl/send-message-to-discord-server-via-javascript-4gc6’>this website</a> which describes how to send a message to Discord via JavaScript.  It’s quite simple, and literally worked on the first try.  However, it is extremely limited in its scope, only allowing you to send static messages to Discord.  This works well for quick and dirty implementations, but I wanted something more substantial.<br><br>After a brief continuation of my search, I found <a href=’https://discord.js.org/’>this website</a> which describes how to use a NodeJS plugin called DiscordJS.  I decided to follow the tutorial, and was surprised by how simple it was to set up.  Now, I have a way to run a server that acts as a Discord bot full-time.  It can respond to user inputs with “slash commands”, and users can see a list of all available commands by just typing the slash character.  Furthermore, it’s completely modular, so it’s easy to add more commands.  I look forward to hopefully implementing control of my Router system into a Discord bot."
     },
     {
-      "Week": "3",
-      "Shortname": "",
+      "Week": "2",
       "Project_Number": "6",
+      "Project_Name": "Joystick/Car",
+      "Text": "I recently became aware of the fact that game controllers can be used as an input device directly in HTML without any fancy intermediary steps.  If you’re on a computer (or even phone, as far as I’m aware) and have either a USB or Bluetooth game controller connected to your device, JavaScript will directly pick it up and can parse the button inputs.  This got me thinking of all of the applications this could be used for, especially if I use a compact game controller like this one (LINK). However, different controllers register their button presses and joystick directions in different ways.  Because of this, I decided to make a web app that displays the full struct being supplied to JavaScript by any connected controller. The app also tries to display the UP, DOWN, LEFT, RIGHT, A, B, X, Y, and other buttons, as well as the joystick axes. Although it might misrepresent these axes, it is still helpful to figure out which button corresponds to what element of the “buttons” array that the struct provides.<br><br><br><div style=\"text-align: center\"><img src=\"images/joystick-1.png\" width=\"50%\" height=\"50%\"><br> Display showing several buttons and two axis inputs active.</div> <br><br>I also created the baseline for a driving game in P5.  It’s not wildly impressive, but it showcases moving a car around in a 2D space.  The car (which is just a circle with a line pointing in the forward direction) remains centered on the screen, but shows apparent motion because the background moves beneath the car.  Right now the controls feel extremely slippery, and it definitely needs some dialing in to get it to a more playable state.  Furthermore, I found out how to create multiple canvases in P5, which allows for multiple players each with their own separate view.  This could be a rather fun multiplayer game if I expand upon this project more.  For now, I haven’t even implemented enough visuals to warrant including a picture of the project, since it’s just a circle on a plain background."
+    },
+    {
+      "Week": "25",
+      "Project_Number": "6",
+      "Project_Name": "Joystick/Car",
+      "Text": "I decided to remaster my controller testing program using my more mature understanding of P5.  Now, the visuals of the program are cleaned up slightly from my first draft.  In addition, any analog inputs are shown as a “progress bar” that grows to the left or right depending on positive or negative values.  It’s still not pretty, and I might make further revisions to this program, but it does its job in its current state. The visuals are almost identical to the prior iteration, so I haven’t included a separate image of it."
+    },
+    {
+      "Week": "3",
+      "Project_Number": "7",
       "Project_Name": "Chords",
       "Text": "I started by designing a simple grid which displays all of the possible major keys that a song could be in, and shows what chords are present in that key.  I won’t give a full explanation of the music theory of keys and chords, but I’ll provide a basic explanation.  In essence, if you play a major scale on the piano, you’ll play 7 distinct notes.  Each of these notes is part of a chord in that key, but some are major and some are minor.  My graph shows you what notes are played in the scale, and then highlights them in purple if the key uses them as a minor chord.  In order to identify which key a song is in, first look up what chords are in the song (I use <a href=’https://www.ultimate-guitar.com/’>this site</a>).  Then, find the row that shares the most chords with that song.  On its own, this graph was already very helpful, but could be a bit tedious to use, so I decided to add some user input. <br><br>I added a bar at the bottom which is composed of two rows: a red “major” row and a purple “minor” row.  Clicking on any of the cells here will highlight that cell and add it to the list of chords that are in the song you are identifying.  Then, I added a probability column on the right which displays for each key what fraction of the inputted chords are in that key, while also highlighting those chords in red.  Then, I made it so that the rows of keys are sorted in order of most probable to least probable, removing any keys that have fewer than ½ of the inputted chords.  I also made it usable on mobile, since it’s usually easier for me to have my phone with me at the piano than to bring my whole computer. <br><br><br><div style=\"text-align: center\"><img src=\"images/chords-1.png\" width=\"50%\" height=\"50%\"><div><br> Chords page before any user selections. <br><br><br><div style=\"text-align: center\"><img src=\"images/chords-2.png\" width=\"50%\" height=\"50%\"><div><br> Chords page after the user selects C major, G major, and D minor.  The program suggests C as the most likely key, with alternatives of F and G."
+    },
+    {
+      "Week": "3",
+      "Project_Number": "8",
+      "Project_Name": "Stereogram",
+      "Text": "I put together a simple P5 program that creates two of the same grid of random red, green, and blue pixels.  Then, I shifted a rectangular subset of the pixels in one image by one unit.  To the untrained eye, they look like two random identical images, unless you pay really close attention and can see that a few of the pixels are slightly different.  However, when you cross your eyes right, you can see that rectangular subset either coming out of the screen or caving into the screen, depending on which direction the pixels were shifted.  <br><br>Next, I set to work animating it.  I made a simple loop that moves the center of that rectangular subset around the screen in a circle.  It’s a bit hard to see, but if you dial into it you actually can see a moving rectangle!  I made it so that the pixels randomize every frame, meaning you can’t see even a hint of the underlying animation unless you are viewing it the correct way.  The effect doesn’t pop quite as much when viewed as only one image, but here’s one frame of the animation: <br><br><br><div style=\"text-align: center\"><img src=\"images/stereogram-2.png\" width=\"50%\" height=\"50%\"><br> See if you can find where the rectangle is in this frame.</div> <br>"
+    },
+    {
+      "Week": "14",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I conducted some research about MQTT and how it functions.  I created some test programs to send data back and forth between clients and servers.  I quickly fell in love with this format due to its versatility and ability to be integrated in so many devices, and have begun trying to find various ways to implement it into other projects and to design new projects around this protocol."
+    },
+    {
+      "Week": "17",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I created the first draft of the PCB."
+    },
+    {
+      "Week": "18",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I designed and implemented the webpage part of MorseMate."
+    },
+    {
+      "Week": "20",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I created the final PCB design and got it ordered."
+    },
+    {
+      "Week": "22",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I finalized all of the parts of MorseMate and squashed any bugs present."
+    },
+    {
+      "Week": "40",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I went back and made sure MorseMate was in a presentable condition for an upcoming presentation I would be giving on it.  I also put together said presentation, which you will find linked in the project overview."
+    },
+    {
+      "Week": "41",
+      "Project_Number": "9",
+      "Project_Name": "MorseMate",
+      "Text": "During this week, I prepared for and then gave the full presentation on MorseMate that I previously mentioned."
+    },
+    {
+      "Week": "11",
+      "Project_Number": "10",
+      "Project_Name": "Cube",
+      "Text": "I put together a quick Node.JS program to visualize accelerometer data from the Arduino.  Since I had little knowledge of how Node.JS works, I pretty much just winged it.  I set up the Arduino to read data from the accelerometer and then output the read values to the serial port.  After setting up my Node.JS program, I worked to establish a serial communication with the Arduino.  I then parsed this data as X, Y, and Z parameters of the accelerometer.  These data were then sent via Socket.IO to the client webpage, where a Three.JS program would display a cube that was rotated by the amount specified by those X, Y, and Z parameters.  It was a very simple program, and I didn’t understand much of how it worked, but it did all come together in the end."
+    },
+    {
+      "Week": "2",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "This week, I updated my spinning cubes homepage to no longer have all of the links hard-coded into the page.  Instead, I have a separate file which contains the paths that each cube should link to, as well as the paths to each of their icon files to be displayed on its cube.  The homepage then takes this information and dynamically positions the cubes and the camera such that they all tile neatly onto the screen.  This way, I can easily add more links to the system without fiddling with the code."
+    },
+    {
+      "Week": "27",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "I finally got around to switching my server from having countless folders with each iteration of my programs to instead having only the most recent version present.  I could instead account for Github pushes as backups of prior versions, should I ever need to revert to a previous iteration."
+    },
+    {
+      "Week": "36",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "This week, I set up my WiFi network in my new apartment.  Having access and control over my own WiFi network is going to make many more projects viable in the future.  I can hopefully now do things like port forwarding to be able to access projects remotely, or use local network communications that I was unable to access before."
+    },
+    {
+      "Week": "37",
+      "Project_Number": "11",
+      "Project_Name": "Router ",
+      "Text": "Recently, while pondering what other things I could integrate into my own programs, I got to thinking about Spotify.  I decided to look into whether they have a way to communicate with their software, and I was very surprised to see that Spotify has an API that can be accessed by custom programs.  I soon found this NodeJS wrapper for the Spotify API called <a href=”https://github.com/thelinmichael/spotify-web-api-node”> Spotify Web API Node</a> which made things so much easier to work with, even though I still need to fiddle with access codes.  Within a short timespan, I had access to things such as user data, song information, and currently playing songs from my server.  I then moved on from reading data to attempting to control my own Spotify session. <br><br>The features that seem to be accessible from the API (and are useful to me) are the play/pause control, volume control, next/previous track, saving a song, and adding songs to the queue.  All of these have classes already in the NodeJS wrapper, so I just had to call them from my server.  I also began something that I call my “Router”: a system that allows me to control different programs of mine from one central location.  For now, I added all of the previously mentioned Spotify controls into the system, with future plans for expansion once I make new programs.<br><br>This program is somewhat limited by the fact that I need to constantly create new verification tokens manually in order to continue holding control over my Spotify session, since these tokens expire after only one hour.  This means opening the page in a web browser and verifying the app.  Apparently the API has something called a refresh token, which should allow the program to renew its own access without user input, but I have yet to figure out how that works and documentation is sparse.  There are also limitations to how this app can function.  The volume controls seem to be non-functional, at least in their current state, and none of the features operate until a Spotify session is opened on a device.  This means I can’t hit play on my music on my phone unless I first open up the app, which makes this program much less useful.  Nonetheless, this is a nice proof of concept that may be able to be expanded in the future."
+    },
+    {
+      "Week": "42",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "After a long time of using AWS to host my various projects, I finally decided it was time to move to my own independent system.  For this, I chose the most straightforward, tried-and-true method of using a Raspberry Pi as a server.  I had an old Pi lying around waiting to be used, and I wanted to move away from AWS before they started charging me for their service, and so it was a win-win.  I quickly set up the Pi with NodeJS and pulled my Github server repository, and I was up and running with my server programs on my local network.  However, I wanted to be able to access them from anywhere like I could from my AWS server, so I had to port forward it.  This is something that has given me way too much trouble in the past- when I was in middle school, I desperately wanted to host a Minecraft server, but was unable to due to consistently failing to figure out port forwarding due to a combination of a lack of knowledge and a very annoying router.  However, in just a few short minutes, I managed to get it working.  The satisfaction I received from fulfilling this task that had eluded me for over a decade is incomparable.  Also, just for the fun of it, I purchased my own domain name from <a href=”https://domains.squarespace.com/”>SquareSpace</a> and got that linked to the IP of my server, adding a bit of polish to an otherwise bland URL.  "
+    },
+    {
+      "Week": "43",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "I recently became aware of a company called <a href=\"https://www.kasasmart.com/\">Kasa</a> which makes smart home products which connect over your home network.  Others before me, namely the makers of the <a href=”https://github.com/plasticrake/tplink-smarthome-api”>TPLink Smarthome API</a>, have also found ways to interface with some of these smart home products via other devices on your home network, and so I decided to purchase a pack of four devices that slot in between a cable and an electrical socket and can interrupt power via a command either through an app on a smartphone or via direct commands, which can be done via NodeJS.  I plugged each of my home’s lamps into one of these sockets, and I added functionality so that if my Router system receives a command for “lights on”, “lights off”, or “lights toggle” via MQTT, it will turn on, turn off, or toggle all of the connected sockets.<br><br>I also tidied up my server this week by removing many of the excess folders and clutter that had built up over the course of several months of trial and error. In addition, I went back and gave the Raspberry Pi a static IP address on my network, which should hopefully remove the need to change the port forwarding address in the future.  I may need to investigate dynamic DNS if I find that my router’s IP changes though."
+    },
+    {
+      "Week": "44",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "This week, I got the lightswitch program up and running on the Raspberry Pi, which I had neglected to do the previous week somehow. "
+    },
+    {
+      "Week": "45",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "This week, I got done with a lot of new things for the server.  I got my router program fully operational on the Raspberry Pi, using a terminal multiplexer (TMUX) to allow me to run it alongside other NodeJS programs (i.e. my multiplayer server) or other assorted tasks.  For instance, I got my MorseMate system (PINK) running on there as well, and even modified the Router system to listen for messages being sent to the “router” username, allowing me to send messages to the Router via the MorseMate.<br><br>I also created a new input system for the Router: I used my <a href=”https://m5stack.com/”>M5Stack</a> <a href=”https://shop.m5stack.com/collections/m5-controllers/CORE”>Core</a> board with the keyboard included in the (sadly discontinued) <a href=”https://shop.m5stack.com/products/face”>M5Faces kit</a>to create a mini-terminal.  I can type messages into the keyboard, and they are typed out onto the Core’s screen.  When I hit the enter key, that message is sent over MQTT to the Router system, where it is interpreted and processed.  I later also added the ability for the Router to send messages back to the mini-terminal, where they are then printed to the screen.  I added functionality for the Router to respond to requests from the mini-terminal for weather (by returning the temperature highs and lows as well as precipitation conditions) and trains (by sending the upcoming train arrivals to my main stations).  <br><br>I also expanded my Router lightswitch system by creating an optional parameter, an integer corresponding to the ID of a specific outlet.  If I type “lights off 1”, it will turn off the light I gave ID 1.  This also works with the “off” and “toggle” commands as well.  In addition, I reprogrammed one of my <a href=”https://shop.m5stack.com/collections/m5-controllers/STICK”>M5StickC</a> devices to solely output the “lights toggle 1” command when its front button is pressed, toggling my nightstand light.  This allows me to control this light without needing to reach all the way over to the pull string for it, which is a minor victory but a victory nonetheless. <br><br>I also attempted to get control of my TV using a custom IR blaster made from an IR LED hooked up to an Arduino, but I ran into an issue when I realized that my TV’s remote (a generic Insignia FireTV remote like <a href=”https://www.amazon.com/Insignia-Remote-Control-PrimeVideo-Netflix/dp/B08F9SR2LK/ref=asc_df_B08F9SR2LK/?tag=hyprod-20&linkCode=df0&hvadid=642070304292&hvpos=&hvnetw=g&hvrand=649225657586056083&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9002004&hvtargid=pla-1931743576971&psc=1&mcid=4ba62c88ad2931ae80c8bd1240f01450”>this one</a>) is a fancy new type of remote that works differently than expected.  On most classic remotes, each button sends a unique infrared keycode to the TV.  However, to modernize the remote, this company instead has their remote emit only one infrared keycode, which is the one for the ON/OFF button.  The remote is otherwise connected via Bluetooth, and its other buttons do not interface with the infrared in any way, much to my disappointment.  However, there is light on the horizon- the TV allows you to connect game controllers to be used to control the TV’s basic functions, such as navigating menus.  I may be able to use this to get the end result I was hoping for in the future.<br><br>Even though it has very few practical applications for my uses, I still wanted to refresh my knowledge of infrared communication.  I used the <a href=”https://github.com/Arduino-IRremote/Arduino-IRremote”>IRRemote library</a> to add the capability to emit infrared codes to an ESP32 when a MQTT signal is sent to it.  In the future, I may add more functionality to this in order to control more things."
+    },
+    {
+      "Week": "47",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "I did a bit of housekeeping on the “spinning cubes” page, moving around some of the icons and adding a new one for the Trains page (PINK)"
+    },
+    {
+      "Week": "48",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "I decided to polish up a few things that were going wrong with my server and webpages.  First of all, my main “spinning cubes\" webpage was no longer properly displaying all of the cubes on mobile, after I had added several more.  To remedy this, I added some checks to see if the user was on mobile or desktop by checking the width of the display, and if they were on mobile I modified the cubes to better suit the vertical screen orientation.  <br><br>I also relocated my Raspberry Pi, since it seemed to be having network connectivity issues.  I moved it next to my router and connected it via Ethernet to attempt to stifle any bugs that might be occurring due to poor connection.  I’m not sure if this had any effect, but it’s better to keep it this way to prevent any future problems anyways."
+    },
+    {
+      "Week": "15",
+      "Project_Number": "12",
+      "Project_Name": "Jeopardy",
+      "Text": "I started out by brainstorming some questions and categories that I could use for my game (while procrastinating my other work).  Through this I ended up with almost a complete board’s worth of questions, before realizing that I needed some way of displaying them properly.  My first solution was found from a quick web search: a powerpoint presentation.  Someone had made a <a href=”https://docs.google.com/presentation/d/1N_5IbXUY3y2PCuhFQ0YA7ZuREwC7ew1Q3fyILBnEBQA/edit#slide=id.p”>powerpoint template</a> that allowes you to click on squares on the board to be taken to that question’s corresponding slide.  Then, the answer was on the next slide.  It also had a slide at the end for the Final Jeopardy round.  However, there were a few issues with this approach which became increasingly apparent.  Firstly, the interface was fairly clunky, trying to get back and forth between different slides.  It was also fairly easy to accidentally reveal the answer to a question, or to skip over the answer and show the next question, etc.  Secondly, it was a pain to input all of the questions, and if you wanted to change the order of questions you couldn’t simply move the slides around due to the way the board linked to itself.  Instead, you had to manually copy and paste the contents of each text box between the slides. Finally, there was no implementation of a system for buzzing in to identify who would answer the question first.  Overall, it was a good basic approach, but I would need something more advanced.  I tried looking for other alternatives online, but all of them seemed to have their own detractors.  A common theme that I saw were online Jeopardy builders that held the ability to insert images behind a paywall.  This frustrated me, so I decided I would take matters into my own hands."
+    },
+    {
+      "Week": "17",
+      "Project_Number": "12",
+      "Project_Name": "Jeopardy",
+      "Text": "During this week, I created another round of Jeopardy to play with my friends.  This time, I created three separate JSON files: one for the first round, one for the Double Jeopardy round, and a third with only one question that served as the Final Jeopardy round.  I added support for using the arrow keys to select a question, which alongside the Q, A, and R keys meant that the game could be fully controlled without using the mouse.  However, that wasn’t my final goal.  I also paired my M5Core to my computer via bluetooth, and had it send keystrokes to press the Q, A, R, and arrow keys.  This meant that I could now control the whole game, which includes both the board and the buzzers, from just one wireless device.  It really started to feel like the best this system could get, bar some sort of complete overhaul.  I played a second game with my friends, and it went very well again.  However, the ESP32 is not designed to do both ESP-NOW commands and Bluetooth at the same time, and this led to some dropped messages where people buzzed in but I didn’t receive it.  But overall it was another great success!"
+    },
+    {
+      "Week": "36",
+      "Project_Number": "12",
+      "Project_Name": "Jeopardy",
+      "Text": "After a long while, I decided to revisit my Jeopardy system.  I wanted to put together a round for a new group of friends, but one of my M5Sticks stopped working, so I had to come up with an alternate solution.  The original group that I had played Jeopardy with had all moved to different cities, which also meant that my M5Stick solution was no longer an option.  Due to these reasons, I decided to design a new server-based system for buzzing in.  <br><br>Now that I had knowledge of how to use both NodeJS (LINK) and WebSockets (LINK), I realized I could design a system composing of three parts:<br><br>First, a client-side web app for the players, which is composed of a single button that allows players to buzz in.  The players would open this web app on their phone, removing the need for specialized hardware.<br><br>Second, another client-side web app for the host, which displayed the players who buzzed in by the order they buzzed in.  <br><br>Third, a server that would route messages from the players to the host, as well as serve the player and host webpages. <br><br>These components were each simple to create on their own, but trying to get them to all communicate seamlessly, in addition to preventing disconnection issues, proved to be quite the challenge.  By the time it was time for me to host the game, the system was still not in a stable condition.  This led to numerous issues during the game, where people couldn’t buzz in, or I didn’t receive their buzzes, or they would get disconnected.  Needless to say, this was not really a great success, sadly.  <br><br>However, one good thing did come out of this week’s progress.  I managed to create a small app that converts the JSON format that I had been using so far into CSV files for ease of use, since it was a pain to do things like move questions around, or even see all of the questions and answers, from a pure JSON format.  "
+    },
+    {
+      "Week": "45",
+      "Project_Number": "13",
+      "Project_Name": "Ring",
+      "Text": "After many weeks of just fidgeting with the neopixel ring while it sat on my desk unused, I finally got the motivation to attach some short wire leads to it and see if I could get it set up.  I made it my goal to get it running off of an ESP32 dev board I had lying around, so that I could send updates to the LEDs over the network.  After a brief period where I worried that it wasn’t getting enough power from the ESP, I finally got it running with Adafruit’s <a href=”https://learn.adafruit.com/adafruit-neopixel-uberguide”>example code</a> on their website.<br><br>I then moved on to figuring out a way to push LED updates wirelessly.  I quickly settled on MQTT, because it’s become my new favorite protocol for these kinds of things.  I set up an MQTT channel for the LED ESP32, called “/neopixel”, and used some Arduino code from my other projects to get it set up with WiFi Manager and MQTT.  <br><br>Once the LEDs were connected to my MQTT network, I had to find a good way to compactly send LED data across.  Since there are 24 RGB LEDs, and I wanted to send all of the data in one message, I found a somewhat unconventional approach, and turned the R, G, and B ints into ASCII chars by mapping their values into the range [64, 128).  Note that 128 is not included, because that is not a typeable character.  Using this, the value “~@@” would correspond to the color red, because the @ symbol is ASCII character 64, and ~ is 127.  I know that this is a really weird way of doing this, but it works, and I can’t be bothered to find a different way of doing it right now.  The way my code is formatted, if you send a string of 24 sets of 3 characters, it will change the values of all 24 LEDs, and if you send fewer characters, it will treat the remaining values as zeros, allowing you to toggle only the first N LEDs by sending only N*3 characters."
+    },
+    {
+      "Week": "49",
+      "Project_Number": "13",
+      "Project_Name": "Ring",
+      "Text": "For this part of the project, I decided to try to display some of the data I already had made a way of accessing in my Weather (PINK) and Trains (PINK) projects, through the medium of my Router (PINK) project.  <br><br>Firstly, I created a function that translates RGB values into my “NEO” format of using characters to encode the data.  This isn’t too complicated in principle, but in practice it took me a while to iron out all of the bugs.  During this process, I realized that my form of encoding allows you to zero out the ring by just sending an empty message to the ring, as an easy way of turning the whole thing off and preventing potential LED burnout.  Once this was all working, I could move on to transmitting the data to the ring.<br><br>For the weather, I decided to copy the format of my Weather Wheel (PINK).  Unfortunately, I designed my neopixel code to work with RGB values, while my Weather Wheel code works with HSV.  This meant writing (or more accurately, going online and finding) an HSV to RGB converter.  Once I had this, I added some code in the weather request function in my Router (PINK) that sends the color data to the neo MQTT channel as well.  This worked out well since the 24 neopixels could each represent one hour of the day.  However, the results were fairly underwhelming.  Without a hefty diffusion layer, it’s difficult to see the difference between similar colors.  In my experience, I was only able to tell if it was above 60, between 60 and 40, and below 40.  I’ll have to see how it fares when it gets warmer around here, because I think it will be even more difficult to tell multiple shades of green apart.  This could be solved with a diffusion layer, but then it loses the charm of being a bare PCB circle.  I’ll play around with this when I get access to a 3D printer or laser cutter. <br><br><br><div style=\"text-align: center\"><img src=\"images/ring-1.png\" width=\"50%\" height=\"50%\"><br> Ring showing today's weather.</div> <br><br>For the trains, I had to do a bit more work.  Firstly, I had to establish what exactly I was going to display.  I decided to reuse the code I had written to calculate the amount of time until departure for red line trains going from the station nearest to me to the city.  Since the neopixel ring is circular, I could easily use the display as a clock.  Rather than represent 24 hours of time, this program would represent only one hour in the circle.  Since there are 24 LEDs, this means that each LED would represent 2.5 minutes, and any time above 59 minutes is discarded.  This means that reading the clock is more of an estimate, but it still gets the point across.  I ran into an infuriating bug when working on this code, where for some reason the train times were showing up as either above 5000 minutes or below -1000 minutes.  It turned out that my Raspberry Pi server had a clock that was severely out of sync, and resynchronizing it solved this issue.  For the visuals, I decided to show a red pixel for each train, and turn pixels off otherwise.  Now, when I request train times from the Router, it emits the correct sequence of “red” and “not red” pixels to show how long it will be before the next trains.<br><br><br><div style=\"text-align: center\"><img src=\"images/ring-2.png\" width=\"50%\" height=\"50%\"><br> Ring displaying upcoming trains.</div> <br>"
+    },
+    {
+      "Week": "2",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "I began by testing the core of this project, which will be the ATMEGA328-P board.  This is the chip that the standard Arduino Uno and Arduino Nano use, and its ubiquity means that there are many resources available to seek out when creating this project.  My first tests involved taking one of the ATMEGA328-P DIP modules that come pre-inserted in the Arduino Uno and trying to program it for use outside of the Arduino Uno’s package.  They can be easily removed with a flat tool, but the issue is that once removed there is no longer an easy interface to reprogram them.  However, I soon discovered that it was possible to continue to use a second Arduino Uno as a programmer for the removed ATMEGA328-P.  I also checked to make sure that one Arduino (or unsocketed ATMEGA328-P) could be powered by a data line from another board, which proved successful.  Once I had all of that working, I moved on to actual tests of my project.<br><br>Firstly, I wanted to test out the transmission and reception of I2C signals from one Arduino to another.  I ran one Arduino as an I2C host to receive data and the other as an I2C peripheral with a fixed I2C address defined in software emitting data, and it worked well.  However I wanted to be able to control the transmission of data from the host end, and so I switched the code around so that the host would request data from the peripheral, which would then return the requested data.  This way, I could have as many peripherals as I wanted connected to the host, and have the host iterate through them.<br><br>Lastly, I ran some tests that involved switching a board’s I2C address during runtime.  I found that it is possible to change the address, which would allow me to dynamically add and remove addresses as modules are added and removed.  "
+    },
+    {
+      "Week": "3",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "Now that all of the parts were working individually, I wanted to make a test to see if it was viable to use all of them together with a mockup system test.  I connected several Arduino Nano boards via I2C to serve as a test, and assigned one to be the host.  I gave the others three buttons each, and programmed the host to request what buttons were pressed, and for the others to supply that.  I ran a quick test with just one host and one peripheral and got that to work, and then added the other boards into the circuit.  I was able to successfully have the host request what buttons were pressed from any and all of the peripherals.  Their I2C addresses are also set as they connect, meaning they can be dynamically added and removed as desired."
+    },
+    {
+      "Week": "5",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "This week, I made some advancements in reprogramming the ATMEGA chips.  Previously, I was using a full-size Arduino to reprogram them, but this was cumbersome, since it took up more space in my toolkit and required the use of a USB type B cable.  Instead, I decided to transfer over to using an FTDI adapter to program the chips without needing to remove them from the breadboard.  It wasn’t too difficult to set up, and now that I’m able to do that I will be able to reprogram boards that I am unable to physically remove, such as soldered-in ones or surface-mount ATMEGA328-P packages.  <br><br>After this, I created a test rig that includes several ATMEGAs on some breadboards to allow me to test things such as how many wires I will need to interface between boards, what power levels I’ll need to send down the chain, and how both the host and peripheral software will function."
+    },
+    {
+      "Week": "7",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "This week I built off of last week’s prototype test rig and refined my design down to a final working version.  I was able to lock in the wiring that I would incorporate: I would use a five-wire interface consisting of data, clock, power, ground, and a single extra flag wire.  The reason for including the flag wire is to prevent issues on startup if there are multiple peripherals connected.  Since I want the peripherals to dynamically set their I2C addresses, my code starts them off at a default I2C address of 0, and then waits to receive a new message from the host which specifies an unused I2C address to change to.  However, if all of the peripherals were to become active at the same time, they would all join as address 0, and would then all receive the initial message from the host to change to the first unused I2C address, which would be 1, and now all of them would be address 1.  This is not the behavior that is intended, as we want each address to be unique. <br><br>I found a workaround for this by having a flag pin.  On startup, each peripheral remains disconnected from the I2C bus until its input flag pin is high.  Once the host is on, it outputs a high signal to the first peripheral in the chain.  This peripheral now first joins the I2C bus, then waits until it receives a new I2C address, and finally sets its flag output pin to high, which triggers the next peripheral in the chain.  This continues until all peripherals have been initialized with a unique address, and ends in a state where the final peripheral is outputting its flag to an empty socket.  Now, if any new peripheral is connected, its flag will already be set high, meaning it will immediately begin the process of acquiring a unique address.<br><br>I originally wanted to have this system function with only four wires (data, clock, power, and ground), by having the power line be drawn directly from an output pin of the previous board in the chain.  This way I could still control how many boards were on the I2C bus without needing a separate wire to do so.  However, I found that this was highly unreliable, and resulted in an unstable I2C connection that could not properly transmit information.  Therefore I scrapped that idea and moved on to a new system."
+    },
+    {
+      "Week": "9",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "This week, I looked over all of the PCBs for REC-ALL to make sure they were ready to be ordered.  Once I was happy with how they looked, I placed the order.  Now I just need to wait for them to arrive and I can do some more thorough tests."
+    },
+    {
+      "Week": "12",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "Once all of the PCBs came in, I moved on to soldering several of them to test that they were working properly.  This also involved programming in all of the GPIO pins that I had wired, which is always a pain.  However, everything worked well, so this first PCB prototype has proven to be a success.  <br><br><br><div style=\"text-align: center\"><img src=\"images/recall-1.png\" width=\"50%\" height=\"50%\"><br> Two populated PCBs, with limit switches as inputs.</div> <br>"
+    },
+    {
+      "Week": "15",
+      "Project_Number": "14",
+      "Project_Name": "Rec-All",
+      "Text": "Now that I had the basis for the inputs for the REC-ALL system, it was time to get started on what to do next with those inputs.  My goal was to send these inputs to a computer somehow to be used as inputs there, but I didn’t want to send them directly over USB.  Instead, I wanted the REC-ALL system to be wireless.  Because of this, I decided that the host I2C board should be an ESP32, which would broadcast all button presses via <a href=”https://www.espressif.com/en/solutions/low-power-solutions/esp-now”>ESP-NOW</a>, a protocol by Espressif designed for sending packets of data between ESP devices.  Then, I would have a second ESP32 plugged into the computer which was receiving those packets and outputting things like keyboard and mouse commands over USB.  <br><br>For this reason, I dedicated this week to making sure I could properly run the ESP-NOW protocol on the boards I was using, and ensuring that I would be able to packetize the data properly.  All of my tests succeeded, showing this may be a viable way to proceed with this project."
+    },
+    {
+      "Week": "16",
+      "Project_Number": "14",
+      "Project_Name": "Jeopardy",
+      "Text": "I decided to create my own implementation of a Jeopardy board.  I created a P5 program that pulls questions from a JSON struct and displays them on the board in a (number of categories) x (number of questions per category) grid that adjusts itself to fit the parameters in the JSON file.  Clicking on any of the prices would pull up that question, and then clicking on it again would bring you to the answer, and clicking a third time would bring you back to the board (with that question now no longer displaying).  <br><br><br><div style=\"text-align: center\"><img src=\"images/jeopardy-1.png\" width=\"50%\" height=\"50%\"><br> Example board.</div> <br><br>I decided to also add a secondary input system composed of “q” to open the question, “a” to open the answer, and “r” to return to the board.  This prevented any accidental double-click that would spoil the answer.<br><br>I also implemented a rather simple way of incorporating images.  In the JSON file, you can specify the path to an image in the same folder, and the game will import that image and resize it to fit to the screen instead of displaying text for the question.  I used this to have a category where the players had to solve a Wordle from an image that showed a partially-played game.  <br><br>Finally, I wanted to have a buzzer system.  For this, I used some components I had picked up a while ago on discount but had not had a good use for.  This is composed of several components from <a href=”https://m5stack.com/”>M5Stack</a>, namely some of their <a href=”https://shop.m5stack.com/collections/m5-controllers/STICK”>M5StickC</a> boards and one <a href=”https://shop.m5stack.com/collections/m5-controllers/CORE”>Core</a> with the <a href=”https://shop.m5stack.com/products/face”>M5Faces</a> expansion. The M5Faces kit has sadly been discontinued, but I picked one up on Ebay, and it technically wasn’t required for this project since the M5Core has three built-in buttons.  Each contestant got an M5StickC (which I’ll abbreviate to Stick), which is an ESP32-based device which served as their buzzer.  By pressing the single face button, the Stick would emit a signal over <a href=”https://www.espressif.com/en/solutions/low-power-solutions/esp-now”>ESP-NOW</a>, a nifty protocol made by Espressif (makers of the ESP32) themselves that allows broadcasting of data without the hassles of directly connecting as you would need to using something like Bluetooth, or even needing a WiFi connection.  When one of the players presses the button on their Stick, it emits their name over ESP-NOW.  I programmed each one with the name of one of my friends as the string to output, but ideally there would eventually be a better way of dynamically changing the names, maybe using WiFi Manager or something similar.  I used my M5Core board (also ESP32-based) to listen for the emitted signals from each of the Sticks, and it displayed on the screen the usernames that pressed the button in the order that the messages were received, thus creating a queue of people to answer the question.  It worked surprisingly well with very little modification to the example code I found for ESP-NOW online.  <br><br>The next time I met up with my friends, I surprised them by hosting the round of Jeopardy with my custom software, and it all went very smoothly, and we all had a great time!  The minor caveat was that it was hard to keep all of the ESPs charged throughout the game, leading to a game of musical chairs with the chargers.  But overall, it was a great success!"
+    },
+    {
+      "Week": "21",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "This week, I began creating the basis for a game.  After learning to use Socket.IO for MorseMate (PINK), I decided to use Socket.io to move information around for the game.  This allows users to connect to my server and registers a unique address for them.  After I was able to see joining players in the console, I moved on to creating a user interface.  I started with something simple, just a 2D plane.  Each player can move around the server using the arrow keys.  The users’ positions are relayed to the server, which then relays that information to each of the other players.  This results in players being able to see each other on their own screens. <br><br>It was very fun just watching little circles move around the screen, but there was much more to do to make the game actually engaging.  I continued by adding a username and color input system.  Users are now prompted to enter a username to be displayed above their character, and a color to change their icon to.  This helped to distinguish players from each other and to break up the monotony of the game.  This also accidentally served as a rudimentary chat system, as you could keep changing your username to talk to others.  I also added a way for players on mobile to move by tapping the sides of the screen, which is cumbersome but functional. Here’s how the system looked after this stage:<br><br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-8.png\" width=\"50%\" height=\"50%\"><br> Two players in the game, with username and color input at the top.</div> <br><br>Finally, I moved the server to <a href=”https://aws.amazon.com/”>AWS</a>.  I’ve been using their services for a bit due to receiving a free year of service as a student.  I don’t plan to stay on AWS any longer than the free year, but it provides a way for me to host dynamic websites and servers for free for now.  This means anyone can now actually go to the server’s address and join into this “game” at its current state.<br><br>I also added in a system for inputting a rudimentary world, with a 2d grid defined in an array providing a 2D grid of squares to pattern the background with.  Eventually, these will become solid blocks that the player cannot pass through, but for now have no further functionality"
+    },
+    {
+      "Week": "25",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "This week, I overhauled the multiplayer server.  Now, there are basic collisions between players and walls, which was sorely missed in the original version.  I also overhauled the input system, allowing for both keyboard and touch inputs to coexist peacefully, while also providing a base for me to build off of in case I decide to add controller inputs in the future.<br><br>In addition, I made some updates to the grid itself.  First and foremost, I added colors to the grid, which was a huge help in making the game more vibrant.  Secondly, I created a program which will parse pixelated images into grid arrays, taking each colored pixel and turning it into a wall and each transparent pixel into a walkable space.  Finally, I made it so that the grid is stored on the server-side and then sent over to the user when they connect.  The reason for me doing this is so that in the event that I add dynamic terrain, for instance the ability to add and remove walls, I would need the grid to update for all players, necessitating the ability to send the grid from the server side anyways.  Here’s a full look at the new visuals: <br><br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-9.png\" width=\"50%\" height=\"50%\"><br>New colored grid, with two players present.</div> <br><br>"
+    },
+    {
+      "Week": "27",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "This is a simple and brief update: I added controller support to the multiplayer server.  This way I can test how the game feels with a different input method."
+    },
+    {
+      "Week": "29",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "This week, I took a trip to Iceland.  It was a wonderful time, and a volcano started (peacefully) erupting while we were there.  However the most important part of the trip was the fact that I had almost 20 hours of otherwise boring time in airports which I decided to use to tackle a project I had long been interested in: raycasting.  The concept I wanted to explore was the fact that if you take a 2D grid and a point somewhere within it, and then cast rays from that point to the “walls” in that grid, you can use the lengths of those rays to create a 3D representation of that 2D world.  This concept is used in some very old video games and relies almost exclusively on trigonometry, and some people affectionately call it “2.5 D” due to it sitting somewhere between a 2D and full 3D game..  Prior to my many hours of flights and layovers, I made it my goal to emerge from there with a completed raycaster game, and what’s more, I would do so without using the internet at all.  I set up a P5.JS environment, and got right to it.<br><br>The code wasn’t too difficult, especially since I had seen <a href=”https://www.youtube.com/watch?v=gYRrGTC7GtA”>this video</a> many months prior.  It mainly involves a lot of trigonometry and math.  Since I already had my 2D game implemented, I used that as the base for the raycaster, reusing its grid system and collision detection.  I then powered through all of the trigonometry debugging (it was a lot of mixing up negative signs, and switching sine and cosine, and needing to convert between X/Y coordinates to screen coordinates).  I’m pretty sure my code is working in reverse in multiple parts, but because it’s an even number of parts, they all cancel out, and in the end it all works!  The end product looked a bit off, due to me not accounting for some skewing that happens as objects get farther away (and probably because I didn’t use the right formulas), but it’s certainly playable.  I also kept the original 2D view in the top left corner, along with what rays are being cast, as a reference.  Here are some examples of what it looks like: <br><br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-1.png\" width=\"50%\" height=\"50%\"><br>A sample view from the game.</div> <br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-2.png\" width=\"50%\" height=\"50%\"><br> View from another location.</div> <br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-3.png\" width=\"50%\" height=\"50%\"><br> This view provides a good view of the seams between grid units.</div> <br>"
+    },
+    {
+      "Week": "32",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "This week, I just decided to fix some of the lingering bugs in the raycaster code.  This time I allowed myself access to the internet, and I went about fixing the length calculation for distance.  It turns out that I had used a wildly incorrect formula for distance, but somehow arrived at a fairly good looking implementation, but which admittedly looked very “off”.  I reworked the formula, and implementing this made the game look much better and more like an actual 3D environment.  I also moved the raycaster onto the main AWS server, allowing access from anywhere much like the 2D multiplayer iteration.  The raycaster doesn’t benefit much by being put on the server, since there is no implementation of multiplayer, which also makes it fairly ironic to call it an implementation of my multiplayer game."
+    },
+    {
+      "Week": "42",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "After working so much with Three.JS, I decided it would be interesting to try to create a version of my multiplayer system that has a truly 3D visual system.  The movement and collisions would still be confined to the same 2D grid, but this would allow me in the future to insert 3D graphics and objects into the world, as well as have 3D player models.  <br><br>I started from the baseline of my first multiplayer server and used its grid system for collisions.  I then took the grid and found each position where there was a wall, and rendered a stretched cube at that position.  Doing this at all wall positions created a very similar effect to the raycaster, albeit with much smoother edges.  After this, I created a simple visualization of where other players are by creating a small brown floating cube at each player’s position, which can later be expanded to a full, and hopefully customizable, player model.<br><br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-4.png\" width=\"50%\" height=\"50%\"><br> View of a test scene with several rooms.  Walls are wireframes to showcase better.</div> <br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-5.png\" width=\"50%\" height=\"50%\"><br>View from a second player’s POV, standing behind the previous one.</div> <br><br>I then decided to branch out a bit and try to create a way to visualize more complex shapes in this iteration of the game.  I decided to create a structure in code which was a list of structs of the form {X, Y, Z, L, W, H}.  Each of these structs encodes the position and dimensions of an individual rectangular prism anywhere in the game world.  A collection of these cubes can be given a color and a global 3d offset to position an entire object in the 3D world.  I was able to design a 3D table and place it in my game.<br><br><br><div style=\"text-align: center\"><img src=\"images/multiplayer-6.png\" width=\"50%\" height=\"50%\"><br> A sample 3D objects: a table, and some pink test cubes.</div> <br><br>I also created a script that runs when a user disconnects from the server.  In it, I remove the player from the list of active players, preventing a situation where the server accumulates inactive players until it crashes. "
+    },
+    {
+      "Week": "48",
+      "Project_Number": "15",
+      "Project_Name": "Multiplayer",
+      "Text": "In all of my haste to test out the full 3D implementation of my multiplayer game, I neglected to make a working copy of the raycaster version.  This meant that it was no longer possible to showcase my raycaster.  I found this to be quite a shame, so I decided to revive it.  I realized that AWS was still running the raycaster, and so I took that version of it and reinstated it alongside the Three.JS version.  Now it is finally possible to play this version again, and it will remain for posterity’s sake."
+    },
+    {
+      "Week": "13",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "This week, I explored ways to use the ESP32 as a Bluetooth game controller.  I eventually settled on <a href=”https://github.com/lemmingDev/ESP32-BLE-Gamepad”>this library</a> which allows the ESP32 to fully act as a game controller.  I got it set up, and it worked flawlessly! This system allows for both digital and analog controller inputs, so I decided to use both.  I added support for IMUs to be used as analog inputs, harkening back to the motion controls of the Wii Remote.  I would eventually like to be able to make a nicely packaged remote that supports linear and gyroscopic motion controls.<br><br>I also explored <a href=”https://github.com/blackketter/ESP32-BLE-Combo”>another library</a> that can be used to send Bluetooth mouse and keyboard inputs.  However, I couldn’t find an easy way to use both the keyboard/mouse and game controller libraries at the same time.  I may come back to that idea later, but for now I can’t think of many use cases for both simultaneously. "
+    },
+    {
+      "Week": "22",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "Hot off of the tails of my MorseMate project (PINK), I decided to create more PCBs for various designs of game controllers.  I wanted to test out the ergonomics of these designs to see if any of them were viable to be used as the basis for my future game controller project.  I also modified the MorseMate core board to remove the included buttons, and instead provide a row of header pins for a button header to go onto.  This would work in a similar way to Adafruit’s <a href=”https://learn.adafruit.com/adafruit-feather/featherwings”>FeatherWings</a> or Raspberry Pi <a href=”https://www.raspberrypi.com/news/introducing-raspberry-pi-hats/”>HATs</a>, and would be swappable depending on the use case. (IMG) <br><br><br><div style=\"text-align: center\"><img src=\"images/controller-1.png\" width=\"50%\" height=\"50%\"><br> Left: larger 10-button pad, and bare PCB for refrernce.<br>Right: smaller, 10-button pad with 4 additional shoulder buttons.  Middle shows smaller buttons, top also has shoulder buttons soldered on.</div> <br>"
+    },
+    {
+      "Week": "25",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "I decided that while I checked over the various PCBs I had made before ordering them, I could utilize the PCB that I already had available to start playing with the code.  I took the MorseMate prototype and reprogrammed it to act as a Bluetooth controller.  I used the internal IMU to also send analog information as well."
+    },
+    {
+      "Week": "29",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "I finished reviewing the PCBs and finally ordered them, along with some spare <a href=”https://www.aliexpress.us/item/3256805862851422.html?src=google&src=google&albch=shopping&acnt=708-803-3821&slnk=&plac=&mtctp=&albbt=Google_7_shopping&albagn=888888&isSmbAutoCall=false&needSmbHouyi=false&albcp=19623912707&albag=&trgt=&crea=en3256805862851422&netw=x&device=c&albpg=&albpd=en3256805862851422&gad_source=1&gclid=CjwKCAiAnL-sBhBnEiwAJRGiguClekUsRXJpB_LpbLgIrw_zaG9Ym43KEXyY-DAh-a2vpBZYyGQoChoCN_cQAvD_BwE&gclsrc=aw.ds&aff_fcid=3664c28eecac4b988a773aab1611d30c-1703996986406-00355-UneMJZVf&aff_fsk=UneMJZVf&aff_platform=aaf&sk=UneMJZVf&aff_trace_key=3664c28eecac4b988a773aab1611d30c-1703996986406-00355-UneMJZVf&terminal_id=638b95f7da674860aafe5ba0a90b0e7c&afSmartRedirect=y&gatewayAdapt=glo2usa”>3DS C-Stick</a> components I managed to find online.  These components are used as analog joysticks on the newer models of the Nintendo 3DS, and their compact size makes them very attractive for use in this project.  If I could get two of these hooked up to a tiny controller, it would be amazing."
+    },
+    {
+      "Week": "30",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "I decided that since I had lost access to my university’s electronics lab, I should stock up on things I would need to keep my circuitry projects going.  I decided to buy a hot air station online, as well as stock up on some components I would need for the PCBs I had recently ordered (LEDs, resistors, capacitors, and the like).  "
+    },
+    {
+      "Week": "31",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "All of the PCBs finally arrived, so it was finally time to solder them. I soldered the button pads for the PCBs that I designed, and tested them out on a breadboard.  They are fairly clunky (partly due to being on a breadboard) but the functionality is there! This leaves me very optimistic for the future of this project."
+    },
+    {
+      "Week": "32",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "This week, I created more PCBs, because clearly I didn’t have enough of them.  This time I focused on analog inputs.  I made button pads for three new input systems, all with components from Adafruit: a <a href=”https://www.adafruit.com/product/504”>5-directional input</a>, a <a href=”https://www.adafruit.com/product/2765”>generic joystick</a>, and a <a href=”https://www.adafruit.com/product/444”>Playstation joystick</a>.  I also looked into potentially giving each of the headers their own ATMEGA328-P to allow them to connect to the main ESP32 board via only four wires, so I made another PCB to test this concept.  In this test I also included a soldering point for a smaller quartz crystal in case I find one.  I also created breakout boards for the previously mentioned C-Stick (LINK) and the USB-UART module for figuring out what went wrong with my last iteration.  I also made revisions to some of my previous boards, since I realized too late that I had some bad connections.   I finished out the week by ordering all of the new and revised PCBs.<br><br><br><div style=\"text-align: center\"><img src=\"images/controller-2.png\" width=\"50%\" height=\"50%\"><br> From left to right: pad with 5-directional joystick, pad with Playstation joystick, pad for Adafruit joystick (unpopulated) and breakout for C-Stick.</div> <br>"
+    },
+    {
+      "Week": "47",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "Since I realized that my TV is able to be manipulated using a Bluetooth game controller (see previous post) (PINK), I decided to connect one of my own controllers and see what functionality it has.  It was able to do all of the navigation I would normally do, so I’m confident in being able to move forward with creating an ESP32 gadget that can automate my TV controls, as silly as that sounds."
+    },
+    {
+      "Week": "24",
+      "Project_Number": "16",
+      "Project_Name": "Controller",
+      "Text": "I decided to make some more PCBs to test out some alternatives to the ESP32 WROOM module I had used for the MorseMate.  The reason I sought alternatives is because the full-sized ESP32 module is fairly large compared to other options.  I managed to find two attractive alternatives: the <a href=”https://www.espressif.com/sites/default/files/documentation/esp32-s3-mini-1_mini-1u_datasheet_en.pdf”>ESP32-S3-Mini</a> and the <a href=”https://www.espressif.com/en/module/esp32-pico-mini-02-en”>ESP32-Pico-Mini</a>.  They are both much smaller and offer very similar feature sets, but are significantly smaller, allowing me to design smaller boards.  In addition, the ESP32-S3 comes with a built-in USB-UART adapter, which removes the need for an external one, further reducing the required size of the board.  I created a new PCB for each of these alternatives. <br><br><br><div style=\"text-align: center\"><img src=\"images/controller-3.png\" width=\"50%\" height=\"50%\"><br> From left to right: original MorseMate PCB, PCB with button headers, smaller ESP32-S3-mini board, tiny ESP32-Pico-Mini board (with fewer features) .</div> <br>"
+    },
+    {
+      "Week": "51",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "As my year of projects comes to a close, I decided to take this week to look back on all of my projects, and to compile a document that goes over all of the projects I did.  I combed through each and every task I put on my personal to-do list, sorted them into distinct project categories, and documented what I did for each one.  I then collected some pictures where possible, and links to various resources, information, and products that I used for each one.  I even went back through my GitHub pushes and read my notes there, just to make sure I didn’t leave anything out.  I put everything into one long document, but I still wanted to have some way to display it all online in a fun format.  I decided on making some sort of website, but without deciding yet on exactly what format."
+    },
+    {
+      "Week": "52",
+      "Project_Number": "11",
+      "Project_Name": "Router",
+      "Text": "For the final week, I finally came to a conclusion on how to display all of my project descriptions.  I came up with the idea to display them all in a website designed to appear like a terminal interface.  Users can type in various commands to see my information presented in different organizational patterns.  One command lists all of the project titles, another lets you select a project to view all of its updates, and another lets you see all of my updates in chronological order.  For the basis of the website, rather than rewrite a terminal interface from scratch, I was able to find something called <a href=”https://terminal.jcubic.pl/”>JQuery Terminal</a>, which allows the creation of a terminal-like interface in JavaScript.  This was perfect for my use cases, and so I got to work incorporating the functions I wanted to add.  Importing the text was easy, but I also wanted to import all of my hyperlinks and photos as well.<br><br>To implement those, I realized that JQuery Terminal’s “echo” command allows for you to output raw HTML to the terminal.  Therefore, all I had to do was painstakingly convert every hyperlink into a HTML “a” tag’s HREF and insert it in-line with the text.  Then, I downloaded every image into a folder, and used “img” tags to embed each image in-line as well.  I then did some formatting to ensure that each image and its caption is centered.  <br><br>After a few days of converting everything into this format, I made a spreadsheet with columns for “week number”, “project number” (a unique ID for each project), “project name”, and “text” (the body of text).  Each row contained the description for one week’s work on one specific project.  I also made a second spreadsheet which contained the names, numbers, overviews, and “next steps” for each project.  To get this into the proper format for my terminal program to understand, I first downloaded the spreadsheets as a TSV, then converted it to JSON using <a href=”https://onlinetsvtools.com/convert-tsv-to-json”>this website</a>, and then imported it into my program.  Finally, it was all done, and now you can see this website for yourself right here."
     }
   ]
