@@ -1,0 +1,129 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes15.png">
+	<link rel="icon" href="/html/img/Boxes15.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<div id="first">
+		<script src="../../js/src/p5.js"></script>
+		<script>
+
+			var dims = [0,0]
+			var iconset = ["snow", "rain", "fog", "wind", "cloudy", "partly-cloudy-day", "partly-cloudy-night", "clear-day", "clear-night"]
+			var picset = ["❄️", "💦", "🌫️", "🌀", "☁️", "🌤️", "🌤️", "☀️", "🌙"]
+			var mydata = null;
+			var button;
+			var myday = 0;
+			var location_param;
+			var location_full_name;
+			function loadWeather(){	
+				var queryString = window.location.search
+				var params = new URLSearchParams(queryString);
+				var myparams = [params.get("location"), params.get("day1"), params.get("day2"), ]
+				console.log(myparams)
+
+				console.log("location")
+				if(!myparams[0]) myparams[0] = "Somerville"
+				if(!myparams[1]) myparams[1] = "2023-01-01"
+				if(!myparams[2]) myparams[2] = "2023-01-30"
+				console.log(params)
+				location_param = params;
+				date_range = "/2023-01-01/2024-01-01"
+				var myurl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline"
+				+ "/" + myparams[0]
+				+ "/" + myparams[1]
+				+ "/" + myparams[2]
+				// + "/2023-01-30" //last day in range- if not specified, only uese first day
+				+ "?unitGroup=us&key=2WKEX8NVUHXNVV7SYHEX3EQBL"
+				// + "?unitGroup=us&key=US2RDFY7GXJAUGJ2CWLCAVKUM"
+				// + "?unitGroup=us&key=TWB6RAJJSULRYUF6QGG9CV5KL"
+				+ "&contentType=json"
+				+ "&include=days"
+				console.log(myurl)
+				fetch(myurl, {
+				"method": "GET",
+				"headers": {
+				}
+				})
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data)
+					mydata = data;
+					console.log(data.resolvedAddress)
+					location_full_name = data.resolvedAddress;
+				});
+
+			}
+			function setup() {
+				var canvas = createCanvas(windowWidth, windowHeight);
+				background(220);
+				colorMode(HSB, 100);
+				dims = [width, height]
+				mindim = (width < height) ? width : height
+				canvas.parent("first");
+				loadWeather();
+			}
+			function draw() {
+				if(mydata == null){
+					console.log("waiting")
+					return;
+				}
+				drawLines()
+				drawData(mydata)
+			}
+			function drawLines(){
+				fill(0)
+				for(var i = -60; i < 150; i = i + 10){
+					line(0, windowHeight*0.75 - (windowHeight * (1/150) * i), windowWidth, windowHeight*0.75 - (windowHeight * (1/150) * i))
+					text(i, 0, windowHeight*0.75 - (windowHeight * (1/150) * i))
+				}
+				
+			}
+			function drawData(data){
+				// console.log(data.days)
+				// console.log(data.days.length)
+				push()
+				barWidth = windowWidth / data.days.length
+				data.days.forEach((day, i) => {
+					fill(100 * (1-((day.temp + 40) / 150)), 100, 100)
+					rect(i * barWidth,windowHeight*0.75, barWidth, -windowHeight * (1/150) * day.temp)
+					fill(100 * (1-((day.feelslike + 40) / 150)), 100, 100)
+					rect(i * barWidth,windowHeight*0.75, barWidth, -windowHeight * (1/150) * day.feelslike)
+					fill(0)
+					text(day.feelslike, i * barWidth,windowHeight*0.75)
+				})
+			}
+			function drawLocationName(){
+				push()
+				translate(mindim/2, mindim * 1.1)
+				textSize(mindim/15)
+				textAlign(CENTER);
+				text(location_full_name, 0,0)
+				translate(0,mindim*0.075)
+				text("Days from now:",0,0)
+				pop()
+			}
+		</script>
+		</div>
+		<input style="margin: 0; display: flex; 
+					justify-content: center; 
+					align-items: center;
+    				width: 100%;
+					font-size: 100;"
+				onkeydown="changeLocation(this)"
+				id="inputbar"></input>
+		<script>
+			function changeLocation(ele) {
+					if(event.key === 'Enter') {
+						document.location.href = "/weather/weather_wheel_input.html?" + document.getElementById('inputbar').value;       
+					}
+				}
+		</script>
+	</body>
+</html>

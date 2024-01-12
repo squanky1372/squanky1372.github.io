@@ -43,6 +43,7 @@
         ["projects", "none", "Lists all projects and their ID numbers"],
         ["project", "n (int)", "Prints all material for a given project ID number"],
         ["weekly", "none", "Prints all material for all projects in chronological order"],
+        ["scrabble", "validation_string (str)", "Prints all 2-15 letter words in the Scrabble dictionary that fit the validation string, with * as a wildcard.  For example, 'a*m' would return 'aim arm'"],
     ]
     $('body').terminal({
         help: function(){
@@ -82,26 +83,6 @@
         img: function() {
             const img = $('<img src="homepage/images/wordle.png">');
             this.echo(img);
-        },
-        raw: function(){
-            this.echo(`
-            <a href="http://google.com">Link to Google</a> 
-            <a href="http://squanky1372.github.io">Link to Squanky</a> 
-            <br><img src="homepage/images/wordle.png" width="50%" height="50%"><br> Image of wordle words
-            <br><br><br><div style="text-align: center"><img src="images/chords-1.png" width="50%" height="50%"><br> Chords page before any user selections.</div> <br>
-            `, {raw:true})
-            
-        },
-        wordle: function(){
-            this.echo(`
-            <div style="font-size: 20px; padding: 0% 10% 00% 10%">
-            I'm a big fan of word games.  I enjoy games like the NYT Mini Crossword (LINK) and Scrabble, and I was really into Wordle even before Wordle existed (I used to play it one-on-one on paper, or against AI) (LINK).  I also like analyzing data.  Because of this, I’ve become interested in using word analysis tools.  I have frequented this website (LINK: codebreaker website) to use their tools in making my own little puzzles or just making interesting word grids and such.  However, I realized it would also be interesting to make my own tools for specialized purposes.  
-            <br><br>
-            In 2022, I made a program that analyzes all of the words in the dictionary that Wordle uses, and which creates a graph to display the frequency of letters in different positions.  Below is an image of the result: the first five rows correspond to the five different letters in the words, and the sixth row corresponds to the overall frequencies of letters.  The last row is just a monospaced row for reference.  
-            <br><br>
-            <br><div style="text-align: center"><img src="homepage/images/wordle.png" width="50%" height="50%"><div><br> Image of wordle words
-            </div>
-            `, {raw:true})
         },
         weekly: function(){
             weekly_data.forEach((event, i) => {
@@ -164,8 +145,25 @@
                     <div>`, {raw:true})
                 }
             })
+        },
+        scrabble: function(validationString){
+            var word_length = validationString.length
+            var words = fetch(`./data/${word_length}-letter-words.json`)
+                .then(response => response.json())
+                .then(text => { 
+                    wordlist = []
+                    text.forEach(word_i => {wordlist.push(word_i.word)})
+                    console.log(wordlist)
+                    var validWords = []
+                    wordlist.forEach((word, i) => {
+                        isValid = true;
+                        Array.from(validationString).forEach((letter,i) => {if(letter != "*" && !letter.includes(word[i]))isValid =  false;})
+                        if(isValid) validWords.push(word)
+                    })
+                    this.echo(validWords)
+                    return wordlist; 
+                })
         }
-        
     }, {
         scrollOnEcho: false,
         greetings: greetings.innerHTML

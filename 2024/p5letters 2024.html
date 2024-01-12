@@ -1,0 +1,135 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes7.png">
+	<link rel="icon" href="/html/img/Boxes7.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			var sync = false;
+			fetch('./data/valid-wordle-words.txt')
+				.then(response => response.text())
+				.then(text => letterCount(text.split("\n")))
+
+			var total = 0;
+			var letterdata = function(letter=0){
+				this.letter = letter
+				this.lettercounts = Array(6).fill(0)
+				this.percents = Array(6).fill(0)
+			}
+			var alphabetData = Array(26).fill(0)
+			for(var a = 0; a < 26; a++) {alphabetData[a] = new letterdata(String.fromCharCode(a+97))}
+			var alphabetical = []
+			var letterCount = function(text){
+				alphabetical = []
+				for(var a = 0; a < 26; a++) {alphabetData[a] = new letterdata(String.fromCharCode(a+97))}
+				total = 0;
+				text.forEach(word => {
+					for(var i = 0; i<5; i++){
+						alphabetData[word[i].charCodeAt(0)-97].lettercounts[i] += 1
+						alphabetData[word[i].charCodeAt(0)-97].lettercounts[5] += 1
+					}
+					total += 1
+					var ab = true;
+					for(var i = 0; i<4; i++){
+						if(word[i] >= word[i+1]) ab = false
+					}
+					if(ab) alphabetical.push(word)
+				});
+				console.log(alphabetData)
+				printdata(alphabetData)
+				sync = true
+			}
+			var printdata = function(data){
+				data.forEach((e,i) => {
+					for(var i = 0; i < 5; i++){e.percents[i] = e.lettercounts[i] / total}
+					e.percents[5] = e.lettercounts[5] / (total * 5)
+					console.log(e.letter, e.lettercounts[0], e.lettercounts[1], e.lettercounts[2], e.lettercounts[3], e.lettercounts[4], e.lettercounts[5] )
+				
+				})
+				
+			}
+
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+				
+				background(220);
+				colorMode(HSB, 100);
+				textAlign(CENTER, CENTER);
+				// letterCount(alphabetical)
+				// console.log(alphabetical)
+			}
+
+			function draw() {
+				if(sync){
+					drawAlphabetBars()
+					if(letter_selected > 0){
+						// drawLetterStats()
+					}
+				}
+			}
+
+			function drawAlphabetBars(){
+				clear()
+				var runningcounts = Array(6).fill(0);
+				var barTotalWidth = windowWidth*0.95
+				var barStart = windowWidth*0.025
+				var barTotalHeight = windowHeight*0.95
+				var barGap = windowHeight/100
+				var verticalStart = windowHeight*0.025 + barGap
+				var barHeight = (barTotalHeight - barGap*6)/7
+				console.log(windowHeight, barTotalHeight / 7, barGap*7, barHeight)
+
+				alphabetData.forEach((element, i) => {
+					if(letter_selected < 0 || letter_selected == i){
+						fill(10*(i%10),100,100)
+						rect(barStart + i/26 * barTotalWidth, barGap*5 + barHeight*6 + verticalStart, 1/26*barTotalWidth, barHeight)
+						fill(0)
+						text(element.letter, barStart + i/26 * barTotalWidth + barTotalWidth/52,  barHeight*(6+0.5) + barGap*(5) + verticalStart)
+					}
+					runningcounts.forEach((value, j) => {
+						if(letter_selected < 0 || letter_selected == i){
+							fill(10*(i%10),100,100)
+							rect(barStart + runningcounts[j], verticalStart + barGap*(j-1) + barHeight*j, element.percents[j]*barTotalWidth, barHeight)//element.percents[j]*980)
+							fill(0)
+							text(element.letter, barStart + runningcounts[j] + element.percents[j]*barTotalWidth / 2,  barHeight*(j+0.5) + barGap*(j-1) + verticalStart)
+							if(letter_selected == i){
+								push()
+								textAlign(RIGHT, CENTER)
+								if(i >= 13)text(Math.floor(element.percents[j] * 1000)/10 + "%", barStart + runningcounts[j] - barGap,  barHeight*(j+0.5) + barGap*(j-1) + verticalStart)
+								textAlign(LEFT, CENTER)
+								if(i < 13)text(Math.floor(element.percents[j] * 1000)/10 + "%", barStart + runningcounts[j] + element.percents[j]*barTotalWidth + barGap,  barHeight*(j+0.5) + barGap*(j-1) + verticalStart)
+								pop()
+							}
+						}
+						runningcounts[j] = runningcounts[j] + element.percents[j]*barTotalWidth
+					})
+				})
+			}
+
+			// var keys = Array(26).fill(true)
+			var letter_selected = -1
+			function keyPressed() {
+				if (keyCode >= 65 && keyCode <= 90) {
+					letter_selected = keyCode-65
+					// keys[keyCode-65] = true//!keys[keyCode-65]
+				}
+				// print(keys)
+			}
+			function keyReleased() {
+				if (keyCode >= 65 && keyCode <= 90) {
+					letter_selected = -1
+					// keys[keyCode-65] = false
+				}
+				// print(keys)
+			}
+		</script>
+		
+	</body>
+</html>
