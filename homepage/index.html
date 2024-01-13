@@ -17,24 +17,11 @@
 
 
 <body>
-    <script>
+    <script type="module">
     //<a href='google.com'>Link</a>
     //<img src="homepage/images/stereogram-1.png'>
-    var weekly_data = null
-    fetch('./data.json')
-    .then((response) => response.json())
-    .then((json) => {
-        console.log(json)
-        weekly_data = json
-    });
-
-    var project_data = null
-    fetch('./projects.json')
-    .then((response) => response.json())
-    .then((json) => {
-        console.log(json)
-        project_data = json
-    });
+    import * as proj from "./functions/projects.js"
+    
 
     var commands = [
         ["hello", "name (String)", "Says hello to you."],
@@ -84,68 +71,9 @@
             const img = $('<img src="homepage/images/wordle.png">');
             this.echo(img);
         },
-        weekly: function(){
-            weekly_data.forEach((event, i) => {
-                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                    Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
-                <div>`, {raw:true})
-                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-                this.echo(`
-                <div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                ${event.Text}
-                <div>`, {raw:true})
-            })
-        },
-        projects: function(){
-            //list all project names and numbers, pulling from the second json file
-            project_data.forEach((event, i) => {
-                this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                        Project ${event.Project_Number} - ${event.Project_Name}
-                    <div>`, {raw:true})
-            })
-        },
-        project: function(project_number){ //list all data points from a given project number
-            project_data.forEach((event, i) => {
-                if(event.Project_Number == project_number){
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                        Project ${event.Project_Number} - ${event.Project_Name}
-                    <div>`, {raw:true})
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================
-                        <br>
-                        Overview
-                        <br>
-                        ----------------------------------------------------------------------------------------
-                        ${event.Overview}
-                    <div>`, {raw:true})
-                }
-            })
-            weekly_data.forEach((event, i) => {
-                if(event.Project_Number == project_number){
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                        <br>========================================================================================<br>
-                        Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
-                    <div>`, {raw:true})
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">----------------------------------------------------------------------------------------`, {raw:true})
-                    this.echo(`
-                    <div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                    ${event.Text}
-                    <div>`, {raw:true})
-                }
-            })
-            project_data.forEach((event, i) => {
-                if(event.Project_Number == project_number){
-                    this.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                        <br>========================================================================================<br>
-                        Next Steps
-                        <br>----------------------------------------------------------------------------------------<br>
-                        ${event.Next_Steps}
-                    <div>`, {raw:true})
-                }
-            })
-        },
+        weekly: function() {proj.weekly(this)},
+        projects: function(){proj.projects(this)},
+        project: function(project_number){proj.project(this, project_number)},
         scrabble: function(validationString){
             var word_length = validationString.length
             var words = fetch(`./data/${word_length}-letter-words.json`)
@@ -163,7 +91,7 @@
                     this.echo(validWords)
                     return wordlist; 
                 })
-        }
+        },
     }, {
         scrollOnEcho: false,
         greetings: greetings.innerHTML
