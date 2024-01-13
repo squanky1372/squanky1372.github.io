@@ -21,6 +21,7 @@
     //<a href='google.com'>Link</a>
     //<img src="homepage/images/stereogram-1.png'>
     import * as proj from "./functions/projects.js"
+    import * as words from "./functions/words.js"
     
 
     var commands = [
@@ -28,9 +29,9 @@
         // ["hi", "none", "Says hi to you."],
         // ["cat", "x (int), y (int)", "Prints a cat image of the requested size."],
         ["projects", "none", "Lists all projects and their ID numbers"],
-        ["project", "n (int)", "Prints all material for a given project ID number"],
+        ["project (p)", "n (int)", "Prints all material for a given project ID number"],
         ["weekly", "none", "Prints all material for all projects in chronological order"],
-        ["scrabble", "validation_string (str)", "Prints all 2-15 letter words in the Scrabble dictionary that fit the validation string, with * as a wildcard.  For example, 'a*m' would return 'aim arm'"],
+        ["scrabble (s)", "validation_string (str)", "Prints all 2-15 letter words in the Scrabble dictionary that fit the validation string, with * as a wildcard.  For example, 'a*m' would return 'aim arm'"],
     ]
     $('body').terminal({
         help: function(){
@@ -74,24 +75,9 @@
         weekly: function() {proj.weekly(this)},
         projects: function(){proj.projects(this)},
         project: function(project_number){proj.project(this, project_number)},
-        scrabble: function(validationString){
-            var word_length = validationString.length
-            var words = fetch(`./data/${word_length}-letter-words.json`)
-                .then(response => response.json())
-                .then(text => { 
-                    wordlist = []
-                    text.forEach(word_i => {wordlist.push(word_i.word)})
-                    console.log(wordlist)
-                    var validWords = []
-                    wordlist.forEach((word, i) => {
-                        isValid = true;
-                        Array.from(validationString).forEach((letter,i) => {if(letter != "*" && !letter.includes(word[i]))isValid =  false;})
-                        if(isValid) validWords.push(word)
-                    })
-                    this.echo(validWords)
-                    return wordlist; 
-                })
-        },
+        p: function(project_number){proj.project(this, project_number)},
+        scrabble: function(validationString){words.scrabble(this, validationString)},
+        s: function(validationString){words.scrabble(this, validationString)},
     }, {
         scrollOnEcho: false,
         greetings: greetings.innerHTML

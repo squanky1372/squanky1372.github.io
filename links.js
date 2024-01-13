@@ -7,7 +7,7 @@ var links_database = [
     ["/Trains/index.html", "/html/img/Boxes1.png"], //CTA Trains project
     ["/2024/n-letter-bars-2024.html", "/html/img/Boxes7.png"], //wordle word visualizer
     ["/html/data-processing/p5letters input.html", "/html/img/Boxes8.png"], //5-letter word constraints app
-    ["/html/data-processing/minifinder.html", "/html/img/Boxes7.png"], //Mini-Finder
+    ["/html/data-processing/minifinder.html", "/html/img/Boxes26.png"], //Mini-Finder
     ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
     ["/html/dual-stereogram.html", "/html/img/Boxes14.png"], //Dual stereogram test program
     ["Unity/sabodash/index.html", "/html/img/Boxes16.png"], //Sabodash game
@@ -19,7 +19,7 @@ var links_database = [
     ["http://squanky.net:3003/", "/html/img/Boxes20.png"], //Buzzer server
     ["./html/twilight-head.html", "/html/img/Boxes3.png"], //Body waving w twilight's head
     ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
-    ["/homepage/index.html", "/html/img/Boxes24.png"], //Homepage 
+    ["/homepage/index.html", "/html/img/Boxes24.png"], //Homepage   
     
     
     // ["/weather/weather_basic.html", "/html/img/Boxes6.png"], //simplified 15-day forecast

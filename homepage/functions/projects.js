@@ -81,4 +81,4 @@ function project(terminal, project_number){
         }
     })
 }
-export{outerFunction, weekly, projects}
+export{outerFunction, weekly, projects, project}
