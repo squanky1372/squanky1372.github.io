@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+        <input id="1"> Web Address <br>
+        <input id="2"> Link Text <br>
+        <button onclick="parse1()">Submit</button> <br>
+        <span id="link_out"> Output appears here, and is copied to clipboard </span> <br><br>
+
+        
+        <input id="3"> Image location / name <br>
+        <input id="4"> Image description <br>
+        <button onclick="parse2()">Submit</button><br>
+        <span id="img_out"> Output appears here, and is copied to clipboard </span> <br><br>
+
+
+		<script>
+            function parse1(){
+                var out = `<a href=”${document.getElementById("1").value}”>${document.getElementById("2").value}</a>`
+                document.getElementById("link_out").textContent=out;
+                navigator.clipboard.writeText(out);
+                console.log(out)
+            }
+            function parse2(){
+                var out = `<br><br><br><div style="text-align: center"><img src="images/${document.getElementById("3").value}.png" width="50%" height="50%"><br>${document.getElementById("4").value}</div> <br><br>`
+                document.getElementById("img_out").textContent=out;
+                navigator.clipboard.writeText(out);
+                console.log(out)
+            }
+		</script>
+	</body>
+</html>
