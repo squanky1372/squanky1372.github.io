@@ -33,6 +33,12 @@
         ["weekly", "none", "Prints all material for all projects in chronological order"],
         ["scrabble (s)", "validation_string (str)", "Prints all 2-15 letter words in the Scrabble dictionary that fit the validation string, with * as a wildcard.  For example, 'a*m' would return 'aim arm'"],
     ]
+
+    var sites = [
+        ["test", "the test site: brings you to this site", "https://squanky1372.github.io/homepage"],
+        ["Img2Grid", "Translates PNGs to multiplayer grids", "/html/img-to-array.html"],
+        ["HTML in-line", "Generates in-line HTML formatted links and images for this site.", "/2024/HTML-tag-generator.html"],
+    ]
     $('body').terminal({
         help: function(){
             commands.forEach(command => {
@@ -78,6 +84,12 @@
         p: function(project_number){proj.project(this, project_number)},
         scrabble: function(validationString){words.scrabble(this, validationString)},
         s: function(validationString){words.scrabble(this, validationString)},
+        site: function(i){window.location.href = sites[i][2]},
+        sites: function(){
+            sites.forEach((site, i) => {
+                this.echo(`${i}:${site[0]} | ${site[1]}`)
+            })
+        }
     }, {
         scrollOnEcho: false,
         greetings: greetings.innerHTML
