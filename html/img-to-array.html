@@ -9,7 +9,10 @@
 
 	<body>
         <input type="file" id="img1" name="UploadFiles" accept=".png"> <br>
-        <input type="file" id="img2" name="UploadFiles" accept=".png">
+        <input type="file" id="img2" name="UploadFiles" accept=".png"><br>
+        Size: <input id="size" value="25"><br>
+        Starting position X: <input id="xpos" value="25"><br>
+        Starting position Y: <input id="ypos" value="25"><br>
         <button onclick="parseImages()">Submit</button>
 		<script src="../js/src/p5.js"></script>
 		<script>
@@ -68,7 +71,7 @@
                 })
             }
 
-            var types = [[0,0,0,0],[255,0,0,255],[255,255,0,255],[0,255,0,255],[0,255,255,255],[0,0,255,255],[255,0,255,255],[255,255,255,255]]
+            var types = [[0,0,0,255],[255,0,0,255],[255,255,0,255],[0,255,0,255],[0,255,255,255],[0,0,255,255],[255,0,255,255],[255,255,255,255]]
             function parseImageTypes(){
                 var input2 = document.getElementById("img2");
                 img_array = []
@@ -112,7 +115,9 @@
                 var jsonobj = {
                     'length': img_len,
                     'width': img_hig,
-                    'scale': img_scale,
+                    'scale': document.getElementById('size').value,
+                    'starting_x' : document.getElementById('xpos').value,
+                    'starting_y' : document.getElementById('ypos').value,
                     'img': array_types,
                     'colors': array_colors,
                 }
@@ -121,14 +126,12 @@
                 download("jsonfile", jsonobj)
             }
 
+            function setup(){
 
-			function setup() {
-				//createCanvas(windowWidth, windowHeight);
-			}
+            }
+            function draw(){
 
-			function draw() {
-				background(220);
-			}
+            }
 
 			function windowResized() {
 				resizeCanvas(windowWidth, windowHeight);

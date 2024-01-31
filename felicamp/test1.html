@@ -1,0 +1,69 @@
+<html>
+    <title>FeliCamp</title>
+    <link rel="icon" href="mari.png">
+    Something
+    <div style="color:blue">
+        Hi Mari!
+    </div>
+    <button>Press me!</button><brs>
+    <input>Try me</input>
+    Something else
+    <image src="img.jpg" width="100px"></image>
+    <a href="http://mari.water.blog">Take me to Mari!</a>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+    <script>
+        function setup(){
+            createCanvas(500,500)
+            // background(200,200,200)
+            // circle(100,100,100)
+
+            // push()
+            //     fill(0,255,255)
+
+            //     push()
+            //         stroke(255,255,255)
+            //         strokeWeight(10)
+            //         circle(250,250,100)
+            //     pop()
+            //     circle(250,250,50)
+
+            // pop()
+
+            // circle(20,250,100)
+            // rect(150,400,100, 30)
+
+            //for (create a variable; boolean statement; incremeter/modifier)
+            //in C/C++: for(int i = 0; i < 10; i++)
+            //in JS:    for(var i = 0; i < 10; i++)
+
+            // var i = 0
+            // i = "hello"
+            // var myArray = [0,"hello", [0,0,1,"boo"]]
+
+            // for(var i = 0; i < 10; i++){
+            //     circle(100, 100, 100-(10*i))
+
+            // }
+            textSize(100)
+            textAlign(CENTER,CENTER)
+            // text("✰", 100,100)
+        }
+        var x = 0
+        var y = 0
+
+        var t = 0
+        function draw(){
+            // circle(x, y, 20)
+            // y = sin(t/10)*100 + 200
+            // x = x + 1
+            t = t + 1
+            // if(y > 500) y = 0
+            
+            // rotate(t)
+            translate(100,100)
+            rotate(t/100)
+            text("✰", 0,0)
+
+        }
+    </script>
+</html>
