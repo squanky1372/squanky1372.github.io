@@ -1,0 +1,79 @@
+<script src="https://cdn.jsdelivr.net/npm/tonal/browser/tonal.min.js"></script>
+<script>
+  console.log(Tonal.Key.minorKey("Ab"));
+</script>
+
+<button onclick="soundEngine.playChord(0, 1)">1</button>
+<button onclick="soundEngine.playChord(1, 1)">2</button>
+<button onclick="soundEngine.playChord(2, 1)">3</button>
+<button onclick="soundEngine.playChord(3, 1)">4</button>
+<button onclick="soundEngine.playChord(4, 1)">5</button>
+<button onclick="soundEngine.playChord(5, 1)">6</button>
+<button onclick="soundEngine.playChord(6, 1)">7</button>
+
+<button onclick="soundEngine.playChord(0, 1, 2)">1</button>
+<button onclick="soundEngine.playChord(1, 1, 2)">2</button>
+<button onclick="soundEngine.playChord(2, 1, 2)">3</button>
+<button onclick="soundEngine.playChord(3, 1, 2)">4</button>
+<button onclick="soundEngine.playChord(4, 1, 2)">5</button>
+<button onclick="soundEngine.playChord(5, 1, 2)">6</button>
+<button onclick="soundEngine.playChord(6, 1, 2)">7</button>
+<br>
+<button onclick="soundEngine.playChord(0, 0)">1</button>
+<button onclick="soundEngine.playChord(1, 0)">2</button>
+<button onclick="soundEngine.playChord(2, 0)">3</button>
+<button onclick="soundEngine.playChord(3, 0)">4</button>
+<button onclick="soundEngine.playChord(4, 0)">5</button>
+<button onclick="soundEngine.playChord(5, 0)">6</button>
+<button onclick="soundEngine.playChord(6, 0)">7</button>
+
+<button onclick="soundEngine.playChord(0, 0, 2)">1</button>
+<button onclick="soundEngine.playChord(1, 0, 2)">2</button>
+<button onclick="soundEngine.playChord(2, 0, 2)">3</button>
+<button onclick="soundEngine.playChord(3, 0, 2)">4</button>
+<button onclick="soundEngine.playChord(4, 0, 2)">5</button>
+<button onclick="soundEngine.playChord(5, 0, 2)">6</button>
+<button onclick="soundEngine.playChord(6, 0, 2)">7</button>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js" integrity="sha512-xi/RZRIF/S0hJ+yJJYuZ5yk6/8pCiRlEXZzoguSMl+vk2i3m6UjUO/WcZ11blRL/O+rnj94JRGwt/CHbc9+6EA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    var sound = new Howl({
+      src: ['pianosprite.mp3'], 
+      onload() {
+        soundEngine.init()
+        console.log("loaded")
+      },
+      onloaderror(e, msg){
+        console.log("error")
+      }
+    });
+
+    const soundEngine = {
+        init() {
+            console.log("initeds")
+            // sound.play()
+            const note_length = 2400
+            time_index = 0
+            for(i = 24; i <= 96; i++){
+                sound['_sprite'][i] = [time_index, note_length]
+                time_index += note_length
+            }
+            // sound.play('24')
+            // sound.play('28')
+            // sound.play('31')
+        },
+        play(soundSequence){
+            soundSequence.forEach((note, i) => {
+                sound.play(`${note}`)
+            })
+        },
+        playChord(i, type, octave=1){ //type 0 = minor, type 1 = major
+            keys = [0, 2, 4, 5, 7, 9, 11]
+            soundEngine.play([24 + keys[i] + octave*12, 
+                              24 + keys[i] + 3 + type + octave*12, 
+                              24 + keys[i] + 7 + octave*12])
+        }
+    }
+</script>
