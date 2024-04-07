@@ -1,0 +1,99 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes15.png">
+	<link rel="icon" href="/html/img/Boxes15.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<div id="first">
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			mydata = null
+			cities = ["Toledo, OH", "Cleveland, OH", "Erie, PA", "Niagara Falls, NY", "Rochester, NY", "Oswego, NY", "Watertown, NY"]
+			time = ["5h", "3.5h", "2h", "0h", "1.5h", "2.5", "3.5"]
+			clouds = []
+			clouds2 = []
+			// clouds = [29, 55.3, 58.3, 65.7, 50.7, 65.7, 46.7, 0]
+			// cities = ["Buffalo"]
+			function loadWeather(loc){	
+				var myurl = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
+				+ loc
+				+ "?unitGroup=us&include=hours&elements=cloudcover%2Cdatetime&"
+				+ "key=" + "2WKEX8NVUHXNVV7SYHEX3EQBL"
+				+ "&contentType=json"
+				console.log(myurl)
+				fetch(myurl, {
+				"method": "GET",
+				"headers": {
+				}
+				})
+				.then((response) => response.json())
+				.then((data) => {
+					// console.log(data)
+					mydata = data;
+					mydata.days.forEach((day, i) => {
+						if(day.datetime == '2024-04-08'){
+							console.log(loc)
+							console.log(day.cloudcover)
+							console.log(day.hours[15].cloudcover)
+							clouds[cities.indexOf(loc)] = (day.hours[15].cloudcover)
+						}
+					})
+					print(clouds)
+				});
+
+			}
+			function setup() {
+				var canvas = createCanvas(windowWidth, windowHeight);
+				background(220);
+				colorMode(HSB, 100);
+				dims = [width, height]
+				mindim = (width < height) ? width : height
+				canvas.parent("first");
+				loc = "niagara falls"
+				for(var i = 0; i < cities.length; i++){
+					loadWeather(cities[i])
+				}
+			}
+			function draw() {
+				scale(1.5)
+				fill(50,255,255)
+				rect(0,0,clouds.length*100, 100)
+				fill(30,255,255)
+				rect(0,100,clouds.length*100, 50)
+				if(clouds.some(el => el === null)){
+					console.log("waiting")
+					return;
+				}
+				// print(clouds)
+				for(var i = 0; i < cities.length; i++){
+					if(clouds[i] == null) return
+					fill(0)
+					text(cities[i], i*100, 120)
+					text(clouds[i] + "% cloudy", i*100, 130)
+					text(time[i] + " drive", i*100, 140)
+					// loadWeather(cities[i])
+					fill(50,0,30)
+					beginShape()
+					vertex(i*100, 0)
+					vertex(i*100, clouds[i])
+					vertex((i+1)*100, clouds[i+1])
+					vertex((i+1)*100, 0)
+					endShape(CLOSE);	
+				}
+					beginShape()
+					vertex(6*100, 0)
+					vertex(6*100, clouds[6])
+					vertex((6+1)*100, clouds[6])
+					vertex((6+1)*100, 0)
+					endShape(CLOSE);	
+			}
+		</script>
+		</div>
+	</body>
+</html>
