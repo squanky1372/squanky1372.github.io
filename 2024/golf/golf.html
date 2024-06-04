@@ -12,10 +12,8 @@
     <script>
 
         var ball = {
-            x: 200,
-            y: 200,
-            r: 10, 
-            v: 5,
+            x: 250, y: 250, r: 20, 
+            v: 0,
             t: 0,
             // flag: false,
             speed(){
@@ -45,21 +43,39 @@
             this.angle = function(){var l = this.p2.x - this.p1.x; var h = this.p2.y - this.p1.y; return Math.atan(h/l) ? Math.atan(h/l) : 0}
         }
         function tri(a, b, c){return [new lineObj(a, b), new lineObj(b, c), new lineObj(a, c)]}
+        function gridTri(x, y, s, type){
+            xpos = x * s
+            ypos = y * s
+            pos1 = [xpos, ypos]
+            pos2 = [xpos + s, ypos]
+            pos3 = [xpos + s, ypos + s]
+            pos4 = [xpos, ypos + s]
+            if(type == 1) return tri(pos1, pos2, pos3)
+            if(type == 2) return tri(pos1, pos2, pos4)
+            if(type == 3) return tri(pos1, pos3, pos4)
+            if(type == 4) return tri(pos2, pos3, pos4)
+        }
 
         myLines = [
             // new lineObj(250, 10, 10, 250),
             // new lineObj(250, 10, 500, 400),
             // new lineObj(10, 250, 500, 400),
-            new lineObj([10,10],[10,500]),
-            new lineObj([10,10],[500,10]),
-            new lineObj([500,500],[10,500]),
-            new lineObj([500,500],[500,10]),
+            new lineObj([0,0],[0,500]),
+            new lineObj([0,0],[500,0]),
+            new lineObj([500,500],[0,500]),
+            new lineObj([500,500],[500,0]),
         ]
-        console.log(tri([50,50], [90,100], [20,80]))
+        // myLines = myLines.concat(
+        //     tri([50,50], [90,100], [20,80]),
+        //     tri([50,200], [90,100], [20,80]),
+        //     gridTri(4,4 ,100,4)
+        //     )
         myLines = myLines.concat(
-            tri([50,50], [90,100], [20,80]),
-            tri([50,200], [90,100], [20,80])
-            )
+            gridTri(0,0 ,25,2),
+            gridTri(0,19 ,25,3),
+            gridTri(19,0 ,25,1),
+            gridTri(19,19,25,4),
+        )
 
         function setup() {
             var canvas = createCanvas(windowWidth, windowHeight);
@@ -68,32 +84,44 @@
             ball.setAngle(30 * Math.PI / 180)
         }
         function draw(){
+            clear()
             print("ball = " + (ball.angle() * 180 / Math.PI))
-            // print(ball.speed())
-            // background(220)
             fill(100,100,100)
             ball.x += ball.v * Math.cos(ball.t)
             ball.y += ball.v * Math.sin(ball.t)
 
-            // if(collision(ball, myLine)){ 
-            //     fill(0)
-            //     ball.bounce(myLine)
-            // }
-
             myLines.forEach((linex, i) => {
                 line(linex.p1.x, linex.p1.y, linex.p2.x, linex.p2.y)
                 if(collision(ball, linex)){ 
-                fill(0)
-                ball.bounce(linex)
-            }
+                    fill(0)
+                    ball.bounce(linex)
+                }
             })
 
             drawBall(ball)
-            // line(myLine.p1.x, myLine.p1.y, myLine.p2.x, myLine.p2.y)
+            ball.v *= 0.985
+            if(ball.v < 0.05) ball.v = 0
+            print(ball.v)
+        }
+
+        function putt(){
+            newAngle = atan2((mouseY - ball.y),(mouseX - ball.x))
+            ball.setAngle(newAngle)
+            ball.v = dist(mouseX, mouseY, ball.x, ball.y) / 30
+        }
+
+        function mouseClicked(){
+            if(ball.v == 0) putt()
         }
 
         function drawBall(myCircle){
+
             circle(myCircle.x,myCircle.y, myCircle.r)
+            
+            if(ball.v == 0) fill(40,100,100)
+            circle(mouseX, mouseY, 10)
+            line(mouseX, mouseY, ball.x, ball.y)
+            print(dist(mouseX, mouseY, ball.x, ball.y))
         }
 
         //my adapter

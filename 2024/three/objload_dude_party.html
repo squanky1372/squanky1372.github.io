@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src = "./three.js"></script>
+    <script type="module">
+        import { OBJLoader } from "./OBJLoader2.js";
+
+        var scene = new THREE.Scene()
+        var camera = new THREE.PerspectiveCamera(
+            75, window.innerWidth/window.innerHeight,
+            0.01, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
+
+        var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+        var box = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box);
+        var box_array = [
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+            box.clone(),
+        ]
+        box_array.forEach((b, i) => {
+            scene.add(b)
+        })
+
+        const objLoader = new OBJLoader();
+        var dude;
+        objLoader.load('dude.obj', (root) => {
+            dude = root;
+            // box.add(dude)
+            // dude.position.x = 1
+            var dude_array = [
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+                dude.clone(),
+            ]
+            dude_array.forEach((d, i) => {
+                d.position.x = i
+                box_array[i].add(d)
+            })
+        });
+
+        var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+        scene.add(light)
+
+        camera.position.set(0,0,10)
+
+        function animate(){
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera);
+            console.log("hi")
+            box.rotation.y -= 0.01
+            box_array.forEach((b, i) => {
+                b.rotation.y -= 0.01*i
+            })
+        }
+
+        animate()
+    </script>
+
+</body>
+</html>

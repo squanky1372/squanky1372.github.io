@@ -1,0 +1,32 @@
+<script>
+    console.log("Starting")
+
+    sets = [
+        [0,0,0,0,1,15],
+        [0,0,0,1,0,15],
+        [0,0,1,0,1,20],
+        [1,0,0,0,1,15],
+        [0,1,0,0,1,30]
+    ]
+
+    var num_sets = sets.length
+    console.log(num_sets)
+
+    for(var i = 0; i < num_sets; i++){
+        binary_rep = (i >>> 0).toString(2)
+        console.log(binary_rep)
+        binary_array = binary_rep.padStart(num_sets, '0').split()
+        console.log("a")
+        console.log(binary_array)
+        for(var j = 0; j < num_sets; j++){
+            console.log(binary_array[j])
+            binary_array[j] = parseInt(binary_array[j])
+        }
+        console.log(binary_array)
+
+        num_each = "".padStart(num_sets, '0').split()
+        for(var j = 0; j < num_sets; j++){
+
+        }
+    }
+</script>

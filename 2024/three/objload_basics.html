@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src = "./three.js"></script>
+    <script type="module">
+        //import as a module
+        import { OBJLoader } from "./OBJLoader2.js";
+
+        //setup the scene, camera, light, etc.
+        var scene = new THREE.Scene()
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.01, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
+        var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+        scene.add(light)
+        camera.position.set(0,0,2)
+
+        //create a box- this should show up no matter what
+        var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+        var box = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box);
+
+        //load in the object, then do some action
+        const objLoader = new OBJLoader();
+        var dude;
+        objLoader.load('dude.obj', (root) => {
+            //code in here runs when the object finishes loading
+            dude = root;
+            box.add(dude)
+        });
+
+        function animate(){
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera);
+            console.log("hi")
+            dude.rotation.y += 0.01
+
+        }
+
+        animate()
+    </script>
+
+</body>
+</html>

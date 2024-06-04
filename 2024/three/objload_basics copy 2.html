@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src = "./three.js"></script>
+    <script>//2d variables
+        var playerData = []
+        var myname = "no name set";
+        var mycolor = "#000000";
+        var grid = false;
+        var gridFunctions = {
+            'getValue' : function(x, y){
+                return grid.img[x][y]
+            },
+            'getPosValue' : function(x, y){
+                return grid.img[Math.floor(y/grid.scale)][Math.floor(x/grid.scale)]
+            },
+            'getGridCoords': function(x, y){
+                return [Math.floor(x/grid.scale),Math.floor(y/grid.scale)]
+            },
+            'isInBounds': function(x,y){
+                return (x >= 0 && x< grid.width && y >= 0 && y <grid.length)
+            }
+        }
+
+        var player = {
+            'x' : 15,
+            'y' : 15,
+            'speed' : 2,
+            'turnspeed': 0.05,
+            't' : 0
+        }
+
+        function configurePlayer(){
+            myname = prompt("Input your name:")
+            mycolor = prompt("Input a color in #RRGGBB format:")
+            socket.emit('configured', {color: mycolor, name: myname})
+        }
+
+        function getGrid(){
+            socket.emit('grid_request')
+            socket.emit('object_request')
+        }
+    </script>
+    <script type="module">
+        //================================MOVEMENT==========================================
+        //================================MOVEMENT==========================================
+        //================================MOVEMENT==========================================
+
+        var buttons = [0,0,0,0,0,0,0,0,0,0]
+        document.addEventListener("keydown", addKeyDown, false);
+        document.addEventListener("keyup", subKeyDown, false);
+
+        function addKeyDown(event) {
+            var keyCode = event.which;
+            // console.log(keyCode)
+            var keysList = [87, 83, 65, 68, 81, 69, 38, 40, 39, 37]
+            keysList.forEach((key, i) => {
+                if(keyCode == key){
+                    buttons[i] = 1
+                }
+            })
+            // console.log(buttons)
+        };
+
+        function subKeyDown(event) {
+            var keyCode = event.which;
+            // console.log(keyCode)
+            var keysList = [87, 83, 65, 68, 81, 69, 38, 40, 39, 37]
+            keysList.forEach((key, i) => {
+                if(keyCode == key){
+                    buttons[i] = 0
+                }
+            })
+            // console.log(buttons)
+        };
+
+        var moved = false;
+        function parseInputs(){
+            // console.log("inputs")
+            moved = false;
+            if (buttons[4]) {
+                //newPos[0] -= player.speed;
+                player.t += player.turnspeed
+                moved = true;
+            }
+            if (buttons[5]) {
+                //newPos[0] += player.speed;
+                player.t -= player.turnspeed;
+                moved = true;
+            }
+            if(player.t > Math.PI*2) player.t -= Math.PI*2
+            if(player.t < 0) player.t += Math.PI*2
+
+            var tryPos = [player.x, player.y]
+            var newPos = [player.x, player.y]
+            if (buttons[0]) {
+                tryPos[0] -= player.speed*Math.cos(player.t);
+                tryPos[1] -= player.speed*Math.sin(player.t);
+                moved = true;
+            }
+            if (buttons[1]) {
+                tryPos[0] += player.speed*Math.cos(player.t);
+                tryPos[1] += player.speed*Math.sin(player.t);
+                moved = true;
+            }
+            if (buttons[2]) {
+                tryPos[0] += player.speed*Math.cos(player.t - Math.PI/2);
+                tryPos[1] += player.speed*Math.sin(player.t - Math.PI/2);
+                moved = true;
+            }
+            if (buttons[3]) {
+                tryPos[0] += player.speed*Math.cos(player.t + Math.PI/2);
+                tryPos[1] += player.speed*Math.sin(player.t + Math.PI/2);
+                moved = true;
+            }
+            // console.log(gridFunctions.getPosValue(player.x, tryPos[1]), gridFunctions.getPosValue(tryPos[0], player.y) == 0)
+            // if(gridFunctions.getPosValue(player.x, tryPos[1]) == 0){
+            //     newPos[1] = tryPos[1]
+            // }
+            // if(gridFunctions.getPosValue(tryPos[0], player.y) == 0){
+            //     newPos[0] = tryPos[0]
+            // }
+            newPos[1] = tryPos[1]
+            newPos[0] = tryPos[0]
+            
+            player.x = newPos[0]
+            player.y = newPos[1]
+            console.log(newPos)
+            console.log(moved)
+            if(moved){
+                moved = false;
+                camera.position.x = player.y
+                camera.position.z = player.x
+                camera.rotation.y = player.t
+                // console.log(camera.position.x, camera.position.z)
+                // socket.emit('moved', {x: player.x, y: player.y})
+            }
+        }
+        
+        //================================OBJ==========================================
+        //================================OBJ==========================================
+        //================================OBJ==========================================
+
+        //import as a module
+        import { OBJLoader } from "./OBJLoader2.js";
+
+        //setup the scene, camera, light, etc.
+        var scene = new THREE.Scene()
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.01, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
+        var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+        scene.add(light)
+        camera.position.set(0,0,2)
+
+        //create a box- this should show up no matter what
+        var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+        var box = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box);
+
+        //load in the object, then do some action
+        const objLoader = new OBJLoader();
+        var dude;
+        objLoader.load('dude.obj', (root) => {
+            //code in here runs when the object finishes loading
+            dude = root;
+            box.add(dude)
+        });
+
+        function animate(){
+            requestAnimationFrame(animate)
+            parseInputs()
+            renderer.render(scene, camera);
+            console.log("hi")
+            dude.rotation.y += 0.01
+
+        }
+
+        animate()
+    </script>
+
+</body>
+</html>
