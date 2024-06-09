@@ -19,8 +19,9 @@
         document.body.appendChild(renderer.domElement)
         var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
         scene.add(light)
-        camera.position.set(0,30,50)
+        camera.position.set(10,30,50)
         camera.rotation.x = -0.3
+        camera.rotation.y = 0.3
 
         //create a box- this should show up no matter what
         var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
@@ -29,7 +30,7 @@
         scene.add(box);
 
         const physicsWorld = new CANNON.World({
-            gravity: new CANNON.Vec3(0,-50,0),
+            gravity: new CANNON.Vec3(0,-10,0),
         })
 
         const groundBody = new CANNON.Body({
@@ -153,6 +154,36 @@
         const maxSteerVal = Math.PI / 8;
         const maxForce = 50;
 
+        function Block(shape = [1,1,1], pos = [0,0,0], rot){
+            self.shape = shape
+            self.pos = pos
+            self.rot = rot
+            self.box = new THREE.Mesh(
+                new THREE.BoxGeometry(self.shape[0], self.shape[1], self.shape[2]), 
+                new THREE.MeshNormalMaterial({ color:0xFFFFFF, wireframe:false})
+            );
+            scene.add(self.box)
+
+            self.physicsCube = new CANNON.Body({
+                // type: CANNON.Body.STATIC,
+                mass:5,
+                shape: new CANNON.Box(new CANNON.Vec3(self.shape[0]/2, self.shape[1]/2, self.shape[2]/2))
+            });
+            // var axis = new CANNON.Vec3(0,0,1);
+            // var angle = Math.PI / 180 * -30;
+            // slope.quaternion.setFromAxisAngle(axis, angle);
+            physicsWorld.addBody(self.physicsCube)
+            physicsCube.position.set(pos[0], pos[1], pos[2])
+
+            this.updateVisuals = function(){
+                self.box.position.copy(self.physicsCube.position);
+                self.box.quaternion.copy(self.physicsCube.quaternion);
+            }
+        }
+
+        var block1 = new Block([10,10,10], [15,5,15])
+        var block2 = new Block([5,5,5], [15,15,15])
+
         document.addEventListener('keydown', (event) => {
             switch (event.key) {
                 case 'w':
@@ -177,6 +208,22 @@
                 case 'ArrowRight':
                 vehicle.setSteeringValue(-maxSteerVal, 0);
                 vehicle.setSteeringValue(-maxSteerVal, 1);
+                break;
+
+                case 'i':
+                camera.position.z -= 0.5;
+                break;
+
+                case 'k':
+                camera.position.z += 0.5;
+                break;
+
+                case 'j':
+                camera.position.x -= 0.5;
+                break;
+
+                case 'l':
+                camera.position.x += 0.5;
                 break;
             }
         });
@@ -221,6 +268,8 @@
 
         function animate(){
             physicsWorld.fixedStep()
+            block1.updateVisuals()
+            block2.updateVisuals()
             boxMesh.position.copy(carBody.position);
             boxMesh.quaternion.copy(carBody.quaternion);
             boxMesh2.position.copy(boxBody.position);
@@ -239,7 +288,6 @@
             requestAnimationFrame(animate)
             renderer.render(scene, camera);
             console.log("hi")
-            box.rotation.y += 0.01
         }
 
         animate()

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <script src="matter.js"></script>
+        <script>
+
+            // module aliases
+            let Engine = Matter.Engine,
+                Render = Matter.Render,
+                Runner = Matter.Runner,
+                Bodies = Matter.Bodies,
+                Composite = Matter.Composite;
+      
+            // create an engine
+            let engine = Engine.create();
+            engine.world.gravity.y = 0;
+      
+            // create a renderer
+            let render = Render.create({
+                element: document.body,
+                engine: engine
+            });
+      
+            // create two boxes and a ground
+            let boxA = Bodies.rectangle(400, 200, 80, 80);
+            let boxB = Bodies.rectangle(450, 50, 80, 80);
+            let ball = Bodies.circle(50, 50, 10, {restitution: 1});
+            let ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+            let ceil = Bodies.rectangle(400, 0, 810, 60, { isStatic: true });
+            let wall1 = Bodies.rectangle(0, 400, 100, 800, { isStatic: true });
+            let wall2 = Bodies.rectangle(800, 400, 100, 800, { isStatic: true });
+
+            let mouse = Matter.Mouse.create(render.canvas)
+            let mouseContstraint = Matter.MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    render: {visible: false}
+                }
+            })
+            render.mouse = mouse
+      
+            // add all of the bodies to the world
+            Composite.add(engine.world, [ball, boxA, boxB, ground, wall1, wall2, ceil, mouseContstraint]);
+      
+            // run the renderer
+            Render.run(render);
+      
+            // create runner
+            let runner = Runner.create();
+      
+            // run the engine
+            Runner.run(runner, engine);
+
+            document.addEventListener("keydown", function (event) {
+                let keyCode = event.keyCode;
+                let position = boxA.position;
+                let speed = 5; // set the speed of movement
+
+                // move the body based on the key pressed
+                if (keyCode === 37) {
+                    Matter.Body.translate(boxA, { x: -speed, y: 0 });// move left
+                } else if (keyCode === 38) {
+                    Matter.Body.translate(boxA, { x: 0, y: -speed });// move up
+                } else if (keyCode === 39) {
+                    Matter.Body.translate(boxA, { x: speed, y: 0 });// move right
+                } else if (keyCode === 40) {
+                    Matter.Body.translate(boxA, { x: 0, y: speed });// move down
+                }
+            });
+        </script>
+    </body>
+</html>

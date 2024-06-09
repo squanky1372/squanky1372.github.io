@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <script src="matter.js"></script>
+        <!-- A Body in Matter.js has various properties that define its physical characteristics, such as:
+            position: The position of the body in the simulation.
+            velocity: The velocity of the body in the simulation.
+            angle: The angle of the body in radians.
+            angularVelocity: The angular velocity of the body in radians per second.
+            mass: The mass of the body in kilograms.
+            density: The density of the body in kilograms per square meter.
+            friction: The friction coefficient of the body.
+            A Body can also have various methods attached to it, such as:
+
+            applyForce: Applies a force to the body at a given position.
+            applyTorque: Applies a torque (a rotational force) to the body.
+            applyImpulse: Applies an impulse (a sudden change in velocity) to the body at a given position. 
+        -->
+        <script>
+
+            // module aliases
+            let Engine = Matter.Engine,
+                Render = Matter.Render,
+                Runner = Matter.Runner,
+                Bodies = Matter.Bodies,
+                Composite = Matter.Composite;
+      
+            // create an engine
+            let engine = Engine.create();
+      
+            // create a renderer
+            let render = Render.create({
+                element: document.body,
+                engine: engine
+            });
+      
+            // create two boxes and a ground
+            let boxA = Bodies.rectangle(400, 200, 80, 80);
+            let boxB = Bodies.rectangle(450, 50, 80, 80);
+            let ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+      
+            // add all of the bodies to the world
+            Composite.add(engine.world, [boxA, boxB, ground]);
+      
+            // run the renderer
+            Render.run(render);
+      
+            // create runner
+            let runner = Runner.create();
+      
+            // run the engine
+            Runner.run(runner, engine);
+
+            document.addEventListener("keydown", function (event) {
+                let keyCode = event.keyCode;
+                let position = boxA.position;
+                let speed = 5; // set the speed of movement
+
+                // move the body based on the key pressed
+                if (keyCode === 37) {
+                    Matter.Body.translate(boxA, { x: -speed, y: 0 });// move left
+                } else if (keyCode === 38) {
+                    Matter.Body.translate(boxA, { x: 0, y: -speed });// move up
+                } else if (keyCode === 39) {
+                    Matter.Body.translate(boxA, { x: speed, y: 0 });// move right
+                } else if (keyCode === 40) {
+                    Matter.Body.translate(boxA, { x: 0, y: speed });// move down
+                }
+            });
+        </script>
+    </body>
+</html>
