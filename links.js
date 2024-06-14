@@ -1,5 +1,6 @@
 var links_database = [
     ["/music/music finder.html", "/html/img/Boxes13.png"], //Music chords finder tool
+    ["/music/tonal.html", "/html/img/Boxes28.png"], //Music chords finder tool
     ["/weather/weather_daily.html", "/html/img/Boxes5.png"], //Animated weather project
     ["/weather/weather_wheel_input.html", "/html/img/Boxes15.png"], //weather wheel with inputs 
     ["/2024/weather_2024.html", "/html/img/Boxes25.png"], //weather bars 
