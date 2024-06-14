@@ -1,0 +1,1361 @@
+[
+  {
+    "id": 0,
+    "title": "Jalpaiguri",
+    "lat": 26.540457,
+    "lng": 88.719391,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img1.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 1,
+    "title": "Pakur",
+    "lat": 24.633568,
+    "lng": 87.849251,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img2.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 2,
+    "title": "Sardarshahar",
+    "lat": 28.440554,
+    "lng": 74.493011,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img3.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 3,
+    "title": "Sirohi",
+    "lat": 24.882618,
+    "lng": 72.858894,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img4.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 4,
+    "title": "Jaysingpur",
+    "lat": 16.779877,
+    "lng": 74.556374,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img5.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 5,
+    "title": "Ramanagara",
+    "lat": 12.715035,
+    "lng": 77.281296,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img6.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 6,
+    "title": "Chikkaballapura",
+    "lat": 13.432515,
+    "lng": 77.727478,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img7.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 7,
+    "title": "Channapatna",
+    "lat": 12.651805,
+    "lng": 77.208946,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img8.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 8,
+    "title": "Surendranagar",
+    "lat": 22.728392,
+    "lng": 71.637077,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img9.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 9,
+    "title": "Thiruvalla",
+    "lat": 9.383452,
+    "lng": 76.574059,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img10.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 10,
+    "title": "Ranebennur",
+    "lat": 14.623801,
+    "lng": 75.621788,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img11.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 11,
+    "title": "Karaikal",
+    "lat": 10.92544,
+    "lng": 79.838005,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img12.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 12,
+    "title": "Chatrapur",
+    "lat": 19.354979,
+    "lng": 84.986732,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img13.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 13,
+    "title": "Suri",
+    "lat": 23.905445,
+    "lng": 87.52462,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img14.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 14,
+    "title": "Bhubaneswar",
+    "lat": 20.296059,
+    "lng": 85.824539,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img15.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 15,
+    "title": "Mahuva",
+    "lat": 21.105001,
+    "lng": 71.771645,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img16.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 16,
+    "title": "Jagadhri",
+    "lat": 30.172716,
+    "lng": 77.299492,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img17.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 17,
+    "title": "Barh",
+    "lat": 25.477585,
+    "lng": 85.709091,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img18.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 18,
+    "title": "Alipurduar",
+    "lat": 26.49189,
+    "lng": 89.5271,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img19.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 19,
+    "title": "Patan",
+    "lat": 23.849325,
+    "lng": 72.126625,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img20.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 20,
+    "title": "Mettur",
+    "lat": 11.786253,
+    "lng": 77.800781,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img21.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 21,
+    "title": "Huliyar ",
+    "lat": 13.583274,
+    "lng": 76.540154,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img22.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 22,
+    "title": "Harihar",
+    "lat": 14.530457,
+    "lng": 75.801094,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img23.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 23,
+    "title": "Rasayani",
+    "lat": 18.901457,
+    "lng": 73.176132,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img24.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 24,
+    "title": "Haringhata",
+    "lat": 22.96051,
+    "lng": 88.567406,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img25.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 25,
+    "title": "Kushtagi",
+    "lat": 15.756595,
+    "lng": 76.192696,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img26.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 26,
+    "title": "Jadugora",
+    "lat": 22.656015,
+    "lng": 86.352882,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img27.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 27,
+    "title": "Orai",
+    "lat": 25.989836,
+    "lng": 79.450035,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img28.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 28,
+    "title": "Surajpur",
+    "lat": 23.223047,
+    "lng": 82.87056,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img29.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 29,
+    "title": "Ambernath",
+    "lat": 19.186354,
+    "lng": 73.191948,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img30.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 30,
+    "title": "Malerkotla",
+    "lat": 30.525005,
+    "lng": 75.890121,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img31.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 31,
+    "title": "Jorapokhar",
+    "lat": 22.422455,
+    "lng": 85.760651,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img32.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 32,
+    "title": "Durg",
+    "lat": 21.190449,
+    "lng": 81.28492,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img33.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 33,
+    "title": "Himmatnagar",
+    "lat": 23.597969,
+    "lng": 72.969818,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img34.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 34,
+    "title": "Sambhal",
+    "lat": 28.590361,
+    "lng": 78.571762,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img35.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 35,
+    "title": "Harnaut",
+    "lat": 25.369179,
+    "lng": 85.53006,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img36.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 36,
+    "title": "Suti",
+    "lat": 24.618393,
+    "lng": 88.024338,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img37.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 37,
+    "title": "Banswara",
+    "lat": 23.546757,
+    "lng": 74.43383,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img38.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 38,
+    "title": "Batumi",
+    "lat": 41.643414,
+    "lng": 41.6399,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img39.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 39,
+    "title": "Manikchaka",
+    "lat": 25.077787,
+    "lng": 87.900375,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img40.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 40,
+    "title": "Roorkee",
+    "lat": 29.854263,
+    "lng": 77.888,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img41.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 41,
+    "title": "Kavali",
+    "lat": 14.913181,
+    "lng": 79.992981,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img42.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 42,
+    "title": "Kavaratti",
+    "lat": 10.5626,
+    "lng": 72.6369,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img43.jpg",
+    "icon" : "icon1.png"
+  },
+  {
+    "id": 43,
+    "title": "New Delhi",
+    "lat": 28.6,
+    "lng": 77.2,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img44.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 44,
+    "title": "Tezpur",
+    "lat": 26.6338,
+    "lng": 92.8,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img45.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 45,
+    "title": "Jullundur",
+    "lat": 31.3349,
+    "lng": 75.569,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img46.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 46,
+    "title": "Navsari",
+    "lat": 20.8504,
+    "lng": 72.92,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img47.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 47,
+    "title": "Asansol",
+    "lat": 23.6833,
+    "lng": 86.9833,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img48.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 48,
+    "title": "Port Blair",
+    "lat": 11.667,
+    "lng": 92.736,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img49.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 49,
+    "title": "Kota",
+    "lat": 25.18,
+    "lng": 75.835,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img50.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 50,
+    "title": "Saharanpur",
+    "lat": 29.97,
+    "lng": 77.55,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img51.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 51,
+    "title": "Bhuj",
+    "lat": 23.2504,
+    "lng": 69.81,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img52.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 52,
+    "title": "Gurgaon",
+    "lat": 28.45,
+    "lng": 77.02,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img53.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 53,
+    "title": "Simla",
+    "lat": 31.1,
+    "lng": 77.1666,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img54.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 54,
+    "title": "Muzaffarpur",
+    "lat": 26.1204,
+    "lng": 85.3799,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img55.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 55,
+    "title": "Gaya",
+    "lat": 24.8,
+    "lng": 85,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img56.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 56,
+    "title": "Ratlam",
+    "lat": 23.3504,
+    "lng": 75.03,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img57.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 57,
+    "title": "Gwalior",
+    "lat": 26.23,
+    "lng": 78.1801,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img58.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 58,
+    "title": "Baramula",
+    "lat": 34.2004,
+    "lng": 74.35,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img59.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 59,
+    "title": "Guwahati",
+    "lat": 26.16,
+    "lng": 91.77,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img60.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 60,
+    "title": "Dispur",
+    "lat": 26.144,
+    "lng": 91.7666,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img1.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 61,
+    "title": "Bidar",
+    "lat": 17.9229,
+    "lng": 77.5175,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img2.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 62,
+    "title": "Pune",
+    "lat": 18.53,
+    "lng": 73.85,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img3.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 63,
+    "title": "Ahmedabad",
+    "lat": 23.0301,
+    "lng": 72.58,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img4.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 64,
+    "title": "Haldia",
+    "lat": 22.0257,
+    "lng": 88.0583,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img5.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 65,
+    "title": "Bhagalpur",
+    "lat": 25.23,
+    "lng": 86.98,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img6.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 66,
+    "title": "Ujjain",
+    "lat": 23.1904,
+    "lng": 75.79,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img7.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 67,
+    "title": "Tonk",
+    "lat": 26.1505,
+    "lng": 75.79,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img8.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 68,
+    "title": "Agartala",
+    "lat": 23.8354,
+    "lng": 91.28,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img9.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 69,
+    "title": "Silchar",
+    "lat": 24.7904,
+    "lng": 92.79,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img10.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 70,
+    "title": "Vellore",
+    "lat": 12.9204,
+    "lng": 79.15,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img11.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 71,
+    "title": "Bharatpur",
+    "lat": 27.2504,
+    "lng": 77.5,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img12.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 72,
+    "title": "Siliguri",
+    "lat": 26.7204,
+    "lng": 88.455,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img13.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 73,
+    "title": "Gangtok",
+    "lat": 27.3333,
+    "lng": 88.6166,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img14.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 74,
+    "title": "Cuttack",
+    "lat": 20.47,
+    "lng": 85.8899,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img15.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 75,
+    "title": "Alipur Duar",
+    "lat": 26.4837,
+    "lng": 89.5667,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img16.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 76,
+    "title": "Bhubaneshwar",
+    "lat": 20.2704,
+    "lng": 85.8274,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img17.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 77,
+    "title": "Dibrugarh",
+    "lat": 27.4833,
+    "lng": 94.9,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img18.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 78,
+    "title": "Jorhat",
+    "lat": 26.75,
+    "lng": 94.2167,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img19.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 79,
+    "title": "Hospet",
+    "lat": 15.2804,
+    "lng": 76.375,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img20.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 80,
+    "title": "Tuticorin",
+    "lat": 8.82,
+    "lng": 78.13,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img21.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 81,
+    "title": "Sangli",
+    "lat": 16.8604,
+    "lng": 74.575,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img22.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 82,
+    "title": "Sholapur",
+    "lat": 17.6704,
+    "lng": 75.9,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img23.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 83,
+    "title": "Mumbai",
+    "lat": 19.017,
+    "lng": 72.857,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img24.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 84,
+    "title": "Diu",
+    "lat": 20.7197,
+    "lng": 70.9904,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img25.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 85,
+    "title": "Sirsa",
+    "lat": 29.4904,
+    "lng": 75.03,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img26.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 86,
+    "title": "Mangalore",
+    "lat": 12.9,
+    "lng": 74.85,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img27.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 87,
+    "title": "Thiruvananthapuram",
+    "lat": 8.5,
+    "lng": 76.95,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img28.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 88,
+    "title": "Kochi",
+    "lat": 10.015,
+    "lng": 76.2239,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img29.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 89,
+    "title": "Bangalore",
+    "lat": 12.97,
+    "lng": 77.56,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img30.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 90,
+    "title": "Proddatur",
+    "lat": 14.7504,
+    "lng": 78.57,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img31.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 91,
+    "title": "Tirupati",
+    "lat": 13.6504,
+    "lng": 79.42,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img32.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 92,
+    "title": "Vadodara",
+    "lat": 22.31,
+    "lng": 73.18,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img33.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 93,
+    "title": "Surat",
+    "lat": 21.2,
+    "lng": 72.84,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img34.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 94,
+    "title": "Aizawl",
+    "lat": 23.7104,
+    "lng": 92.72,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img35.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 95,
+    "title": "Bhopal",
+    "lat": 23.25,
+    "lng": 77.41,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img36.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 96,
+    "title": "Hyderabad",
+    "lat": 17.4,
+    "lng": 78.48,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img37.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 97,
+    "title": "Chandigarh",
+    "lat": 30.72,
+    "lng": 76.78,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img38.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 98,
+    "title": "Gandhinagar",
+    "lat": 23.3004,
+    "lng": 72.6399,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img39.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 99,
+    "title": "Imphal",
+    "lat": 24.8,
+    "lng": 93.95,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img40.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 100,
+    "title": "Kohima",
+    "lat": 25.667,
+    "lng": 94.1166,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img41.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 101,
+    "title": "Lucknow",
+    "lat": 26.855,
+    "lng": 80.915,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img42.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 102,
+    "title": "Bijapur",
+    "lat": 16.8354,
+    "lng": 75.71,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img43.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 103,
+    "title": "Chennai",
+    "lat": 13.09,
+    "lng": 80.28,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img44.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 104,
+    "title": "Guntur",
+    "lat": 16.33,
+    "lng": 80.45,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img45.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 105,
+    "title": "Rajahmundry",
+    "lat": 17.0303,
+    "lng": 81.79,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img46.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 106,
+    "title": "Haora",
+    "lat": 22.5804,
+    "lng": 88.3299,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img47.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 107,
+    "title": "Raurkela",
+    "lat": 22.2304,
+    "lng": 84.83,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img48.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 108,
+    "title": "Dhanbad",
+    "lat": 23.8004,
+    "lng": 86.42,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img49.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 109,
+    "title": "Bhatpara",
+    "lat": 22.8504,
+    "lng": 88.52,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img50.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 110,
+    "title": "Kolkata",
+    "lat": 22.495,
+    "lng": 88.3247,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img51.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 111,
+    "title": "Shillong",
+    "lat": 25.5705,
+    "lng": 91.88,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img52.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 112,
+    "title": "Puri",
+    "lat": 19.8204,
+    "lng": 85.9,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img53.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 113,
+    "title": "Krishnanagar",
+    "lat": 23.3803,
+    "lng": 88.53,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img54.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 114,
+    "title": "Jamshedpur",
+    "lat": 22.7875,
+    "lng": 86.1975,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img55.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 115,
+    "title": "Jodhpur",
+    "lat": 26.2918,
+    "lng": 73.0168,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img56.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 116,
+    "title": "Sikar",
+    "lat": 27.6104,
+    "lng": 75.14,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img57.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 117,
+    "title": "Barddhaman",
+    "lat": 23.2504,
+    "lng": 87.865,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img58.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 118,
+    "title": "Medinipur",
+    "lat": 22.3304,
+    "lng": 87.15,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img59.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 119,
+    "title": "Vishakhapatnam",
+    "lat": 17.73,
+    "lng": 83.305,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img60.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 120,
+    "title": "Silvassa",
+    "lat": 20.2666,
+    "lng": 73.0166,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img1.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 121,
+    "title": "Kolhapur",
+    "lat": 16.7,
+    "lng": 74.22,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img2.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 122,
+    "title": "Latur",
+    "lat": 18.4004,
+    "lng": 76.57,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img3.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 123,
+    "title": "Pondicherry",
+    "lat": 11.935,
+    "lng": 79.83,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img4.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 124,
+    "title": "Brahmapur",
+    "lat": 19.32,
+    "lng": 84.8,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img5.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 125,
+    "title": "Bhiwandi",
+    "lat": 19.35,
+    "lng": 73.13,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img6.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 126,
+    "title": "Rajkot",
+    "lat": 22.31,
+    "lng": 70.8,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img7.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 127,
+    "title": "Kalyan",
+    "lat": 19.2502,
+    "lng": 73.1602,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img8.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 128,
+    "title": "Coimbatore",
+    "lat": 11,
+    "lng": 76.95,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img9.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 129,
+    "title": "Nasik",
+    "lat": 20.0004,
+    "lng": 73.78,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img10.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 130,
+    "title": "Porbandar",
+    "lat": 21.67,
+    "lng": 69.67,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img11.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 131,
+    "title": "Parbhani",
+    "lat": 19.2704,
+    "lng": 76.76,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img12.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 132,
+    "title": "Akola",
+    "lat": 20.71,
+    "lng": 77.01,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img13.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 133,
+    "title": "Ahmednagar",
+    "lat": 19.1104,
+    "lng": 74.75,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img14.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 134,
+    "title": "Daman",
+    "lat": 20.417,
+    "lng": 72.85,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img15.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 135,
+    "title": "Ranchi",
+    "lat": 23.37,
+    "lng": 85.33,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img16.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon3.png"
+  },
+  {
+    "id": 136,
+    "title": "Itanagar",
+    "lat": 27.1004,
+    "lng": 93.6166,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img17.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 137,
+    "title": "Raipur",
+    "lat": 21.235,
+    "lng": 81.635,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img18.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 138,
+    "title": "Kozhikode",
+    "lat": 11.2504,
+    "lng": 75.77,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img19.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 139,
+    "title": "Machilipatnam",
+    "lat": 16.2004,
+    "lng": 81.18,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img20.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 140,
+    "title": "Khammam",
+    "lat": 17.2804,
+    "lng": 80.1601,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img21.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 141,
+    "title": "Kakinada",
+    "lat": 16.9675,
+    "lng": 82.2375,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img22.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 142,
+    "title": "Panaji",
+    "lat": 15.492,
+    "lng": 73.818,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img23.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 143,
+    "title": "Bhavnagar",
+    "lat": 21.7784,
+    "lng": 72.13,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img24.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 144,
+    "title": "Karnal",
+    "lat": 29.6804,
+    "lng": 76.97,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img25.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 145,
+    "title": "Rohtak",
+    "lat": 28.9,
+    "lng": 76.58,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img26.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 146,
+    "title": "Hisar",
+    "lat": 29.17,
+    "lng": 75.725,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img27.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 147,
+    "title": "Abohar",
+    "lat": 30.1204,
+    "lng": 74.29,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img28.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon4.png"
+  },
+  {
+    "id": 148,
+    "title": "Agra",
+    "lat": 27.1704,
+    "lng": 78.015,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img29.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon2.png"
+  },
+  {
+    "id": 149,
+    "title": "Alwar",
+    "lat": 27.5454,
+    "lng": 76.6049,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img30.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  },
+  {
+    "id": 150,
+    "title": "Bhilwara",
+    "lat": 25.3504,
+    "lng": 74.635,
+    "description": "Aksa Beach is a popular beach and a vacation spot in Aksa village at Malad, Mumbai.",
+    "img": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/img31.jpg",
+    "icon": "https://raw.githubusercontent.com/hpi1hpi/custom-google-map-with-json/master/icon1.png"
+  }
+]
