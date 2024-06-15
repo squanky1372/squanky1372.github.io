@@ -69,7 +69,6 @@
 					cubes[i].position.x += +i%size;
 				}
 			}
-			console.log(window.innerWidth)
 
 			//set camera position
 
@@ -97,8 +96,7 @@
 				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 			}
 			function onMouseClick(e){
-  				e.preventDefault();
-				console.log(e.clientX, e.clientY)
+  				e.preventDefault(); // console.log(e.clientX, e.clientY)
 				checkLinks();
 			}
 			function highlightMouseHover(){ //turns the closest object to the mouse red
@@ -188,11 +186,7 @@
 			}
 			setZDist()
 
-			
-			// camera.position.z =  size * 700/window.innerWidth;
 			var update = function(){
-				console.log(camera.position.z, visibleWidthAtZDepth(camera.position.z, camera), visibleHeightAtZDepth(camera.position.z, camera))
-				// console.log(size)
 				for(var i = 0; i < numcubes; i++){
 					cubes[i].rotation.x += 0.01;
 					cubes[i].rotation.y += 0.01;
