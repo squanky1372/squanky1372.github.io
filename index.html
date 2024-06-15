@@ -56,29 +56,26 @@
 			var numcubes = links_database.length;
 			var cubes = Array(numcubes)
 			var size = Math.ceil(Math.sqrt(numcubes))
+			var x = 0
+			var y = 0
+
+			x = 1
+			y = 1
+			var ratio = window.innerWidth/window.innerHeight
+
+			while(x * y < numcubes){
+				if( Math.abs(((x+1)/y) - ratio) < Math.abs((x/(y+1)) - ratio)) x++
+				else y++
+			}
+			console.log(x, y)
+			
 			for(var i = 0; i < numcubes; i++){
 				cubes[i] = cube_prototype.clone()
 				scene.add(cubes[i]);
-				cubes[i].scale.set(0.6,0.6,0.6)
-				if(window.innerWidth < window.innerHeight){
-					cubes[i].position.x += +Math.floor(i/size);
-					cubes[i].position.y += -i%size;
-				}
-				else{
-					cubes[i].position.y += -Math.floor(i/size);
-					cubes[i].position.x += +i%size;
-				}
-			}
-
-			//set camera position
-
-			if(window.innerWidth < window.innerHeight){
-				camera.position.y = -(Math.ceil(Math.sqrt(numcubes))-1)/2;
-				camera.position.x = +(Math.round(Math.sqrt(numcubes))-1)/2;
-			}
-			else{
-				camera.position.x = +(Math.ceil(Math.sqrt(numcubes))-1)/2;
-				camera.position.y = -(Math.round(Math.sqrt(numcubes))-1)/2;
+				cubes[i].scale.set(0.5,0.5,0.5)
+				
+				cubes[i].position.x += Math.floor(i/y);
+				cubes[i].position.y += -i%y;
 			}
 
 			raycaster = new THREE.Raycaster();
@@ -179,12 +176,15 @@
 				return height * camera.aspect;
 			};
 
-			var setZDist = function(){
-				while(visibleWidthAtZDepth(camera.position.z, camera) < (size*2 + 1) || visibleHeightAtZDepth(camera.position.z, camera) < (size*2 + 1)){
+			var setCameraPos = function(){
+				camera.position.y = -(y-1)/2
+				camera.position.x = (x-1)/2
+				while(visibleWidthAtZDepth(camera.position.z, camera) < (x*2 + 1) || 
+					  visibleHeightAtZDepth(camera.position.z, camera) < (y*2 + 1)){
 					camera.position.z += 0.1
 				}
 			}
-			setZDist()
+			setCameraPos()
 
 			var update = function(){
 				for(var i = 0; i < numcubes; i++){
