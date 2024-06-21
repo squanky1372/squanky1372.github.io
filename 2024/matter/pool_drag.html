@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        <script>
+
+            // module aliases
+            let Engine = Matter.Engine,
+                Render = Matter.Render,
+                Runner = Matter.Runner,
+                Bodies = Matter.Bodies,
+                Composite = Matter.Composite;
+      
+            // create an engine
+            let engine = Engine.create();
+            engine.world.gravity.y = 0;
+      
+            // create a renderer
+            let render = Render.create({
+                element: document.body,
+                engine: engine,
+                options:{
+                    width: (window.innerWidth),
+                    height: (window.innerHeight) 
+                }
+            });
+            render.options.wireframes = false
+            render.options.background = '#003300'
+      
+            // create two boxes and a ground
+            let size = {x: window.innerWidth, y: window.innerHeight}
+            let ballsize = 20
+            let ball = Bodies.circle(size.x/4, size.y/2, ballsize, {restitution: 1,
+                                                mass: 1,
+                                                render: {
+                                                    fillStyle: "white",
+                                                    strokeStyle: 'black',
+                                                    lineWidth: 5
+                                                }});
+            
+            Composite.add(engine.world, ball);
+
+            let thickness = 1000
+            let borders = [Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true }),
+                           Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true }),
+                           Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true }),
+                           Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true })]
+            Composite.add(engine.world, borders);
+                        
+            let radius = ballsize*1.5
+            
+            //Wall trapezoids
+            thickness = radius
+            let temprender = {fillStyle: "#002200",}
+            let wall2properties = { restitution: 1, isStatic: true , render: temprender}
+            var size1 = (thickness*2) / (size.x/2 - radius*4)
+            var size2 = (thickness*2) / (size.x/2 - radius*2)
+            let walls2 = [
+                Bodies.trapezoid((size.x + radius*2)/4, 0 + thickness/2, size.x/2 - radius*3 - radius, thickness, -size1, wall2properties),
+                Bodies.trapezoid((size.x + radius*2)/4, size.y - thickness/2, size.x/2 - radius*2, thickness, size2 ,wall2properties),
+                Bodies.trapezoid(size.x - (size.x + radius*2)/4, size.y -  + thickness/2, size.x/2 - radius*2, thickness, size2, wall2properties),
+                Bodies.trapezoid(size.x - (size.x + radius*2)/4, 0 + thickness/2, size.x/2 - radius*3 - radius, thickness, -size1, wall2properties),
+                Bodies.trapezoid(size.x - thickness/2, size.y/2, size.y - radius*4 - radius, thickness, -size2, wall2properties),
+                Bodies.trapezoid(thickness/2, size.y/2, size.y - radius*4 - radius, thickness, -size2, wall2properties),
+            ]
+            Matter.Body.rotate(walls2[4], Math.PI/2)
+            Matter.Body.rotate(walls2[5], -Math.PI/2)
+            Composite.add(engine.world, walls2);
+
+            //Wall Borders
+            thickness = radius/2
+            let wallrender = {fillStyle: "#553300",}
+            let walls = [Bodies.rectangle(size.x/2, 0 + thickness/2, size.x*2, thickness, { isStatic: true, render: wallrender}),
+                           Bodies.rectangle(size.x/2, size.y - thickness/2, size.x*2, thickness, { isStatic: true , render: wallrender}),
+                           Bodies.rectangle(0+thickness/2, size.y/2, thickness, size.y*2, { isStatic: true , render: wallrender}),
+                           Bodies.rectangle(size.x - thickness/2, size.y/2, thickness, size.y*2, { isStatic: true , render: wallrender}),
+                        ]
+            Composite.add(engine.world, walls);
+            
+            //Pockets
+            let pocketrender = {fillStyle: "#000000",}
+            let pockets = [Bodies.circle(radius,radius,radius, { isSensor: true, render: pocketrender}),
+                            Bodies.circle(radius,window.innerHeight-radius,radius, { isSensor: true, render: pocketrender}),
+                            Bodies.circle(window.innerWidth-radius,radius,radius, { isSensor: true, render: pocketrender}),
+                            Bodies.circle(window.innerWidth-radius,window.innerHeight-radius,radius, { isSensor: true, render: pocketrender}),
+                            Bodies.circle(window.innerWidth/2,radius,radius, { isSensor: true, render: pocketrender}),
+                            Bodies.circle(window.innerWidth/2,window.innerHeight-radius,radius, { isSensor: true, render: pocketrender}),
+            ]
+            Composite.add(engine.world, pockets);
+
+            //Pocket detectors (not working yet)
+            let pocketdetectorrender = {fillStyle: "#FF0000",}
+            let detectorSize = ballsize*0.3
+            let pocketDetectors = [Bodies.circle(radius,radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+                            Bodies.circle(radius,window.innerHeight-radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+                            Bodies.circle(window.innerWidth-radius,radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+                            Bodies.circle(window.innerWidth-radius,window.innerHeight-radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+                            Bodies.circle(window.innerWidth/2,radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+                            Bodies.circle(window.innerWidth/2,window.innerHeight-radius,detectorSize, { isSensor: true, render: pocketdetectorrender}),
+            ]
+            Composite.add(engine.world, pocketDetectors);
+
+            //Mouse stuff
+            let mouse = Matter.Mouse.create(render.canvas)
+            let mouseContstraint = Matter.MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    render: {visible: false}
+                }
+            })
+            render.mouse = mouse
+            Composite.add(engine.world, [mouseContstraint]);
+
+            //create all of the pool balls
+            let ball_triangle = []
+            let ball_colors = ["yellow", "pink", "purple", "pink", "black", "yellow", "green", "blue", "red", "green", "red", "blue", "orange", "purple", "orange"]
+            let ball_size = ballsize
+            let dims = {x: size.x * 0.6, y: size.y/2}
+            let ball_index = -1
+            for(let i = 0; i < 5; i++){
+                for(let j = 0; j <= i; j++){
+                    ball_index += 1
+                    ball_triangle.push(Matter.Bodies.circle(
+                        dims.x + (i)*ball_size*2*Math.sqrt(3)/2,
+                        dims.y + (j-i/2)*ball_size*2, 
+                        ball_size, 
+                        {restitution: 1, mass: 1,
+                            render: {
+                                fillStyle: ball_colors[ball_index],
+                                strokeStyle: 'black',
+                                lineWidth: 5
+                            }
+                        }))
+                }
+            }
+            Composite.add(engine.world, ball_triangle);
+      
+            // run the renderer
+            Render.run(render);
+      
+            // create runner
+            let runner = Runner.create();
+      
+            // run the engine
+            Runner.run(runner, engine);
+
+            // document.addEventListener("keydown", function (event) {
+            //     let keyCode = event.keyCode;
+            //     let position = boxA.position;
+            //     let speed = 5; // set the speed of movement
+
+            //     // move the body based on the key pressed
+            //     if (keyCode === 37) {
+            //         Matter.Body.translate(boxA, { x: -speed, y: 0 });// move left
+            //     } else if (keyCode === 38) {
+            //         Matter.Body.translate(boxA, { x: 0, y: -speed });// move up
+            //     } else if (keyCode === 39) {
+            //         Matter.Body.translate(boxA, { x: speed, y: 0 });// move right
+            //     } else if (keyCode === 40) {
+            //         Matter.Body.translate(boxA, { x: 0, y: speed });// move down
+            //     }
+            // });
+        </script>
+    </body>
+</html>

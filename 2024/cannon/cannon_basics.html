@@ -7,9 +7,11 @@
 </head>
 <body>
     <script src = "./three.js"></script>
+    <!-- <script src = "./cannon-es-debugger.js"></script> -->
     <script type="module">
         //import as a module
         import * as CANNON from "./cannon-es.js"
+        import * as DEBUG from "./cannon-es-debugger.js"
 
         //setup the scene, camera, light, etc.
         var scene = new THREE.Scene()
@@ -63,6 +65,9 @@
         }
 
         animate()
+        console.log(DEBUG)
+
+        CannonDebugger(scene, physicsWorld, {color:0xff0000})
 
     </script>
 

@@ -15,14 +15,14 @@ var links_database = [
     ["./html/twilight-head.html", "/html/img/Boxes3.png"], //Body waving w twilight's head
     ["http://squanky.net:3000/", "/html/img/Boxes22.png"], //Raycaster
     ["http://squanky.net:3002/", "/html/img/Boxes23.png"], //3D house
+    ["http://squanky.net:3006/", "/html/img/Boxes19.png"], //3D Earth
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
-    //??? 3D-Earth
     ["http://squanky.net:3003/", "/html/img/Boxes20.png"], //Buzzer server
     ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
     ["http://squanky.net:3007/", "/html/img/Boxes11.png"], //racing game
     ["/homepage/index.html", "/html/img/Boxes24.png"], //Homepage   
     ["/2024/matter/ballgame.html", "/html/img/Boxes17.png"], //pool 2 
-    ["/2024/map/index.html", "/html/img/Boxes19.png"], //pool 2 
+    ["/2024/map/index.html", "/html/img/Boxes29.png"], //map
     
     
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
