@@ -1,6 +1,8 @@
 <html>
-    <button onclick="onClick()">Click me</button>
-    <div id="div"></div>
+    <button style="height:20%;width:100%" onclick="onClick()">Click me</button>
+    <h1><div id="alp"></div>
+    <div id="bet"></div>
+    <div id="gam"></div></h1>
     <script>
         function onClick() {
             if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -27,7 +29,9 @@
             const gamma = event.gamma;
             // Do stuff...
             console.log([alpha, beta, gamma])
-            document.getElementById("div").innerHTML = [alpha, beta, gamma];
+            document.getElementById("alp").innerHTML = ('0000'+alpha.toFixed(2)).slice(-6);
+            document.getElementById("bet").innerHTML = ('0000'+beta.toFixed(2)).slice(-6);
+            document.getElementById("gam").innerHTML = ('0000'+gamma.toFixed(2)).slice(-6);
         }
     </script>   
 
