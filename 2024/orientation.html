@@ -29,9 +29,9 @@
             const gamma = event.gamma;
             // Do stuff...
             console.log([alpha, beta, gamma])
-            document.getElementById("alp").innerHTML = ('0000'+alpha.toFixed(2)).slice(-6);
-            document.getElementById("bet").innerHTML = ('0000'+beta.toFixed(2)).slice(-6);
-            document.getElementById("gam").innerHTML = ('0000'+gamma.toFixed(2)).slice(-6);
+            document.getElementById("alp").innerHTML = (alpha < 0 ? "a: -" : "a:+") + ('0000'+Math.abs(alpha).toFixed(2)).slice(-6);
+            document.getElementById("bet").innerHTML = (beta < 0 ? "b: -" : "b:+") + ('0000'+Math.abs(beta).toFixed(2)).slice(-6);
+            document.getElementById("gam").innerHTML = (gamma < 0 ? "g: -" : "g:+") + ('0000'+Math.abs(gamma).toFixed(2)).slice(-6);
         }
     </script>   
 
