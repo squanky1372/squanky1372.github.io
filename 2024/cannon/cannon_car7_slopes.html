@@ -53,6 +53,29 @@
         groundMesh.position.copy(groundBody.position)
         groundMesh.quaternion.copy(groundBody.quaternion)
 
+        //slopemaker
+        function makeSlope(size, pos, rot, repeat=1){
+            var groundTexture = new THREE.TextureLoader().load('twilight1.jpg'); // Replace 'grass_texture.jpg' with your texture path
+            groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+            groundTexture.repeat.set(repeat, repeat); // Adjust repeat values based on texture size
+
+            var groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
+            var groundGeometry = new THREE.PlaneGeometry(size[0], size[1]); // Adjust plane size as needed
+            var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+            groundMesh.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
+            scene.add(groundMesh);
+
+            var slopeBody = new CANNON.Body({ type: CANNON.Body.STATIC, shape: new CANNON.Plane() })
+
+            slopeBody.quaternion.setFromEuler(rot[0], rot[1], rot[2]);
+            slopeBody.position.set(pos[0], pos[1], pos[2]);
+            physicsWorld.addBody(slopeBody)
+            groundMesh.position.copy(slopeBody.position)
+            groundMesh.quaternion.copy(slopeBody.quaternion)
+
+        }
+        // makeSlope([1,1],[20,5,-20],[-Math.PI/2,0,0])
+
         //Sphere
 
         const radius = 1;
@@ -83,19 +106,30 @@
         const boxMesh = new THREE.Mesh(geometrybox, materialbox)
         scene.add(boxMesh)
 
-        //materials  
+        //materials
 
-        var defaultMaterial = new CANNON.Material("defaultMaterial");   // Step 2: Create a Material
-        var contactMaterial = new CANNON.ContactMaterial(               // Step 3: Create a Contact Material
-            defaultMaterial, defaultMaterial,                               //contact between default and default
-            {friction: -10,  restitution: 0.3}                              //physics properties
+        // Step 2: Create a Material
+        var defaultMaterial = new CANNON.Material("defaultMaterial");
+
+        // Step 3: Create a Contact Material
+        var contactMaterial = new CANNON.ContactMaterial(
+            defaultMaterial,
+            defaultMaterial,
+            {
+                friction: -1, // Friction coefficient
+                restitution: 0.3 // Bounciness
+            }
         );
-        physicsWorld.addContactMaterial(contactMaterial);               // Step 4: Add the Contact Material to the World
-        physicsWorld.defaultContactMaterial = contactMaterial;          // Step 5: Set it as default
+
+        // Step 4: Add the Contact Material to the World
+        physicsWorld.addContactMaterial(contactMaterial);
+
+        // Step 5: Set the Default Contact Material
+        physicsWorld.defaultContactMaterial = contactMaterial;
 
         //Boxmaker
 
-        function makeBox(size, pos, rot=[0,0,0]){
+        function makeBox(size, pos, rot, mass=5){
             var body = new CANNON.Body({
                 type: CANNON.Body.STATIC, 
                 mass:0,
@@ -113,58 +147,8 @@
             mesh.quaternion.copy(body.quaternion)
         }
 
-        // makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
+        makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0], 10)
 
-        //Track segment maker
-        function makePlatform(size, pos){
-            makeBox([size, 0.1, size], [pos[0]*size, pos[1]*size, pos[2]*size])
-        }
-        function makeStraight(size, pos, rot=0){
-            rot = rot * Math.PI/2
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            if(rot == 0){
-                makeBox([size,size/2,.1],[pos[0]*size, pos[1]*size, (pos[2] + 1)*size])
-                makeBox([size,size/2,.1],[pos[0]*size, pos[1]*size, (pos[2] - 1)*size])
-            }
-            else{
-                makeBox([.1,size/2,size],[(pos[0]+1)*size, pos[1]*size, pos[2]*size])
-                makeBox([.1,size/2,size],[(pos[0]-1)*size, pos[1]*size, pos[2]*size])
-            }
-        }
-        function makeAngle(size, pos, rot=0){
-            rot = rot * Math.PI/2
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            makeBox([size * Math.sqrt(2),size/2,.1],[pos[0]*size, pos[1]*size, pos[2]*size], [0,Math.PI/4 + rot,0])
-        }
-        function makeSlope(size, pos, rot=0){
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            makeBox([size,0.1,size*Math.sqrt(5)],[pos[0]*size, (pos[1]+1)*size, (pos[2]-1)*size], [0.46365,0,0])
-        }
-
-        function makeCourse(){
-            var size = 8
-            var course = [
-            ["/-3---Y","|     |","|     |","|     |","Y-----/",],
-            ["/-  --Y","|     |","|     |","|     |","Y-----/",]]
-            course.forEach((layer,l)=>{
-            layer.forEach((row,i)=>{
-            row.split("").forEach((icon,j)=>{
-                console.log(icon)
-                if(icon == "/") makeAngle(size, [-i, l, -j])
-                if(icon == "Y") makeAngle(size, [-i, l, -j],1)
-                if(icon == "|") makeStraight(size, [-i, l, -j])
-                if(icon == "-") makeStraight(size, [-i, l, -j],1)
-                if(icon == "3") makeSlope(size, [-i, l, -j])
-                if(icon == "o") makePlatform(size, [-i, l, -j])
-            })
-            })
-
-            })
-        }
-        makeCourse()
         //Car
         
         const wheelBodies = [];
@@ -349,7 +333,7 @@
             updateVehicleControls();
             
             //set camera to desired distance and angle
-            camera.position.set(chassisMesh.position.x, chassisMesh.position.y + 15, chassisMesh.position.z + 25)
+            camera.position.set(chassisMesh.position.x, 15, chassisMesh.position.z + 25)
             camera.rotation.x = -Math.PI / 8
 
             requestAnimationFrame(animate)

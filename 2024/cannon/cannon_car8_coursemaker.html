@@ -113,7 +113,7 @@
             mesh.quaternion.copy(body.quaternion)
         }
 
-        // makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
+        makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
 
         //Track segment maker
         function makePlatform(size, pos){
@@ -146,22 +146,18 @@
 
         function makeCourse(){
             var size = 8
-            var course = [
-            ["/-3---Y","|     |","|     |","|     |","Y-----/",],
-            ["/-  --Y","|     |","|     |","|     |","Y-----/",]]
-            course.forEach((layer,l)=>{
-            layer.forEach((row,i)=>{
-            row.split("").forEach((icon,j)=>{
-                console.log(icon)
-                if(icon == "/") makeAngle(size, [-i, l, -j])
-                if(icon == "Y") makeAngle(size, [-i, l, -j],1)
-                if(icon == "|") makeStraight(size, [-i, l, -j])
-                if(icon == "-") makeStraight(size, [-i, l, -j],1)
-                if(icon == "3") makeSlope(size, [-i, l, -j])
-                if(icon == "o") makePlatform(size, [-i, l, -j])
-            })
-            })
-
+            var course = ["/-----Y","|     |","o 3 2 |","|     |","Y-----/",]
+            course.forEach((row,i)=>{
+                row.split("").forEach((icon,j)=>{
+                    console.log(icon)
+                    if(icon == "/") makeAngle(size, [-i, 0, -j])
+                    if(icon == "Y") makeAngle(size, [-i, 0, -j],1)
+                    if(icon == "|") makeStraight(size, [-i, 0, -j])
+                    if(icon == "-") makeStraight(size, [-i, 0, -j],1)
+                    if(icon == "2") makeStraight(size, [-i, 1, -j],1)
+                    if(icon == "3") makeSlope(size, [-i, 0, -j])
+                    if(icon == "o") makePlatform(size, [-i, 0, -j])
+                })
             })
         }
         makeCourse()

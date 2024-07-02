@@ -24,16 +24,6 @@
         var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
         scene.add(light)
         camera.position.set(0,4,4)
-
-        //create a box- this should show up no matter what
-        var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
-        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
-        var box = new THREE.Mesh(boxgeo, boxmat);
-        scene.add(box);
-
-        const physicsWorld = new CANNON.World({ gravity: new CANNON.Vec3(0,-10,0), })
-
-        //Ground
         
         // Create a textured ground plane
         var groundTexture = new THREE.TextureLoader().load('twilight1.jpg'); // Replace 'grass_texture.jpg' with your texture path
@@ -46,14 +36,23 @@
         groundMesh.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
         scene.add(groundMesh);
 
-        const groundBody = new CANNON.Body({ type: CANNON.Body.STATIC, shape: new CANNON.Plane() })
+        //create a box- this should show up no matter what
+        var boxgeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true});
+        var box = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box);
+
+        const physicsWorld = new CANNON.World({
+            gravity: new CANNON.Vec3(0,-10,0),
+        })
+
+        const groundBody = new CANNON.Body({
+            type: CANNON.Body.STATIC,
+            shape: new CANNON.Plane()
+        })
 
         groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
         physicsWorld.addBody(groundBody)
-        groundMesh.position.copy(groundBody.position)
-        groundMesh.quaternion.copy(groundBody.quaternion)
-
-        //Sphere
 
         const radius = 1;
         const sphereBody = new CANNON.Body({
@@ -68,115 +67,17 @@
         const sphereMesh = new THREE.Mesh(geometry, material)
         scene.add(sphereMesh)
 
-        //Box
-
-        const boxsize = 1;
-        const boxBody = new CANNON.Body({
-            mass:5,
-            shape: new CANNON.Box(new CANNON.Vec3(boxsize, boxsize, boxsize))
-        });
-        boxBody.position.set(2,7,-5)
-        physicsWorld.addBody(boxBody)
-
-        const geometrybox = new THREE.BoxGeometry(2*boxsize, 2*boxsize, 2*boxsize);
-        const materialbox = new THREE.MeshNormalMaterial();
-        const boxMesh = new THREE.Mesh(geometrybox, materialbox)
-        scene.add(boxMesh)
-
-        //materials  
-
-        var defaultMaterial = new CANNON.Material("defaultMaterial");   // Step 2: Create a Material
-        var contactMaterial = new CANNON.ContactMaterial(               // Step 3: Create a Contact Material
-            defaultMaterial, defaultMaterial,                               //contact between default and default
-            {friction: -10,  restitution: 0.3}                              //physics properties
-        );
-        physicsWorld.addContactMaterial(contactMaterial);               // Step 4: Add the Contact Material to the World
-        physicsWorld.defaultContactMaterial = contactMaterial;          // Step 5: Set it as default
-
-        //Boxmaker
-
-        function makeBox(size, pos, rot=[0,0,0]){
-            var body = new CANNON.Body({
-                type: CANNON.Body.STATIC, 
-                mass:0,
-                shape: new CANNON.Box(new CANNON.Vec3(size[0], size[1], size[2]))
-            })
-            body.position.set(pos[0], pos[1], pos[2])
-            body.quaternion.setFromEuler(rot[0], rot[1], rot[2])
-            body.aabbNeedsUpdate = true;
-            physicsWorld.addBody(body)
-            var geo = new THREE.BoxGeometry(2*size[0], 2*size[1], 2*size[2])
-            var mat = new THREE.MeshNormalMaterial()
-            var mesh = new THREE.Mesh(geo, mat)
-            scene.add(mesh)
-            mesh.position.copy(body.position)
-            mesh.quaternion.copy(body.quaternion)
-        }
-
-        // makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
-
-        //Track segment maker
-        function makePlatform(size, pos){
-            makeBox([size, 0.1, size], [pos[0]*size, pos[1]*size, pos[2]*size])
-        }
-        function makeStraight(size, pos, rot=0){
-            rot = rot * Math.PI/2
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            if(rot == 0){
-                makeBox([size,size/2,.1],[pos[0]*size, pos[1]*size, (pos[2] + 1)*size])
-                makeBox([size,size/2,.1],[pos[0]*size, pos[1]*size, (pos[2] - 1)*size])
-            }
-            else{
-                makeBox([.1,size/2,size],[(pos[0]+1)*size, pos[1]*size, pos[2]*size])
-                makeBox([.1,size/2,size],[(pos[0]-1)*size, pos[1]*size, pos[2]*size])
-            }
-        }
-        function makeAngle(size, pos, rot=0){
-            rot = rot * Math.PI/2
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            makeBox([size * Math.sqrt(2),size/2,.1],[pos[0]*size, pos[1]*size, pos[2]*size], [0,Math.PI/4 + rot,0])
-        }
-        function makeSlope(size, pos, rot=0){
-            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
-            makePlatform(size, pos, [0,0,rot])
-            makeBox([size,0.1,size*Math.sqrt(5)],[pos[0]*size, (pos[1]+1)*size, (pos[2]-1)*size], [0.46365,0,0])
-        }
-
-        function makeCourse(){
-            var size = 8
-            var course = [
-            ["/-3---Y","|     |","|     |","|     |","Y-----/",],
-            ["/-  --Y","|     |","|     |","|     |","Y-----/",]]
-            course.forEach((layer,l)=>{
-            layer.forEach((row,i)=>{
-            row.split("").forEach((icon,j)=>{
-                console.log(icon)
-                if(icon == "/") makeAngle(size, [-i, l, -j])
-                if(icon == "Y") makeAngle(size, [-i, l, -j],1)
-                if(icon == "|") makeStraight(size, [-i, l, -j])
-                if(icon == "-") makeStraight(size, [-i, l, -j],1)
-                if(icon == "3") makeSlope(size, [-i, l, -j])
-                if(icon == "o") makePlatform(size, [-i, l, -j])
-            })
-            })
-
-            })
-        }
-        makeCourse()
-        //Car
         
         const wheelBodies = [];
         var chassisMesh, chassisBody, vehicle
-        //options: (side, height, front-back, radius)
-        var wheelShape = [1, 0, 1.5, 1]
+        //options: (axle length, height, dist forwards/back)
+        var wheelShape = [1, -1, 1.5]
         function createCar(){
             // Create the chassis body for the vehicle
             const chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
             chassisBody = new CANNON.Body({ mass: 150 });
             chassisBody.addShape(chassisShape);
-            chassisBody.position.set(0, 5, -10);
+            chassisBody.position.set(0, 2, -10);
             const initialRotation = new CANNON.Quaternion();
             initialRotation.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI); // Rotate 180 degrees around the y-axis
             chassisBody.quaternion.copy(initialRotation);
@@ -198,11 +99,11 @@
 
             // Add wheels
             const options = {
-                radius: wheelShape[3],
+                radius: 0.5,
                 directionLocal: new CANNON.Vec3(0, -1, 0),
                 suspensionStiffness: 30,
                 suspensionRestLength: 0.3,
-                frictionSlip: 100,
+                frictionSlip: 5,
                 dampingRelaxation: 2.3,
                 dampingCompression: 4.4,
                 maxSuspensionForce: 100000,
@@ -245,6 +146,7 @@
         createCar()
 
         let keys = { forward: false, backward: false, left: false, right: false };
+
         document.addEventListener('keydown', (event) => {
             switch (event.code) {
                 case 'KeyW':
@@ -265,6 +167,7 @@
                     break;
             }
         });
+
         document.addEventListener('keyup', (event) => {
             switch (event.code) {
                 case 'KeyW':
@@ -285,6 +188,7 @@
                     break;
             }
         });
+
         function updateVehicleControls() {
             const maxSteerVal = 0.5;
             const maxForce = 500;
@@ -325,8 +229,6 @@
             physicsWorld.fixedStep()
             sphereMesh.position.copy(sphereBody.position)
             sphereMesh.quaternion.copy(sphereBody.quaternion)
-            boxMesh.position.copy(boxBody.position)
-            boxMesh.quaternion.copy(boxBody.quaternion)
 
             chassisMesh.position.copy(chassisBody.position)
             chassisMesh.quaternion.copy(chassisBody.quaternion)
@@ -349,7 +251,7 @@
             updateVehicleControls();
             
             //set camera to desired distance and angle
-            camera.position.set(chassisMesh.position.x, chassisMesh.position.y + 15, chassisMesh.position.z + 25)
+            camera.position.set(chassisMesh.position.x, 15, chassisMesh.position.z + 25)
             camera.rotation.x = -Math.PI / 8
 
             requestAnimationFrame(animate)
