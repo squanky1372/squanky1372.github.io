@@ -3,6 +3,11 @@
   console.log(Tonal.Key.minorKey("Ab"));
 </script>
 
+<div style="font-size:100%">Keyboard: Use CTRL to go up an octave.  Use capslock to switch modes, Mode 1 is default.
+    <br>- Mode 1: keys 1-7 for majors, use shift for minors.
+    <br>- Mode 2: keys 1-7 for diatonics, use shift for non-diatonics. 
+</div>
+
 <div class="slidecontainer" id="slide">
     <input type="range" min="0" max="11" value="0" class="slider" id="myRange">
 </div>
@@ -28,13 +33,15 @@
         font-size: 200%;
     }
 </style>
-<button style="height: 5%" id="bh1">1</button>
-<button style="height: 5%" id="bh2">1</button>
-<button style="height: 5%" id="bh3">1</button>
-<button style="height: 5%" id="bh4">1</button>
-<button style="height: 5%" id="bh5">1</button>
-<button style="height: 5%" id="bh6">1</button>
-<button style="height: 5%" id="bh7">1</button>
+
+
+<button style="height: 7.5%" id="bh1">1</button>
+<button style="height: 7.5%" id="bh2">1</button>
+<button style="height: 7.5%" id="bh3">1</button>
+<button style="height: 7.5%" id="bh4">1</button>
+<button style="height: 7.5%" id="bh5">1</button>
+<button style="height: 7.5%" id="bh6">1</button>
+<button style="height: 7.5%" id="bh7">1</button>
 
 <button onclick="soundEngine.playChord(0, 1)">1</button>
 <button onclick="soundEngine.playChord(1, 1)">2</button>
@@ -70,9 +77,7 @@
 <button onclick="soundEngine.playChord(5, 0, 2)">6</button>
 <button onclick="soundEngine.playChord(6, 0, 2)">7</button>
 
-
-<div id="demo" style="font-size:500%">A</div>
-<div id="notes" style="white-space: pre; font-size:500%">A</div>
+<div id="notes" style="white-space: pre; font-size:250%"></div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js" integrity="sha512-xi/RZRIF/S0hJ+yJJYuZ5yk6/8pCiRlEXZzoguSMl+vk2i3m6UjUO/WcZ11blRL/O+rnj94JRGwt/CHbc9+6EA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -80,13 +85,49 @@
     var notes = ["C    ", "C#/Db", "D    ", "D#/Eb", "E    ", "F    ", "F#/Gb", "G    ", "G#/Ab", "A    ", "A#/Bb", "B    "]
     var note_offsets = [0,2,4,5,7,9,11]
     var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
     var notes_display = document.getElementById("notes");
-    output.innerHTML = notes[slider.value]; // Display the default slider value
+    keynotes = ""
+    note_offsets.forEach((note, i) => {
+        keynotes += "|" + (i+1) + ":" + notes[(parseInt(note) + parseInt(0)) % 12] + "\n"
+        console.log(`bh${i+1}`)
+        document.getElementById(`bh${i+1}`).innerHTML = "" + notes[(parseInt(note) + parseInt(0)) % 12]
+    })
+    if(window.innerWidth < window.innerHeight) notes_display.innerHTML = keynotes
 
+    //Handle button presses
+    document.addEventListener('keydown', (event) => {
+        var caps = event.getModifierState && event.getModifierState( 'CapsLock' );
+        console.log( caps ); // true when you press the keyboard CapsLock key
+        // console.log(event)
+        if(!caps){    
+            var octave = 1
+            var type = 1
+            if(event.shiftKey) type = 0
+            if(event.altKey) octave += 1
+            if(event.code.substring(0,5) == "Digit"){
+                console.log(event.code.substring(5,6))
+                console.log(parseInt(event.code.substring(5,6))-1)
+                soundEngine.playChord(parseInt(event.code.substring(5,6))-1, type, octave)
+            }
+        }
+        if(caps){    
+            var octave = 1
+            var type = 0
+            var typechart = [[1,0,0,1,1,0,0],[0,1,1,0,0,1,1]]
+            if(event.shiftKey) type = 1
+            if(event.altKey) octave += 1
+            if(event.code.substring(0,5) == "Digit"){
+                console.log(event.code.substring(5,6))
+                console.log(parseInt(event.code.substring(5,6))-1)
+                soundEngine.playChord(parseInt(event.code.substring(5,6))-1, typechart[type, parseInt(event.code.substring(5,6))-1], octave)
+            }
+        }
+        
+    });
+    
     // Update the current slider value (each time you drag the slider handle)
     slider.oninput = function() {
-        output.innerHTML = notes[this.value];
+        // output.innerHTML = notes[this.value];
         keynotes = ""
         note_offsets.forEach((note, i) => {
             console.log(note + this.value)
@@ -94,7 +135,7 @@
             console.log(`bh${i+1}`)
             document.getElementById(`bh${i+1}`).innerHTML = "" + notes[(parseInt(note) + parseInt(this.value)) % 12]
         })
-        notes_display.innerHTML = keynotes
+        if(window.innerWidth < window.innerHeight) notes_display.innerHTML = keynotes
         console.log(notes[this.value])
     }
 
