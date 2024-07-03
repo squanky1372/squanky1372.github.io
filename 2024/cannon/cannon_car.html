@@ -17,7 +17,7 @@
 
         //setup the scene, camera, light, etc.
         var scene = new THREE.Scene()
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.01, 1000);
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, 1000);
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight)
         document.body.appendChild(renderer.domElement)
@@ -111,6 +111,9 @@
             scene.add(mesh)
             mesh.position.copy(body.position)
             mesh.quaternion.copy(body.quaternion)
+            
+            mesh.material.transparent = true
+            mesh.material.opacity = 0.5
         }
 
         // makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
@@ -141,24 +144,60 @@
         function makeSlope(size, pos, rot=0){
             pos = [pos[0]*2, pos[1]*2, pos[2]*2]
             makePlatform(size, pos, [0,0,rot])
-            makeBox([size,0.1,size*Math.sqrt(5)],[pos[0]*size, (pos[1]+1)*size, (pos[2]-1)*size], [0.46365,0,0])
+            switch(rot){
+                case 0: makeBox([size,0.1,size*Math.sqrt(5)],[pos[0]*size, (pos[1]+1)*size, (pos[2]-1)*size], [0.46365,0,0]); break;
+                case 1: makeBox([size,0.1,size*Math.sqrt(5)],[pos[0]*size, (pos[1]+1)*size, (pos[2]+1)*size], [-0.46365,0,0]); break;
+                case 2: makeBox([size*Math.sqrt(5),0.1,size],[(pos[0]+1)*size, (pos[1]+1)*size, pos[2]*size], [0,0,0.46365]); break;
+                case 3: makeBox([size*Math.sqrt(5),0.1,size],[(pos[0]-1)*size, (pos[1]+1)*size, pos[2]*size], [0,0,-0.46365]); break;
+            }
         }
 
+        
+        // var course = [
+        //     ["/-3---Y",
+        //      "|     |",
+        //      "|     |",
+        //      "|     |",
+        //      "Y-----/",],
+        //     ["/-Y --Y",
+        //      "  |   |",
+        //      "  |   |",
+        //      "  |   |",
+        //      "  Y---/",]]
+        
+        var course = [
+            ["   /--Y",
+             "   |  v",
+             "   |   ",
+             "   o   ",
+             "   |   ",
+             "^  |   ",
+             "Y--/   "
+            ],
+            ["       ",
+             "       ",
+             "       ",
+             "/--o--/",
+             "       ",
+             "       ",
+             "       "
+            ]
+        ]
         function makeCourse(){
             var size = 8
-            var course = [
-            ["/-3---Y","|     |","|     |","|     |","Y-----/",],
-            ["/-  --Y","|     |","|     |","|     |","Y-----/",]]
             course.forEach((layer,l)=>{
-            layer.forEach((row,i)=>{
-            row.split("").forEach((icon,j)=>{
+            layer.forEach((row,j)=>{
+            row.split("").forEach((icon,i)=>{
                 console.log(icon)
-                if(icon == "/") makeAngle(size, [-i, l, -j])
-                if(icon == "Y") makeAngle(size, [-i, l, -j],1)
-                if(icon == "|") makeStraight(size, [-i, l, -j])
-                if(icon == "-") makeStraight(size, [-i, l, -j],1)
-                if(icon == "3") makeSlope(size, [-i, l, -j])
-                if(icon == "o") makePlatform(size, [-i, l, -j])
+                if(icon == "/") makeAngle(size, [i, l, -j],1)
+                if(icon == "Y") makeAngle(size, [i, l, -j],0)
+                if(icon == "|") makeStraight(size, [i, l, -j],1)
+                if(icon == "-") makeStraight(size, [i, l, -j],0)
+                if(icon == "o") makePlatform(size, [i*2, l*2, -j*2])
+                if(icon == "v") makeSlope(size, [i, l, -j],0)
+                if(icon == "^") makeSlope(size, [i, l, -j],1)
+                if(icon == ">") makeSlope(size, [i, l, -j],2)
+                if(icon == "<") makeSlope(size, [i, l, -j],3)
             })
             })
 
