@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Felipe</title>
+    <style>
+        body { margin: 0; }
+        canvas {width: 100%; height: 100%}
+    </style>
+</head>
+<body>
+    <script src = "./three.js"></script>
+    <!-- <script src = "./cannon-es-debugger.js"></script> -->
+    <script type="module">
+        //import as a module
+        import * as CANNON from "./cannon-es.js"
+        import * as DEBUG from "./cannon-es-debugger.js"
+
+        //setup the scene, camera, light, etc.
+        var scene = new THREE.Scene()
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 5, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
+        var light = new THREE.HemisphereLight(0xffffff, 0x000000, 2);
+        scene.add(light)
+        camera.position.set(0,4,4)            
+        camera.rotation.x = -Math.PI / 8
+
+        //create a box- this should show up no matter what
+        var box = new THREE.Mesh(new THREE.BoxGeometry(0.1,0.1,0.1), new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:true}));
+        scene.add(box);
+
+        const physicsWorld = new CANNON.World({ gravity: new CANNON.Vec3(0,-10,0), })
+
+        //Ground
+        
+        // Create a textured ground plane
+        var groundTexture = new THREE.TextureLoader().load('twilight1.jpg'); // Replace 'grass_texture.jpg' with your texture path
+        groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+        groundTexture.repeat.set(20, 20); // Adjust repeat values based on texture size
+
+        var groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
+        var groundGeometry = new THREE.PlaneGeometry(200, 200); // Adjust plane size as needed
+        var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+        groundMesh.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
+        scene.add(groundMesh);
+
+        const groundBody = new CANNON.Body({ type: CANNON.Body.STATIC, shape: new CANNON.Plane() })
+
+        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        physicsWorld.addBody(groundBody)
+        groundMesh.position.copy(groundBody.position)
+        groundMesh.quaternion.copy(groundBody.quaternion)
+
+        //Makers
+        function makeBox(size, pos, rot=[0,0,0]){
+            var body = new CANNON.Body({
+                type: CANNON.Body.STATIC, 
+                mass:0,
+                shape: new CANNON.Box(new CANNON.Vec3(size[0], size[1], size[2]))
+            })
+            body.position.set(pos[0], pos[1], pos[2])
+            body.quaternion.setFromEuler(rot[0], rot[1], rot[2])
+            body.aabbNeedsUpdate = true;
+            physicsWorld.addBody(body)
+            var geo = new THREE.BoxGeometry(2*size[0], 2*size[1], 2*size[2])
+            var mat = new THREE.MeshNormalMaterial()
+            var mesh = new THREE.Mesh(geo, mat)
+            // scene.add(mesh)ssd
+            mesh.position.set(pos[0], pos[1], pos[2])
+            mesh.quaternion.copy(body.quaternion)
+            
+            mesh.material.transparent = true
+            mesh.material.opacity = 0.5
+            return mesh
+        }
+        //Track segment maker
+        function makePlatform(size, pos){
+            return makeBox([size, 0.1, size], [pos[0]*size, pos[1]*size, pos[2]*size])
+        }
+        function makeStraight(size, pos, rot=0){
+            rot = rot * Math.PI/2
+            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
+            var returner = makePlatform(size, [0,0,0], [0,0,rot])
+            if(rot == 0){
+                returner.add(makeBox([size,size/2,.1],[0,0,size]))
+                returner.add(makeBox([size,size/2,.1],[0,0,-size]))
+            }
+            else{
+                returner.add(makeBox([.1,size/2,size],[size, 0,0]))
+                returner.add(makeBox([.1,size/2,size],[-size, 0,0]))
+            }
+            return returner
+        }
+        function makeAngle(size, pos, rot=0){
+            rot = rot * Math.PI/2
+            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
+            var returner = makePlatform(size, [0,0,0], [0,0,rot])
+            returner.add(makeBox([size * Math.sqrt(2),size/2,.1],[0,0,0], [0,Math.PI/4 + rot,0]))
+            return returner
+        }
+        function makeSlope(size, pos, rot=0){
+            pos = [pos[0]*2, pos[1]*2, pos[2]*2]
+            var returner = makePlatform(size, [0,0,0], [0,0,rot])
+            switch(rot){
+                case 0: returner.add(makeBox([size,0.1,size*Math.sqrt(5)],[0,size,-size], [0.46365,0,0])); break;
+                case 1: returner.add(makeBox([size,0.1,size*Math.sqrt(5)],[0,size,+size], [-0.46365,0,0])); break;
+                case 2: returner.add(makeBox([size*Math.sqrt(5),0.1,size],[+size,size,0], [0,0,0.46365])); break;
+                case 3: returner.add(makeBox([size*Math.sqrt(5),0.1,size],[-size,size,0], [0,0,-0.46365])); break;
+            }
+            return returner
+        }
+        var size = 8
+
+        function makeModule(icon, pos){
+            if(icon == "/") return makeAngle(size, pos,1)
+            if(icon == "Y") return makeAngle(size, pos,0)
+            if(icon == "|") return makeStraight(size, pos,1)
+            if(icon == "-") return makeStraight(size, pos,0)
+            if(icon == "o") return makePlatform(size, [0,0,0])
+            if(icon == "v") return makeSlope(size, pos,0)
+            if(icon == "^") return makeSlope(size, pos,1)
+            if(icon == ">") return makeSlope(size, pos,2)
+            if(icon == "<") return makeSlope(size, pos,3)
+        }
+
+        let raycaster;
+        let INTERSECTED;
+        let theta = 0;
+        const pointer = new THREE.Vector2();        
+	    raycaster = new THREE.Raycaster();
+        function isHovered(object, recursive=false){
+            camera.updateMatrixWorld();
+            raycaster.setFromCamera( pointer, camera );
+            const intersects = raycaster.intersectObject( object, recursive );
+            if ( intersects.length > 0 ) { //If there is an intersection
+                return true;
+            } 
+            return false;
+        }
+        document.addEventListener( 'mousemove', onPointerMove );
+        function onPointerMove( event ) {
+            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        }
+        document.addEventListener('mousedown', onMouseClick, false);
+        var selectedModule = 1
+        var modules = ["/", "Y", "|","-","o","v","^",">","<"]
+        function onMouseClick(e){
+            e.preventDefault(); // console.log(e.clientX, e.clientY)
+            test.children.forEach((child, i) => {
+                if(isHovered(child)) {
+                    console.log(i)
+                    console.log(child.pos3d)
+                    if(child.hasChildren) child.remove(child.children[0])
+                    child.hasChildren = true
+                    child.add(makeModule(modules[selectedModule], [child.pos3d[0]/2,child.pos3d[1]/2,-child.pos3d[2]/2]))
+                    child.moduleType = modules[selectedModule]
+                    // child.add(makeAngle(size, [child.pos3d[0]/2,child.pos3d[1]/2,-child.pos3d[2]/2],1))
+                }
+                // console.log(isHovered(test.children[1]))
+            })
+        }
+
+        let keys = { forward: false, backward: false, left: false, right: false, tiltL: false, tiltR: false , tiltF: false, tiltB: false };
+        document.addEventListener('keydown', (event) => {
+            switch (event.code) {
+                case 'KeyW':
+                case 'ArrowUp':
+                    camera.position.z -= 1
+                    break;
+                case 'KeyS':
+                case 'ArrowDown':
+                    camera.position.z += 1
+                    break;
+                case 'KeyA':
+                case 'ArrowLeft':
+                    camera.position.x -= 1
+                    break;
+                case 'KeyD':
+                case 'ArrowRight':
+                    camera.position.x += 1
+                    break;
+                case 'KeyR':
+                    camera.position.y += 1
+                    break;
+                case 'KeyF':
+                    camera.position.y -= 1
+                    break;
+                case 'KeyE':
+                    selectedModule++
+                    break;
+                case 'KeyQ':
+                    selectedModule--
+                    break;
+                case 'KeyP':
+                    printLevel()
+                    break;
+            }
+        });
+        
+        var dim = 5
+        function printLevel(){
+            var level = []
+            for(var i = 0; i < dim; i++){
+                level.push([])
+                for(var j = 0; j < dim; j++){
+                    level[i].push("")
+                    for(var k = 0; k < dim; k++){
+                        var mesh = test.children[j + i*dim + k*dim*dim]
+                        // console.log(mesh.moduleType)
+                        level[i][j] = level[i][j].concat(mesh.moduleType)
+                    }
+                    // console.log(level[i])
+                }
+                console.log(level)
+            }
+            console.log(level)
+        }
+        var test = makeBox([1,1,1],[0,0,0])
+        scene.add(test)
+        function makeGrid(){
+            for(var i = 0; i < dim; i++){
+                for(var j = 0; j < dim; j++){
+                    for(var k = 0; k < dim; k++){
+                        var mesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshNormalMaterial())
+                        mesh.position.set(i*size*2,j*size*2,-k*size*2)
+                        mesh.pos3d = [i*2,j*2,k*2]
+                        mesh.hasChildren = false
+                        mesh.moduleType = " "
+                        test.add(mesh)
+                    }
+                }
+            }
+        }
+        makeGrid()
+
+        function animate(){
+            physicsWorld.fixedStep()
+            
+            //set camera to desired distance and angle
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera);
+            box.rotation.y += 0.01
+
+            
+        }
+
+        animate()
+
+    </script>
+
+</body>
+</html>

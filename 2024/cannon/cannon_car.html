@@ -93,8 +93,7 @@
         physicsWorld.addContactMaterial(contactMaterial);               // Step 4: Add the Contact Material to the World
         physicsWorld.defaultContactMaterial = contactMaterial;          // Step 5: Set it as default
 
-        //Boxmaker
-
+        //Makers
         function makeBox(size, pos, rot=[0,0,0]){
             var body = new CANNON.Body({
                 type: CANNON.Body.STATIC, 
@@ -115,9 +114,6 @@
             mesh.material.transparent = true
             mesh.material.opacity = 0.5
         }
-
-        // makeBox([10,.1,10], [0,1,-20], [Math.PI/8,0,0])
-
         //Track segment maker
         function makePlatform(size, pos){
             makeBox([size, 0.1, size], [pos[0]*size, pos[1]*size, pos[2]*size])
@@ -183,6 +179,43 @@
              "       "
             ]
         ]
+        var course = [
+    [
+        "|    ",
+        "|    ",
+        "|    ",
+        "|   ^",
+        "Y---/"
+    ],
+    [
+        "     ",
+        "   <Y",
+        "     ",
+        "     ",
+        "     "
+    ],
+    [
+        "     ",
+        " o   ",
+        " v   ",
+        "     ",
+        "     "
+    ],
+    [
+        "     ",
+        "     ",
+        "     ",
+        "     ",
+        " o>  "
+    ],
+    [
+        "----Y",
+        "    |",
+        "    |",
+        "    |",
+        "    /"
+    ]
+] 
         function makeCourse(){
             var size = 8
             course.forEach((layer,l)=>{
@@ -283,7 +316,7 @@
         }
         createCar()
 
-        let keys = { forward: false, backward: false, left: false, right: false };
+        let keys = { forward: false, backward: false, left: false, right: false, tiltL: false, tiltR: false , tiltF: false, tiltB: false };
         document.addEventListener('keydown', (event) => {
             switch (event.code) {
                 case 'KeyW':
@@ -301,6 +334,18 @@
                 case 'KeyD':
                 case 'ArrowRight':
                     keys.right = true;
+                    break;
+                case 'KeyJ':
+                    keys.tiltL = true;
+                    break;
+                case 'KeyL':
+                    keys.tiltR = true;
+                    break;
+                case 'KeyI':
+                    keys.tiltF = true;
+                    break;
+                case 'KeyK':
+                    keys.tiltB = true;
                     break;
             }
         });
@@ -321,6 +366,18 @@
                 case 'KeyD':
                 case 'ArrowRight':
                     keys.right = false;
+                    break;
+                case 'KeyJ':
+                    keys.tiltL = false;
+                    break;
+                case 'KeyL':
+                    keys.tiltR = false;
+                    break;
+                case 'KeyI':
+                    keys.tiltF = false;
+                    break;
+                case 'KeyK':
+                    keys.tiltB = false;
                     break;
             }
         });
@@ -357,6 +414,20 @@
             } else {
                 vehicle.setBrake(0, 2);
                 vehicle.setBrake(0, 3);
+            }
+            
+            const rotPower = 10
+            if(keys.tiltL){
+                chassisBody.applyLocalImpulse(new THREE.Vector3(0,-rotPower, 0), new THREE.Vector3(+0.5,0,0))
+            }
+            if(keys.tiltR){
+                chassisBody.applyLocalImpulse(new THREE.Vector3(0,-rotPower, 0), new THREE.Vector3(-0.5,0,0))
+            }
+            if(keys.tiltF){
+                chassisBody.applyLocalImpulse(new THREE.Vector3(0,-rotPower, 0), new THREE.Vector3(0,0,+1))
+            }
+            if(keys.tiltB){
+                chassisBody.applyLocalImpulse(new THREE.Vector3(0,-rotPower, 0), new THREE.Vector3(0,0,-1))
             }
         }
 
