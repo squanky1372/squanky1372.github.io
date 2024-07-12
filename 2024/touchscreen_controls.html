@@ -1,0 +1,71 @@
+<script>
+  document.addEventListener("touchstart", handleStart);
+  document.addEventListener("touchend", handleEnd);
+  document.addEventListener("touchcancel", handleCancel);
+  document.addEventListener("touchmove", handleMove);
+  
+  const ongoingTouches = [];
+  var controls = [[0,0],[0,0]]
+
+  var maxDim = window.innerHeight / 8
+  
+  function handleStart(evt) {
+    evt.preventDefault();
+    const touches = evt.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      ongoingTouches.push(copyTouch(touches[i]));
+    }
+  }
+  
+  function handleMove(evt) {
+    evt.preventDefault();
+    const touches = evt.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      const idx = ongoingTouchIndexById(touches[i].identifier);
+      if (idx >= 0) {
+        var newControls = [Math.abs(touches[i].pageX - ongoingTouches[idx].pageX) < maxDim ? (touches[i].pageX - ongoingTouches[idx].pageX) / maxDim : Math.sign(touches[i].pageX - ongoingTouches[idx].pageX), 
+                           Math.abs(touches[i].pageY - ongoingTouches[idx].pageY) < maxDim ? (touches[i].pageY - ongoingTouches[idx].pageY) / maxDim : Math.sign(touches[i].pageY - ongoingTouches[idx].pageY),]
+        if(ongoingTouches[idx].pageX > window.innerWidth/2) { controls[1] = newControls }
+        else{ controls[0] = newControls }
+        console.log(controls[0], controls[1])
+        // console.log(-Math.atan2(controls[0][1], controls[0][0])*180/Math.PI, -Math.atan2(controls[1][1], controls[1][0])*180/Math.PI)
+      } else { console.log("can't figure out which touch to continue"); }
+    }
+  }
+  
+  function handleEnd(evt) {
+    evt.preventDefault();
+    const touches = evt.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      let idx = ongoingTouchIndexById(touches[i].identifier);
+      if (idx >= 0) {
+        if(ongoingTouches[idx].pageX > window.innerWidth/2) { controls[1] = [0,0] }
+        else{ controls[0] = [0,0] }
+        console.log(controls[0], controls[1])
+        ongoingTouches.splice(idx, 1); // remove it; we're done
+      } else { console.log("can't figure out which touch to end");}
+    }
+  }
+  
+  function handleCancel(evt) {
+    evt.preventDefault();
+    const touches = evt.changedTouches;
+    for (let i = 0; i < touches.length; i++) {
+      let idx = ongoingTouchIndexById(touches[i].identifier);
+      ongoingTouches.splice(idx, 1); // remove it; we're done
+    }
+  }
+  
+  function copyTouch({ identifier, pageX, pageY }) {
+    return { identifier, pageX, pageY };
+  }
+  
+  function ongoingTouchIndexById(idToFind) {
+    for (let i = 0; i < ongoingTouches.length; i++) {
+      const id = ongoingTouches[i].identifier;
+      if (id === idToFind) { return i; }
+    }
+    return -1; // not found
+  }
+  
+</script>
