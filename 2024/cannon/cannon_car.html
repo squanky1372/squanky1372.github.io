@@ -474,7 +474,8 @@
         document.addEventListener("touchstart", handleStart);
         document.addEventListener("touchend", handleEnd);
         document.addEventListener("touchcancel", handleCancel);
-        document.addEventListener("touchmove", handleMove);
+        document.addEventListener("touchmove", handleMove, { passive: false });
+        document.addEventListener("touchforcechange", function(e) { e.preventDefault();}, { passive: false });
         
         const ongoingTouches = [];
         var controls = [[0,0],[0,0]]
