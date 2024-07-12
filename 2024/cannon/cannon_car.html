@@ -483,6 +483,7 @@
         
         function handleStart(evt) {
           evt.preventDefault();
+          evt.stopPropagation();
           const touches = evt.changedTouches;
           for (let i = 0; i < touches.length; i++) {
             ongoingTouches.push(copyTouch(touches[i]));
@@ -490,6 +491,7 @@
         }     
         function handleMove(evt) {
           evt.preventDefault();
+          evt.stopPropagation();
           const touches = evt.changedTouches;
           for (let i = 0; i < touches.length; i++) {
             const idx = ongoingTouchIndexById(touches[i].identifier);
@@ -505,6 +507,7 @@
         }
         function handleEnd(evt) {
           evt.preventDefault();
+          evt.stopPropagation();
           const touches = evt.changedTouches;
           for (let i = 0; i < touches.length; i++) {
             let idx = ongoingTouchIndexById(touches[i].identifier);
