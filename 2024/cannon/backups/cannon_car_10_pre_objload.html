@@ -13,7 +13,7 @@
     <script type="module">
         //import as a module
         import * as CANNON from "./cannon-es.js"
-        import { OBJLoader } from "./OBJLoader2.js";
+        import * as DEBUG from "./cannon-es-debugger.js"
 
         //setup the scene, camera, light, etc.
         var scene = new THREE.Scene()
@@ -292,7 +292,7 @@
 
         //Car
         const maxSteerVal = 0.5;
-        const maxForce = 500;
+        const maxForce = 700;
         const brakeForce = 10;
         const rotPower = 10 //for in-air rotations
 
@@ -377,16 +377,6 @@
                 scene.add(wheelMesh);
             });
             
-            //load in the object, then do some action
-            const objLoader = new OBJLoader();
-            var obj_loaded;
-            objLoader.load('car_design.obj', (root) => {
-                //code in here runs when the object finishes loading
-                obj_loaded = root;
-                chassisMesh.add(obj_loaded)
-                obj_loaded.scale.set(8,8,8)
-                obj_loaded.rotation.y = Math.PI / 2
-            });
         }
         createCar()
 
