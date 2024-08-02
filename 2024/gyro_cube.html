@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+    <head>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js'></script>
+    </head>
+    <body>
+		<button style="height:20%;width:100%" onclick="onClick()">Click me</button>
+		<script src="../js/src/three.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document .body.appendChild(renderer.domElement);
+
+			var geometry = new THREE.BoxGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial({
+				color:0x0000FF, 
+				wireframe:true
+			});
+			var cube = new THREE.Mesh(geometry, material);
+			scene.add(cube);
+
+			camera.position.z = 3;
+
+			var update = function(){
+				// cube.rotation.x += 0.01;
+				// cube.rotation.y += 0.01;
+			};
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+		<script> //handle orientation stuff
+			function onClick() {
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                // Handle iOS 13+ devices.
+                DeviceMotionEvent.requestPermission()
+                .then((state) => {
+                    if (state === 'granted') {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                    } else {
+                    console.error('Request to access the orientation was rejected');
+                    }
+                })
+                .catch(console.error);
+            } else {
+                // Handle regular non iOS 13+ devices.
+                console.log("adding")
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            }
+        }
+    
+        function handleOrientation(event) {
+            const alpha = event.alpha;
+            const beta = event.beta;
+            const gamma = event.gamma;
+            // Do stuff...
+            console.log([alpha, beta, gamma])
+			cube.rotation.x = alpha * Math.PI/180
+			cube.rotation.y = beta * Math.PI/180
+			cube.rotation.z = gamma * Math.PI/180
+			
+        }
+		</script>
+	</body>
+</html>
