@@ -24,11 +24,43 @@
 			}
 		</script>
 		<script src="./links.js"></script>
-		<script type="module">
-			import * as THREE from 'three';
+		<script src="../js/src/three.js"></script>
+		<script>			
+			function onClick() {
+				if (typeof DeviceMotionEvent.requestPermission === 'function') {
+					// Handle iOS 13+ devices.
+					DeviceMotionEvent.requestPermission()
+					.then((state) => {
+						if (state === 'granted') {
+						window.addEventListener('deviceorientation', handleOrientation);
+						} else {
+						console.error('Request to access the orientation was rejected');
+						}
+					})
+					.catch(console.error);
+				} else {
+					// Handle regular non iOS 13+ devices.
+					console.log("adding")
+					window.addEventListener('deviceorientation', handleOrientation, true);
+				}
+				const element = document.getElementById("button");
+				element.remove();
+			}
+		
+			function handleOrientation(event) {
+				const alpha = event.alpha;
+				const beta = event.beta;
+				const gamma = event.gamma;
+				// Do stuff...
+				console.log([alpha, beta, gamma])
 
-			import { FontLoader } from 'addons/loaders/FontLoader.js';
-			import { TextGeometry } from 'addons/geometries/TextGeometry.js';
+				for(var i = 0; i < numcubes; i++){
+					cubes[i].rotation.x = beta * -Math.PI/180
+					cubes[i].rotation.y = gamma * -Math.PI/180
+					cubes[i].rotation.z = alpha * -Math.PI/180
+				}
+				
+			}
 
 			let raycaster;
 
@@ -204,44 +236,6 @@
 				render();
 			}
 			GameLoop();
-		</script>
-		
-		<script> //handle orientation stuff
-			function onClick() {
-            if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                // Handle iOS 13+ devices.
-                DeviceMotionEvent.requestPermission()
-                .then((state) => {
-                    if (state === 'granted') {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                    } else {
-                    console.error('Request to access the orientation was rejected');
-                    }
-                })
-                .catch(console.error);
-            } else {
-                // Handle regular non iOS 13+ devices.
-                console.log("adding")
-                window.addEventListener('deviceorientation', handleOrientation, true);
-            }
-			const element = document.getElementById("button");
-			element.remove();
-        }
-    
-        function handleOrientation(event) {
-            const alpha = event.alpha;
-            const beta = event.beta;
-            const gamma = event.gamma;
-            // Do stuff...
-            console.log([alpha, beta, gamma])
-
-			for(var i = 0; i < numcubes; i++){
-				cubes[i].rotation.x = beta * -Math.PI/180
-				cubes[i].rotation.y = gamma * -Math.PI/180
-				cubes[i].rotation.z = alpha * -Math.PI/180
-			}
-			
-        }
 		</script>
 	</body>
 </html>
