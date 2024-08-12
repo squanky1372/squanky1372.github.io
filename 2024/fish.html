@@ -1,0 +1,146 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes15.png">
+	<link rel="icon" href="/html/img/Boxes15.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<div id="first">
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			var sc = 8
+			var t = 0
+			var amp = 2
+			var maxSpeed = 1
+
+			var fishList = []
+
+			function setup() {
+				createCanvas(400, 400);
+				for(var i = 0; i < 10; i++){
+					fishList[i] = new Fish(
+						[int(random(50,350)),int(random(50,350))], 
+						[int(random(50,255)),int(random(50,255)),int(random(50,255))],
+						int(random(1,10)),
+						int(random(3,5))
+					)
+				}
+			}
+
+			function draw() {
+				t++
+				background(120,220,255);
+				fishList.forEach(fish => {
+					fish.moveFish()
+					fish.drawFish()
+				})
+			}
+
+			function Fish(location=[0,0], color=[255,100,100], fishSize=8, maxHeight=5){
+				this.fishSize = fishSize
+				this.maxHeight = maxHeight
+				this.loc = location
+				this.vs = []
+				this.rs = []
+				this.color = color
+				this.dir = [random(6)-3, random(6)-3]
+				for(var i = 0; i < this.fishSize; i++){
+					this.vs[i] = int(random(1,this.maxHeight))
+					this.rs[i] = random()*0.1
+				}
+
+				this.drawFish = function(){
+					push()
+					translate(this.loc[0], this.loc[1]+sin(t*0.05))
+					if(this.dir[0] > 0) rotate(Math.PI)
+ 					fill(color[0], color[1], color[2])
+
+					beginShape(); curveVertex(-1*sc, 0); curveVertex(-1*sc, 0)
+					for(var i = 0; i < this.rs.length; i++){
+						curveVertex(i*sc + amp*sin(this.rs[i]*t), this.vs[i]*sc + amp*sin(this.rs[i]*t))
+					}
+
+					curveVertex(this.rs.length*sc, 0);
+
+					for(var i = this.rs.length-1; i >=0; i--){
+						curveVertex(i*sc + amp*sin(this.rs[i]*t), -this.vs[i]*sc + amp*sin(this.rs[i]*t))
+					}
+					curveVertex(-1*sc, 0); curveVertex(-1*sc, 0); endShape();
+					
+					if(this.dir[0] > 0) ellipse(0, this.vs[0]*sc/2, 5, 5);
+					else ellipse(0, -this.vs[0]*sc/2, 5, 5);
+					line(0,0,-sc,0)
+					pop()
+				}
+				this.moveFish = function(){
+					this.loc[0] += this.dir[0]
+					this.loc[1] += this.dir[1]
+
+					if(this.loc[0] > 350) {
+						this.loc[0] = 350
+						this.dir = [-random(maxSpeed), random(maxSpeed*2)-maxSpeed]
+					}
+					if(this.loc[1] > 350) {
+						this.loc[1] = 350
+						this.dir = [random(maxSpeed*2)-maxSpeed, -random(maxSpeed)]
+					}
+					if(this.loc[0] < 50) {
+						this.loc[0] = 50
+						this.dir = [random(maxSpeed), random(maxSpeed*2)-maxSpeed]
+					}
+					if(this.loc[1] < 50) {
+						this.loc[1] = 50
+						this.dir = [random(maxSpeed*2)-maxSpeed, random(maxSpeed)]
+					}
+				}
+			}
+
+			// function PatternMaker(){
+			// 	this.patternCnv
+			// 	this.bufferCnv
+			// 	this.pattern;
+
+			// 	this.spotted = function(){
+			// 		patternCnv = createGraphics(100, 100);
+			// 		bufferCnv = createGraphics(width, height);
+					
+			// 		pixelDensity(1);
+			// 		patternCnv.pixelDensity(1);
+			// 		bufferCnv.pixelDensity(1);
+					
+			// 		// Draw a pattern
+			// 		patternCnv.background(150,0,255);
+			// 		patternCnv.fill(255,0,255);
+			// 		patternCnv.noStroke();
+			// 		for (let i = 0; i < 5; i++){
+			// 			let x = random(0, 100);
+			// 			let y = random(0, 100);
+			// 			patternCnv.ellipse(x, y, 10);
+			// 		}
+			// 		patternCnv.noFill();
+			// 		patternCnv.stroke(0,0,0);
+			// 		patternCnv.strokeWeight(1);
+			// 		patternCnv.rect(0,0,100,100)
+			// 		patternCnv.line(10,10,90,90);
+					
+			// 		// Uses canvas method createPattern on the buffer canvas, 
+			// 		// using the pattern canvas to create the pattern
+			// 		pattern = setupPattern(patternCnv, bufferCnv);
+			// 	}
+			// 	function setupPattern(p, b){
+			// 		return b.drawingContext.createPattern(p.canvas, 'repeat');
+			// 	}
+			// 	function setFill(p, b) {
+			// 		b.fill(0);
+			// 		b._renderer._setFill(p);
+			// 	}
+			// }
+		</script>
+		</div>
+	</body>
+</html>
