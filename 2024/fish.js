@@ -6,6 +6,7 @@ var maxSpeed = 1;
 var fishList = [];
 
 var bufferCnv;
+var selected = [];
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -16,13 +17,16 @@ function setup() {
 
     for (var i = 0; i < 20; i++) {
         fishList[i] = new Fish(
-        [int(random(50, 350)), int(random(50, 350))],
-        [int(random(50, 255)), int(random(50, 255)), int(random(50, 255))],
-        [int(random(50, 255)), int(random(50, 255)), int(random(50, 255))],
-        int(random(2, 10)),
-        int(random(3, 6))
+            [int(random(50, 350)), int(random(50, 350))],
+            [int(random(50, 255)), int(random(50, 255)), int(random(50, 255))],
+            [int(random(50, 255)), int(random(50, 255)), int(random(50, 255))],
+            int(random(2, 10)),
+            int(random(3, 6)),
+            int(random(0, 10))
         );
     }
+    selected[0] = fishList[0]
+    selected[1] = fishList[1]
 }
 
 function draw() {
@@ -32,37 +36,74 @@ function draw() {
         fish.moveFish();
         fish.drawFish();
     });
+    bufferCnv.rect(0,0,100,100)
+    selected[0].drawFishAt(50,50)
+    bufferCnv.rect(0,100,100,100)
+    selected[1].drawFishAt(50,150)
     image(bufferCnv, 0, 0);
 }
 
-function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 100], fishSize = 8, maxHeight = 5) {
+function mouseClicked(){
+    console.log(mouseX, mouseY)
+    var closest
+    var dist = 999999
+    fishList.forEach((fish, i) => {
+        var currentDist = Math.sqrt((fish.loc[0] - mouseX)*(fish.loc[0] - mouseX) + (fish.loc[1] - mouseY)*(fish.loc[1] - mouseY))
+        if(currentDist < dist){
+            dist = currentDist
+            closest = fish
+        } 
+    })
+    selected[1] = selected[0]
+    selected[0] = closest
+    console.log(closest)
+}
+
+function keyPressed() {
+    if (key === 'b') {
+      selected[0].breed(selected[1])
+    }
+  
+    if (keyCode === ENTER) {
+      // Code to run.
+    }
+  }
+
+function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 100], fishSize = 8, maxHeight = 5, pattern=0) {
     this.fishSize = fishSize;
     this.maxHeight = maxHeight;
-    this.loc = location;
     this.vs = [];
-    this.rs = [];
-    this.color = color;
+    this.colors = [color1, color2];
+
+    this.loc = location;
     this.dir = [random(6) - 3, random(6) - 3];
+    this.rs = [];
+
     for (var i = 0; i < this.fishSize; i++) {
         this.vs[i] = int(random(1, this.maxHeight));
         this.rs[i] = random() * 0.1;
     }
     this.patterner = new Pattern(color1, color2);
+    this.patternNum = pattern
     this.pattern;
 
-    var randomPattern = int(random(0, 10));
-    if (randomPattern == 0) this.pattern = this.patterner.spotted();
-    else if (randomPattern == 1) this.pattern = this.patterner.spotted();
-    else if (randomPattern == 2) this.pattern = this.patterner.spotted();
-    else if (randomPattern == 3) this.pattern = this.patterner.striped();
-    else if (randomPattern == 4) this.pattern = this.patterner.striped();
-    else if (randomPattern == 5) this.pattern = this.patterner.striped();
+    if (pattern == 0) this.pattern = this.patterner.spotted();
+    else if (pattern == 1) this.pattern = this.patterner.spotted();
+    else if (pattern == 2) this.pattern = this.patterner.spotted();
+    else if (pattern == 3) this.pattern = this.patterner.striped();
+    else if (pattern == 4) this.pattern = this.patterner.striped();
+    else if (pattern == 5) this.pattern = this.patterner.striped();
     else this.pattern = this.patterner.solid();
 
     this.drawFish = function () {
+        this.drawFishAt(this.loc[0], this.loc[1])
+    }    
+
+    this.drawFishAt = function(x, y){
         bufferCnv.push();
-        bufferCnv.translate(this.loc[0], this.loc[1] + sin(t * 0.05));
+        bufferCnv.translate(x, y + sin(t * 0.05));
         if (this.dir[0] > 0) bufferCnv.rotate(Math.PI);
+        bufferCnv.translate(-sc * this.rs.length/2, 0)
         bufferCnv.fill(color[0], color[1], color[2]);
 
         this.patterner.setFill(this.pattern, bufferCnv);
@@ -71,10 +112,10 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
         bufferCnv.curveVertex(0, 0);
         bufferCnv.curveVertex(0, 0);
         for (var i = 0; i < this.rs.length; i++) {
-        bufferCnv.curveVertex(
-            i * sc + amp * sin(this.rs[i] * t),
-            this.vs[i] * sc + amp * sin(this.rs[i] * t)
-        );
+            bufferCnv.curveVertex(
+                i * sc + amp * sin(this.rs[i] * t),
+                this.vs[i] * sc + amp * sin(this.rs[i] * t)
+            );
         }
 
         bufferCnv.curveVertex((this.rs.length - 1) * sc, 0);
@@ -115,6 +156,21 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
             this.dir = [random(maxSpeed * 2) - maxSpeed, random(maxSpeed)];
         }
     };
+
+    this.breed = function (otherfish){
+        fishList.push(new Fish(
+            [this.loc[0], this.loc[1]],
+            randSel(this.colors[0], otherfish.colors[0]),
+            randSel(this.colors[1], otherfish.colors[1]),
+            randSel(this.fishSize, otherfish.fishSize),
+            randSel(this.maxHeight, otherfish.maxHeight),
+            randSel(this.patternNum, otherfish.patternNum),
+        ))
+    }
+
+    var randSel = function(a, b){
+        return (Math.random() < 0.5) ? a : b
+    }
 }
 
 var patternCnv;
@@ -149,7 +205,7 @@ this.striped = function () {
 };
 
 this.solid = function () {
-    var patternCnv = createGraphics(100, 100);
+    var patternCnv = createGraphics(100, 100);  
     patternCnv.pixelDensity(1);
 
     patternCnv.background(color1);
