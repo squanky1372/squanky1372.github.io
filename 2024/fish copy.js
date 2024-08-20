@@ -7,10 +7,15 @@ var fishList = [];
 
 var nursery = []
 
+var tanks = [
+    new Tank(250, (width-250)/2 + 250 - 50, 0, height/2 - 50),
+    new Tank(250, (width-250)/2 + 250 - 50, height/2 + 50, height - 50),
+    new Tank((width-250)/2 + 250 + 50, width - 50, height/2 - 50, height - 50),
+    new Tank((width-250)/2 + 250 + 50, width - 50, height/2 - 50, height - 50),
+]
+
 var bufferCnv;
 var selected = [0,0];
-
-var tanks = []
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -19,47 +24,39 @@ function setup() {
     bufferCnv = createGraphics(width, height);
     bufferCnv.pixelDensity(1);
     bufferCnv.textAlign(LEFT, TOP);
-    
-    tanks = [
-        new Tank([200, (width-200)/2 + 200, 0, height/2]),
-        new Tank([200, (width-200)/2 + 200, height/2, height]),
-        new Tank([(width-200)/2 + 200, width, 0, height/2]),
-        new Tank([(width-200)/2 + 200, width, height/2, height]),
-    ]
 
     for (var i = 0; i < 20; i++) {
-        tanks[1].fishList[i] = new Fish(
-            [int(random(tanks[1].bounds[0], tanks[1].bounds[1])), int(random(tanks[1].bounds[2], tanks[1].bounds[3]))],
+        fishList[i] = new Fish(
+            [int(random(50, width-50)), int(random(50, width-50))],
             [int(random(0, 3)), int(random(0, 3)), int(random(0, 3))],
             [int(random(0, 3)), int(random(0, 3)), int(random(0, 3))],
             int(random(2, 10)),
             int(random(0, 10)),
             [int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),int(random(1,5)),],
-            tanks[1]
         );
     }
-    selected[0] = 0
-    selected[1] = 0
-
-    console.log(tanks)
+    selected[0] = fishList[0]
+    selected[1] = fishList[1]
 }
 
 function draw() {
     t++;
     bufferCnv.background(120, 220, 255);
 
-    tanks.forEach(tank => {
-        bufferCnv.fill(100, 200, 255)
-        bufferCnv.rect(tank.area[0], tank.area[2], tank.area[1]-tank.area[0], tank.area[3]-tank.area[2])
-        bufferCnv.fill(120, 220, 255)
-        bufferCnv.rect(tank.bounds[0], tank.bounds[2], tank.bounds[1]-tank.bounds[0], tank.bounds[3]-tank.bounds[2])
-        tank.fishList.forEach((fish) => {
-            fish.drawFish();
-        });
-        tank.moveFish();
-    })
+    // tanks.forEach(tank => {
+    //     bufferCnv.rect(tank.bounds[0], tank.bounds[2], tank.bounds[1]-tank.bounds[0], tank.bounds[3]-tank.bounds[2])
+    // })
 
-    bufferCnv.fill(255)
+    fishList.forEach((fish) => {
+        fish.moveFish();
+        fish.drawFish();
+    });
+
+    // nursery.forEach((fish) => {
+    //     fish.moveFish();
+    //     fish.drawFish();
+    // });
+
     //Draw fish 1 and its stats
     bufferCnv.rect(0,0,100,100)
     bufferCnv.rect(100,0,100,100)
@@ -87,15 +84,6 @@ function draw() {
         pop()
     }
 
-    //apply filter over tanks (WIP)
-    
-    // tanks.forEach(tank => {
-    //     bufferCnv.fill(100, 200, 255, 128)
-    //     bufferCnv.rect(tank.area[0], tank.area[2], tank.area[1]-tank.area[0], tank.area[3]-tank.area[2])
-    //     bufferCnv.fill(120, 220, 255, 20)
-    //     bufferCnv.rect(tank.bounds[0], tank.bounds[2], tank.bounds[1]-tank.bounds[0], tank.bounds[3]-tank.bounds[2])
-    // })
-
     image(bufferCnv, 0, 0);
 }
 
@@ -103,14 +91,13 @@ function mouseClicked(){
     console.log(mouseX, mouseY)
     var closest
     var dist = 999999
-    tanks.forEach((tank, j) => {
-        tank.fishList.forEach((fish, i) => {
+    fishList.forEach((fish, i) => {
         var currentDist = Math.sqrt((fish.loc[0] - mouseX)*(fish.loc[0] - mouseX) + (fish.loc[1] - mouseY)*(fish.loc[1] - mouseY))
         if(currentDist < dist){
             dist = currentDist
             closest = fish
         } 
-    })})
+    })
     selected[1] = selected[0]
     selected[0] = closest
     console.log(closest)
@@ -118,12 +105,12 @@ function mouseClicked(){
 
 function keyPressed() {
     if (key === 'b') {
-        if(tanks[0].fishList.length < tanks[0].maxFish) selected[0].breed(selected[1])
+        selected[0].breed(selected[1])
     }
     if (key === 's') {
-            selected[0].delete()
-            selected[0] = selected[1]
-            selected[1] = 0
+        fishList.splice(fishList.indexOf(selected[0]), 1)
+        selected[0] = selected[1]
+        selected[1] = 0
     }
   
     if (keyCode === ENTER) {
@@ -131,7 +118,7 @@ function keyPressed() {
     }
   }
 
-function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 100], fishSize = 8, pattern=0, vs, tank) {
+function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 100], fishSize = 8, pattern=0, vs) {
     this.fishSize = fishSize;
     this.vs = vs;
     this.colors = [color1, color2];
@@ -141,7 +128,6 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
     this.rs = [];
 
     this.tankdims = [250, width/2-50, 50, height-50]
-    this.tank = tank
 
     for (var i = 0; i < this.fishSize; i++) {
         this.rs[i] = random() * 0.1;
@@ -252,27 +238,27 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
         bufferCnv.pop();
     };
 
-    // this.moveFish = function () {
-    //     this.loc[0] += this.dir[0];
-    //     this.loc[1] += this.dir[1];
+    this.moveFish = function () {
+        this.loc[0] += this.dir[0];
+        this.loc[1] += this.dir[1];
 
-    //     if (this.loc[0] > this.tankdims[1]) {
-    //         this.loc[0] = this.tankdims[1];
-    //         this.dir = [-random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
-    //     }
-    //     if (this.loc[1] > this.tankdims[3]) {
-    //         this.loc[1] = this.tankdims[3];
-    //         this.dir = [random(maxSpeed * 2) - maxSpeed, -random(maxSpeed)];
-    //     }
-    //     if (this.loc[0] < this.tankdims[0]) {
-    //         this.loc[0] = this.tankdims[0];
-    //         this.dir = [random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
-    //     }
-    //     if (this.loc[1] < this.tankdims[2]) {
-    //         this.loc[1] = this.tankdims[2];
-    //         this.dir = [random(maxSpeed * 2) - maxSpeed, random(maxSpeed)];
-    //     }
-    // };
+        if (this.loc[0] > this.tankdims[1]) {
+            this.loc[0] = this.tankdims[1];
+            this.dir = [-random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
+        }
+        if (this.loc[1] > this.tankdims[3]) {
+            this.loc[1] = this.tankdims[3];
+            this.dir = [random(maxSpeed * 2) - maxSpeed, -random(maxSpeed)];
+        }
+        if (this.loc[0] < this.tankdims[0]) {
+            this.loc[0] = this.tankdims[0];
+            this.dir = [random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
+        }
+        if (this.loc[1] < this.tankdims[2]) {
+            this.loc[1] = this.tankdims[2];
+            this.dir = [random(maxSpeed * 2) - maxSpeed, random(maxSpeed)];
+        }
+    };
 
     this.breed = function (otherfish){
         var newfish = (new Fish(
@@ -281,15 +267,10 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
             randSel(this.colors[1], otherfish.colors[1]),   //color2
             randSel(this.fishSize, otherfish.fishSize),     //fishSize
             randSel(this.patternNum, otherfish.patternNum), //pattern
-            randSelArray(this.vs, otherfish.vs),            //vs
-            tanks[0]
+            randSelArray(this.vs, otherfish.vs)             //vs
         ))
-        tanks[0].fishList.push(newfish)
+        nursery.push(newfish)
         newfish.tankdims = [width/2+50, width-50, 50, height-50]
-    }
-
-    this.delete = function(){
-        this.tank.fishList.splice(this.tank.fishList.indexOf(this), 1)
     }
 
     var randSel = function(a, b){
@@ -305,36 +286,11 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
     }
 }
 
-function Tank(area=[0,0,0,0], maxFish=20){
-    this.area = area
-    this.bounds = [area[0] + sc*5, area[1] - sc*5, area[2] + sc*5, area[3] - sc*5]
+function Tank(bounds, maxFish=20){
+    this.bounds = bounds
     this.maxFish = maxFish
 
-    this.fishList = []
-
-    this.moveFish = function(){
-        this.fishList.forEach(fish => {
-            fish.loc[0] += fish.dir[0];
-            fish.loc[1] += fish.dir[1];
-    
-            if (fish.loc[0] > this.bounds[1]) {
-                fish.loc[0] = this.bounds[1];
-                fish.dir = [-random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
-            }
-            if (fish.loc[1] > this.bounds[3]) {
-                fish.loc[1] = this.bounds[3];
-                fish.dir = [random(maxSpeed * 2) - maxSpeed, -random(maxSpeed)];
-            }
-            if (fish.loc[0] < this.bounds[0]) {
-                fish.loc[0] = this.bounds[0];
-                fish.dir = [random(maxSpeed), random(maxSpeed * 2) - maxSpeed];
-            }
-            if (fish.loc[1] < this.bounds[2]) {
-                fish.loc[1] = this.bounds[2];
-                fish.dir = [random(maxSpeed * 2) - maxSpeed, random(maxSpeed)];
-            }
-        })
-    }
+    this.fish = []
 }
 
 
