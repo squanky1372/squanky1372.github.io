@@ -1,0 +1,73 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes7.png">
+	<link rel="icon" href="/html/img/Boxes7.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			var sync = false;
+			var n = 4;
+			var wordlist = []
+			var reloadData = function(){
+				fetch(`./data/${n}-letter-words.json`)
+					.then(response => response.json())
+					.then(text => {
+						text.forEach(word_i => {wordlist.push(word_i.word)})
+						sync = true
+						console.log(wordlist)
+						parseWordBars()
+					})
+			}
+
+			function parseWordBars(){
+				wordlist.forEach((wordA, a) => {
+					console.log("WOD" + wordA)
+					wordlist.filter(tempB => {return tempB[0] == wordA[0]}).forEach((wordB, b) => {
+						
+					wordlist.filter(tempC => {return tempC[0] == wordB[1]}).forEach((wordC, c) => {
+					
+					wordlist.filter(tempD => {return tempD[0] == wordA[1] && tempD[1] == wordC[1]}).forEach((wordD, d) => {
+
+					wordlist.filter(tempE => {return tempE[0] == wordB[2] && tempE[1] == wordD[2]}).forEach((wordE, e) => {
+						
+						console.log(e)
+					})	
+						
+					})	
+						
+					})
+						
+					})
+				})
+
+			}
+
+			function setup() {
+				reloadData()
+				createCanvas(windowWidth, windowHeight);
+				
+				background(220);
+				colorMode(HSB, 100);
+				textAlign(CENTER, CENTER);
+			}
+
+			function draw() {
+				if(sync){
+				}
+			}
+
+			// var keys = Array(26).fill(true)
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}			
+		</script>
+		
+	</body>
+</html>

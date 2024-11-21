@@ -26,6 +26,7 @@ var links_database = [
     ["/2024/matter/ballgame.html", "/html/img/Boxes17.png"], //pool 2 
     ["/2024/map/index.html", "/html/img/Boxes29.png"], //map
     ["/2024/fish.html", "/html/img/Boxes30.png"], //fish
+    ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //fish
     
     
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game

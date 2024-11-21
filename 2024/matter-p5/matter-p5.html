@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        <script>
+      
+            // create an engine
+            let engine = Matter.Engine.create();
+            // engine.world.gravity.y = 0;
+      
+            // create two boxes and a ground
+            let size = {x: window.innerWidth, y: window.innerHeight}
+            let ball = Matter.Bodies.circle(size.x/4, size.y/2, 30, {restitution: 0.5, mass: 1});
+
+            //Add border walls to the screen
+            let thickness = 1000
+            let ground = Matter.Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true });
+            let ceil = Matter.Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true });
+            let wall1 = Matter.Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            let wall2 = Matter.Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            
+            // add all of the bodies to the world
+            Matter.Composite.add(engine.world, [ball, ground, wall1, wall2, ceil]);
+
+            // create runner
+            let runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+        </script>
+
+        
+		<script src="./p5.js"></script>
+		<script>
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+			}
+
+			function draw() {
+				background(200, 200, 200, 50);
+                circle(ball.position.x, ball.position.y, ball.circleRadius*2)
+                // console.log(ball)
+                console.log([ball.circleRadius, ball.position.x, ball.position.y, ball.velocity])
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+    </body>
+</html>

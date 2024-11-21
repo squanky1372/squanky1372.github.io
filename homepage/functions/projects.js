@@ -43,40 +43,57 @@ function projects(terminal){
 function project(terminal, project_number){
     project_data.forEach((event, i) => {
         if(event.Project_Number == project_number){
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================`, {raw:true})
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+            terminal.echo(`<div style="font-size: 10px; padding: 0% 10% 00% 10%">========================================================================================<br>`, {raw:true})
+            terminal.echo(`<div style="font-size: 10px; padding: 0% 10% 00% 10%">========================================================================================<br>`, {raw:true})
+            terminal.echo(`<div style="font-size: 10px; padding: 0% 10% 00% 10%">
                 Project ${event.Project_Number} - ${event.Project_Name}
             <div>`, {raw:true})
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">========================================================================================
-                <br>
-                Overview
-                <br>
-                ----------------------------------------------------------------------------------------
+            terminal.echo(`
+                <div style="font-size: 10px; padding: 0% 10% 00% 10%">========================================================================================
+                <br>Overview
+                <br>----------------------------------------------------------------------------------------<br>
                 ${event.Overview}
             <div>`, {raw:true})
         }
     })
+    // weekly_data.forEach((event, i) => {
+    //     if(event.Project_Number == project_number){
+    //         terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
+    //             <br>========================================================================================<br>
+    //             Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
+    //         <div>`, {raw:true})
+    //         terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">----------------------------------------------------------------------------------------`, {raw:true})
+    //         terminal.echo(`
+    //         <div style="font-size: 20px; padding: 0% 10% 00% 10%">
+    //         ${event.Text}
+    //         <div>`, {raw:true})
+    //     }
+    // })
     weekly_data.forEach((event, i) => {
         if(event.Project_Number == project_number){
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                <br>========================================================================================<br>
-                Week ${event.Week}: Project ${event.Project_Number} - ${event.Project_Name}
-            <div>`, {raw:true})
-            terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">----------------------------------------------------------------------------------------`, {raw:true})
-            terminal.echo(`
-            <div style="font-size: 20px; padding: 0% 10% 00% 10%">
-            ${event.Text}
+            terminal.echo(`<div style="font-size: 12px; padding: 0% 10% 00% 10%">
+                ============<br>
+                <details>
+                <summary>
+                | Week ${event.Week}|<br>
+                </summary>
+                <p>${event.Text}</p>
+                </details>
+                ============<br>
             <div>`, {raw:true})
         }
     })
     project_data.forEach((event, i) => {
         if(event.Project_Number == project_number){
             terminal.echo(`<div style="font-size: 20px; padding: 0% 10% 00% 10%">
-                <br>========================================================================================<br>
+                ========================================================================================<br>
+                <details>
+                <summary>
                 Next Steps
-                <br>----------------------------------------------------------------------------------------<br>
-                ${event.Next_Steps}
+                </summary>
+                <p>${event.Next_Steps}}</p>
+                </details>
+                ----------------------------------------------------------------------------------------<br>
             <div>`, {raw:true})
         }
     })

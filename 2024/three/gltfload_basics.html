@@ -27,20 +27,35 @@
         var box = new THREE.Mesh(boxgeo, boxmat);
         scene.add(box);
 
+        var boxgeo = new THREE.BoxGeometry(1,1,1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:false});
+        var box2 = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box2);
+        box2.position.z -= 1
+
+        var boxgeo = new THREE.BoxGeometry(1,1,1);
+        var boxmat = new THREE.MeshBasicMaterial({ color:0xFFFFFF, wireframe:false});
+        var box3 = new THREE.Mesh(boxgeo, boxmat);
+        scene.add(box3);
+        box3.position.z += 2
+
         //load in the object, then do some action
         const gltfLoader = new GLTFLoader();
         var dude;
-        gltfLoader.load('car_design.gltf', (root) => {
+        gltfLoader.load('coach.gltf', (root) => {
             //code in here runs when the object finishes loading
             dude = root.scene;
             box.add(dude)
+            dude.scale.setScalar(0.1)
+            dude.rotation.x = -Math.PI/2
+            console.log("loaded")
         });
 
         function animate(){
             requestAnimationFrame(animate)
             renderer.render(scene, camera);
             console.log("hi")
-            dude.rotation.y += 0.01
+            dude.rotation.z -= 0.01
 
         }
 

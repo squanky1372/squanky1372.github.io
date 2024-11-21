@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        
+        <script>
+            var ball_size = 5
+            var restitution = 1
+            var mass = 1
+            var gravity = 4;
+            var horiz_force = 0.001;
+            var jump = 0.04
+        </script>
+
+        <script>
+      
+            // create an engine
+            let engine = Matter.Engine.create();
+            engine.world.gravity.y = gravity;
+      
+            // create two boxes and a ground
+            let size = {x: window.innerWidth, y: window.innerHeight}
+            let ball = Matter.Bodies.circle(size.x/4, size.y/2, ball_size, {restitution: 1, mass: 1});
+
+            //Add border walls to the screen
+            let thickness = 1000
+            let ground = Matter.Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true });
+            let ceil = Matter.Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true });
+            let wall1 = Matter.Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            let wall2 = Matter.Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            
+            // add all of the bodies to the world
+            Matter.Composite.add(engine.world, [ball, ground, wall1, wall2, ceil]);
+
+            
+            let boxes = [
+                Matter.Bodies.rectangle(300, 650, 50, 50, { isStatic: true }),
+                Matter.Bodies.rectangle(500, 650, 50, 50, { isStatic: true }),
+                Matter.Bodies.rectangle(600, 630, 50, 50, { isStatic: true }),
+                Matter.Bodies.rectangle(500, 650, 50, 50, { isStatic: true, restitution: 2 })
+            ]
+            Matter.Composite.add(engine.world, boxes);
+
+
+            engine.enableSleeping = true;
+
+            // create runner
+            let runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+        </script>
+
+        
+		<script src="./p5.js"></script>
+		<script>
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+			}
+
+			function draw() {
+                push()
+                // scale(0.5)
+				background(200, 200, 200, 50);
+                circle(ball.position.x, ball.position.y, ball.circleRadius*2)
+                console.log(boxes[0])
+                boxes.forEach(box => {
+                    const width = box.bounds.max.x - box.bounds.min.x;
+                    const height = box.bounds.max.y - box.bounds.min.y;
+                    rect(box.position.x - width/2, box.position.y - height/2, width, height)
+
+                })
+                // console.log(ball)
+                // console.log([ball.circleRadius, ball.position.x, ball.position.y, ball.velocity])
+                if(keyIsDown(65)){ //a
+                    console.log("a")
+                    const force = {x: -horiz_force, y: 0}; 
+                    Matter.Body.applyForce(ball, ball.position, force);
+                }
+                if(keyIsDown(68)){ //d
+                    console.log("d")
+                    const force = {x: horiz_force, y: 0}; 
+                    Matter.Body.applyForce(ball, ball.position, force);
+                }
+                pop()
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+
+            function keyPressed() {
+                if (key === 'w') {
+                    console.log("w")
+                    // Force application
+                    const force = { x: 0, y: -jump }; 
+                    Matter.Body.applyForce(ball, ball.position, force);
+                }
+            }
+		</script>
+    </body>
+</html>

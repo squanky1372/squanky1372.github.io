@@ -1,0 +1,300 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+    <body>
+		<script src="./three_obj.js"></script>
+		<script type="module">
+			//import as a module
+			import { OBJLoader } from "./OBJLoader2.js";
+			var scene = new THREE.Scene();
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document .body.appendChild(renderer.domElement);
+
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+
+			var light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
+			scene.add(light)
+
+			const alight = new THREE.AmbientLight( 0x404040 ); // soft white light
+			scene.add( alight );
+
+			var geometry = new THREE.BoxGeometry(.1,.1,.1);
+			// var geometry = new THREE.BoxGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial({
+				color:0x000000, 
+				wireframe:true
+			});
+			var cube = new THREE.Mesh(geometry, material);
+			scene.add(cube);
+			var wagon_center = new THREE.Mesh(new THREE.BoxGeometry(.11,.11,.11), new THREE.MeshBasicMaterial({color:0x000000, wireframe:true}));
+			scene.add(wagon_center);
+			var flatbed_center = new THREE.Mesh(new THREE.BoxGeometry(.11,.11,.11), new THREE.MeshBasicMaterial({color:0x000000, wireframe:true}));
+			scene.add(flatbed_center);
+
+			const objLoader = new OBJLoader();
+			var train;
+			objLoader.load('train_womp2.obj', (root) => {
+				//code in here runs when the object finishes loading
+				train = root;
+				cube.add(train)
+				train.scale.setScalar(0.05)
+				// train.position.y += 0.5
+				// train.position.x -= 1.2
+				// train.position.z += 0.05
+			});
+
+			var wagon;
+			var wagons = []
+			var wagon_count = 3
+			objLoader.load('wagon.obj', (root) => {
+				//code in here runs when the object finishes loading
+				wagon = root;
+				wagon_center.add(wagon)
+				wagon.scale.setScalar(0.05)
+				wagon.position.y -= 1.265
+				wagon.position.x -= 0.95
+				wagon.position.z += 0.05
+				wagons[0] = wagon_center
+
+				for(var i = 1; i < wagon_count; i++){
+					wagons[i] = wagon_center.clone()
+					scene.add(wagons[i])
+				}
+			});
+
+			var flatbed;
+			var flatbeds = []
+			var flatbed_count = 3
+			objLoader.load('flatbed.obj', (root) => {
+				//code in here runs when the object finishes loading
+				flatbed = root;
+				flatbed_center.add(flatbed)
+				flatbed.scale.setScalar(0.05)
+				flatbed.position.y -= 2.785
+				flatbed.position.x += 1.3
+				flatbed.position.z += 0.05
+				flatbeds[0] = flatbed_center
+
+				for(var i = 1; i < flatbed_count; i++){
+					flatbeds[i] = flatbed_center.clone()
+					scene.add(flatbeds[i])
+				}
+			});
+
+			var path = [[0,0], [1,0], [1,1], [0,1]] //normal square path
+			// var path = [[0,0], [1,0], [1,1], [0,1], [0,0], [-1,-1], [0,-1]] //weird square path
+			var path = [[ 2, 0, 1],[ 1,-1, 0],[ 0,-1, 0],[-1, 0, 1],[-1, 1, 1],[ 0, 2, 0],[ 1, 2, 0],[ 2, 1, 1]] //loop CW
+			// var path = [[0,0,0], [1,1,1], [0,2,0], [-1,1,1]] //small circle CCW
+			// var path = [[0,0,0], [-1,1,1], [0,2,0], [1,1,1]] //small circle CW
+			// var path = [[ 2, 0, 1],[ 1,-1, 0],[ 0,-1, 0],[-1, 0, 1],[ 0, 1, 0],[ 1, 1, 0]] //oblong oval
+			var path = [[ 0, 0, 0],[-1, 1, 1],[ 0, 2, 0],[ 1, 1, 1],[ 0, 0, 0],[-1,-1, 1],[ 0,-2, 0],[ 1,-1, 1]] //Figure 8
+			// var path = [[ 0, 0, 0],[ 1, 1, 1],[ 0, 2, 0],[-1, 1, 1],[ 0, 0, 0],[ 1,-1, 1],[ 0,-2, 0],[-1,-1, 1]] //Figure 8 reverse
+			
+			var path = [[ 2, 0, 1],[ 1,-1, 0],[ -0.5,-1, 0],[-1.5, 0, 1],[-1.5, 1.5, 1],[ -0.5, 2.5, 0],[ 1, 2.5, 0],[ 2, 1.5, 1]] //wide loop CW
+
+			var path_offsets = [[1,1], [0,1], [-1,1],[-1,-1],[0,-1]]
+			var path_offsets = [[5,5], [0,5], [-5,5],[-5,-5],[0,-5]]
+			// var path_offsets = []
+			// var path_dirs = [2, 1, 8, 1, 2, 3, 4, 5, 6, 5, 4, 5, 6, 7, 8]
+			var path_dirs = [2, 1, 8, 8, 1, 2, 3, 3, 4, 5, 6, 6, 5, 4, 4, 5, 6, 7, 7, 8, 1, ]
+			var path_dirs = [" ^ 7 > ? v ? < ` "]
+			var path_dirs = [" ^ 7 > ? v ? < ` "]
+			var path_dirs = [3,3,3,4,6,7,7,7,8]
+			var path = [[0,0,0]]
+
+			var type = 0
+
+			path_dirs.forEach((dir, i) => {
+				var dirs_dict = [[0,1.5],[1,1],[1.5,0],[1,-1],[0,-1.5],[-1,-1],[-1.5,0],[-1,1]]
+				path_offsets[i] = dirs_dict[path_dirs[i] - 1]
+			})
+
+			path_offsets.forEach((offset, i) => {
+				if(offset[0] == 0) type = 1
+				else if(offset[1] == 0) type = 0
+				else type = 1-type
+				path.push([path[i][0] + offset[0], path[i][1] + offset[1], type])
+			})
+			console.log(path)
+			var pathSize = path.length
+			var t_orig = 0
+
+			//Railroad ties along track
+			var color = 0x0000F0
+			for(var i = 0; i < pathSize*10; i++){
+				var t_orig = i / 10
+				// if(t_orig > pathSize) t_orig = t_orig - pathSize
+				// if(t_orig < 0) t_orig = pathSize
+				color += 0x050000
+				// console.log(color)
+
+				var tie = new THREE.Mesh(new THREE.BoxGeometry(.08,.3,.01), new THREE.MeshBasicMaterial({color:0x964B00, wireframe:false}));
+				var rail1 = new THREE.Mesh(new THREE.BoxGeometry(.4,.025,.02), new THREE.MeshBasicMaterial({color:0xAAAAAA, wireframe:false}));
+				var rail2 = new THREE.Mesh(new THREE.BoxGeometry(.4,.025,.02), new THREE.MeshBasicMaterial({color:0xAAAAAA, wireframe:false}));
+
+				scene.add(tie);
+				tie.add(rail1)
+				rail1.position.y += 0.08
+				tie.add(rail2)
+				rail2.position.y -= 0.08
+
+				updateCube(tie, t_orig)
+
+			}
+
+			function updateCube(target_cube, t_orig){
+				
+				t_orig = t_orig % pathSize
+
+				var pathStartLocation = Math.floor(t_orig)
+				var pathEndLocation = Math.floor(t_orig) + 1
+				if(pathStartLocation >= pathSize) pathStartLocation = 0
+				if(pathEndLocation >= pathSize) pathEndLocation = 0
+
+				var pathLocations = [pathStartLocation, pathEndLocation]
+				var pathStart = path[pathLocations[0]]
+				var pathEnd = path[pathLocations[1]]
+				var pathDir = path[pathLocations[0]][2]
+				var dx = pathEnd[0] - pathStart[0]
+				var dy = pathEnd[1] - pathStart[1]
+				var x_shift = 0
+				var y_shift = 0
+				var zone = 0
+
+				var t = t_orig - Math.floor(t_orig)
+
+				if(dx==0 || dy==0){
+					x_shift = dx*(t - Math.floor(t))
+					y_shift = dy*(t - Math.floor(t))
+					if(dx == 0 && dy>0) target_cube.rotation.z = Math.PI/2 * 1
+					if(dx == 0 && dy<0) target_cube.rotation.z = Math.PI/2 * 3
+					if(dx>0 && dy == 0) target_cube.rotation.z = Math.PI/2 * 0
+					if(dx<0 && dy == 0) target_cube.rotation.z = Math.PI/2 * 2
+
+					// console.log(dx, dy)
+				}
+
+				if(dx > 0 && dy > 0 && pathDir == 0){
+					x_shift = Math.abs(dx) * Math.cos(Math.PI/2 * (t+3))
+					y_shift = Math.abs(dy) * (Math.sin(Math.PI/2 * (t+3)) + 1)
+					target_cube.rotation.z = 0 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx < 0 && dy > 0 && pathDir == 1){
+					x_shift = Math.abs(dx) * (Math.cos(Math.PI/2 * (t+0)) - 1)
+					y_shift = Math.abs(dy) * Math.sin(Math.PI/2 * (t+0))
+					target_cube.rotation.z = 3 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx < 0 && dy < 0 && pathDir == 0){
+					x_shift = Math.abs(dx) * Math.cos(Math.PI/2 * (t+1))
+					y_shift = Math.abs(dy) * (Math.sin(Math.PI/2 * (t+1)) - 1)
+					target_cube.rotation.z = 2 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx > 0 && dy < 0 && pathDir == 1){
+					x_shift = Math.abs(dx) * (Math.cos(Math.PI/2 * (t+2)) + 1)
+					y_shift = Math.abs(dy) * Math.sin(Math.PI/2 * (t+2))
+					target_cube.rotation.z = 1 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+
+				if(dx < 0 && dy > 0 && pathDir == 0){
+					x_shift = Math.abs(dx) * Math.cos(Math.PI/2 * (-t+3))
+					y_shift = Math.sin(Math.PI/2 * (-t+3)) + 1
+					target_cube.rotation.z = 2 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx > 0 && dy > 0 && pathDir == 1){
+					x_shift = Math.abs(dx) * Math.cos(Math.PI/2 * (-t+2)) + 1
+					y_shift = Math.sin(Math.PI/2 * (-t+2))
+					target_cube.rotation.z = 3 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx > 0 && dy < 0 && pathDir == 0){
+					x_shift = Math.abs(dx) * Math.cos(Math.PI/2 * (-t+1))
+					y_shift = Math.sin(Math.PI/2 * (-t+1)) - 1
+					
+					target_cube.rotation.z = 0 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx < 0 && dy < 0 && pathDir == 1){
+					x_shift = Math.abs(dx) * (Math.cos(Math.PI/2 * (-t+0)) - 1)
+					y_shift = Math.sin(Math.PI/2 * (-t+0))
+					
+					target_cube.rotation.z = 1 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				
+				target_cube.position.x = pathStart[0] + x_shift
+				target_cube.position.y = pathStart[1] + y_shift
+
+			}
+
+			var camera_distance = 5
+			var train_speed = 2
+			
+			camera.position.z = 5;
+			camera.position.y = -5
+			camera.rotation.x = Math.PI/4
+			
+			camera.position.z = 0.5;
+			camera.position.y = -3
+			camera.position.x = 2
+			camera.rotation.x = Math.PI/3
+			
+			// camera.position.z = 2.5;
+			// camera.position.x = -1;
+			// camera.position.y = -1;
+			// camera.rotation.x = Math.PI/2
+
+			document.addEventListener('keydown', (event) => {
+				var keyCode = event.which;
+				if (keyCode == 87) {
+					trainSpeed += 0.1
+					train_dir = 1
+				} else if (keyCode == 83) {
+					trainSpeed += 0.1
+					train_dir = -1
+				} 
+			});
+
+			document.addEventListener('keyup', (event) => {
+				var keyCode = event.which;
+				if (keyCode == 87) {
+					train_dir = 0
+				} else if (keyCode == 83) {
+					train_dir = 0
+				} 
+			});
+
+			var trainSpeed = 0
+			var train_dir = 1
+			var trainMaxSpeed = 5
+			var update = function(){
+				if(train_dir == 0){
+					trainSpeed -= 0.05
+				}
+				if(trainSpeed > trainMaxSpeed) trainSpeed = trainMaxSpeed
+				if(trainSpeed < 0) trainSpeed = 0
+				t_orig = t_orig + 0.01 * train_speed * trainSpeed
+				var offsets = 0.4//Math.sqrt(train_speed) * 0.08
+				updateCube(cube, t_orig + 1 * Math.sqrt(train_speed) * 0.01)
+				wagons.forEach((wagon, i) => {
+					updateCube(wagons[i], t_orig - (i+1) * offsets)
+				})
+				flatbeds.forEach((flatbed, i) => {
+					updateCube(flatbeds[i], t_orig - (i+4) * offsets)
+				})
+			};
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+	</body>
+</html>

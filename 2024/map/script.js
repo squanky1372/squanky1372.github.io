@@ -363,15 +363,22 @@ function initMap() {
     map.data.loadGeoJson("NP.geojson");
     //Load parks visited
     parks_visited_data = null
-    $.getJSON("parks_visited.json", function(data){ parks_visited_data = data })
+    // $.getJSON("./parks_visited.json", function(data){ parks_visited_data = data })
+    fetch('./parks_visited.json').then((res) => {res.json().then((data) => {
+        parks_visited_data = data
+        console.log(parks_visited_data)
+        map.data.setStyle(function(feature) {
+          var color = parks_visited_data[feature.Gg.PARKNAME] ? 'green' : 'red';
+          return {
+            fillColor: color, strokeColor: color,
+            strokeOpacity: 0.8, strokeWeight: 2, fillOpacity: 0.35,
+          };
+        });
+      })
+      
+    } );
 
-    map.data.setStyle(function(feature) {
-      var color = parks_visited_data[feature.Gg.PARKNAME] ? 'green' : 'red';
-      return {
-        fillColor: color, strokeColor: color,
-        strokeOpacity: 0.8, strokeWeight: 2, fillOpacity: 0.35,
-      };
-    });
+    
     map.data.addListener('click', function(event) {
       console.log(event.feature.Gg.PARKNAME)
       document.getElementById("hover").innerHTML = event.feature.Gg.PARKNAME

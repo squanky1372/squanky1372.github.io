@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        
+        <script>
+            var restitution = 1
+            var mass = 1
+            var gravity = 0;
+            
+            const forwardForce = 0.001;
+            const turnSpeed = 0.1;
+            const turnForce = 0.05;
+        </script>
+
+        <script>
+      
+            // create an engine
+            let engine = Matter.Engine.create();
+            engine.world.gravity.y = gravity;
+            engine.enableSleeping = true;
+      
+            // create two boxes and a ground
+            let size = {x: window.innerWidth, y: window.innerHeight}
+            const car = Matter.Bodies.rectangle(400, 200, 50, 30, {restitution: 1, mass: 1});  // x, y, width, height
+
+            //Add border walls to the screen
+            let thickness = 1000
+            let ground = Matter.Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true });
+            let ceil = Matter.Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true });
+            let wall1 = Matter.Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            let wall2 = Matter.Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true });
+            
+            // add all of the bodies to the world
+            Matter.Composite.add(engine.world, [car, ground, wall1, wall2, ceil]);
+
+            // create runner
+            let runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+
+        </script>
+
+        
+		<script src="./p5.js"></script>
+		<script>
+			function setup() {
+				createCanvas(windowWidth, windowHeight);
+			}
+
+			function draw() {
+                push()
+                // scale(0.5)
+				background(200, 200, 200);
+                translate(car.position.x, car.position.y)
+                rotate(car.angle)
+                rect(-25,-15,50,30)
+                rect(20,-15,5,30)
+                // console.log(ball)
+                // console.log([ball.circleRadius, ball.position.x, ball.position.y, ball.velocity])
+                if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+                    console.log('up')
+                    Matter.Body.applyForce(car, car.position, {
+                    x: Math.cos(car.angle) * forwardForce,
+                    y: Math.sin(car.angle) * forwardForce,
+                    });
+                }
+                if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+                    console.log('up')
+                    Matter.Body.setVelocity(car, {
+                        x: car.velocity.x * 0.98,
+                        y: car.velocity.y * 0.98
+                    });
+                    Matter.Body.setAngularVelocity(car, car.angularVelocity * 0.98);
+                }
+                if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+                    // Matter.Body.setAngle(car, car.angle - turnSpeed);
+                    Matter.Body.setAngularVelocity(car, -turnForce);
+
+                }
+                if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+                    // Matter.Body.setAngle(car, car.angle + turnSpeed);
+                    Matter.Body.setAngularVelocity(car, +turnForce);
+                }
+                const speed = Math.sqrt(car.velocity.x ** 2 + car.velocity.y ** 2);
+                Matter.Body.setAngularVelocity(car, car.angularVelocity*0.9);
+                console.log(car.angularVelocity)
+
+                pop()
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+		</script>
+    </body>
+</html>

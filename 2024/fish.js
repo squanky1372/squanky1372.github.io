@@ -11,6 +11,7 @@ var bufferCnv;
 var selected = [0,0];
 
 var tanks = []
+var tankIndex = 0
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -48,11 +49,13 @@ function draw() {
     t++;
     bufferCnv.background(120, 220, 255);
 
-    tanks.forEach(tank => {
-        bufferCnv.fill(100, 200, 255)
+    tanks.forEach((tank, i) => {
+        bufferCnv.stroke(0).fill(100, 200, 255)
         bufferCnv.rect(tank.area[0], tank.area[2], tank.area[1]-tank.area[0], tank.area[3]-tank.area[2])
         bufferCnv.fill(120, 220, 255)
         bufferCnv.rect(tank.bounds[0], tank.bounds[2], tank.bounds[1]-tank.bounds[0], tank.bounds[3]-tank.bounds[2])
+        if(i == tankIndex) bufferCnv.noFill().stroke(255,0,0).strokeWeight(5).rect(tank.area[0], tank.area[2], tank.area[1]-tank.area[0], tank.area[3]-tank.area[2]).strokeWeight(1).stroke(0).fill(0)    
+            
         tank.fishList.forEach((fish) => {
             fish.drawFish();
         });
@@ -121,10 +124,31 @@ function keyPressed() {
         if(tanks[0].fishList.length < tanks[0].maxFish) selected[0].breed(selected[1])
     }
     if (key === 's') {
-            selected[0].delete()
-            selected[0] = selected[1]
-            selected[1] = 0
+        selected[0].delete()
+        selected[0] = selected[1]
+        selected[1] = 0
     }
+    if (key === 'S') {
+        tanks[tankIndex].fishList.forEach(fish => {
+            fish.delete()
+        })
+        selected[0] = 0
+        selected[1] = 0
+    }
+    if (key === "m") {
+        var temp = selected[0]
+        selected[0].delete()
+        
+        tanks[tankIndex].fishList.push(temp)
+        selected[0] = temp
+        selected[0].tank = tanks[tankIndex]
+        temp.tank = tanks[tankIndex]
+    }
+    if (key === 'p') tankIndex = 0
+    if (key === ';') tankIndex = 1
+    if (key === '[') tankIndex = 2
+    if (key === '\'') tankIndex = 3
+    console.log(tankIndex)
   
     if (keyCode === ENTER) {
       // Code to run.
@@ -142,6 +166,12 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
 
     this.tankdims = [250, width/2-50, 50, height-50]
     this.tank = tank
+
+    var colorNames = [[["Black", "Maroon", "Red"],["Navy","Grape","Violet"],["Blue","Purple","Magenta"]],
+                       [["Forest", "Olive", "Orange"],["Teal","Gray","Salmon"],["Cerulean","Lavender","Pink"]],
+                       [["Green", "Lime", "Yellow"],["Emerald","Mint","Lemon"],["Cyan","Sky","White"]]]
+
+    var patternNames = ["Spotted", "Checkered", "Striped", "Halved", "Solid"]
 
     for (var i = 0; i < this.fishSize; i++) {
         this.rs[i] = random() * 0.1;
@@ -206,10 +236,20 @@ function Fish(location = [0, 0], color1 = [255, 100, 100], color2 = [100, 255, 1
         bufferCnv.push(); bufferCnv.translate(x, y);                                                        //align
         bufferCnv.fill(this.colors[0][0]*128,this.colors[0][1]*128,this.colors[0][2]*128).rect(0,0,50,25)   //color 1
         bufferCnv.fill(this.colors[1][0]*128,this.colors[1][1]*128,this.colors[1][2]*128).rect(50,0,50,25)  //color 2        
-        bufferCnv.fill(255,255,255).rect(10,0,30,25).rect(60,0,30,25)                                       //white space for color values
-        bufferCnv.textAlign(CENTER, CENTER).fill(0).textSize(13).textStyle(BOLD)                            //setup text for color values
-        bufferCnv.text(this.colors[0],25,12.5).text(this.colors[1],75,12.5)                                 //write color values to screen
+        // bufferCnv.fill(255,255,255).rect(10,0,30,25).rect(60,0,30,25)                                       //white space for color values
+        bufferCnv.textAlign(CENTER, CENTER).textSize(11).textStyle(BOLD).noStroke()                                    //setup text for color names
+        bufferCnv.fill(256-this.colors[0][0]*128,256-this.colors[0][1]*128,256-this.colors[0][2]*128)
+        // bufferCnv.text(this.colors[0],25,12.5)
+        bufferCnv.text(colorNames[this.colors[0][1]][this.colors[0][2]][this.colors[0][0]],25,12.5)
+        bufferCnv.fill(256-this.colors[1][0]*128,256-this.colors[1][1]*128,256-this.colors[1][2]*128)
+        // bufferCnv.text(this.colors[1],75,12.5)                                 
+        bufferCnv.text(colorNames[this.colors[1][1]][this.colors[1][2]][this.colors[1][0]],75,12.5)    
 
+        bufferCnv.noFill().stroke(0).rect(0,25,100,25)
+        bufferCnv.fill(0).noStroke()
+        bufferCnv.text(patternNames[(int)(this.patternNum/2)], 50, 25+12.5)
+
+        bufferCnv.fill(0).stroke(0)
         bufferCnv.line(fishSize * 10, 100, fishSize * 10, 50)                                               //draw vertical line for fishSize
         for(var i = 0; i < 5; i++){bufferCnv.line(0, 100-(i*10), 100, 100-(i*10))}                          //draw horizontal lines
         for(var i = 0; i < this.vs.length; i++){                                                            //draw dots for vs

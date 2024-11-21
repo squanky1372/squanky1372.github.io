@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>three.js css3d - youtube</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			html, body {
+				height: 100%;
+				overflow: hidden;
+			}
+			#blocker {
+				position: absolute;
+				/* background-color: rgba(255, 0, 0, 0.5); */
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="./three.js"></script>
+		<script src="./TrackballControls.js"></script>
+		<script src="./CSS3DRenderer.js"></script>
+
+		<div id="container"></div>
+		<div id="blocker"></div>
+
+		<script>
+
+			var camera, scene, cssrenderer, renderer;
+
+			var DivPlane = function ( id, x, y, z, w=480, h=360, rx=0, ry=0, rz=0 ) {
+
+				var div = document.createElement( 'div' );
+				div.style.width = '480px';
+				div.style.height = '360px';
+				div.style.backgroundColor = '#000';
+
+				var iframe = document.createElement( 'iframe' );
+				iframe.style.width = `${w}px`;
+				iframe.style.height = `${h}px`;
+				iframe.style.border = '0px';
+				iframe.src = id;
+				div.appendChild( iframe );
+
+				var object = new THREE.CSS3DObject( div );
+				object.position.set( x, y, z );
+				object.rotation.x = rz;
+				object.rotation.y = ry;
+				object.rotation.z = rz;
+
+				return object;
+
+			};
+
+			init();
+			animate();
+
+			function init() {
+				var container = document.getElementById( 'container' );
+
+				//Init normal THREE.js things
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
+				camera.position.set( 500, 350, 750 );
+				scene = new THREE.Scene();
+				cssrenderer = new THREE.CSS3DRenderer();
+				cssrenderer.setSize( window.innerWidth, window.innerHeight );
+				cssrenderer.domElement.style.position = 'absolute';
+				cssrenderer.domElement.style.top = 0;
+				container.appendChild( cssrenderer.domElement );
+
+                
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                container.appendChild(renderer.domElement);
+
+				var newdiv = new DivPlane('https://squanky1372.github.io', 0, 0, 0)
+				scene.add(newdiv)
+
+				controls = new THREE.TrackballControls( camera );
+				controls.rotateSpeed = 4;
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				// Block iframe events when dragging camera
+
+				var blocker = document.getElementById( 'blocker' );
+				blocker.style.display = 'none';
+
+				document.addEventListener( 'mousedown', function () { blocker.style.display = ''; } );
+				document.addEventListener( 'mouseup', function () { blocker.style.display = 'none'; } );
+
+				var geometry = new THREE.BoxGeometry(100,100,100);
+                var material = new THREE.MeshBasicMaterial({
+                    color:0x0000FF, 
+                    wireframe:false
+                });
+                var cube = new THREE.Mesh(geometry, material);
+                cube.position.z = 100
+                scene.add(cube);
+
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				cssrenderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				controls.update();
+				cssrenderer.render( scene, camera );
+				renderer.render( scene, camera );
+			}
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+    <body>
+		<script src="./three.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document .body.appendChild(renderer.domElement);
+
+			var geometry = new THREE.BoxGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial({
+				color:0x0000FF, 
+				wireframe:true
+			});
+			var cube = new THREE.Mesh(geometry, material);
+			scene.add(cube);
+			var cube_mini = new THREE.Mesh(new THREE.BoxGeometry(0.5,0.5,0.5), material);
+			cube.add(cube_mini)
+			cube_mini.position.x += 0.5
+
+			
+			camera.position.z = 5;
+			var cube2 = new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2), new THREE.MeshBasicMaterial({color:0x00FF00, wireframe:false}));
+			scene.add(cube2);
+			var cube3 = new THREE.Mesh(new THREE.BoxGeometry(.3,.3,.3), new THREE.MeshBasicMaterial({color:0x00FFFF, wireframe:false}));
+			scene.add(cube3);
+
+			var path = [[0,0], [1,0], [1,1], [0,1]] //normal square path
+			// var path = [[0,0], [1,0], [1,1], [0,1], [0,0], [-1,-1], [0,-1]] //weird square path
+			// var path = [[ 2, 0, 1],[ 1,-1, 0],[ 0,-1, 0],[-1, 0, 1],[-1, 1, 1],[ 0, 2, 0],[ 1, 2, 0],[ 2, 1, 1]] //oval loop CW
+			// var path = [[0,0,0], [1,1,1], [0,2,0], [-1,1,1]] //small circle CCW
+			// var path = [[0,0,0], [-1,1,1], [0,2,0], [1,1,1]] //small circle CW
+			// var path = [[ 2, 0, 1],[ 1,-1, 0],[ 0,-1, 0],[-1, 0, 1],[ 0, 1, 0],[ 1, 1, 0]]
+			// var path = [[ 0, 0, 0],[-1, 1, 1],[ 0, 2, 0],[ 1, 1, 1],[ 0, 0, 0],[-1,-1, 1],[ 0,-2, 0],[ 1,-1, 1]]
+			// var path = [[ 0, 0, 0],[ 1, 1, 1],[ 0, 2, 0],[-1, 1, 1],[ 0, 0, 0],[ 1,-1, 1],[ 0,-2, 0],[-1,-1, 1]]
+			var pathSize = path.length
+			var t_orig = 0
+
+			//Red cubes on each vertex in the path
+			for(var i = 0; i < pathSize; i++){
+				var cube5 = new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1), new THREE.MeshBasicMaterial({color:0xFF0000, wireframe:false}));
+				scene.add(cube5);
+				cube5.position.x = path[i][0]
+				cube5.position.y = path[i][1]
+			}
+
+			//blue-purple cubes along path
+			var color = 0x0000F0
+			for(var i = 0; i < pathSize*5; i++){
+				var t_orig = i / 5
+				if(t_orig >= pathSize) t = 0
+				if(t_orig < 0) t_orig = pathSize
+				color += 0x050000
+				console.log(color)
+
+				var cube4 = new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1), new THREE.MeshBasicMaterial({color:color, wireframe:false}));
+
+				scene.add(cube4);
+
+				var pathStartLocation = Math.floor(t_orig)
+				var pathEndLocation = Math.floor(t_orig) + 1
+				if(pathStartLocation >= pathSize) pathStartLocation = 0
+				if(pathEndLocation >= pathSize) pathEndLocation = 0
+
+				var pathLocations = [pathStartLocation, pathEndLocation]
+				var pathStart = path[pathLocations[0]]
+				var pathEnd = path[pathLocations[1]]
+				var pathDir = path[pathLocations[0]][2]
+				var dx = pathEnd[0] - pathStart[0]
+				var dy = pathEnd[1] - pathStart[1]
+				var x_shift = 0
+				var y_shift = 0
+				var zone = 0
+
+				var t = t_orig - Math.floor(t_orig)
+
+				if(dx==0 || dy==0){
+					x_shift = dx*(t - Math.floor(t))
+					y_shift = dy*(t - Math.floor(t))
+				}
+
+				if(dx == 1 && dy == 1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (t+3))
+					y_shift = Math.sin(Math.PI/2 * (t+3)) + 1
+				}
+				if(dx ==-1 && dy == 1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (t+2)) - 1
+					y_shift = Math.sin(Math.PI/2 * (t+2))
+				}
+				if(dx ==-1 && dy == -1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (t+1))
+					y_shift = Math.sin(Math.PI/2 * (t+1)) - 1
+				}
+				if(dx == 1 && dy == -1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (t+0)) + 1
+					y_shift = Math.sin(Math.PI/2 * (t+0))
+				}
+
+				if(dx == -1 && dy == 1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (-t+3))
+					y_shift = Math.sin(Math.PI/2 * (-t+3)) + 1
+				}
+				if(dx == 1 && dy == 1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (-t+2)) + 1
+					y_shift = Math.sin(Math.PI/2 * (-t+2))
+				}
+				if(dx == 1 && dy == -1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (-t+1))
+					y_shift = Math.sin(Math.PI/2 * (-t+1)) - 1
+				}
+				if(dx ==-1 && dy == -1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (-t+0)) - 1
+					y_shift = Math.sin(Math.PI/2 * (-t+0))
+				}
+				
+				cube4.position.x = pathStart[0] + x_shift
+				cube4.position.y = pathStart[1] + y_shift
+
+				
+				console.log([i, dx, dy, pathLocations[0], pathLocations[1], zone, x_shift, y_shift])
+
+			}
+
+			function getAngle(a, b){
+				var xdir = a[0] - b[0]
+				var ydir = a[1] - b[1]
+				var angle = Math.atan(ydir/xdir)
+				return angle
+			}
+
+			function updateCube(){
+
+				var pathStartLocation = Math.floor(t_orig)
+				var pathEndLocation = Math.floor(t_orig) + 1
+				if(pathStartLocation >= pathSize) pathStartLocation = 0
+				if(pathEndLocation >= pathSize) pathEndLocation = 0
+
+				var pathLocations = [pathStartLocation, pathEndLocation]
+				var pathStart = path[pathLocations[0]]
+				var pathEnd = path[pathLocations[1]]
+				var pathDir = path[pathLocations[0]][2]
+				var dx = pathEnd[0] - pathStart[0]
+				var dy = pathEnd[1] - pathStart[1]
+				var x_shift = 0
+				var y_shift = 0
+				var zone = 0
+
+				var t = t_orig - Math.floor(t_orig)
+
+				if(dx==0 || dy==0){
+					x_shift = dx*(t - Math.floor(t))
+					y_shift = dy*(t - Math.floor(t))
+					if(dx == 0 && dy == 1) cube.rotation.z = Math.PI/2 * 1
+					if(dx == 0 && dy ==-1) cube.rotation.z = Math.PI/2 * 3
+					if(dx == 1 && dy == 0) cube.rotation.z = Math.PI/2 * 0
+					if(dx ==-1 && dy == 0) cube.rotation.z = Math.PI/2 * 2
+				}
+
+				if(dx == 1 && dy == 1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (t+3))
+					y_shift = Math.sin(Math.PI/2 * (t+3)) + 1
+					cube.rotation.z = 0 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx ==-1 && dy == 1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (t+0)) - 1
+					y_shift = Math.sin(Math.PI/2 * (t+0))
+					cube.rotation.z = 3 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx ==-1 && dy == -1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (t+1))
+					y_shift = Math.sin(Math.PI/2 * (t+1)) - 1
+					cube.rotation.z = 2 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx == 1 && dy == -1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (t+2)) + 1
+					y_shift = Math.sin(Math.PI/2 * (t+2))
+					cube.rotation.z = 1 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+
+				if(dx == -1 && dy == 1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (-t+3))
+					y_shift = Math.sin(Math.PI/2 * (-t+3)) + 1
+					cube.rotation.z = 2 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx == 1 && dy == 1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (-t+2)) + 1
+					y_shift = Math.sin(Math.PI/2 * (-t+2))
+					cube.rotation.z = 3 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx == 1 && dy == -1 && pathDir == 0){
+					x_shift = Math.cos(Math.PI/2 * (-t+1))
+					y_shift = Math.sin(Math.PI/2 * (-t+1)) - 1
+					
+					cube.rotation.z = 0 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				if(dx ==-1 && dy == -1 && pathDir == 1){
+					x_shift = Math.cos(Math.PI/2 * (-t+0)) - 1
+					y_shift = Math.sin(Math.PI/2 * (-t+0))
+					
+					cube.rotation.z = 1 * Math.PI/2 + Math.atan(y_shift / x_shift)* 2
+				}
+				
+				cube.position.x = pathStart[0] + x_shift
+				cube.position.y = pathStart[1] + y_shift
+				cube2.position.x = pathStart[0]
+				cube2.position.y = pathStart[1]
+				cube3.position.x = pathEnd[0]
+				cube3.position.y = pathEnd[1]
+
+				
+				// cube.rotation.z = getAngle(pathStart, pathEnd)
+				// console.log([dx, dy, pathLocations[0], pathLocations[1], pathStart[0], pathStart[1], dx-pathStart[0], dy-pathStart[1]])
+
+			}
+
+			var update = function(){
+				t_orig = t_orig + 0.025
+				if(t_orig > pathSize) t_orig = 0
+				if(t_orig < 0) t_orig = pathSize
+				updateCube()
+			};
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+	</body>
+</html>
