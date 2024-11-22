@@ -1,0 +1,16 @@
+<script>
+    // Check if the browser supports the Vibration API
+if (navigator.vibrate) {
+  // Vibrate for 500 milliseconds
+  navigator.vibrate(500);
+
+  // Vibrate with a pattern: 200ms on, 100ms off, 200ms on
+  navigator.vibrate([200, 100, 200]);
+
+  // Stop vibration
+  navigator.vibrate(0); 
+} else {
+  // Vibration API not supported
+  console.log("Vibration API not supported.");
+}
+</script>
