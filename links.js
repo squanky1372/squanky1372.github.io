@@ -16,7 +16,6 @@ var links_database = [
     ["http://squanky.net:3000/", "/html/img/Boxes22.png"], //Raycaster
     ["http://squanky.net:3002/", "/html/img/Boxes23.png"], //3D house
     ["http://squanky.net:3006/", "/html/img/Boxes19.png"], //3D Earth
-    // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     ["http://squanky.net:3003/", "/html/img/Boxes20.png"], //Buzzer server
     ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
     ["http://squanky.net:3007/", "/html/img/Boxes11.png"], //racing game
@@ -26,10 +25,10 @@ var links_database = [
     ["/2024/matter/ballgame.html", "/html/img/Boxes17.png"], //pool 2 
     ["/2024/map/index.html", "/html/img/Boxes29.png"], //map
     ["/2024/fish.html", "/html/img/Boxes30.png"], //fish
-    ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //fish
+    ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //Level editor
     ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
     
-    
+    // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
     // ["/weather/weather_basic.html", "/html/img/Boxes6.png"], //simplified 15-day forecast
     // ["./html/images.html", "/html/img/Boxes2.png"], //Rotating images of cats
