@@ -1,4 +1,3 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>F/Place</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script src="sketch.js"></script>
+  <script>
+    const canvasSize = 500;
+    const pixelSize = 10;
+
+    let grid = [...Array(canvasSize / pixelSize)].map(() => Array(canvasSize / pixelSize).fill(false));
+    let socket;
+
+    function setup() {
+      createCanvas(canvasSize, canvasSize);
+
+      // Connect to the WebSocket server over WSS
+      socket = new WebSocket("wss://squanky.net/app2");
+
+      // Receive updates from the server
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        // Handle different message types
+        if (data.type === "init" || data.type === "update") {
+          grid = data.grid;
+        }
+      };
+
+      // Handle WebSocket errors
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+
+      // Handle WebSocket closure
+      socket.onclose = () => {
+        console.warn("WebSocket connection closed");
+      };
+    }
+
+    function draw() {
+      background(220);
+
+      // Draw the grid
+      grid.forEach((row, r) => {
+        row.forEach((cell, c) => {
+          fill(cell * 255);
+          rect(r * pixelSize, c * pixelSize, pixelSize, pixelSize);
+        });
+      });
+
+      // Highlight the hovered cell in red
+      fill(255, 0, 0);
+      rect(
+        Math.floor(mouseX / pixelSize) * pixelSize,
+        Math.floor(mouseY / pixelSize) * pixelSize,
+        pixelSize,
+        pixelSize
+      );
+    }
+
+    function mouseClicked() {
+      const x = Math.floor(mouseX / pixelSize);
+      const y = Math.floor(mouseY / pixelSize);
+
+      console.log([x, y]);
+
+      // Send the clicked coordinate to the server
+      socket.send(
+        JSON.stringify({
+          type: "coordinate",
+          coordinate: [x, y],
+        })
+      );
+    }
+  </script>
   <style>
     /* Center content in the body */
     body, html {
