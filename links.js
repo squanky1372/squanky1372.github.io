@@ -20,6 +20,7 @@ var links_database = [
     ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
     ["http://squanky.net:3007/", "/html/img/Boxes11.png"], //racing game
     ["http://squanky.net:3011/", "/html/img/Boxes31.png"], //spotify
+    ["http://squanky.net:3012/", "/html/img/Boxes34.png"], //SSM sumo
     ["/2024/cannon/cannon_car.html", "/html/img/Boxes11.png"], //3d car game
     ["/homepage/index.html", "/html/img/Boxes24.png"], //Homepage   
     ["/2024/matter/ballgame.html", "/html/img/Boxes17.png"], //pool 2 

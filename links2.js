@@ -10,4 +10,5 @@ var links_database = [
     ["/2024/fish.html", "/html/img/Boxes30.png"], //fish
     ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //level editor
     ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
+    ["http://squanky.net:3012/", "/html/img/Boxes34.png"], //SSM sumo
 ]
