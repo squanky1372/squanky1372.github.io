@@ -1,3 +1,3 @@
 var links_database = [
-    ["/2024/Watch/lights.html", "/html/img/Boxes33.png"], // f/place
+    ["http://squanky.net:3004/lights", "/html/img/Boxes33.png"], // f/place
 ]
