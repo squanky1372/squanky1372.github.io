@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quarter Screen Buttons</title>
+  <style>
+    body {
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: 100vh;
+    }
+
+    button {
+      border: none;
+      width: 100%;
+      height: 100%;
+      font-size: 3rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ddd;
+    }
+
+    .btn-top-left {
+      background-color: #f44336;
+    }
+
+    .btn-top-right {
+      background-color: #4CAF50;
+    }
+
+    .btn-bottom-left {
+      background-color: #2196F3;
+    }
+
+    .btn-bottom-right {
+      background-color: #FFC107;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn-top-left" onclick="buttonClicked(1)">Office</button>
+  <button class="btn-top-right" onclick="buttonClicked(2)">Living Room</button>
+  <button class="btn-bottom-left" onclick="buttonClicked(3)">Felipe</button>
+  <button class="btn-bottom-right" onclick="buttonClicked(4)">Radio</button>
+
+  <script>
+    function buttonClicked(position) {
+    //   alert(`Button ${position} clicked!`);
+      // Prepare data for the POST request
+      const data = {
+        buttonPosition: position,
+        timestamp: new Date().toISOString()
+      };
+
+      // Perform the HTTP POST request
+      fetch(`http://squanky.net:3004/lights/${position}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // Convert the data to JSON format
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(result => {
+        console.log(`Success:`, result);
+        alert(`POST successful for button: ${position}`);
+      })
+      .catch(error => {
+        console.error('Error during POST:', error);
+        alert(`Failed to send POST for button: ${position}`);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!-- https://www.1001fonts.com/pixel-fonts.html?page=8 -->
+<!-- https://gero3.github.io/facetype.js/ -->
+<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Logo.png">
+	<link rel="icon" href="/html/img/Logo.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "/js/src/three.module.js",
+					"addons/": "/js/examples/jsm/"
+				}
+			}
+		</script>
+		<script src="./links3.js"></script>
+		<script type="module">
+			import * as THREE from 'three';
+
+			import { FontLoader } from 'addons/loaders/FontLoader.js';
+			import { TextGeometry } from 'addons/geometries/TextGeometry.js';
+
+			let raycaster;
+
+			let INTERSECTED;
+			let theta = 0;
+
+			const pointer = new THREE.Vector2();
+			const radius = 100;
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			const light = new THREE.PointLight( 0xFFFFFF, 2, 100 );
+			light.position.set( 0, 0, 50 );
+			scene.add( light );
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document .body.appendChild(renderer.domElement);
+
+			var geometry = new THREE.BoxGeometry(1,1,1);
+			var material = new THREE.MeshStandardMaterial({
+				color:0x0000FF, 
+				wireframe:false
+			});
+			var cube_prototype = new THREE.Mesh(geometry, material);
+			var numcubes = links_database.length;
+			var cubes = Array(numcubes)
+			var size = Math.ceil(Math.sqrt(numcubes))
+			var x = 1
+			var y = 1
+			var ratio = window.innerWidth/window.innerHeight
+
+			while(x * y < numcubes){
+				if( Math.abs(((x+1)/y) - ratio) < Math.abs((x/(y+1)) - ratio)) x++
+				else y++
+			}
+			console.log(x, y)
+			
+			for(var i = 0; i < numcubes; i++){
+				cubes[i] = cube_prototype.clone()
+				scene.add(cubes[i]);
+				cubes[i].scale.set(0.5,0.5,0.5)
+				
+				cubes[i].position.x += Math.floor(i/y);
+				cubes[i].position.y += -i%y;
+			}
+
+			raycaster = new THREE.Raycaster();
+			document.addEventListener( 'mousemove', onPointerMove );
+			window.addEventListener( 'resize', onWindowResize );
+			document.addEventListener('mousedown', onMouseClick, false);
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+			function onPointerMove( event ) {
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			}
+			function onMouseClick(e){
+  				e.preventDefault(); // console.log(e.clientX, e.clientY)
+				checkLinks();
+			}
+			function highlightMouseHover(){ //turns the closest object to the mouse red
+				camera.updateMatrixWorld();
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObjects( scene.children, false );
+				if ( intersects.length > 0 ) { //If there is an intersection
+					if ( INTERSECTED != intersects[ 0 ].object ) { //If it's a new intersection
+						if(INTERSECTED != null) INTERSECTED.material.color.setHex( 0x00FFFF );
+						INTERSECTED = intersects[ 0 ].object;
+						INTERSECTED.material.color.setHex( 0xFF0000 );
+					}
+				} else { //If there are no intersections:
+					if(INTERSECTED != null)INTERSECTED.material.color.setHex( 0x00FFFF );
+					INTERSECTED = null;
+				}
+			}
+			function isHovered(object, recursive=false){
+				camera.updateMatrixWorld();
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObject( object, recursive );
+				if ( intersects.length > 0 ) { //If there is an intersection
+					return true;
+				} 
+				return false;
+			}
+			
+			var links = Array(numcubes)
+			for(var i = 0; i < numcubes; i++){
+				links[i] = new Link(cubes[i], links_database[i][0], links_database[i][1])
+			}
+
+			function Link(object, dest, defaultMap=null, selectedMap=null){
+				this.object = object;
+				this.dest = dest;
+
+				this.defaultMat = new THREE.MeshPhongMaterial({ color:0xFFFFFF, wireframe:false, shininess:150});
+				this.selectedMat = new THREE.MeshStandardMaterial({ color:0xFFFF00, wireframe:false, shininess:150});
+
+				if(defaultMap != null){
+					this.defaultMat.map = (new THREE.TextureLoader().load(defaultMap))
+					this.selectedMat.map = (new THREE.TextureLoader().load(defaultMap))
+				}
+				if(selectedMap != null){
+					this.selectedMat.map = (new THREE.TextureLoader().load(selectedMap))
+				}
+
+				this.setMatDefault = function(){
+					this.object.material = this.defaultMat;
+				}
+				this.setMatSelected = function(){
+					this.object.material = this.selectedMat;
+				}
+				this.setMatFaces = function(){
+					this.object.material = this.materialsFaces;
+				}
+			}
+			function checkLinks(){
+				links.forEach(function(link){
+					if(isHovered(link.object)) window.location.href = link.dest;
+					console.log(links.dest)
+				})
+			}
+
+			const visibleHeightAtZDepth = ( depth, camera ) => {
+				// compensate for cameras not positioned at z=0
+				const cameraOffset = camera.position.z;
+				if ( depth < cameraOffset ) depth -= cameraOffset;
+				else depth += cameraOffset;
+
+				// vertical fov in radians
+				const vFOV = camera.fov * Math.PI / 180; 
+
+				// Math.abs to ensure the result is always positive
+				return 2 * Math.tan( vFOV / 2 ) * Math.abs( depth );
+			};
+
+			const visibleWidthAtZDepth = ( depth, camera ) => {
+				const height = visibleHeightAtZDepth( depth, camera );
+				return height * camera.aspect;
+			};
+
+			var setCameraPos = function(){
+				camera.position.y = -(y-1)/2
+				camera.position.x = (x-1)/2
+				while(visibleWidthAtZDepth(camera.position.z, camera) < (x*2 + 1) || 
+					  visibleHeightAtZDepth(camera.position.z, camera) < (y*2 + 1)){
+					camera.position.z += 0.1
+				}
+			}
+			setCameraPos()
+
+			var update = function(){
+				for(var i = 0; i < numcubes; i++){
+					cubes[i].rotation.x += 0.01;
+					cubes[i].rotation.y += 0.01;
+					if(isHovered(links[i].object)) {
+						links[i].setMatSelected()
+						console.log(i)
+					}
+					else links[i].setMatDefault();
+				}
+			}
+			var render = function(){
+				renderer.render(scene, camera);
+			}
+			var GameLoop = function(){
+				requestAnimationFrame(GameLoop);
+				update();
+				render();
+			}
+			GameLoop();
+		</script>
+	</body>
+</html>
