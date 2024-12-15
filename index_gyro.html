@@ -1,7 +1,26 @@
 <!-- https://www.1001fonts.com/pixel-fonts.html?page=8 -->
 <!-- https://gero3.github.io/facetype.js/ -->
+<style>
+	
+    body, html {
+      overflow: hidden;
+    }
+    button {
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: green;
+      font-size: 10vw; /* Text scales relative to screen width */
+      font-family: Arial, sans-serif;
+      border: none;
+      cursor: pointer;
+    }
+    button:focus {
+      outline: none;
+    }
+</style>
 <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-<button id="button" style="height:20%;width:100%" onclick="onClick()">Click me</button>
+<button id="button" style="height:100%;width:100%" onclick="onClick()">ENABLE</button>
 
 <html>
 	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Logo.png">
@@ -25,8 +44,11 @@
 		</script>
 		<script src="./links.js"></script>
 		<script src="../js/src/three.js"></script>
-		<script>			
+		<script>		
+			var gyro_available = false
+
 			function onClick() {
+				gyro_available = true
 				if (typeof DeviceMotionEvent.requestPermission === 'function') {
 					// Handle iOS 13+ devices.
 					DeviceMotionEvent.requestPermission()
@@ -183,7 +205,7 @@
 			}
 			function checkLinks(){
 				links.forEach(function(link){
-					if(isHovered(link.object)) window.location.href = link.dest;
+					if(isHovered(link.object) && gyro_available) window.location.href = link.dest;
 					console.log(links.dest)
 				})
 			}
