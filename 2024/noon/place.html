@@ -69,7 +69,7 @@
           console.log("Clicked coordinate:", coordinate);
 
           // Send the update to the server
-          fetch("http://squanky.net:3015/update", {
+          fetch("http://squanky.net/place/update", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
@@ -84,7 +84,7 @@
       }
 
       function fetchGrid() {
-          fetch("http://squanky.net:3015/grid")
+          fetch("https://squanky.net/place/grid")
               .then((response) => response.json())
               .then((data) => {
                   grid = data.grid;
