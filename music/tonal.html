@@ -119,7 +119,7 @@
             if(event.code.substring(0,5) == "Digit"){
                 console.log(event.code.substring(5,6))
                 console.log(parseInt(event.code.substring(5,6))-1)
-                soundEngine.playChord(parseInt(event.code.substring(5,6))-1, typechart[type, parseInt(event.code.substring(5,6))-1], octave)
+                soundEngine.playChord(parseInt(event.code.substring(5,6))-1, typechart[type][parseInt(event.code.substring(5,6))-1], octave)
             }
         }
         
@@ -171,10 +171,13 @@
         },
         playChord(i, type, octave=1){ //type 0 = minor, type 1 = major
             keys = [0, 2, 4, 5, 7, 9, 11]
-            console.log(slider.value)
-            console.log(24 + keys[i] + octave*12)
-            console.log(24 + keys[i] + octave*12 + slider.value)
+            // console.log(slider.value)
+            // console.log(24 + keys[i] + octave*12)
+            // console.log(24 + keys[i] + octave*12 + slider.value)
             soundEngine.play([24 + keys[i] + octave*12 + parseInt(slider.value), 
+                              24 + keys[i] + 3 + type + octave*12 + parseInt(slider.value), 
+                              24 + keys[i] + 7 + octave*12 + parseInt(slider.value)])
+            console.log([24 + keys[i] + octave*12 + parseInt(slider.value), 
                               24 + keys[i] + 3 + type + octave*12 + parseInt(slider.value), 
                               24 + keys[i] + 7 + octave*12 + parseInt(slider.value)])
         }
