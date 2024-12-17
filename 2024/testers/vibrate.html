@@ -1,16 +1,62 @@
-<script>
-    // Check if the browser supports the Vibration API
-if (navigator.vibrate) {
-  // Vibrate for 500 milliseconds
-  navigator.vibrate(500);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibration Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    #feedback {
+      position: absolute;
+      bottom: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <button id="vibrateButton">Vibrate!</button>
+  <div id="feedback"></div>
 
-  // Vibrate with a pattern: 200ms on, 100ms off, 200ms on
-  navigator.vibrate([200, 100, 200]);
+  <script>
+    const feedback = document.getElementById('feedback');
+    const vibrateButton = document.getElementById('vibrateButton');
 
-  // Stop vibration
-  navigator.vibrate(0); 
-} else {
-  // Vibration API not supported
-  console.log("Vibration API not supported.");
-}
-</script>
+    vibrateButton.addEventListener('click', function () {
+      if (navigator.vibrate) {
+        // Vibrate for 200 milliseconds
+        navigator.vibrate(200);
+        feedback.textContent = "Vibration triggered!";
+      } else {
+        feedback.textContent = "Your device does not support the Vibration API.";
+      }
+    });
+
+    // Initial check to inform the user if the API is supported or not
+    if (!navigator.vibrate) {
+      feedback.textContent = "Vibration API is not supported on this device.";
+    }
+  </script>
+</body>
+</html>

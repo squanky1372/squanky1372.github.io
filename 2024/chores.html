@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js Scrolling Columns</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      height: 100vh;
+    }
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const numSquares = 20;
+    const columnWidths = [0.5, 0.3, 0.2]; // Column widths as percentages of total width
+    let scrollOffsets = [0, 0, 0];
+    let touchStartY = [null, null, null];
+    let columnPixelWidths = [];
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      calculateColumnWidths();
+      noLoop(); // Prevent continuous drawing
+    }
+
+    function draw() {
+      background(240);
+
+      let xOffset = 0;
+
+      for (let col = 0; col < columnWidths.length; col++) {
+        const colWidth = columnPixelWidths[col];
+        push();
+        translate(xOffset, -scrollOffsets[col]);
+        for (let i = 0; i < numSquares; i++) {
+          const y = i * colWidth;
+          const colorIndex = (col + i) % 3;
+          fill(colorFromIndex(colorIndex));
+          stroke(0);
+          rect(0, y, colWidth, colWidth);
+          fill(255);
+          noStroke();
+          textAlign(CENTER, CENTER);
+          text(`Col ${col + 1} - Square ${i + 1}`, colWidth / 2, y + colWidth / 2);
+        }
+        pop();
+        xOffset += colWidth;
+      }
+    }
+
+    function mouseWheel(event) {
+      let colIndex = getColumnIndex(mouseX);
+      if (colIndex >= 0) {
+        scrollOffsets[colIndex] += event.delta;
+        const maxScroll = numSquares * columnPixelWidths[colIndex] - height;
+        scrollOffsets[colIndex] = constrain(scrollOffsets[colIndex], 0, maxScroll);
+        redraw();
+      }
+    }
+
+    function touchStarted() {
+      let colIndex = getColumnIndex(mouseX);
+      if (colIndex >= 0) {
+        touchStartY[colIndex] = mouseY;
+      }
+    }
+
+    function touchMoved() {
+      let colIndex = getColumnIndex(mouseX);
+      if (colIndex >= 0 && touchStartY[colIndex] !== null) {
+        const deltaY = touchStartY[colIndex] - mouseY;
+        scrollOffsets[colIndex] += deltaY;
+        const maxScroll = numSquares * columnPixelWidths[colIndex] - height;
+        scrollOffsets[colIndex] = constrain(scrollOffsets[colIndex], 0, maxScroll);
+        touchStartY[colIndex] = mouseY;
+        redraw();
+      }
+      return false; // Prevent default scrolling behavior
+    }
+
+    function touchEnded() {
+      touchStartY = [null, null, null];
+    }
+
+    function calculateColumnWidths() {
+      columnPixelWidths = columnWidths.map(w => w * width);
+    }
+
+    function getColumnIndex(xPos) {
+      let xOffset = 0;
+      for (let i = 0; i < columnPixelWidths.length; i++) {
+        xOffset += columnPixelWidths[i];
+        if (xPos < xOffset) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    function colorFromIndex(index) {
+      const colors = [
+        [255, 99, 71],    // Tomato
+        [70, 130, 180],   // SteelBlue
+        [46, 139, 87]     // SeaGreen
+      ];
+      return color(...colors[index]);
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+      calculateColumnWidths();
+      redraw();
+    }
+  </script>
+</body>
+</html>
