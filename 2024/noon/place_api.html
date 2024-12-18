@@ -1,0 +1,98 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F/Place</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    /* Center content in the body */
+    body, html {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Full viewport height */
+      margin: 0; /* Remove default margin */
+      overflow: hidden; /* Prevent scrolling */
+      background-color: #0066ff; /* Optional background color */
+    }
+
+    /* Make sure canvas is displayed as a block-level element */
+    canvas {
+      display: block;
+    }
+  </style>
+  <script>
+      const canvasSize = 500;
+      var pixelSize = 10;
+
+      var grid = [...Array(canvasSize / pixelSize)].map(() => Array(canvasSize / pixelSize).fill(false));
+
+      function setup() {
+          createCanvas(canvasSize, canvasSize);
+
+          // Fetch the initial grid from the server
+          fetchGrid();
+
+          // Periodically fetch the grid from the server every 5 seconds
+          setInterval(fetchGrid, 500);
+      }
+
+      function draw() {
+          background(220);
+
+          // Draw all cubes with their unique colors
+          grid.forEach((row, r) => {
+              row.forEach((col, c) => {
+                  fill(grid[r][c] * 255); // White (on) or Black (off)
+                  rect(r * pixelSize, c * pixelSize, pixelSize, pixelSize);
+              });
+          });
+
+          // Highlight the cube under the mouse cursor
+          fill(255, 0, 0);
+          rect(
+              Math.floor(mouseX / pixelSize) * pixelSize,
+              Math.floor(mouseY / pixelSize) * pixelSize,
+              pixelSize,
+              pixelSize
+          );
+      }
+
+      function mouseClicked() {
+          const coordinate = [
+              Math.floor(mouseX / pixelSize),
+              Math.floor(mouseY / pixelSize),
+          ];
+          console.log("Clicked coordinate:", coordinate);
+
+          // Send the update to the server
+          fetch("https://squanky.net/place/update", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ coordinate }),
+          })
+              .then((response) => response.json())
+              .then((data) => {
+                  grid = data.grid; // Update the grid with the response from the server
+              })
+              .catch((error) => console.error("Error updating grid:", error));
+      }
+
+      function fetchGrid() {
+          fetch("https://squanky.net/place/grid")
+              .then((response) => response.json())
+              .then((data) => {
+                  grid = data.grid;
+              })
+              .catch((error) => console.error("Error fetching grid:", error));
+      }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

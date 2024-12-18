@@ -1,11 +1,17 @@
 <!-- public/index.html -->
+
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes15.png">
+	<link rel="icon" href="/html/img/Boxes33.png">
+
+  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>F/Place</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
   <style>
     /* Center content in the body */
     body, html {
@@ -18,81 +24,113 @@
       background-color: #0066ff; /* Optional background color */
     }
 
-    /* Make sure canvas is displayed as a block-level element */
+    /* Make sure canvas is displayed as a block-level element \*/
     canvas {
       display: block;
     }
   </style>
   <script>
-      const canvasSize = 500;
-      var pixelSize = 10;
 
-      var grid = [...Array(canvasSize / pixelSize)].map(() => Array(canvasSize / pixelSize).fill(false));
+    var pixelSize = 10;
+    var grid;
 
-      function setup() {
-          createCanvas(canvasSize, canvasSize);
+    function setup() {
+      // Calculate dynamic canvas size to fit 90% of the screen's smaller dimension
+      const canvasSize = Math.min(windowWidth, windowHeight) * 0.9;
+      pixelSize = canvasSize / 50; // Adjust pixel size dynamically based on canvas size
 
-          // Fetch the initial grid from the server
-          fetchGrid();
+      grid = [...Array(50)].map(() => Array(50).fill(false)); // 50x50 grid
 
-          // Periodically fetch the grid from the server every 5 seconds
-          setInterval(fetchGrid, 500);
-      }
+      createCanvas(canvasSize, canvasSize);
 
-      function draw() {
-          background(220);
+      // Fetch the initial grid from the server
+      fetchGrid();
 
-          // Draw all cubes with their unique colors
-          grid.forEach((row, r) => {
-              row.forEach((col, c) => {
-                  fill(grid[r][c] * 255); // White (on) or Black (off)
-                  rect(r * pixelSize, c * pixelSize, pixelSize, pixelSize);
-              });
-          });
+      // Periodically fetch the grid from the server every 5 seconds
+      setInterval(fetchGrid, 5000);
+    }
 
-          // Highlight the cube under the mouse cursor
-          fill(255, 0, 0);
-          rect(
-              Math.floor(mouseX / pixelSize) * pixelSize,
-              Math.floor(mouseY / pixelSize) * pixelSize,
-              pixelSize,
-              pixelSize
-          );
-      }
+    function draw() {
+      background(220);
 
-      function mouseClicked() {
-          const coordinate = [
-              Math.floor(mouseX / pixelSize),
-              Math.floor(mouseY / pixelSize),
-          ];
-          console.log("Clicked coordinate:", coordinate);
+      // Draw all cubes with their unique colors
+      grid.forEach((row, r) => {
+        row.forEach((col, c) => {
+          fill(grid[r][c] * 255); // White (on) or Black (off)
+          rect(r * pixelSize, c * pixelSize, pixelSize, pixelSize);
+        });
+      });
 
-          // Send the update to the server
-          fetch("https://squanky.net/place/update", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ coordinate }),
-          })
-              .then((response) => response.json())
-              .then((data) => {
-                  grid = data.grid; // Update the grid with the response from the server
-              })
-              .catch((error) => console.error("Error updating grid:", error));
-      }
+      // Highlight the cube under the mouse cursor
+      fill(255, 0, 0);
+      rect(
+        Math.floor(mouseX / pixelSize) * pixelSize,
+        Math.floor(mouseY / pixelSize) * pixelSize,
+        pixelSize,
+        pixelSize
+      );
+    }
 
-      function fetchGrid() {
-          fetch("https://squanky.net/place/grid")
-              .then((response) => response.json())
-              .then((data) => {
-                  grid = data.grid;
-              })
-              .catch((error) => console.error("Error fetching grid:", error));
-      }
+    function mouseClicked() {
+      // const coordinate = [
+      //   Math.floor(mouseX / pixelSize),
+      //   Math.floor(mouseY / pixelSize),
+      // ];
+      // console.log("Clicked coordinate:", coordinate);
+
+      // // Send the update to the server
+      // fetch("https\://squanky.net/place/update", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ coordinate }),
+      // })
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     grid = data.grid; // Update the grid with the response from the server
+      //   })
+      //   .catch((error) => console.error("Error updating grid:", error));
+    }
+
+    function touchStarted() {
+      const coordinate = [
+        Math.floor(mouseX / pixelSize),
+        Math.floor(mouseY / pixelSize),
+      ];
+      console.log("Touched coordinate:", coordinate);
+
+      // Send the update to the server
+      fetch("https\://squanky.net/place/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ coordinate }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          grid = data.grid; // Update the grid with the response from the server
+        })
+        .catch((error) => console.error("Error updating grid:", error));
+
+      return false; // Prevent default behavior
+    }
+
+    function fetchGrid() {
+      fetch("https\://squanky.net/place/grid")
+        .then((response) => response.json())
+        .then((data) => {
+          grid = data.grid;
+        })
+        .catch((error) => console.error("Error fetching grid:", error));
+    }
+
+    function windowResized() {
+      setup(); // Recalculate canvas size and grid on window resize
+    }
 
   </script>
 </head>
-<body>
-</body>
+
 </html>
