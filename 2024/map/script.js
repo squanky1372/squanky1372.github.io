@@ -368,7 +368,9 @@ function initMap() {
         parks_visited_data = data
         console.log(parks_visited_data)
         map.data.setStyle(function(feature) {
-          var color = parks_visited_data[feature.Gg.PARKNAME] ? 'green' : 'red';
+          console.log(feature)
+          console.log(feature.Fg)
+          var color = parks_visited_data[feature.Fg.PARKNAME] ? 'green' : 'red';
           return {
             fillColor: color, strokeColor: color,
             strokeOpacity: 0.8, strokeWeight: 2, fillOpacity: 0.35,
@@ -380,8 +382,8 @@ function initMap() {
 
     
     map.data.addListener('click', function(event) {
-      console.log(event.feature.Gg.PARKNAME)
-      document.getElementById("hover").innerHTML = event.feature.Gg.PARKNAME
+      console.log(event.feature.Fg.PARKNAME)
+      document.getElementById("hover").innerHTML = event.feature.Fg.PARKNAME
       // event.feature.setProperty('isColorful', true);
     });
 
