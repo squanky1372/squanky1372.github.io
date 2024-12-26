@@ -45,7 +45,7 @@
 					}
 					total += 1
 				});
-				console.log(alphabetData)
+				// console.log(alphabetData)
 				printdata(alphabetData)
 				sync = true
 			}
@@ -53,7 +53,7 @@
 				data.forEach((e,i) => {
 					for(var i = 0; i < n; i++){e.percents[i] = e.lettercounts[i] / total}
 					e.percents[n] = e.lettercounts[n] / (total * n)
-					console.log(e.letter, e.lettercountss)
+					// console.log(e.letter, e.lettercountss)
 				
 				})
 				
@@ -73,9 +73,6 @@
 			function draw() {
 				if(sync){
 					drawAlphabetBars()
-					if(letter_selected > 0){
-						// drawLetterStats()
-					}
 				}
 			}
 
