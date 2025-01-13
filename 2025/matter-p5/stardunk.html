@@ -7,7 +7,7 @@
 			canvas {width: 100%; height: 100%; overflow: hidden}
 		</style>
 	</head>
-    <body>
+    <body style="background-color:#0066ff;">
         <script src="matter.js"></script>
         
         <script>
@@ -198,10 +198,17 @@
 		<script>
 			function setup() {
 				// createCanvas(windowWidth, windowHeight);
-                createCanvas(size.x, size.y)
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
 			}
 
 			function draw() {
+                scaleContent()
 
                 textSize(20)
                 textAlign(LEFT, CENTER)
@@ -215,25 +222,34 @@
                 // drawHeight(xvel, yvel)
                 
                 //Draw all points in the predicted path
+                push()
+                noStroke()
+                fill(255)
                 points.forEach((point, i) => { circle(point.x, point.y, 1) })
+                pop()
 
                 push()
-				background(200, 200, 200, transparent_percent);
-                if(fireballActive) fill(0)
+				background(0, 0, 0, transparent_percent);
+                if(fireballActive) stroke(255).fill(0)
                 else fill(200)
                 circle(ball.position.x, ball.position.y, ball.circleRadius*2)
+                pop()
+
                 fill(250).circle(ball2.position.x, ball2.position.y, ball2.circleRadius*2)
                 fill(150).circle(ball3.position.x, ball3.position.y, ball3.circleRadius*2)
                 fill(255).circle(goal.position.x, goal.position.y, goal.circleRadius*2)
+
                 boxes.forEach((box, i) => {
                     const width = box.bounds.max.x - box.bounds.min.x;
                     const height = box.bounds.max.y - box.bounds.min.y;
-                    if(board_states[i]) fill(0)
-                    else fill(255)
-                    if(i > 3 && actualHoopWidth == bigHoopWidth) fill(0)
+                    if(board_states[i]) fill(50)
+                    else stroke(0).fill(255)
+                    if(actualHoopWidth == bigHoopWidth) stroke(255).fill(0)
+                    else if((fireballActive || multiballActive) && i < 4) stroke(255).fill(0)
+                    else stroke(0)
                     rect(box.position.x - width/2, box.position.y - height/2, width, height)
                 })
-                pop()
+                // pop()
 
                 //Big Hoop Powerup
                 if(Math.abs((boxes[5].position.x - boxes[4].position.x) - actualHoopWidth) > 0.01){
@@ -286,20 +302,14 @@
                 // scorePotential = 30
             }
             function resetBall3(){
-                Matter.Body.setPosition(ball3, {x: 1200, y: 1200});
-                // sling3.bodyB = ball3
                 const force3 = {x:0, y: 0}; 
                 Matter.Body.setVelocity(ball3, force3);
+                Matter.Body.setPosition(ball3, sling3.pointA);
+                // sling3.bodyB = ball3
                 // scorePotential = 30
             }
 
-			function windowResized() {
-				resizeCanvas(windowWidth, windowHeight);
-			}
-
-            function mouseClicked(){
-                console.log(xvel, yvel)
-
+            function throwBall(){
                 const offset_constant = 1.9
 
                 //Main Ball
@@ -325,33 +335,12 @@
                 arcHeight = int(random(100,300))
             }
 
+            function mouseClicked(){
+                throwBall()
+            }
+
             function touchEnded(){
-                
-                console.log(xvel, yvel)
-
-                const offset_constant = 1.9
-
-                //Main Ball
-                sling.bodyB = 0
-                const force = {x: xvel/offset_constant, y: yvel/offset_constant}; 
-                Matter.Sleeping.set(ball, false);
-                Matter.Body.setVelocity(ball, force);
-
-                if(multiballActive){
-                    sling2.bodyB = 0
-                    Matter.Sleeping.set(ball2, false);
-                    Matter.Body.setPosition(ball2, { x: ballStart.x, y: ballStart.y });
-                    const force2 = {x: xvel/offset_constant, y: (yvel/offset_constant) - multiball_scale}; 
-                    Matter.Body.setVelocity(ball2, force2);
-
-                    sling3.bodyB = 0
-                    Matter.Sleeping.set(ball3, false);
-                    Matter.Body.setPosition(ball3, { x: ballStart.x, y: ballStart.y });
-                    const force3 = {x: xvel/offset_constant, y: (yvel/offset_constant) + multiball_scale}; 
-                    Matter.Body.setVelocity(ball3, force3);
-                }
-        
-                arcHeight = int(random(100,300))
+                throwBall()
             }
 
             function drawHeight(xvel, yvel){
@@ -373,6 +362,24 @@
                     points.push({ x, y });
                 }
                 return points;
+            }
+
+			function windowResized() {
+                // Recalculate size when the window is resized
+                let size = min(windowWidth, windowHeight) * 0.95;
+                resizeCanvas(size, size);
+                centerCanvas();
+			}
+
+            function centerCanvas() {
+                // Center the canvas using CSS
+                let x = (windowWidth - width) / 2;
+                let y = (windowHeight - height) / 2;
+                canvas.position(x, y);
+            }
+
+            function scaleContent(){
+                scale(min(windowWidth, windowHeight) * 0.95 / 600)
             }
 
 		</script>
