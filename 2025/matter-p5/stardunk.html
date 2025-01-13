@@ -31,6 +31,8 @@
             var yvel = 0
             var board_states = [0,0,0,0]
             var actualHoopWidth = 35
+            var combo_multiplier = 1
+            var max_combo = 10
 
             //Powerup variables
             var bigHoopWidth = 50
@@ -114,6 +116,7 @@
                     if ((bodyA.label === 'ball' && bodyB.label === 'border') ||
                         (bodyA.label === 'border' && bodyB.label === 'ball')) {
                         console.log('The ball collided with the border!');
+                        combo_multiplier = 1
                         resetBall()
                     }
                     if ((bodyA.label === 'ball2' && bodyB.label === 'border') ||
@@ -126,6 +129,7 @@
                         console.log('The ball collided with the border!');
                         resetBall3()
                     }
+
                     if ((bodyA.label.includes('ball') && bodyB.label.includes('backboard')) ||
                         (bodyA.label.includes('backboard') && bodyB.label.includes("ball"))) {
 
@@ -149,22 +153,25 @@
                         if(!alreadyFull && board_states[0] && board_states[1] && board_states[2] && board_states[3]) {
                             startPowerup()
                         }
-                        
                     }
+
                     if ((bodyA.label === 'ball' && bodyB.label === 'rim') ||
                         (bodyA.label === 'rim' && bodyB.label === 'ball')) {
                         console.log('The ball collided with a rim!');
-                        if(scorePotential > 20) scorePotential = 20
-                        
+                        if(scorePotential > 20) scorePotential = 20   
                     }
+
                     if ((bodyA.label === 'ball' && bodyB.label === 'goal') ||
                         (bodyA.label === 'goal' && bodyB.label === 'ball')) {
                         console.log('The ball collided with the goal!');
                         
-                        score += scorePotential * (fireballActive ? fireballMultiplier : 1)
-                        console.log(`Scored ${scorePotential * (fireballActive ? fireballMultiplier : 1)} points!`)
+                        pointsScored = scorePotential * (fireballActive ? fireballMultiplier : 1) * combo_multiplier
+                        score += pointsScored
+                        combo_multiplier++
+                        if(combo_multiplier > max_combo) combo_multiplier = max_combo
+
+                        console.log(`Scored ${pointsScored} points!`)
                         resetBall()
-                        
                     }
                     if ((bodyA.label === 'ball2' && bodyB.label === 'goal') ||
                         (bodyA.label === 'goal' && bodyB.label === 'ball2')) {
@@ -199,6 +206,7 @@
                 textSize(20)
                 textAlign(LEFT, CENTER)
                 text(score,10,20)
+                text(`x${combo_multiplier * (fireballActive ? fireballMultiplier : 1)}`, 10, 50)
                 xvel = 0.1 * (mouseX - ball_launch_point.position.x) 
                 yvel = -Math.sqrt(2*arcHeight*engine.world.gravity.y)
 
@@ -233,8 +241,6 @@
                     console.log("moving hoop!")
                     boxes[5].position.x = lerp(boxes[5].position.x, boxes[4].position.x + actualHoopWidth, hoopChangeSpeed)
                 }
-                console.log(sling2.pointA)
-                
 			}
 
             function lerp(start, end, amt) {
@@ -244,7 +250,7 @@
             function startPowerup(){
                 setTimeout(powerupReset, 10 * 1000)
                 var randomIndex = Math.floor(Math.random() * 3);
-                randomIndex = 1 //Randomized in advance
+                // randomIndex = 1 //Randomized in advance
                 console.log(`Powerup Gained! ${randomIndex}`)
 
                 if(randomIndex == 0){
@@ -292,6 +298,35 @@
 			}
 
             function mouseClicked(){
+                console.log(xvel, yvel)
+
+                const offset_constant = 1.9
+
+                //Main Ball
+                sling.bodyB = 0
+                const force = {x: xvel/offset_constant, y: yvel/offset_constant}; 
+                Matter.Sleeping.set(ball, false);
+                Matter.Body.setVelocity(ball, force);
+
+                if(multiballActive){
+                    sling2.bodyB = 0
+                    Matter.Sleeping.set(ball2, false);
+                    Matter.Body.setPosition(ball2, { x: ballStart.x, y: ballStart.y });
+                    const force2 = {x: xvel/offset_constant, y: (yvel/offset_constant) - multiball_scale}; 
+                    Matter.Body.setVelocity(ball2, force2);
+
+                    sling3.bodyB = 0
+                    Matter.Sleeping.set(ball3, false);
+                    Matter.Body.setPosition(ball3, { x: ballStart.x, y: ballStart.y });
+                    const force3 = {x: xvel/offset_constant, y: (yvel/offset_constant) + multiball_scale}; 
+                    Matter.Body.setVelocity(ball3, force3);
+                }
+        
+                arcHeight = int(random(100,300))
+            }
+
+            function touchEnded(){
+                
                 console.log(xvel, yvel)
 
                 const offset_constant = 1.9
