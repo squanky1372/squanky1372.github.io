@@ -29,7 +29,7 @@ var links_database = [
     ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //Level editor
     ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
-    ["/2025/matter-p5/stardunk.html", "/html/img/Boxes36.png"], //Stardunk
+    ["/2025/matter-p5/stardunk.html", "/html/img/Boxes37.png"], //Stardunk
     
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
