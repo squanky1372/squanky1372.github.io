@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        
+        <script>
+            var ball_size = 10
+            var restitution = 0.5
+            var mass = 1
+            var gravity = 1.5;
+            var horiz_force = 0.001;
+            var jump = 0.04
+        </script>
+
+        <script>
+      
+            // create an engine
+            let engine = Matter.Engine.create();
+            engine.world.gravity.y = gravity;
+      
+            // create two boxes and a ground
+            // let size = {x: window.innerWidth, y: window.innerHeight}
+            let size = {x: 600, y: 600}
+            let ball = Matter.Bodies.circle(550, 380, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball', });
+
+            let ball_launch_point = Matter.Bodies.circle(550, 380, ball_size, {collisionFilter: {group: -1, isStatic: true}})
+
+            let sling = Matter.Constraint.create({pointA: {x: 550, y:380}, bodyB: ball, stiffness: 0.05})
+            
+            Matter.Composite.add(engine.world, [ball, sling]);
+
+            //Add border walls to the screen
+            let thickness = 1000
+            let borders = [
+                Matter.Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true, label: 'border', }),
+                Matter.Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true, label: 'border',}),
+                Matter.Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true, label: 'border', }),
+                Matter.Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true, label: 'border', })
+            ]
+            
+            // add all of the bodies to the world
+            Matter.Composite.add(engine.world, borders);
+
+            var boxHeight = 20
+            var boxWidth = 8
+            var boxSpacing = 4
+            var hoopPos = {x: 50, y: 300}
+            
+            var hoopDistance = 10
+            var hoopWidth = 30
+            var rimWidth = 5
+            var rimHeight = 15
+
+            let boxes = [
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*0 + boxSpacing*0, boxWidth, boxHeight, { isStatic: true, label: 'block', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*1 + boxSpacing*1, boxWidth, boxHeight, { isStatic: true, label: 'block', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*2 + boxSpacing*2, boxWidth, boxHeight, { isStatic: true, label: 'block', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*3 + boxSpacing*3, boxWidth, boxHeight, { isStatic: true, label: 'block', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'block', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance + hoopWidth, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'block', }),
+            ]
+            Matter.Composite.add(engine.world, boxes);
+
+            Matter.Events.on(engine, 'collisionStart', (event) => {
+                const pairs = event.pairs;
+
+                pairs.forEach((pair) => {
+                    const { bodyA, bodyB } = pair;
+
+                    if ((bodyA.label === 'ball' && bodyB.label === 'border') ||
+                        (bodyA.label === 'border' && bodyB.label === 'ball')) {
+                        console.log('The ball collided with the border!');
+                        Matter.Body.setPosition(ball, {x: 550, y: 380});
+                        sling.bodyB = ball
+                    }
+                    if ((bodyA.label === 'ball' && bodyB.label === 'block') ||
+                        (bodyA.label === 'block' && bodyB.label === 'ball')) {
+                        console.log('The ball collided with a block!');
+
+                    }
+                });
+            });
+
+            engine.enableSleeping = true;
+
+            // create runner
+            let runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+        </script>
+
+        
+		<script src="./p5.js"></script>
+		<script>
+			function setup() {
+				// createCanvas(windowWidth, windowHeight);
+                createCanvas(size.x, size.y)
+			}
+
+			function draw() {
+                
+                var xvel = (mouseX - ball_launch_point.position.x) * 0.189
+                var yvel = (mouseY - ball_launch_point.position.y) * 0.189
+
+                let initialVelocity = Matter.Vector.create(xvel, yvel); // Adjust as needed
+                var points = calculateTrajectory(ball_launch_point, initialVelocity, timeStep=0.2, steps=100)
+                
+                //Draw all points in the predicted path
+                points.forEach((point, i) => { circle(point.x, point.y, 1) })
+
+                push()
+				background(200, 200, 200, 10);
+                circle(ball.position.x, ball.position.y, ball.circleRadius*2)
+                boxes.forEach(box => {
+                    const width = box.bounds.max.x - box.bounds.min.x;
+                    const height = box.bounds.max.y - box.bounds.min.y;
+                    rect(box.position.x - width/2, box.position.y - height/2, width, height)
+                })
+                pop()
+                
+			}
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+
+            function keyPressed() {
+                if (key === 'w') {
+                    console.log("w")
+                    // Force application
+                    const force = { x: 0, y: -jump }; 
+                    Matter.Body.applyForce(ball, ball.position, force);
+                }
+            }
+
+            function mouseClicked(){
+                var xvel = (mouseX - ball.position.x) * 0.1
+                var yvel = (mouseY - ball.position.y) * 0.1
+
+                console.log(xvel, yvel)
+                const force = {x: xvel, y: yvel}; 
+                Matter.Sleeping.set(ball, false);
+                Matter.Body.setVelocity(ball, force);
+                // ball = Matter.Bodies.circle(400, 380, ball_size, {restitution: 1, mass: 1});
+                sling.bodyB = 0
+            }
+
+            function calculateTrajectory(body, initialVelocity, timeStep = 0.05, steps = 100) {
+                const points = [];
+                const startPosition = body.position;
+                const gravity = engine.world.gravity.y; // Default is ~0.001
+
+                for (let i = 0; i < steps; i++) {
+                    const t = i * timeStep;
+                    const x = startPosition.x + initialVelocity.x * t;                                  // x = x0 + vx * t
+                    const y = startPosition.y + initialVelocity.y * t + 0.5 * gravity * Math.pow(t, 2); // y = y0 + vy * t + 0.5 * g * t^2
+                    points.push({ x, y });
+                }
+
+                return points;
+            }
+		</script>
+    </body>
+</html>

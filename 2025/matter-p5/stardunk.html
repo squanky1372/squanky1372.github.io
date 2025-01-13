@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body>
+        <script src="matter.js"></script>
+        
+        <script>
+            //Misc variables
+            var transparent_percent = 25
+
+            //Ball physics variables
+            var ball_size = 10
+            var restitution = 0.9
+            var mass = 1
+            var gravity = 1.5;
+            var horiz_force = 0.001;
+            var jump = 0.04
+            var ballStart = {x: 550, y: 380}
+
+            //Dynamic variables
+            var score = 0
+            var scorePotential = 30
+            var arcHeight = 50
+            var xvel = 0
+            var yvel = 0
+            var board_states = [0,0,0,0]
+            var actualHoopWidth = 35
+
+            //Powerup variables
+            var bigHoopWidth = 50
+            var threeBallSpread = 0
+            var fireballMultiplier = 2
+            var fireballActive = 0
+            var hoopChangeSpeed = 0.05
+            var multiball_scale = 1.1
+            var multiballActive = 0
+
+            //Arc preview variables
+            var timeStep = 0.2
+            var stepCount = 200
+
+            //Backboard variables
+            var boxHeight = 20
+            var boxWidth = 8
+            var boxSpacing = 4
+            var hoopPos = {x: 50, y: 300}
+            
+            //Rim variables
+            var hoopDistance = 10
+            var hoopWidth = 35
+            var rimWidth = 5
+            var rimHeight = 15
+        </script>
+
+        <script> //setup the Matter things
+            let engine = Matter.Engine.create();
+            engine.world.gravity.y = gravity;
+      
+            let size = {x: 600, y: 600}
+            let ball = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball', });
+            let ball_launch_point = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {collisionFilter: {group: -1, isStatic: true}})
+            let sling = Matter.Constraint.create({pointA: {x: ballStart.x, y:ballStart.y}, bodyB: ball, stiffness: 0.05})
+            Matter.Composite.add(engine.world, [ball, sling]);
+
+            
+            //Multi-ball     
+            let ball2 = Matter.Bodies.circle(10000, 10000, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball2', });
+            let ball3 = Matter.Bodies.circle(20000, 20000, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball3', });
+            
+            let sling2 = Matter.Constraint.create({pointA: {x: 1200, y:1200}, bodyB: ball2, stiffness: 0.05})
+            let sling3 = Matter.Constraint.create({pointA: {x: 1200, y:1200}, bodyB: ball3, stiffness: 0.05})
+
+            Matter.Composite.add(engine.world, [ball2, ball3, sling2, sling3]);
+
+            ball.collisionFilter = { category: 0x0001,  mask: 0x0001 }; // Collide with everything except category 0x0001
+            ball2.collisionFilter = { category: 0x0001,  mask: 0x0001 }; // Collide with everything except category 0x0001
+            ball3.collisionFilter = { category: 0x0001,  mask: 0x0001 }; // Collide with everything except category 0x0001
+
+            //Add border walls to the screen
+            let thickness = 1000
+            let borders = [
+                Matter.Bodies.rectangle(size.x/2, 0 - thickness/2, size.x*2, thickness, { isStatic: true, label: 'border', }),
+                Matter.Bodies.rectangle(size.x/2, size.y + thickness/2, size.x*2, thickness, { isStatic: true, label: 'border',}),
+                Matter.Bodies.rectangle(0-thickness/2, size.y/2, thickness, size.y*2, { isStatic: true, label: 'border', }),
+                Matter.Bodies.rectangle(size.x + thickness/2, size.y/2, thickness, size.y*2, { isStatic: true, label: 'border', })
+            ]
+            Matter.Composite.add(engine.world, borders);
+
+
+            let boxes = [
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*0 + boxSpacing*0, boxWidth, boxHeight, { isStatic: true, label: 'backboard1', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*1 + boxSpacing*1, boxWidth, boxHeight, { isStatic: true, label: 'backboard2', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*2 + boxSpacing*2, boxWidth, boxHeight, { isStatic: true, label: 'backboard3', }),
+                Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*3 + boxSpacing*3, boxWidth, boxHeight, { isStatic: true, label: 'backboard4', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'rim', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance + hoopWidth, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'rim', }),
+            ]
+            Matter.Composite.add(engine.world, boxes);
+
+            let goal = Matter.Bodies.circle(hoopPos.x + hoopDistance + hoopWidth/2, hoopPos.y + boxHeight*4.5 + boxSpacing*4, 5 , {isStatic: true, label: 'goal'})
+            Matter.Composite.add(engine.world, goal);
+
+            Matter.Events.on(engine, 'collisionStart', (event) => {
+                const pairs = event.pairs;
+                pairs.forEach((pair) => {
+                    const { bodyA, bodyB } = pair;
+
+                    if ((bodyA.label === 'ball' && bodyB.label === 'border') ||
+                        (bodyA.label === 'border' && bodyB.label === 'ball')) {
+                        console.log('The ball collided with the border!');
+                        resetBall()
+                    }
+                    if ((bodyA.label === 'ball2' && bodyB.label === 'border') ||
+                        (bodyA.label === 'border' && bodyB.label === 'ball2')) {
+                        console.log('The ball collided with the border!');
+                        resetBall2()
+                    }
+                    if ((bodyA.label === 'ball3' && bodyB.label === 'border') ||
+                        (bodyA.label === 'border' && bodyB.label === 'ball3')) {
+                        console.log('The ball collided with the border!');
+                        resetBall3()
+                    }
+                    if ((bodyA.label.includes('ball') && bodyB.label.includes('backboard')) ||
+                        (bodyA.label.includes('backboard') && bodyB.label.includes("ball"))) {
+
+                        var alreadyFull = false
+                        if(board_states[0] && board_states[1] && board_states[2] && board_states[3]) alreadyFull = true
+                        
+                        if(bodyA.label.includes('backboard')){
+                            console.log(bodyA.label[bodyA.label.length-1])
+                            console.log(int(bodyA.label[bodyA.label.length-1]))
+                            board_states[int(bodyA.label[bodyA.label.length-1])-1] = 1
+                        }
+                        if(bodyB.label.includes('backboard')){
+                            console.log(bodyB.label[bodyB.label.length-1])
+                            console.log(int(bodyB.label[bodyB.label.length-1]))
+                            board_states[int(bodyB.label[bodyB.label.length-1])-1] = 1
+                        }
+                        console.log('The ball collided with a backboard!');
+                        console.log(board_states)
+                        scorePotential = 10
+
+                        if(!alreadyFull && board_states[0] && board_states[1] && board_states[2] && board_states[3]) {
+                            startPowerup()
+                        }
+                        
+                    }
+                    if ((bodyA.label === 'ball' && bodyB.label === 'rim') ||
+                        (bodyA.label === 'rim' && bodyB.label === 'ball')) {
+                        console.log('The ball collided with a rim!');
+                        if(scorePotential > 20) scorePotential = 20
+                        
+                    }
+                    if ((bodyA.label === 'ball' && bodyB.label === 'goal') ||
+                        (bodyA.label === 'goal' && bodyB.label === 'ball')) {
+                        console.log('The ball collided with the goal!');
+                        
+                        score += scorePotential * (fireballActive ? fireballMultiplier : 1)
+                        console.log(`Scored ${scorePotential * (fireballActive ? fireballMultiplier : 1)} points!`)
+                        resetBall()
+                        
+                    }
+                    if ((bodyA.label === 'ball2' && bodyB.label === 'goal') ||
+                        (bodyA.label === 'goal' && bodyB.label === 'ball2')) {
+                        console.log('The ball collided with the goal!');
+                        score += 10  // score += scorePotential * (fireballActive ? fireballMultiplier : 1)
+                        resetBall2()
+                    }
+                    if ((bodyA.label === 'ball3' && bodyB.label === 'goal') ||
+                        (bodyA.label === 'goal' && bodyB.label === 'ball3')) {
+                        console.log('The ball collided with the goal!');
+                        score += 10  // score += scorePotential * (fireballActive ? fireballMultiplier : 1)
+                        resetBall3()
+                    }
+                });
+            });
+
+            engine.enableSleeping = true;
+            let runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+        </script>
+
+        
+		<script src="./p5.js"></script>
+		<script>
+			function setup() {
+				// createCanvas(windowWidth, windowHeight);
+                createCanvas(size.x, size.y)
+			}
+
+			function draw() {
+
+                textSize(20)
+                textAlign(LEFT, CENTER)
+                text(score,10,20)
+                xvel = 0.1 * (mouseX - ball_launch_point.position.x) 
+                yvel = -Math.sqrt(2*arcHeight*engine.world.gravity.y)
+
+                let initialVelocity = Matter.Vector.create(xvel, yvel); // Adjust as needed
+                var points = calculateTrajectory(ball_launch_point, initialVelocity, timeStep=timeStep, steps=stepCount)
+                // drawHeight(xvel, yvel)
+                
+                //Draw all points in the predicted path
+                points.forEach((point, i) => { circle(point.x, point.y, 1) })
+
+                push()
+				background(200, 200, 200, transparent_percent);
+                if(fireballActive) fill(0)
+                else fill(200)
+                circle(ball.position.x, ball.position.y, ball.circleRadius*2)
+                fill(250).circle(ball2.position.x, ball2.position.y, ball2.circleRadius*2)
+                fill(150).circle(ball3.position.x, ball3.position.y, ball3.circleRadius*2)
+                fill(255).circle(goal.position.x, goal.position.y, goal.circleRadius*2)
+                boxes.forEach((box, i) => {
+                    const width = box.bounds.max.x - box.bounds.min.x;
+                    const height = box.bounds.max.y - box.bounds.min.y;
+                    if(board_states[i]) fill(0)
+                    else fill(255)
+                    if(i > 3 && actualHoopWidth == bigHoopWidth) fill(0)
+                    rect(box.position.x - width/2, box.position.y - height/2, width, height)
+                })
+                pop()
+
+                //Big Hoop Powerup
+                if(Math.abs((boxes[5].position.x - boxes[4].position.x) - actualHoopWidth) > 0.01){
+                    console.log(boxes[5].position.x - boxes[4].position.x)
+                    console.log("moving hoop!")
+                    boxes[5].position.x = lerp(boxes[5].position.x, boxes[4].position.x + actualHoopWidth, hoopChangeSpeed)
+                }
+                console.log(sling2.pointA)
+                
+			}
+
+            function lerp(start, end, amt) {
+                return start + (end - start) * amt;
+            }
+
+            function startPowerup(){
+                setTimeout(powerupReset, 10 * 1000)
+                var randomIndex = Math.floor(Math.random() * 3);
+                randomIndex = 1 //Randomized in advance
+                console.log(`Powerup Gained! ${randomIndex}`)
+
+                if(randomIndex == 0){
+                    actualHoopWidth = bigHoopWidth
+                }
+                if(randomIndex == 1){
+                    fireballActive = 1
+                }
+                if(randomIndex == 2){
+                    multiballActive = 1
+                }
+            }
+
+            function powerupReset(){
+                console.log("Resetting powerups")
+                board_states = [0,0,0,0]
+
+                actualHoopWidth = hoopWidth
+                fireballActive = 0
+                multiballActive = 0
+            }
+
+            function resetBall(){
+                Matter.Body.setPosition(ball, {x: ballStart.x, y: ballStart.y});
+                sling.bodyB = ball
+                scorePotential = 30
+            }
+            function resetBall2(){
+                const force2 = {x:0, y: 0}; 
+                Matter.Body.setVelocity(ball2, force2);
+                Matter.Body.setPosition(ball2, sling2.pointA);
+                // sling2.bodyB = ball2
+                // scorePotential = 30
+            }
+            function resetBall3(){
+                Matter.Body.setPosition(ball3, {x: 1200, y: 1200});
+                // sling3.bodyB = ball3
+                const force3 = {x:0, y: 0}; 
+                Matter.Body.setVelocity(ball3, force3);
+                // scorePotential = 30
+            }
+
+			function windowResized() {
+				resizeCanvas(windowWidth, windowHeight);
+			}
+
+            function mouseClicked(){
+                console.log(xvel, yvel)
+
+                const offset_constant = 1.9
+
+                //Main Ball
+                sling.bodyB = 0
+                const force = {x: xvel/offset_constant, y: yvel/offset_constant}; 
+                Matter.Sleeping.set(ball, false);
+                Matter.Body.setVelocity(ball, force);
+
+                if(multiballActive){
+                    sling2.bodyB = 0
+                    Matter.Sleeping.set(ball2, false);
+                    Matter.Body.setPosition(ball2, { x: ballStart.x, y: ballStart.y });
+                    const force2 = {x: xvel/offset_constant, y: (yvel/offset_constant) - multiball_scale}; 
+                    Matter.Body.setVelocity(ball2, force2);
+
+                    sling3.bodyB = 0
+                    Matter.Sleeping.set(ball3, false);
+                    Matter.Body.setPosition(ball3, { x: ballStart.x, y: ballStart.y });
+                    const force3 = {x: xvel/offset_constant, y: (yvel/offset_constant) + multiball_scale}; 
+                    Matter.Body.setVelocity(ball3, force3);
+                }
+        
+                arcHeight = int(random(100,300))
+            }
+
+            function drawHeight(xvel, yvel){
+                var v = Math.pow(xvel**2 + yvel**2, 0.5)
+                var theta = Math.atan(yvel/xvel)
+                var g = engine.world.gravity.y
+                h = (v * Math.sin(theta))**2 / (2*g)
+                line(0,ball_launch_point.position.y - h,1000,ball_launch_point.position.y - h)
+            }
+
+            function calculateTrajectory(body, initialVelocity, timeStep = 0.05, steps = 100) {
+                const points = [];
+                const startPosition = body.position;
+                const gravity = engine.world.gravity.y; // Default is ~0.001
+                for (let i = 0; i < steps; i++) {
+                    const t = i * timeStep;
+                    const x = startPosition.x + initialVelocity.x * t;                                  // x = x0 + vx * t
+                    const y = startPosition.y + initialVelocity.y * t + 0.5 * gravity * Math.pow(t, 2); // y = y0 + vy * t + 0.5 * g * t^2
+                    points.push({ x, y });
+                }
+                return points;
+            }
+
+		</script>
+    </body>
+</html>
