@@ -36,6 +36,7 @@
             var combo_multiplier = 1
             var max_combo = 10
             var launchFlag = 1
+            var scoreText = [""]
 
             //Powerup variables
             var bigHoopWidth = 50
@@ -168,13 +169,7 @@
                         (bodyA.label === 'goal' && bodyB.label === 'ball')) {
                         console.log('The ball collided with the goal!');
                         
-                        pointsScored = scorePotential * (fireballActive ? fireballMultiplier : 1) * combo_multiplier
-                        score += pointsScored
-                        combo_multiplier++
-                        if(combo_multiplier > max_combo) combo_multiplier = max_combo
-
-                        console.log(`Scored ${pointsScored} points!`)
-                        resetBall()
+                        scorePoints()
                     }
                     if ((bodyA.label === 'ball2' && bodyB.label === 'goal') ||
                         (bodyA.label === 'goal' && bodyB.label === 'ball2')) {
@@ -218,6 +213,7 @@
                 textAlign(LEFT, CENTER)
                 text(score,10,20)
                 text(`x${combo_multiplier * (fireballActive ? fireballMultiplier : 1)}`, 10, 50)
+                drawScores()
                 xvel = 0.1 * (mouseX - ball_launch_point.position.x) 
                 yvel = -Math.sqrt(2*arcHeight*engine.world.gravity.y)
 
@@ -282,6 +278,31 @@
                 if(randomIndex == 2){
                     multiballActive = 1
                 }
+            }
+
+            function drawScores(){
+                textSize(10)
+                textAlign(CENTER, CENTER)
+                scoreText.forEach((score, i) => {
+                    text(score, goal.position.x, goal.position.y + 10*i + 20)
+                })
+            }
+
+            function scorePoints(){
+                pointsScored = scorePotential * (fireballActive ? fireballMultiplier : 1) * combo_multiplier
+                score += pointsScored
+                combo_multiplier++
+                if(combo_multiplier > max_combo) combo_multiplier = max_combo
+
+                console.log(`Scored ${pointsScored} points!`)
+
+                scoreText.unshift(pointsScored)
+                setTimeout(deleteOldestScore, 2000)
+                resetBall()
+            }
+
+            function deleteOldestScore(){
+                scoreText.pop()
             }
 
             function powerupReset(){
