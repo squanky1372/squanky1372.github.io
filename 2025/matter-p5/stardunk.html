@@ -15,6 +15,7 @@
         <script>
             //Misc variables
             var transparent_percent = 25
+            var gameDuration = 10
 
             //Ball physics variables
             var ball_size = 10
@@ -24,17 +25,21 @@
             var horiz_force = 0.001;
             var jump = 0.04
             var ballStart = {x: 550, y: 380}
+            let size = {x: 600, y: 600}
 
             //Dynamic variables
             var score = 0
             var scorePotential = 30
+            var combo_multiplier = 1
+            var max_combo = 10
+            var startTime = 0
+            var gameState = 0
+
             var arcHeight = 50
             var xvel = 0
             var yvel = 0
             var board_states = [0,0,0,0]
             var actualHoopWidth = 35
-            var combo_multiplier = 1
-            var max_combo = 10
             var launchFlag = 1
             var scoreText = [""]
 
@@ -53,7 +58,7 @@
 
             //Backboard variables
             var boxHeight = 20
-            var boxWidth = 8
+            var boxWidth = 10
             var boxSpacing = 4
             var hoopPos = {x: 50, y: 300}
             
@@ -62,18 +67,17 @@
             var hoopWidth = 35
             var rimWidth = 5
             var rimHeight = 15
+            var rimRestitution = 1
         </script>
 
         <script> //setup the Matter things
             let engine = Matter.Engine.create();
             engine.world.gravity.y = gravity;
       
-            let size = {x: 600, y: 600}
             let ball = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball', });
             let ball_launch_point = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {collisionFilter: {group: -1, isStatic: true}})
             let sling = Matter.Constraint.create({pointA: {x: ballStart.x, y:ballStart.y}, bodyB: ball, stiffness: 0.05})
             Matter.Composite.add(engine.world, [ball, sling]);
-
             
             //Multi-ball     
             let ball2 = Matter.Bodies.circle(10000, 10000, ball_size, {restitution: restitution, mass: 1, frictionAir: 0.0, label: 'ball2', });
@@ -104,10 +108,12 @@
                 Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*1 + boxSpacing*1, boxWidth, boxHeight, { isStatic: true, label: 'backboard2', }),
                 Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*2 + boxSpacing*2, boxWidth, boxHeight, { isStatic: true, label: 'backboard3', }),
                 Matter.Bodies.rectangle(hoopPos.x, hoopPos.y + boxHeight*3 + boxSpacing*3, boxWidth, boxHeight, { isStatic: true, label: 'backboard4', }),
-                Matter.Bodies.rectangle(hoopPos.x + hoopDistance, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'rim', }),
-                Matter.Bodies.rectangle(hoopPos.x + hoopDistance + hoopWidth, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: 2, label: 'rim', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: rimRestitution, label: 'rim', }),
+                Matter.Bodies.rectangle(hoopPos.x + hoopDistance + hoopWidth, hoopPos.y + boxHeight*4 + boxSpacing*4, rimWidth, rimHeight, { isStatic: true, restitution: rimRestitution, label: 'rim', }),
             ]
+            let unteleporter = Matter.Bodies.rectangle(hoopPos.x - hoopDistance*2, hoopPos.y + boxHeight*4 + boxSpacing*4, rimHeight*2, rimHeight*10, { isStatic: true })
             Matter.Composite.add(engine.world, boxes);
+            Matter.Composite.add(engine.world, [unteleporter]);
 
             let goal = Matter.Bodies.circle(hoopPos.x + hoopDistance + hoopWidth/2, hoopPos.y + boxHeight*4.5 + boxSpacing*4, 5 , {isStatic: true, label: 'goal'})
             Matter.Composite.add(engine.world, goal);
@@ -195,6 +201,7 @@
 		<script src="./p5.js"></script>
 		<script>
 			function setup() {
+                const d = new Date();
 				// createCanvas(windowWidth, windowHeight);
                 let size = min(windowWidth, windowHeight) * 0.95;
   
@@ -208,11 +215,34 @@
 
 			function draw() {
                 scaleContent()
+                // console.log(gameDuration - Math.floor((millis() - startTime)/1000))
+                if(gameState == 0 && gameDuration - Math.floor((millis() - startTime)/1000) < 0) gameState = 2
 
+                if(gameState == 0){
+                    mainGame()
+                    //title screen
+                }
+                if(gameState == 1){
+                    //do the actual game
+                    mainGame()
+                }
+                if(gameState == 2){
+                    //game has finished, do score stuff
+                    mainGame()
+                    console.log("GAME OVER")
+                }
+            }
+
+            function mainGame(){
                 textSize(20)
                 textAlign(LEFT, CENTER)
                 text(score,10,20)
                 text(`x${combo_multiplier * (fireballActive ? fireballMultiplier : 1)}`, 10, 50)
+                
+                if(gameState == 0) text(gameDuration, 10, 80)
+                if(gameState == 1) text(gameDuration - Math.floor((millis() - startTime)/1000), 10, 80)
+                if(gameState == 2) text(0, 10, 80)
+
                 drawScores()
                 xvel = 0.1 * (mouseX - ball_launch_point.position.x) 
                 yvel = -Math.sqrt(2*arcHeight*engine.world.gravity.y)
@@ -338,6 +368,12 @@
 
             function throwBall(){
                 if(!launchFlag) return;
+                if(gameState==2) return;
+                if(gameState==0){
+                    gameState = 1
+                    console.log("Starting the game!")
+                    startTime = millis()
+                }
 
                 const offset_constant = 1.9
 
