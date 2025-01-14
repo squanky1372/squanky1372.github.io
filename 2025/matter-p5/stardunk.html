@@ -15,7 +15,7 @@
         <script>
             //Misc variables
             var transparent_percent = 25
-            var gameDuration = 10
+            var gameDuration = 120
 
             //Ball physics variables
             var ball_size = 10
@@ -216,7 +216,7 @@
 			function draw() {
                 scaleContent()
                 // console.log(gameDuration - Math.floor((millis() - startTime)/1000))
-                if(gameState == 0 && gameDuration - Math.floor((millis() - startTime)/1000) < 0) gameState = 2
+                if(gameState == 1 && gameDuration - Math.floor((millis() - startTime)/1000) < 0) gameState = 2
 
                 if(gameState == 0){
                     mainGame()
