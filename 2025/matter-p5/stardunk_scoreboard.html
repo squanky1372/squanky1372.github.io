@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <body style="background-color:black; color:green; font-size: 200%">
+    <style>
+        body{margin:0;overflow:hidden}
+        @font-face {  
+            src: url(slkscr.ttf) format("truetype");
+            font-family:  Market Deco;
+        }
+        div.FontMarket { 
+            font-family:  Market Deco;
+        }
+        td {
+            text-align: center;
+        }
+        table, th, td {
+            border: 1px solid green;
+        }
+    </style>
+    
+    <div class="FontMarket">
+    <table id="table">
+        <tr>
+            <th>=====Name=====</th>
+            <th>===Score===</th>
+            <th>===Date===</th>
+        </tr>
+    </table>
+    </div>
+    
+    <script>
+        getData()
+
+        async function getData() {
+            var game = "stardunk"
+            var level = 100
+            var url = (`http://localhost:3017/scoreboard?game=${game}&level=${level}`)
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+                }
+
+                const json = await response.json();
+                console.log(json);
+
+                json.jsonArray.forEach(score => {
+                    addScore(score)
+                })
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        function addScore(score){
+            var table = document.getElementById("table");
+
+            var row = table.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            
+            cell1.innerHTML = score.player;
+            cell2.innerHTML = score.data.score;
+            cell3.innerHTML = score.timestamp.substring(5, score.timestamp.length - 14);
+        }
+
+    </script>
+    
+    </body>
+</html>

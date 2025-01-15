@@ -15,7 +15,7 @@
         <script>
             //Misc variables
             var transparent_percent = 25
-            var gameDuration = 120
+            var gameDuration = 12
 
             //Ball physics variables
             var ball_size = 10
@@ -216,7 +216,14 @@
 			function draw() {
                 scaleContent()
                 // console.log(gameDuration - Math.floor((millis() - startTime)/1000))
-                if(gameState == 1 && gameDuration - Math.floor((millis() - startTime)/1000) < 0) gameState = 2
+                
+                if(gameState == 1 && gameDuration - Math.floor((millis() - startTime)/1000) < 0){
+                    //game has ended
+                    myname = prompt(`Game Over! You scored ${score} points.  Your score has been submitted to the leaderboard.`)
+                    submitScore("stardunk", myname, {score:score})
+                    gameState = 2
+
+                }
 
                 if(gameState == 0){
                     mainGame()
@@ -231,6 +238,16 @@
                     mainGame()
                     console.log("GAME OVER")
                 }
+            }
+
+            async function submitScore(game, user, data){
+                const response = await fetch('http://localhost:3017/addscore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ game, user, data })
+                });
             }
 
             function mainGame(){
