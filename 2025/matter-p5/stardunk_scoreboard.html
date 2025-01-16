@@ -34,7 +34,7 @@
         async function getData() {
             var game = "stardunk"
             var level = 100
-            var url = (`http://localhost:3017/scoreboard?game=${game}&level=${level}`)
+            var url = (`https://squanky.net/scores/scoreboard?game=${game}&level=${level}`)
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
