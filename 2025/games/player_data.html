@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Layout with Independent Scrolling</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column; /* Default to column layout */
+      width: 100%;
+      height: 100vh; /* Ensure it takes full viewport height */
+    }
+
+    .divh {
+      flex: 1;
+      width: 100%; /* Full width in vertical mode */
+      padding: 0px;
+      box-sizing: border-box;
+      overflow: auto; /* Enable independent scrolling */
+      flex-direction: row; /* Change to row layout if width > height */
+    }
+    .divv {
+      flex: 1;
+      width: 100%; /* Full width in vertical mode */
+      height: 50%; /* Full width in vertical mode */
+      padding: 20px;
+      box-sizing: border-box;
+      overflow: auto; /* Enable independent scrolling */
+    }
+
+    @media (min-aspect-ratio: 1/1) {
+      .container {
+        flex-direction: row; /* Change to row layout if width > height */
+      }
+
+      .divh {
+        width: 50%; /* Half width in horizontal mode */
+        flex-direction: column; /* Change to row layout if width > height */
+        /* height: 100%; Ensure full height in horizontal mode   */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="divh" style="background-color: lightblue;">
+        <div class="divv" style="background-color: lemonchiffon; text-align: center">
+            <div id="p5canvas"></div>    
+        </div>
+      <div class="divv" style="background-color: lightgreen; text-align: center;"><br><br>
+        Username: <input type="text" id="username-input" maxlength="8" style="width:125px" />
+
+        <br><br>
+        C1:
+        <input type="range" style="width: 50px" id="r_sel_1" name="R" min="0" max="2" />
+        <input type="range" style="width: 50px" id="g_sel_1" name="G" min="0" max="2" />
+        <input type="range" style="width: 50px" id="b_sel_1" name="B" min="0" max="2" />
+        <br><br>
+        C2:
+        <input type="range" style="width: 50px" id="r_sel_2" name="R" min="0" max="2" />
+        <input type="range" style="width: 50px" id="g_sel_2" name="G" min="0" max="2" />
+        <input type="range" style="width: 50px" id="b_sel_2" name="B" min="0" max="2" />
+        <br><br>
+        C3:
+        <input type="range" style="width: 50px" id="r_sel_3" name="R" min="0" max="2" />
+        <input type="range" style="width: 50px" id="g_sel_3" name="G" min="0" max="2" />
+        <input type="range" style="width: 50px" id="b_sel_3" name="B" min="0" max="2" />
+        <br><br>
+        Emoji: <input type="text" id="emoji-input" maxlength="4" style="width:50px" />
+        <br><br>
+        <input type="submit">
+        <br>
+      </div>
+    </div>
+    <div class="divh" style="background-color: lightcoral">
+        This is where all of the player's games will go
+    </div>
+  </div>
+
+  
+  <script src="../aa_libraries/p5.js"></script>
+  <script>
+
+    var emoji = Array.from("👌")[0];
+
+    function setup() {
+
+        verifyHash()
+
+        var dim = 0
+        if(windowWidth > windowHeight){
+            dim = windowHeight/2 * 0.85
+        }
+        else{
+            dim = windowHeight/4 * 0.85
+        }
+        canvas = createCanvas(dim, dim);
+        canvas.parent('p5canvas');
+    }
+
+    function draw() {
+
+        // rect(width/4, height/4, width/2, height/2)
+        emoji = Array.from(document.getElementById('emoji-input').value)[0]
+
+        color1 = [document.getElementById('r_sel_1').value, 
+                document.getElementById('g_sel_1').value, 
+                document.getElementById('b_sel_1').value]
+        color2 = [document.getElementById('r_sel_2').value, 
+                document.getElementById('g_sel_2').value, 
+                document.getElementById('b_sel_2').value]
+        color3 = [document.getElementById('r_sel_3').value, 
+                document.getElementById('g_sel_3').value, 
+                document.getElementById('b_sel_3').value]
+
+        var size = width
+        var posx = width/2 - size/2
+        var posy = height/2 - size/2
+        
+        background(220);
+        textSize(size*0.75);
+        rect(posx,posy,size,size)
+
+        fill(color1[0]*128, color1[1]*128, color1[2]*128)
+        rect(posx, posy, size, size/3)
+        fill(color2[0]*128, color2[1]*128, color2[2]*128)
+        rect(posx, posy + size/3, size, size/3)
+        fill(color3[0]*128, color3[1]*128, color3[2]*128)
+        rect(posx, posy + 2*size/3, size, size/3)
+
+        textAlign(CENTER, CENTER)
+        fill(0)
+        text(emoji, posx + size/2, posy + size/2);
+    }
+
+    function windowResized() {
+        var dim = 0
+        if(windowWidth > windowHeight){
+        dim = windowHeight/2 * 0.75
+        }
+        else{
+        dim = windowHeight/4 * 0.75
+        }
+        resizeCanvas(dim, dim);
+    }
+
+    function verifyHash(){
+
+        // Get the full URL or just the query string
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Get specific parameters
+        const hash = urlParams.get('hash'); // "John"
+
+        if(hash) console.log(hash);
+        else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+
+        const response = fetch(`https://squanky.net/scores/getPlayer?hash=${hash}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json()
+        }) // Parse the response body as JSON
+        .then(data => console.log(data))   // Log the parsed data
+        .catch(error => console.error(error)); // Handle errors
+    
+    }
+  
+    function submitInputs(){
+        //verify that the username is not blank
+        //verify that the emoji is not blank
+
+        //submit inputs via API
+    }
+  </script>
+</body>
+</html>
+

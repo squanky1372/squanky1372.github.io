@@ -29,10 +29,20 @@
 	
 		  // Get the value of the text input
 		  const inputText = document.getElementById('textInput').value;
+		  submitEmail(inputText)
 	
 		  // Print the value to the console
 		  console.log(inputText);
 		});
+
+		async function submitEmail(email){
+			const response = await fetch(`https://squanky.net/scores/verifyEmail?email=${email}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+			});
+		}
 	  </script>
 	</body>
 </html>
