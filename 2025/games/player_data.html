@@ -54,7 +54,7 @@
         <div class="divv" style="background-color: lemonchiffon; text-align: center">
             <div id="p5canvas"></div>    
         </div>
-      <div class="divv" style="background-color: lightgreen; text-align: center;"><br><br>
+      <div class="divv" style="background-color: lightgreen; text-align: center;"><br>
         Username: <input type="text" id="username-input" maxlength="8" style="width:125px" />
 
         <br><br>
@@ -62,12 +62,12 @@
         <input type="range" style="width: 50px" id="r_sel_1" name="R" min="0" max="2" />
         <input type="range" style="width: 50px" id="g_sel_1" name="G" min="0" max="2" />
         <input type="range" style="width: 50px" id="b_sel_1" name="B" min="0" max="2" />
-        <br><br>
+        <br>
         C2:
         <input type="range" style="width: 50px" id="r_sel_2" name="R" min="0" max="2" />
         <input type="range" style="width: 50px" id="g_sel_2" name="G" min="0" max="2" />
         <input type="range" style="width: 50px" id="b_sel_2" name="B" min="0" max="2" />
-        <br><br>
+        <br>
         C3:
         <input type="range" style="width: 50px" id="r_sel_3" name="R" min="0" max="2" />
         <input type="range" style="width: 50px" id="g_sel_3" name="G" min="0" max="2" />
@@ -75,8 +75,8 @@
         <br><br>
         Emoji: <input type="text" id="emoji-input" maxlength="4" style="width:50px" />
         <br><br>
-        <input type="submit">
-        <br>
+        <input type="submit" onclick="submitInputs()">
+        <p id="SubmitText">Click here to submit.</p>
       </div>
     </div>
     <div class="divh" style="background-color: lightcoral">
@@ -88,7 +88,15 @@
   <script src="../aa_libraries/p5.js"></script>
   <script>
 
-    var emoji = Array.from("👌")[0];
+    var emoji
+    var color1
+    var color2
+    var color3
+    var username
+
+    var playerData = {
+        visuals:{}
+    }
 
     function setup() {
 
@@ -110,6 +118,7 @@
         // rect(width/4, height/4, width/2, height/2)
         emoji = Array.from(document.getElementById('emoji-input').value)[0]
 
+
         color1 = [document.getElementById('r_sel_1').value, 
                 document.getElementById('g_sel_1').value, 
                 document.getElementById('b_sel_1').value]
@@ -119,6 +128,8 @@
         color3 = [document.getElementById('r_sel_3').value, 
                 document.getElementById('g_sel_3').value, 
                 document.getElementById('b_sel_3').value]
+
+        
 
         var size = width
         var posx = width/2 - size/2
@@ -174,16 +185,63 @@
             }
             return response.json()
         }) // Parse the response body as JSON
-        .then(data => console.log(data))   // Log the parsed data
+        .then(data => fillFields(data.foundRow))   // Log the parsed data
         .catch(error => console.error(error)); // Handle errors
     
     }
+
+    function fillFields(incomingPlayerData){
+        playerData = incomingPlayerData
+
+        console.log("Parsing player data")
+        console.log(playerData)
+
+        if(playerData.visuals){
+            console.log("visuals!")
+            if(playerData.visuals.colors){
+                console.log("colors!")
+                document.getElementById('r_sel_1').value = playerData.visuals.colors[0][0]
+                document.getElementById('g_sel_1').value = playerData.visuals.colors[0][1]
+                document.getElementById('b_sel_1').value = playerData.visuals.colors[0][2]
+                document.getElementById('r_sel_2').value = playerData.visuals.colors[1][0]
+                document.getElementById('g_sel_2').value = playerData.visuals.colors[1][1]
+                document.getElementById('b_sel_2').value = playerData.visuals.colors[1][2]
+                document.getElementById('r_sel_3').value = playerData.visuals.colors[2][0]
+                document.getElementById('g_sel_3').value = playerData.visuals.colors[2][1]
+                document.getElementById('b_sel_3').value = playerData.visuals.colors[2][2]
+            }
+            if(playerData.visuals.emoji){
+                console.log("emoji!")
+                document.getElementById('emoji-input').value = playerData.visuals.emoji
+
+            }
+            if(playerData.username){
+                console.log("username!")
+                document.getElementById('username-input').value = playerData.username
+            }
+        }
+    }
   
     function submitInputs(){
-        //verify that the username is not blank
-        //verify that the emoji is not blank
+        if(!playerData.visuals) playerData.visuals = {}
+        playerData.visuals.emoji = emoji
+        playerData.username = document.getElementById('username-input').value
+        playerData.visuals.colors = [color1, color2, color3]
 
-        //submit inputs via API
+        console.log(playerData)
+
+        if(!playerData.username) document.getElementById('SubmitText').innerText = 'Error: Enter a username!';
+        else if(!playerData.visuals.emoji) document.getElementById('SubmitText').innerText = 'Error: Enter an emoji!';
+        else{
+
+                const response = fetch('https://squanky.net/scores/setPlayer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({playerData})
+                });
+        }
     }
   </script>
 </body>

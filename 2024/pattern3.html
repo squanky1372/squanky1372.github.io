@@ -1,0 +1,74 @@
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes15.png">
+	<link rel="icon" href="/html/img/Boxes15.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; }
+			canvas {width: 100%; height: 100%}
+		</style>
+	</head>
+
+	<body>
+		<div id="first">
+		<script src="../../js/src/p5.js"></script>
+		<script>
+			let patternCnv;
+			let bufferCnv;
+
+			let pattern;
+
+			function setup() {
+				//setup screen canvas
+				createCanvas(800, 800);
+				pixelDensity(1);
+
+				//setup buffer canvas
+				bufferCnv = createGraphics(width, height);
+				bufferCnv.pixelDensity(1);
+
+				//setup pattern
+				makePattern()
+			}
+
+			function makePattern(){
+				patternCnv = createGraphics(100, 100);
+				patternCnv.pixelDensity(1);
+				
+				// Draw a pattern
+				patternCnv.background(150,0,255);
+				patternCnv.fill(255,0,255).stroke(0,0,0).strokeWeight(1);
+				patternCnv.rect(0,0,100,100)
+				patternCnv.line(10,10,90,90);
+				
+				// Uses canvas method createPattern on the buffer canvas, 
+				// using the pattern canvas to create the pattern
+				pattern = setupPattern(patternCnv, bufferCnv);
+			}
+
+			function draw() {
+				translate(100,100)
+				background(220,200,220);
+				
+				// Use the pattern we created, and set it as the fill on the buffer canvas
+				setFill(pattern, bufferCnv);
+
+				// Draw shape with this pattern fill (on the buffer canvas)
+				bufferCnv.circle(100,100,100)
+
+				// Draw the buffer canvas to be visible 
+				image(bufferCnv,0,0);
+			}
+
+			function setupPattern(p, b){
+				return b.drawingContext.createPattern(p.canvas, 'repeat');
+			}
+
+			function setFill(p, b) {
+				b.fill(0);
+				b._renderer._setFill(p);
+			}
+		</script>
+		</div>
+	</body>
+</html>

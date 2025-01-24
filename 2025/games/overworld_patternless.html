@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Felipe</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      /* Ensures full viewport height */
+      background-color: #0066ff;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      overflow: hidden
+    }
+  </style>
+</head>
+
+<body style="background-color:#0066ff;">
+  <script>
+    var ball_size = 5
+    var restitution = 1
+    var mass = 1
+    var gravity = 4;
+    var horiz_force = 0.001;
+    var jump = 0.04
+  </script>
+
+  <script src="../aa_libraries/matter.js"></script>
+  <script>
+
+    // create an engine
+    let engine = Matter.Engine.create();
+    engine.world.gravity.y = gravity;
+
+    // create two boxes and a ground
+    let squareSize = Math.min(window.innerWidth, window.innerHeight) * 0.95;
+    let size = { x: squareSize, y: squareSize }
+    let cubeSize = squareSize / 15
+    // let ball = Matter.Bodies.rectangle(100,100,cubeSize,cubeSize, {friction: 0.1, restitution: 0.9, mass: 1});
+    let ball = Matter.Bodies.circle(100, 100, cubeSize / 2, { friction: 0.1, restitution: 0.9, mass: 1 });
+
+    //Add border walls to the screen
+    let thickness = 1000
+    let ground = Matter.Bodies.rectangle(size.x / 2, 0 - thickness / 2, size.x * 2, thickness, { isStatic: true });
+    let ceil = Matter.Bodies.rectangle(size.x / 2, size.y + thickness / 2, size.x * 2, thickness, { isStatic: true });
+    let wall1 = Matter.Bodies.rectangle(0 - thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true });
+    let wall2 = Matter.Bodies.rectangle(size.x + thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true });
+
+    // add all of the bodies to the world
+    Matter.Composite.add(engine.world, [ball, ground, wall1, wall2, ceil]);
+
+
+    let boxes = [
+      Matter.Bodies.rectangle(300, 300, 50, 50, { isStatic: true }),
+      Matter.Bodies.rectangle(500, 650, 50, 50, { isStatic: true }),
+      Matter.Bodies.rectangle(600, 630, 50, 50, { isStatic: true }),
+      Matter.Bodies.rectangle(500, 650, 50, 50, { isStatic: true, restitution: 2 })
+    ]
+    Matter.Composite.add(engine.world, boxes);
+
+
+    engine.enableSleeping = true;
+
+    // create runner
+    let runner = Matter.Runner.create();
+    Matter.Runner.run(runner, engine);
+  </script>
+
+
+  <script src="../aa_libraries/p5.js"></script>
+  <script>
+    function setup() {
+
+      verifyHash()
+      let size = min(windowWidth, windowHeight) * 0.95;
+
+      // Create the canvas with the calculated size
+      canvas = createCanvas(size, size);
+    }
+
+    function draw() {
+      push()
+      // scale(0.5)
+      background(200, 200, 200, 50);
+      push()
+      translate(ball.position.x, ball.position.y)
+      circle(0, 0, ball.circleRadius * 2)
+      rotate(ball.angle)
+      drawPlayer(width / 15, 0, 0)
+      pop()
+      console.log(boxes[0])
+      boxes.forEach(box => {
+        const width = box.bounds.max.x - box.bounds.min.x;
+        const height = box.bounds.max.y - box.bounds.min.y;
+        rect(box.position.x - width / 2, box.position.y - height / 2, width, height)
+
+      })
+      // console.log(ball)
+      // console.log([ball.circleRadius, ball.position.x, ball.position.y, ball.velocity])
+      if (keyIsDown(65)) { //a
+        console.log("a")
+        const force = { x: -horiz_force, y: 0 };
+        Matter.Body.applyForce(ball, ball.position, force);
+      }
+      if (keyIsDown(68)) { //d
+        console.log("d")
+        const force = { x: horiz_force, y: 0 };
+        Matter.Body.applyForce(ball, ball.position, force);
+      }
+      pop()
+    }
+
+    function drawPlayer(size) {
+
+      background(220);
+      textSize(size * 0.75);
+      rect(-size / 2, -size / 2, size, size)
+
+      fill(playerData.visuals.colors[0][0] * 128, playerData.visuals.colors[0][1] * 128, playerData.visuals.colors[0][2] * 128)
+      rect(-size / 2, -size / 2, size, size / 3)
+      fill(playerData.visuals.colors[1][0] * 128, playerData.visuals.colors[1][1] * 128, playerData.visuals.colors[1][2] * 128)
+      rect(-size / 2, -size / 2 + size / 3, size, size / 3)
+      fill(playerData.visuals.colors[2][0] * 128, playerData.visuals.colors[2][1] * 128, playerData.visuals.colors[2][2] * 128)
+      rect(-size / 2, -size / 2 + 2 * size / 3, size, size / 3)
+
+      textAlign(CENTER, CENTER)
+      fill(0)
+      text(playerData.visuals.emoji, 0, 0);
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    function keyPressed() {
+      if (key === 'w') {
+        console.log("w")
+        // Force application
+        const force = { x: 0, y: -jump };
+        Matter.Body.applyForce(ball, ball.position, force);
+      }
+    }
+  </script>
+  <script src="../aa_libraries/p5.js"></script>
+  <script>
+
+    var playerDataFetched = false
+    var username = "?"
+
+    var playerData = {
+      visuals: {
+        colors: [
+          [0, 0, 0], [0, 0, 0], [0, 0, 0]
+        ],
+        emoji: "?"
+      }
+    }
+
+    function windowResized() {
+      var dim = 0
+      if (windowWidth > windowHeight) {
+        dim = windowHeight / 2 * 0.75
+      }
+      else {
+        dim = windowHeight / 4 * 0.75
+      }
+      resizeCanvas(dim, dim);
+    }
+
+    function verifyHash() {
+
+      // Get the full URL or just the query string
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Get specific parameters
+      const hash = urlParams.get('hash'); // "John"
+
+      if (hash) console.log(hash);
+      // else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+
+      const response = fetch(`https://squanky.net/scores/getPlayer?hash=${hash}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json()
+        }) // Parse the response body as JSON
+        .then(data => verifyFields(data.foundRow))   // Log the parsed data
+        .catch(error => {
+          console.error(error)
+          window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+        }); // Handle errors
+
+    }
+
+    function verifyFields(incomingPlayerData) {
+
+      console.log("Parsing player data")
+      console.log(playerData)
+
+      if (playerData.visuals) {
+        console.log("visuals!")
+        if (!playerData.visuals.colors) {
+
+        }
+        if (!playerData.visuals.emoji) {
+
+        }
+      }
+
+      if (!playerData.username) {
+
+      }
+
+      playerData = incomingPlayerData
+      console.log("Finished obtaining all player data.")
+      playerDataFetched = true
+    }
+
+  </script>
+</body>
+
+</html>
