@@ -1,41 +1,53 @@
 <html>
-	<head>
-		<title>Felipe</title>
-		<style>
-			body { margin: 0; }
-			canvas {width: 100%; height: 100%}
-		</style>
-	</head>
 
-	<br><br>
-	<h1>Enter Your Email To Log In</h1>
+<head>
+	<title>Felipe</title>
+	<style>
+		body {
+			margin: 0;
+		}
 
-	<body style="margin: 0 auto; background: lightgray; text-align: center;">
-        <br><br><br>
+		canvas {
+			width: 100%;
+			height: 100%
+		}
+	</style>
+</head>
+
+<br><br>
+<h1>Enter Your Email To Log In</h1>
+
+<body style="margin: 0 auto; background: lightgray; text-align: center;">
+	<br><br><br>
 
 	<form id="textForm">
 		<label for="textInput">Email:</label>
 		<input type="text" id="textInput" name="textInput" required />
-		<button type="submit">Submit</button>
-	  </form>
-	
-	  <script>
+		<button id="submitButton" type="submit">Submit</button>
+	</form>
+
+	<script>
 		// Grab the form element
 		const form = document.getElementById('textForm');
-	
+
 		// Add an event listener for form submission
-		form.addEventListener('submit', function(event) {
-		  event.preventDefault(); // Prevent the default form submission behavior
-	
-		  // Get the value of the text input
-		  const inputText = document.getElementById('textInput').value;
-		  submitEmail(inputText)
-	
-		  // Print the value to the console
-		  console.log(inputText);
+		form.addEventListener('submit', function (event) {
+			event.preventDefault(); // Prevent the default form submission behavior
+
+			// Disable the button to prevent multiple submissions
+			submitButton.disabled = true;
+
+			// Get the value of the text input
+			const inputText = document.getElementById('textInput').value;
+			submitEmail(inputText)
+
+			alert("Email sent! Check your inbox!")
+
+			// Print the value to the console
+			console.log(inputText);
 		});
 
-		async function submitEmail(email){
+		async function submitEmail(email) {
 			const response = await fetch(`https://squanky.net/scores/verifyEmail?email=${email}`, {
 				method: 'GET',
 				headers: {
@@ -43,6 +55,7 @@
 				},
 			});
 		}
-	  </script>
-	</body>
+	</script>
+</body>
+
 </html>

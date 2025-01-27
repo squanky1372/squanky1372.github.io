@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Felipe</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      /* Ensures full viewport height */
+      background-color: #0066ff;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      overflow: hidden
+    }
+  </style>
+</head>
+
+<body style="background-color:#0066ff;">
+  <script>
+    var ball_size = 5
+    var restitution = 1
+    var mass = 1
+    var gravity = 4;
+    var horiz_force = 0.001;
+    var jump = 0.04
+  </script>
+
+
+  <script src="../aa_libraries/p5.js"></script>
+  <script>
+
+    let patternCnv;
+    let bufferCnv;
+
+    let pattern;
+    
+    var iconsize = 0
+    var hash
+
+    var links = [[ "./stardunk.html", "/html/img/Boxes37.png"], //stardunk
+                 [ "./stardunk_scoreboard.html", "/html/img/Boxes38.png"], //stardunk scoreboard
+                 ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
+                 ["/2024/noon/place.html", "/html/img/Boxes39.png"],] // Help
+
+    var numlinks = 4
+    var imgs = Array(numlinks)
+    function preload() {
+      for(var i = 0; i < numlinks; i++){
+        imgs[i] = loadImage(links[i][1])
+      }
+      console.log(imgs)
+    }
+
+    function setup() {
+
+      pixelDensity(1);
+
+      verifyHash()
+      let size = min(windowWidth, windowHeight) * 0.95;
+      iconsize = size / 4
+
+      // Create the canvas with the calculated size
+      canvas = createCanvas(size, size);
+
+
+    }
+
+    function draw() {
+      push()
+      // scale(0.5)
+      background(200, 200, 200, 50);
+      // drawPlayer(width / 15, 0, 0)
+
+      image(imgs[0], 0, 0, width/2, height/2)
+      image(imgs[1], width/2, 0, width/2, height/2)
+      image(imgs[2], 0, height/2, width/2, height/2)
+      image(imgs[3], width/2, height/2, width/2, height/2)
+
+      // image(imgs[0], 0, 0, width/2, height/2)
+      // image(imgs[1], width/2, 0, width/2, height/2)
+      // image(imgs[2], 0, height/2, width/2, height/2)
+      // image(imgs[3], width/2, height/2, width/2, height/2)
+      
+      translate(width/2, height/2)
+      if(playerDataFetched == 2){
+        setFill(pattern, bufferCnv);
+        bufferCnv.circle(0.5 * iconsize,0.5 * iconsize,iconsize)
+        image(bufferCnv, -iconsize/2, -iconsize/2);
+      }
+      pop()
+
+      if(playerDataFetched == 1) {
+        console.log("done waiting")
+        //setup buffer canvas
+        let size = min(windowWidth, windowHeight) * 0.95;
+        bufferCnv = createGraphics(size, size);
+        bufferCnv.pixelDensity(1);
+
+        //setup pattern
+        makePattern(iconsize)
+
+        playerDataFetched = 2
+        
+      }
+    }
+    
+    function touchStarted() {
+      if(touches.length > 0){
+        console.log(mouseX, mouseY)
+        var clicked_index = Math.floor(mouseX/(width/2)) + 2 * Math.floor(mouseY/(height/2))
+        console.log(clicked_index)
+        console.log(Math.sqrt(Math.pow(width - mouseX,2) + Math.pow(height-mouseY,2)))
+        if(Math.sqrt(Math.pow(width/2 - mouseX,2) + Math.pow(height/2-mouseY,2)) < width/8){
+          console.log("center")
+          window.history.pushState({}, '', window.location.href); // Adds a history entry
+          window.location.assign(`./player_data.html?hash=${hash}`)
+        }
+        window.history.pushState({}, '', window.location.href); // Adds a history entry
+        window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+      }
+    }
+
+    function mouseClicked(){
+        console.log(mouseX, mouseY)
+        var clicked_index = Math.floor(mouseX/(width/2)) + 2 * Math.floor(mouseY/(height/2))
+        console.log(clicked_index)
+        if(Math.sqrt(Math.pow(width/2 - mouseX,2) + Math.pow(height/2-mouseY,2)) < width/8){
+          console.log("center")
+          window.history.pushState({}, '', window.location.href); // Adds a history entry
+          window.location.assign(`./player_data.html?hash=${hash}`)
+        }
+        window.history.pushState({}, '', window.location.href); // Adds a history entry
+        window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    function makePattern(size) {
+      console.log(playerData)
+      patternCnv = createGraphics(size, size);
+      patternCnv.pixelDensity(1);
+
+      patternCnv.translate(size/2, size/2)
+      // Draw a pattern
+      patternCnv.background(220).textSize(size * 0.75).textAlign(CENTER, CENTER).noStroke()
+      patternCnv.rect(-size / 2, -size / 2, size, size)
+      patternCnv.fill(playerData.visuals.colors[0][0] * 128, playerData.visuals.colors[0][1] * 128, playerData.visuals.colors[0][2] * 128)
+      patternCnv.rect(-size / 2, -size / 2, size, size / 3)
+      patternCnv.fill(playerData.visuals.colors[1][0] * 128, playerData.visuals.colors[1][1] * 128, playerData.visuals.colors[1][2] * 128)
+      patternCnv.rect(-size / 2, -size / 2 + size / 3, size, size / 3)
+      patternCnv.fill(playerData.visuals.colors[2][0] * 128, playerData.visuals.colors[2][1] * 128, playerData.visuals.colors[2][2] * 128)
+      patternCnv.rect(-size / 2, -size / 2 + 2 * size / 3, size, size / 3)
+
+      patternCnv.fill(0)
+      patternCnv.text(playerData.visuals.emoji, 0, 0);
+
+      // Uses canvas method createPattern on the buffer canvas, 
+      // using the pattern canvas to create the pattern
+      pattern = setupPattern(patternCnv, bufferCnv);
+
+    }
+    function setupPattern(p, b) {
+      return b.drawingContext.createPattern(p.canvas, 'repeat');
+    }
+    function setFill(p, b) {
+      b.fill(0);
+      b._renderer._setFill(p);
+    }
+
+    var playerDataFetched = false
+
+    var playerData = {
+      visuals: {
+        colors: [
+          [0, 0, 0], [0, 0, 0], [0, 0, 0]
+        ],
+        emoji: "?"
+      }
+    }
+
+    function windowResized() {
+      var dim = 0
+      if (windowWidth > windowHeight) {
+        dim = windowHeight / 2 * 0.75
+      }
+      else {
+        dim = windowHeight / 4 * 0.75
+      }
+      resizeCanvas(dim, dim);
+    }
+
+    function verifyHash() {
+
+      // Get the full URL or just the query string
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Get specific parameters
+      hash = urlParams.get('hash'); // "John"
+
+      if (hash) console.log(hash);
+      else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+
+      const response = fetch(`https://squanky.net/scores/getPlayer?hash=${hash}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json()
+        }) // Parse the response body as JSON
+        .then(data => verifyFields(data.foundRow))   // Log the parsed data
+        .catch(error => {
+          console.error(error)
+          window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+        }); // Handle errors
+    }
+
+    function verifyFields(incomingPlayerData) {
+
+      console.log("Parsing player data")
+      console.log(playerData)
+
+      if (playerData.visuals) {
+        console.log("visuals!")
+        if (!playerData.visuals.colors) {
+
+        }
+        if (!playerData.visuals.emoji) {
+
+        }
+      }
+
+      if (!playerData.username) {
+
+      }
+
+      playerData = incomingPlayerData
+      console.log("Finished obtaining all player data.")
+      playerDataFetched = true
+    }
+
+  </script>
+</body>
+
+</html>

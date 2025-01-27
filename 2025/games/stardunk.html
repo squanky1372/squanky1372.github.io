@@ -238,20 +238,9 @@
 
             checkDataFetchSuccess()
 
-            if (gameState == 1 && gameDuration - Math.floor((millis() - startTime) / 1000) < 0) {
-                //game has ended
-                myname = prompt(`Game Over! You scored ${score} points.  Your score has been submitted to the leaderboard.`)
-                submitScore("stardunk", myname, { score: score })
-                
-                //WIP hash version
-                // alert(`Game Over! You scored ${score} points.  Your score has been submitted to the leaderboard.`)
-                // submitScore("stardunk", playerData.hash, { score: score })
-                gameState = 2
-
-            }
-
             if (gameState == 0) {
                 mainGame()
+                drawTitle()
                 //title screen
             }
             if (gameState == 1) {
@@ -260,19 +249,34 @@
             }
             if (gameState == 2) {
                 //game has finished, do score stuff
-                mainGame()
+                endGame()
                 console.log("GAME OVER")
             }
         }
 
-        async function submitScore(game, user, data) {
+        async function submitScore(game, hash, data) {
             const response = await fetch('https://squanky.net/scores/addscore', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ game, user, data })
+                body: JSON.stringify({ game, hash, data })
             });
+        }
+
+        function endGame(){
+            background(0, 0, 0, transparent_percent);
+
+            // drawText() //draw all text-based elements to the screen
+
+            drawStars()
+
+            drawBoxes()
+
+            drawBall()
+
+            drawGameOver()
+
         }
 
         function mainGame() {
@@ -302,17 +306,7 @@
             fill(150).circle(ball3.position.x, ball3.position.y, ball3.circleRadius * 2)
             fill(255).circle(goal.position.x, goal.position.y, goal.circleRadius * 2)
 
-            //Draw all boxes (backboard, hoop)
-            boxes.forEach((box, i) => {
-                const width = box.bounds.max.x - box.bounds.min.x;
-                const height = box.bounds.max.y - box.bounds.min.y;
-                if (board_states[i]) fill(50)
-                else stroke(0).fill(255)
-                if (actualHoopWidth == bigHoopWidth) stroke(255).fill(0)
-                else if ((fireballActive || multiballActive) && i < 4) stroke(255).fill(0)
-                else stroke(0)
-                rect(box.position.x - width / 2, box.position.y - height / 2, width, height)
-            })
+            drawBoxes()
 
             //Move hoop to position specified by Big Hoop Powerup
             if (Math.abs((boxes[5].position.x - boxes[4].position.x) - actualHoopWidth) > 0.01) {
@@ -343,6 +337,36 @@
             }
         }
 
+        function drawTitle(){
+            push()
+            textAlign(CENTER, CENTER)
+            textSize(50)
+            text("STARDUNK", width/2, height/2)
+            pop()
+        }
+        function drawGameOver(){
+            push()
+            textAlign(CENTER, CENTER)
+            textSize(50)
+            text("GAME OVER", width/2, height/3)
+            text(`SCORE: ${score}`, width/2, height*2/3)
+            pop()
+        }
+
+        function drawBoxes(){
+            //Draw all boxes (backboard, hoop)
+            boxes.forEach((box, i) => {
+                const width = box.bounds.max.x - box.bounds.min.x;
+                const height = box.bounds.max.y - box.bounds.min.y;
+                if (board_states[i]) fill(50)
+                else stroke(0).fill(255)
+                if (actualHoopWidth == bigHoopWidth) stroke(255).fill(0)
+                else if ((fireballActive || multiballActive) && i < 4) stroke(255).fill(0)
+                else stroke(0)
+                rect(box.position.x - width / 2, box.position.y - height / 2, width, height)
+            })
+        }
+
         function drawBall(){
             push()
             if (fireballActive) {
@@ -371,9 +395,10 @@
             text(`x${combo_multiplier * (fireballActive ? fireballMultiplier : 1)}`, 10, 50)
 
             //Draw game duration to screen
-            if (gameState == 0) text(gameDuration, 10, 80)
-            if (gameState == 1) text(gameDuration - Math.floor((millis() - startTime) / 1000), 10, 80)
-            if (gameState == 2) text(0, 10, 80)
+            if (gameState == 1 && gameDuration - Math.floor((millis() - startTime) / 1000) < 0) text("Last Shot!", 10, 80)
+            else if (gameState == 0) text(gameDuration, 10, 80)
+            else if (gameState == 1) text(gameDuration - Math.floor((millis() - startTime) / 1000), 10, 80)
+            else if (gameState == 2) text(0, 10, 80)
 
             drawScores() //draw mini-scores under the basket
         }
@@ -427,7 +452,21 @@
             sling.bodyB = ball
             scorePotential = 30
 
-            launchFlag = 1
+            if (gameState == 1 && gameDuration - Math.floor((millis() - startTime) / 1000) < 0) {
+                //game has ended
+                // myname = prompt(`Game Over! You scored ${score} points.  Your score has been submitted to the leaderboard.`)
+                // submitScore("stardunk", myname, { score: score })
+                
+                //WIP hash version
+                // alert(`Game Over! You scored ${score} points.  Your score has been submitted to the leaderboard.`)
+                submitScore("stardunk", playerData.hash, { score: score })
+                gameState = 2
+
+            }
+            else{
+                launchFlag = 1
+            }
+            
         }
         function resetBall2() {
             const force2 = { x: 0, y: 0 };
@@ -597,7 +636,7 @@
             const hash = urlParams.get('hash'); // "John"
 
             if (hash) console.log(hash);
-            // else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+            else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
 
             const response = fetch(`https://squanky.net/scores/getPlayer?hash=${hash}`, {
                 method: 'GET',
