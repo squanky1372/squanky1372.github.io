@@ -88,6 +88,8 @@
   <script src="../aa_libraries/p5.js"></script>
   <script>
 
+    var hash
+
     var emoji
     var color1
     var color2
@@ -168,7 +170,7 @@
         const urlParams = new URLSearchParams(window.location.search);
 
         // Get specific parameters
-        const hash = urlParams.get('hash'); // "John"
+        hash = urlParams.get('hash'); // "John"
 
         if(hash) console.log(hash);
         else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
@@ -241,6 +243,8 @@
                     },
                     body: JSON.stringify({playerData})
                 });
+                alert("Response submitted!")
+                window.location.href = `./games_menu.html?hash=${hash}`
         }
     }
   </script>
