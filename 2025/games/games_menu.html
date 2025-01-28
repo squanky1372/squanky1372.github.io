@@ -123,8 +123,10 @@
           window.history.pushState({}, '', window.location.href); // Adds a history entry
           window.location.assign(`./player_data.html?hash=${hash}`)
         }
-        window.history.pushState({}, '', window.location.href); // Adds a history entry
-        window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+        else{
+          window.history.pushState({}, '', window.location.href); // Adds a history entry
+          window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+        }
       }
     }
 
@@ -137,8 +139,10 @@
           window.history.pushState({}, '', window.location.href); // Adds a history entry
           window.location.assign(`./player_data.html?hash=${hash}`)
         }
-        window.history.pushState({}, '', window.location.href); // Adds a history entry
-        window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+        else{
+          window.history.pushState({}, '', window.location.href); // Adds a history entry
+          window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+        }
     }
 
     function windowResized() {
