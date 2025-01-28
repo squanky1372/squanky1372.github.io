@@ -237,24 +237,26 @@
 
       console.log("Parsing player data")
       console.log(playerData)
+      playerData = incomingPlayerData
 
       if (playerData.visuals) {
         console.log("visuals!")
-        if (!playerData.visuals.colors) {
-
-        }
-        if (!playerData.visuals.emoji) {
-
-        }
+        if (!playerData.visuals.colors)  redirectPlayerData()
+        if (!playerData.visuals.emoji)  redirectPlayerData()
       }
+      else redirectPlayerData()
 
-      if (!playerData.username) {
-
-      }
+      if (!playerData.username) redirectPlayerData()
 
       playerData = incomingPlayerData
       console.log("Finished obtaining all player data.")
       playerDataFetched = true
+    }
+
+    function redirectPlayerData(){
+      alert("Your profile is incomplete! Redirecting to profile builder...")
+      window.location.assign(`./player_data.html?hash=${hash}`)
+
     }
 
   </script>
