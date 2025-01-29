@@ -244,18 +244,35 @@
 
         if(!playerData.username) document.getElementById('SubmitText').innerText = 'Error: Enter a username!';
         else if(!playerData.visuals.emoji) document.getElementById('SubmitText').innerText = 'Error: Enter an emoji!';
-        else{
+        else submitPostRequest()
+    }
 
-                const response = fetch('https://squanky.net/scores/setPlayer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({playerData})
-                });
-                alert("Response submitted!")
-                window.location.href = `./games_menu.html?hash=${hash}`
-        }
+    function submitPostRequest(){
+        fetch('https://squanky.net/scores/setPlayer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ playerData })
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 412) {
+                    return response.text().then(text => { throw new Error(text); });
+                } else {
+                    throw new Error(`Unexpected error: ${response.status}`);
+                }
+            }
+            return response.text(); // or response.text() depending on what the server returns
+        })
+        .then(data => {
+            alert(data);
+            window.location.href = `./games_menu.html?hash=${hash}`;
+        })
+        .catch(error => {
+            alert(`Error: ${error.message}`); // Display the server message if the username is taken
+        });
+
     }
   </script>
 </body>
