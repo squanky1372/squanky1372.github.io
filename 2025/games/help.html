@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Text Container</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: black;
+            color: rgb(0, 123, 16);
+        }
+        .content {
+            width: 90%; /* Full width in portrait mode */
+            max-width: 400px; /* About 25% width in landscape mode */
+            padding: 20px;
+            background: rgb(27, 27, 27);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+        @media (orientation: landscape) {
+            .content {
+                max-width: 30vw; /* Constrain width to about a quarter of the screen */
+            }
+        }
+        ul {
+            padding-left: 0px; /* Adjusts space before the bullets */
+        }
+
+        li {
+            margin-left: 20px; /* Adjusts the indent of the text itself */
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <H1>FAQ</H1>
+
+<H2>Hi!</H2>
+
+Welcome to Ternary Games! This is just a little project I started putting together in my free time.  I hope you enjoy it!
+
+<H2>What is this?</H2>
+
+Just something fun! The goal for this project was just to make something for people to enjoy.  At the end of 2024, when I created the F/Place page (which is linked on the main page in case you missed it), it was fun seeing people contribute and mess around with it.  That inspired me to branch out and make something new and exciting for everyone this year, and I hope this project achieves that goal!  
+
+<H2>What is the game?</H2>
+
+This game is a fairly faithful recreation of the 2010 iOS game of the same name, <a href="https://en.wikipedia.org/wiki/StarDunk">Stardunk</a>.  I have a lot of fond memories playing this game.  Sadly, it seems that the game is no longer playable through normal means, and its servers have shut down.  Therefore, I took it upon myself to recreate the core game and as many of its mechanics as I could.
+
+Here are the rules:
+<ul>
+<li>You have 120 seconds to score as many points as possible. </li><br>
+<li>Each basket you make has a base value of ten points, but can multiplied in several ways:</li>
+<ul style="margin-left: 20px;">
+<li>x2: Scoring a "clean" basket without touching the backboard</li>
+<li>x3: Scoring an "extra clean" basket without touching the backboard or rim</li>
+<li>x2: Fireball powerup active</li>
+<li>xN: scoring N baskets in a row gives you a xN multiplier, up to a maximum of 10</li>
+</ul><br>
+<li>Note: clean and extra clean point multipliers do not stack with each other, but everything else stacks!</li><br>
+<li>The backboard is made of four sections.  When the ball hits one of the sections, it will activate.  Once all four are activated, you are granted a powerup for ten seconds!  A random powerup is selected each time from the following options:</li>
+<ul style="margin-left: 20px;"></ulstyle>
+<li>Wide hoop: the hoop expands to make clean and extra clean shots easier!</li>
+<li>Triple ball: fire three balls at a time instead of one!</li>
+<li>Fireball: earn twice as many points per shot!</li>
+</ul>
+</ul>
+
+<H2>Why Ternary?</H2>
+
+While every computer person is required to like binary, I also think that ternary is pretty cool- the color selectors in the profile builder use ternary, as do several of my other projects!
+
+<H2>What's next?</H2>
+
+Keep an eye out for more fun things on the horizon- and be one of the three top players in the leaderboard by NOON on Wednesday, February 5 to win a small prize!
+    </div>
+</body>
+</html>

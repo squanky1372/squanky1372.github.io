@@ -222,6 +222,16 @@
                 document.getElementById('username-input').value = playerData.username
             }
         }
+
+        // Get the full URL or just the query string
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        isFirst = urlParams.get('firstTime');
+
+        console.log(isFirst)
+        if(isFirst === "1"){
+          alert("Here, you can customize your username and player icon.  Try something that really represents you!  Click 'submit' when you're done!")
+        }
     }
   
     function submitInputs(){

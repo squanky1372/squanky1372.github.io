@@ -48,7 +48,7 @@
     var links = [[ "./stardunk.html", "/html/img/Boxes37.png"], //stardunk
                  [ "./stardunk_scoreboard.html", "/html/img/Boxes38.png"], //stardunk scoreboard
                  ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
-                 ["/2024/noon/place.html", "/html/img/Boxes39.png"],] // Help
+                 ["./help.html", "/html/img/Boxes39.png"],] // Help
 
     var numlinks = 4
     var imgs = Array(numlinks)
@@ -239,14 +239,14 @@
       console.log(playerData)
       playerData = incomingPlayerData
 
-      if (playerData.visuals) {
+      if (!playerData.username) redirectPlayerData()
+      else if (playerData.visuals) {
         console.log("visuals!")
         if (!playerData.visuals.colors)  redirectPlayerData()
-        if (!playerData.visuals.emoji)  redirectPlayerData()
+        else if (!playerData.visuals.emoji)  redirectPlayerData()
       }
       else redirectPlayerData()
 
-      if (!playerData.username) redirectPlayerData()
 
       playerData = incomingPlayerData
       console.log("Finished obtaining all player data.")
@@ -254,8 +254,10 @@
     }
 
     function redirectPlayerData(){
-      alert("Your profile is incomplete! Redirecting to profile builder...")
-      window.location.assign(`./player_data.html?hash=${hash}`)
+      alert("Welcome, new player!  Before we start, let's go over a few things!")
+      alert("This is the main menu, where you can navigate to all the available pages by clicking on one of the four square icons.")
+      alert("Your player icon will appear in the middle, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
+      window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
 
     }
 
