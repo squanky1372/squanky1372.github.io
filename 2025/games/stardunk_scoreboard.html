@@ -23,7 +23,7 @@
     <div class="FontMarket">
     <table id="table">
         <tr>
-            <th>=====Name=====</th>
+            <th>===Name===</th>
             <th>===Score===</th>
             <th>===Date===</th>
         </tr>
@@ -48,9 +48,24 @@
 
                 var sortedScores = json.newScores.sort((a, b) => a.data.score - b.data.score);
 
+                var playerScores = []
+
                 sortedScores.forEach(score => {
-                    addScore(score)
+                    playerScores[score.username] = score
                 })
+
+                console.log(playerScores)
+                console.log(sortedScores)
+
+                const sortedPlayerScores = Object.entries(playerScores)
+                    .sort(([, a], [, b]) => b.data.score - a.data.score)  // Sort in descending order
+                    .map(([username, score]) => ({ username, ...score }));
+
+                for (const username in sortedPlayerScores) {
+                    const score = sortedPlayerScores[username];
+                    console.log(username, score);  // Access username and corresponding score
+                    addScore(sortedPlayerScores[username])
+                }
             } catch (error) {
                 console.error(error.message);
             }
@@ -66,7 +81,7 @@
             
             cell1.innerHTML = score.username;
             cell2.innerHTML = score.data.score;
-            cell3.innerHTML = score.timestamp.substring(5, score.timestamp.length - 14);
+            cell3.innerHTML = score.timestamp.substring(5,10)+"-"+score.timestamp.substring(2,4);
         }
 
     </script>

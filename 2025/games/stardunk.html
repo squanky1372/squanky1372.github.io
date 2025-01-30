@@ -349,7 +349,8 @@
             push()
             textAlign(CENTER, CENTER)
             textSize(50)
-            text("GAME OVER", width/2, height/3)
+            scalesize = min(windowWidth, windowHeight) * 0.95 / 600
+            text("GAME OVER", width/2/ scalesize, height/3/ scalesize)
             text(`SCORE: ${score}`, width/2, height*2/3)
             pop()
         }
