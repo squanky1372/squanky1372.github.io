@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with p5.js Canvas</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Canvas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1, Col 1</td>
+                <td>Row 1, Col 2</td>
+                <td><div id="canvas1"></div></td>
+            </tr>
+            <tr>
+                <td>Row 2, Col 1</td>
+                <td>Row 2, Col 2</td>
+                <td><div id="canvas2"></div></td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+
+    <script>
+        function createCanvasInDiv(divId, color) {
+            new p5((sketch) => {
+                sketch.setup = function() {
+                    let canvas = sketch.createCanvas(100, 100);
+                    canvas.parent(divId);
+                    sketch.background(color);
+                    sketch.ellipse(50, 50, 80, 80);
+                };
+            });
+        }
+
+        createCanvasInDiv('canvas1', "#ff0000");
+        createCanvasInDiv('canvas2', '#00FF00');
+        // Call createCanvasInDiv for each row you have
+    </script>
+
+</body>
+</html>
