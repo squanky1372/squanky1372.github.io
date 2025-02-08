@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body style="background-color:#0066ff;">
+        <!-- <script src="../aa_libraries/matter.js"></script> -->
+
+        
+		<script src="../aa_libraries/p5.js"></script>
+		<script>
+
+            var depth
+            var totalWidth
+            var scaler
+            var radius
+            
+            var points
+
+            var score = 0
+            var speed = 1000
+
+			function setup() {
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+                textAlign(CENTER, CENTER)
+
+                depth = 5
+                totalWidth = width / (depth*2 -1)
+                scaler = totalWidth/2
+                radius = scaler
+                
+                points = generateHexGrid(depth)
+
+                setTimeout(gameOver, 30*1000)
+
+                setTimeout(addHexagon, speed)
+                
+			}
+
+            function gameOver(){
+                alert(`You scored ${score}`)
+            }
+
+            function addHexagon(){
+                var selected = Math.floor(Math.random() * (points.length));
+                points[selected].state = 1
+
+                speed = speed * 0.9675
+                console.log(speed)
+                setTimeout(addHexagon, speed)
+            }
+
+			function draw() {
+                scaleContent()
+                // background(100)
+                translate(width/2, height/2)
+                fill(255)
+                circle(0,0,width)
+                fill(0)
+
+                points.forEach((point, i) => {
+                    // circle(point[0]*scaler, point[1]*scaler, radius)
+                    if(point.state == 0) fill(0,255,255, 100)
+                    else fill(255,0,0,100)
+                    hexagon(point.x*scaler, point.y*scaler, 0.3*scaler/40)
+                    fill(0)
+                    text(i, point.x*scaler, point.y*scaler)
+                })
+            }
+
+            function checkPosition(){
+                console.log(mouseX, mouseY)
+
+                points.forEach((point, i) => {
+                    var d = dist(point.x*scaler, point.y*scaler, mouseX-width/2, mouseY-height/2)
+                    // print(d)
+                    if(d < radius) {
+                        // print("Clicked " + i)
+
+                        if(point.state == 1){
+                            score++
+                            point.state = 0
+                        }
+                        else{
+                            score--
+                        }
+                    }
+                })
+            }
+
+            function mouseClicked(){
+                // checkPosition()
+            }
+
+            function touchEnded(){
+                checkPosition()
+                return false
+            }
+
+            function generateHexGrid(N, radius = 1) {
+                if (N < 1) return [];
+                
+                const points = [{x:0, y:0, state:0}]; // Center point
+                const sqrt3 = Math.sqrt(3);
+                
+                for (let layer = 1; layer < N; layer++) {
+                    let x = layer * radius * 2;
+                    let y = 0;
+                    
+                    for (let side = 0; side < 6; side++) {
+                        for (let step = 0; step < layer; step++) {
+                            points.push({x, y, state:0});
+                            
+                            switch (side) {
+                                case 0: x -= radius; y += radius * sqrt3; break;
+                                case 1: x -= radius * 2; break;
+                                case 2: x -= radius; y -= radius * sqrt3; break;
+                                case 3: x += radius; y -= radius * sqrt3; break;
+                                case 4: x += radius * 2; break;
+                                case 5: x += radius; y += radius * sqrt3; break;
+                            }
+                        }
+                    }
+                }
+                
+                return points;
+            }
+
+            function hexagon(transX, transY, s) {
+                // fill('rgba(255, 255, 100, .25)');
+                push();
+                translate(transX, transY);
+                scale(s);
+                beginShape();
+                    vertex(-130, -75);
+                    vertex(-130, 75);
+                    vertex(0, 150);
+                    vertex(130, 75);
+                    vertex(130, -75);
+                    vertex(0, -150);
+                endShape(CLOSE); 
+                pop();
+            }
+
+			function windowResized() {
+                // Recalculate size when the window is resized
+                let size = min(windowWidth, windowHeight) * 0.95;
+                resizeCanvas(size, size);
+                centerCanvas();
+			}
+
+            function centerCanvas() {
+                // Center the canvas using CSS
+                let x = (windowWidth - width) / 2;
+                let y = (windowHeight - height) / 2;
+                canvas.position(x, y);
+            }
+
+            function scaleContent(){
+                scale(min(windowWidth, windowHeight) * 0.95 / 600)
+            }
+
+            function disableCanvasDefaults() {
+                // Prevent selection and zooming via CSS
+                canvas.style('touch-action', 'none'); // Disable default touch actions
+
+                // Prevent default behaviors for double-tap and long-press
+                canvas.elt.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+                canvas.elt.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+                canvas.elt.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
+            }
+		</script>
+    </body>
+</html>
