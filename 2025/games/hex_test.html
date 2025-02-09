@@ -64,9 +64,10 @@
             }
 
 			function draw() {
-                scaleContent()
-                // background(100)
+                // scaleContent()
+                push()
                 translate(width/2, height/2)
+                // background(100)
                 fill(255)
                 circle(0,0,width)
                 fill(0)
@@ -79,6 +80,7 @@
                     fill(0)
                     text(i, point.x*scaler, point.y*scaler)
                 })
+                pop()
             }
 
             function checkPosition(){
