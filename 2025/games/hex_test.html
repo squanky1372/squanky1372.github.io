@@ -70,7 +70,7 @@
                 points[12].text = "RULES"
 
                 points[5].state = -1
-                points[5].text = "[BONUS]"
+                points[5].text = "[CLEAR]"
                 points[14].state = -1
                 points[14].text = "SCORES"
                 points[16].state = -1
@@ -97,6 +97,16 @@
                 addHexagon()
 
                 mode = 2
+
+            }
+
+            function startClear(){
+                resetHexagonNames()
+                points.forEach((point, i) => {
+                    point.state = 1
+                })
+
+                mode = 3
 
             }
 
@@ -175,6 +185,10 @@
                         startTimed()
                         return
                     }
+                    if(clickedHex.text == "[CLEAR]"){
+                        startClear()
+                        return
+                    }
                 }
 
                 if(mode == 1){
@@ -196,6 +210,17 @@
                     else{
                         alert("FAIL")
                     }
+                }
+
+                if(mode == 3){
+                    if(clickedHex.state == 1){
+                        score++
+                        clickedHex.state = 0
+                    }
+                    else{
+                        alert("FAIL")
+                    }
+                    if(score > 36) alert("win")
                 }
                 return false
             }
