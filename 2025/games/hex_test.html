@@ -24,7 +24,19 @@
             var points
 
             var score = 0
-            var speed = 1000
+
+            var depth = 4
+        
+            
+            //Timed mode
+            var timedRoundLength = 15
+
+            //Endless Mode
+            const initialSpeed = 1000
+            var speed = initialSpeed
+            var endlessScaler = 0.9675
+
+            var mode = 0
 
 			function setup() {
                 let size = min(windowWidth, windowHeight) * 0.95;
@@ -37,30 +49,79 @@
                 disableCanvasDefaults()
                 textAlign(CENTER, CENTER)
 
-                depth = 5
                 totalWidth = width / (depth*2 -1)
                 scaler = totalWidth/2
                 radius = scaler
                 
                 points = generateHexGrid(depth)
 
-                setTimeout(gameOver, 30*1000)
+                points[1].state = -1
+                points[1].text = "[ENDLESS]"
+                points[8].state = -1
+                points[8].text = "SCORES"
+                points[18].state = -1
+                points[18].text = "RULES"
 
-                setTimeout(addHexagon, speed)
+                points[3].state = -1
+                points[3].text = "[TIMED]"
+                points[10].state = -1
+                points[10].text = "SCORES"
+                points[12].state = -1
+                points[12].text = "RULES"
+
+                points[5].state = -1
+                points[5].text = "[BONUS]"
+                points[14].state = -1
+                points[14].text = "SCORES"
+                points[16].state = -1
+                points[16].text = "RULES"
+
+                // startTimed()
                 
 			}
+
+            function startEndless(){
+                setTimeout(gameOver, 30*1000)
+
+                setTimeout(addHexagonEndless, speed)
+
+                resetHexagonNames()
+
+                mode = 1
+
+            }
+
+            function startTimed(){
+                setTimeout(gameOver, 15*1000)
+                resetHexagonNames()
+                addHexagon()
+
+                mode = 2
+
+            }
+
+            function resetHexagonNames(){
+                points.forEach((point, i) => {
+                    point.text = "" //i
+                    point.state = 0
+                })
+            }
 
             function gameOver(){
                 alert(`You scored ${score}`)
             }
 
+            function addHexagonEndless(){
+                addHexagon()
+
+                speed = speed * endlessScaler
+                console.log(speed)
+                setTimeout(addHexagonEndless, speed)
+            }
+
             function addHexagon(){
                 var selected = Math.floor(Math.random() * (points.length));
                 points[selected].state = 1
-
-                speed = speed * 0.9675
-                console.log(speed)
-                setTimeout(addHexagon, speed)
             }
 
 			function draw() {
@@ -68,39 +129,32 @@
                 push()
                 translate(width/2, height/2)
                 // background(100)
-                fill(255)
+                fill(0)
                 circle(0,0,width)
                 fill(0)
 
                 points.forEach((point, i) => {
                     // circle(point[0]*scaler, point[1]*scaler, radius)
-                    if(point.state == 0) fill(0,255,255, 100)
+                    if(point.state == 0) fill(0,0,255, 150)
+                    else if(point.state == -1) fill(0,255,255, 150)
                     else fill(255,0,0,100)
                     hexagon(point.x*scaler, point.y*scaler, 0.3*scaler/40)
                     fill(0)
-                    text(i, point.x*scaler, point.y*scaler)
+                    text(point.text, point.x*scaler, point.y*scaler)
                 })
                 pop()
             }
 
-            function checkPosition(){
+            function getHexClicked(){
                 console.log(mouseX, mouseY)
-
-                points.forEach((point, i) => {
+                for(var i = 0; i < points.length; i++){
+                    var point = points[i]
                     var d = dist(point.x*scaler, point.y*scaler, mouseX-width/2, mouseY-height/2)
-                    // print(d)
                     if(d < radius) {
-                        // print("Clicked " + i)
-
-                        if(point.state == 1){
-                            score++
-                            point.state = 0
-                        }
-                        else{
-                            score--
-                        }
+                        return point
                     }
-                })
+                }
+                return 0
             }
 
             function mouseClicked(){
@@ -108,14 +162,48 @@
             }
 
             function touchEnded(){
-                checkPosition()
+                var clickedHex = getHexClicked()
+                if(clickedHex == 0) return; //If we didn't click any hex, just return
+                console.log(clickedHex)
+
+                if(mode == 0){
+                    if(clickedHex.text == "[ENDLESS]"){
+                        startEndless()
+                        return
+                    }
+                    if(clickedHex.text == "[TIMED]"){
+                        startTimed()
+                        return
+                    }
+                }
+
+                if(mode == 1){
+                    if(clickedHex.state == 1){
+                        score++
+                        clickedHex.state = 0
+                    }
+                    else{
+                        score--
+                    }
+                }
+
+                if(mode == 2){
+                    if(clickedHex.state == 1){
+                        score++
+                        clickedHex.state = 0
+                        addHexagon()
+                    }
+                    else{
+                        alert("FAIL")
+                    }
+                }
                 return false
             }
 
             function generateHexGrid(N, radius = 1) {
                 if (N < 1) return [];
                 
-                const points = [{x:0, y:0, state:0}]; // Center point
+                const points = [{x:0, y:0, state:0, text:"0"}]; // Center point
                 const sqrt3 = Math.sqrt(3);
                 
                 for (let layer = 1; layer < N; layer++) {
@@ -124,7 +212,7 @@
                     
                     for (let side = 0; side < 6; side++) {
                         for (let step = 0; step < layer; step++) {
-                            points.push({x, y, state:0});
+                            points.push({x, y, state:0, text:points.length});
                             
                             switch (side) {
                                 case 0: x -= radius; y += radius * sqrt3; break;
