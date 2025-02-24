@@ -21,7 +21,7 @@
             var scaler
             var radius
             
-            var points
+            var hexes
 
             var score = 0
 
@@ -35,6 +35,9 @@
             const initialSpeed = 1000
             var speed = initialSpeed
             var endlessScaler = 0.9675
+
+            //Clear mode
+            var startTime
 
             var mode = 0
 
@@ -53,28 +56,28 @@
                 scaler = totalWidth/2
                 radius = scaler
                 
-                points = generateHexGrid(depth)
+                hexes = generateHexGrid(depth)
 
-                points[1].state = -1
-                points[1].text = "[ENDLESS]"
-                points[8].state = -1
-                points[8].text = "SCORES"
-                points[18].state = -1
-                points[18].text = "RULES"
+                hexes[1].state = -1
+                hexes[1].text = "[ENDLESS]"
+                hexes[18].state = -1
+                hexes[18].text = "SCORES"
+                hexes[8].state = -1
+                hexes[8].text = "RULES"
 
-                points[3].state = -1
-                points[3].text = "[TIMED]"
-                points[10].state = -1
-                points[10].text = "SCORES"
-                points[12].state = -1
-                points[12].text = "RULES"
+                hexes[3].state = -1
+                hexes[3].text = "[TIMED]"
+                hexes[10].state = -1
+                hexes[10].text = "SCORES"
+                hexes[12].state = -1
+                hexes[12].text = "RULES"
 
-                points[5].state = -1
-                points[5].text = "[CLEAR]"
-                points[14].state = -1
-                points[14].text = "SCORES"
-                points[16].state = -1
-                points[16].text = "RULES"
+                hexes[5].state = -1
+                hexes[5].text = "[CLEAR]"
+                hexes[14].state = -1
+                hexes[14].text = "SCORES"
+                hexes[16].state = -1
+                hexes[16].text = "RULES"
 
                 // startTimed()
                 
@@ -102,18 +105,19 @@
 
             function startClear(){
                 resetHexagonNames()
-                points.forEach((point, i) => {
-                    point.state = 1
+                hexes.forEach((hex, i) => {
+                    hex.state = 1
                 })
+                startTime = millis()
 
                 mode = 3
 
             }
 
             function resetHexagonNames(){
-                points.forEach((point, i) => {
-                    point.text = "" //i
-                    point.state = 0
+                hexes.forEach((hex, i) => {
+                    hex.text = "" //i
+                    hex.state = 0
                 })
             }
 
@@ -130,8 +134,8 @@
             }
 
             function addHexagon(){
-                var selected = Math.floor(Math.random() * (points.length));
-                points[selected].state = 1
+                var selected = Math.floor(Math.random() * (hexes.length));
+                hexes[selected].state = 1
             }
 
 			function draw() {
@@ -143,25 +147,36 @@
                 circle(0,0,width)
                 fill(0)
 
-                points.forEach((point, i) => {
-                    // circle(point[0]*scaler, point[1]*scaler, radius)
-                    if(point.state == 0) fill(0,0,255, 150)
-                    else if(point.state == -1) fill(0,255,255, 150)
+                hexes.forEach((hex, i) => {
+                    // circle(hex[0]*scaler, hex[1]*scaler, radius)
+                    noStroke()
+                    if(hex.state == 0) fill(0,0,255, 150)
+                    else if(hex.state == -1) fill(0,255,255, 150)
                     else fill(255,0,0,100)
-                    hexagon(point.x*scaler, point.y*scaler, 0.3*scaler/40)
+
+                    hex.size = lerp(hex.size, hex.state, 0.1)
+                    hexagon(hex.x*scaler, hex.y*scaler, hex.size * 0.3*scaler/40)
                     fill(0)
-                    text(point.text, point.x*scaler, point.y*scaler)
+                    text(hex.text, hex.x*scaler, hex.y*scaler)
+
+                    noFill()
+                    stroke(255)
+                    hexagon(hex.x*scaler, hex.y*scaler, 0.3*scaler/40)
                 })
                 pop()
             }
 
+            function lerp(start, end, amt) {
+                return start + (end - start) * amt;
+            }
+
             function getHexClicked(){
                 console.log(mouseX, mouseY)
-                for(var i = 0; i < points.length; i++){
-                    var point = points[i]
-                    var d = dist(point.x*scaler, point.y*scaler, mouseX-width/2, mouseY-height/2)
+                for(var i = 0; i < hexes.length; i++){
+                    var hex = hexes[i]
+                    var d = dist(hex.x*scaler, hex.y*scaler, mouseX-width/2, mouseY-height/2)
                     if(d < radius) {
-                        return point
+                        return hex
                     }
                 }
                 return 0
@@ -220,7 +235,7 @@
                     else{
                         alert("FAIL")
                     }
-                    if(score > 36) alert("win")
+                    if(score > 36) alert(`Win: ${floor(millis() - startTime) / 1000}`)
                 }
                 return false
             }
@@ -228,7 +243,7 @@
             function generateHexGrid(N, radius = 1) {
                 if (N < 1) return [];
                 
-                const points = [{x:0, y:0, state:0, text:"0"}]; // Center point
+                const hexes = [{x:0, y:0, state:0, text:"0", size:1}]; // Center hex
                 const sqrt3 = Math.sqrt(3);
                 
                 for (let layer = 1; layer < N; layer++) {
@@ -237,7 +252,7 @@
                     
                     for (let side = 0; side < 6; side++) {
                         for (let step = 0; step < layer; step++) {
-                            points.push({x, y, state:0, text:points.length});
+                            hexes.push({x, y, state:0, text:hexes.length, size:-1/hexes.length});
                             
                             switch (side) {
                                 case 0: x -= radius; y += radius * sqrt3; break;
@@ -251,7 +266,7 @@
                     }
                 }
                 
-                return points;
+                return hexes;
             }
 
             function hexagon(transX, transY, s) {
