@@ -15,8 +15,6 @@
         
 		<script src="../aa_libraries/p5.js"></script>
 		<script>
-
-            var depth
             var totalWidth
             var scaler
             var radius
@@ -25,7 +23,7 @@
 
             var score = 0
 
-            var depth = 4
+            const depth = 3
         
             var lastScore = 0
             
@@ -52,6 +50,7 @@
                 centerCanvas();
                 disableCanvasDefaults()
                 textAlign(CENTER, CENTER)
+                textSize(20)
 
                 totalWidth = width / (depth*2 -1)
                 scaler = totalWidth/2
@@ -261,6 +260,7 @@
                     }
                 }
 
+                //ENDLESS
                 if(mode == 1){
                     if(clickedHex.state == 1){
                         score++
@@ -271,6 +271,7 @@
                     }
                 }
 
+                //TIMED
                 if(mode == 2){
                     if(clickedHex.state == 1){
                         score++
@@ -282,6 +283,7 @@
                     }
                 }
 
+                //CLEAR
                 if(mode == 3){
                     if(clickedHex.state == 1){
                         score++
@@ -290,7 +292,8 @@
                     else{
                         alert("FAIL")
                     }
-                    if(score > 36) {
+                    console.log(score, hexCount(depth))
+                    if(score >= hexCount(depth)) {
                         score = floor(millis() - startTime) / 1000
                         alert(`Win: ${score}`)
                         lastScore = score
@@ -299,6 +302,14 @@
                     }
                 }
                 return false
+            }
+
+            function hexCount(depth){
+                var count = 1
+                for(var i = 0; i <= depth-1; i++){
+                    count += i*6
+                }
+                return count
             }
 
             function generateHexGrid(N, radius = 1) {
