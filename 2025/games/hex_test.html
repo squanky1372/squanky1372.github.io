@@ -33,8 +33,8 @@
 
             //Endless Mode
             const initialSpeed = 1000
-            var speed = initialSpeed
-            var endlessScaler = 0.9675
+            const endlessScaler = 0.9675
+            var speed
 
             //Clear mode
             var startTime
@@ -55,6 +55,8 @@
                 totalWidth = width / (depth*2 -1)
                 scaler = totalWidth/2
                 radius = scaler
+
+                score = 0
                 
                 hexes = generateHexGrid(depth)
 
@@ -64,6 +66,8 @@
                 hexes[18].text = "SCORES"
                 hexes[8].state = -1
                 hexes[8].text = "RULES"
+
+                speed = initialSpeed
 
                 hexes[3].state = -1
                 hexes[3].text = "[TIMED]"
@@ -77,15 +81,10 @@
                 hexes[14].state = -1
                 hexes[14].text = "SCORES"
                 hexes[16].state = -1
-                hexes[16].text = "RULES"
-
-                // startTimed()
-                
+                hexes[16].text = "RULES"                
 			}
 
             function startEndless(){
-                setTimeout(gameOver, 30*1000)
-
                 setTimeout(addHexagonEndless, speed)
 
                 resetHexagonNames()
@@ -126,16 +125,42 @@
             }
 
             function addHexagonEndless(){
-                addHexagon()
+                var found = false
+                hexes.forEach((hex, i) => {
+                    if(hex.state == 1){
+                        found = true
+                    }
+                })
+                if(found){
+                    
+                    alert(`LOSERRRR ${score}`)
+                    console.log("ended")
+                    const highestId = window.setTimeout(() => {
+                        for (let i = highestId; i >= 0; i--) {
+                            window.clearInterval(i);
+                        }
+                    }, 0);
+                    mode = 0
+                    setup()
+                }
+                else{
+                    console.log("Continue")
 
-                speed = speed * endlessScaler
-                console.log(speed)
-                setTimeout(addHexagonEndless, speed)
+                    var newHexagon = addHexagon()
+
+                    speed = speed * endlessScaler
+                    console.log(speed)
+                    setTimeout(addHexagonEndless, speed)
+                    newHexagon.startTime = millis()
+                    newHexagon.endTime = millis() + speed
+
+                }
             }
 
             function addHexagon(){
                 var selected = Math.floor(Math.random() * (hexes.length));
                 hexes[selected].state = 1
+                return hexes[selected]
             }
 
 			function draw() {
@@ -149,6 +174,11 @@
 
                 hexes.forEach((hex, i) => {
                     // circle(hex[0]*scaler, hex[1]*scaler, radius)
+
+                    if(mode == 1 && hex.state == 1){
+                        hex.size = 1- ((millis() - hex.startTime) / (hex.endTime - hex.startTime))
+                    }
+
                     noStroke()
                     if(hex.state == 0) fill(0,0,255, 150)
                     else if(hex.state == -1) fill(0,255,255, 150)
