@@ -27,6 +27,7 @@
 
             var depth = 4
         
+            var lastScore = 0
             
             //Timed mode
             var timedRoundLength = 15
@@ -56,32 +57,56 @@
                 scaler = totalWidth/2
                 radius = scaler
 
+                //Reset any callback functions from the last game
+                const highestId = window.setTimeout(() => {
+                    for (let i = highestId; i >= 0; i--) {
+                        window.clearInterval(i);
+                    }
+                }, 0);
+
+                //initialize mode and score to 0
+                mode = 0
                 score = 0
                 
+                //set up the grid
                 hexes = generateHexGrid(depth)
 
+                //Set up endless mode
                 hexes[1].state = -1
                 hexes[1].text = "[ENDLESS]"
+                hexes[1].color = [0,255,255]
                 hexes[18].state = -1
                 hexes[18].text = "SCORES"
+                hexes[18].color = [0,255,255]
                 hexes[8].state = -1
                 hexes[8].text = "RULES"
+                hexes[8].color = [0,255,255]
 
                 speed = initialSpeed
 
                 hexes[3].state = -1
                 hexes[3].text = "[TIMED]"
+                hexes[3].color = [255,0,255]
                 hexes[10].state = -1
                 hexes[10].text = "SCORES"
+                hexes[10].color = [255,0,255]
                 hexes[12].state = -1
                 hexes[12].text = "RULES"
+                hexes[12].color = [255,0,255]
 
                 hexes[5].state = -1
                 hexes[5].text = "[CLEAR]"
+                hexes[5].color = [255,255,0]
                 hexes[14].state = -1
                 hexes[14].text = "SCORES"
+                hexes[14].color = [255,255,0]
                 hexes[16].state = -1
-                hexes[16].text = "RULES"                
+                hexes[16].text = "RULES"  
+                hexes[16].color = [255,255,0]
+                
+                if(lastScore != 0){
+                    hexes[0].text = lastScore
+                }
 			}
 
             function startEndless(){
@@ -122,6 +147,9 @@
 
             function gameOver(){
                 alert(`You scored ${score}`)
+                lastScore = score
+                setup()
+                return
             }
 
             function addHexagonEndless(){
@@ -135,13 +163,9 @@
                     
                     alert(`LOSERRRR ${score}`)
                     console.log("ended")
-                    const highestId = window.setTimeout(() => {
-                        for (let i = highestId; i >= 0; i--) {
-                            window.clearInterval(i);
-                        }
-                    }, 0);
-                    mode = 0
+                    lastScore = score
                     setup()
+                    return
                 }
                 else{
                     console.log("Continue")
@@ -181,12 +205,13 @@
 
                     noStroke()
                     if(hex.state == 0) fill(0,0,255, 150)
-                    else if(hex.state == -1) fill(0,255,255, 150)
-                    else fill(255,0,0,100)
+                    else if(hex.state == 1) fill(255,0,0)
+                    else fill(hex.color)
 
                     hex.size = lerp(hex.size, hex.state, 0.1)
                     hexagon(hex.x*scaler, hex.y*scaler, hex.size * 0.3*scaler/40)
-                    fill(0)
+                    fill(255)
+                    if(hex.state == -1) fill(0)
                     text(hex.text, hex.x*scaler, hex.y*scaler)
 
                     noFill()
@@ -265,7 +290,13 @@
                     else{
                         alert("FAIL")
                     }
-                    if(score > 36) alert(`Win: ${floor(millis() - startTime) / 1000}`)
+                    if(score > 36) {
+                        score = floor(millis() - startTime) / 1000
+                        alert(`Win: ${score}`)
+                        lastScore = score
+                        setup()
+                        return
+                    }
                 }
                 return false
             }
@@ -273,7 +304,7 @@
             function generateHexGrid(N, radius = 1) {
                 if (N < 1) return [];
                 
-                const hexes = [{x:0, y:0, state:0, text:"0", size:1}]; // Center hex
+                const hexes = [{x:0, y:0, state:0, text:"", size:1, color:[0,0,0]}]; // Center hex
                 const sqrt3 = Math.sqrt(3);
                 
                 for (let layer = 1; layer < N; layer++) {
@@ -282,7 +313,7 @@
                     
                     for (let side = 0; side < 6; side++) {
                         for (let step = 0; step < layer; step++) {
-                            hexes.push({x, y, state:0, text:hexes.length, size:-1/hexes.length});
+                            hexes.push({x, y, state:0, text:"", size:-1/hexes.length, color:[0,0,0]});
                             
                             switch (side) {
                                 case 0: x -= radius; y += radius * sqrt3; break;
