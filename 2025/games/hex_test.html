@@ -226,9 +226,10 @@
 
             function getHexClicked(){
                 console.log(mouseX, mouseY)
+                var latest_touch = touches[touches.length - 1]
                 for(var i = 0; i < hexes.length; i++){
                     var hex = hexes[i]
-                    var d = dist(hex.x*scaler, hex.y*scaler, mouseX-width/2, mouseY-height/2)
+                    var d = dist(hex.x*scaler, hex.y*scaler, latest_touch.x-width/2, latest_touch.y-height/2)
                     if(d < radius) {
                         return hex
                     }
