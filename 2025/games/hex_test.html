@@ -32,7 +32,7 @@
 
             //Endless Mode
             const initialSpeed = 1000
-            const endlessScaler = 0.9675
+            const endlessScaler = 0.98
             var speed
 
             //Clear mode
@@ -240,7 +240,7 @@
                 // checkPosition()
             }
 
-            function touchEnded(){
+            function touchStarted(){
                 var clickedHex = getHexClicked()
                 if(clickedHex == 0) return; //If we didn't click any hex, just return
                 console.log(clickedHex)
