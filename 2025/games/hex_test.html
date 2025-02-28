@@ -42,6 +42,8 @@
 
             var mode = 0
 
+            var canClick
+
 			function setup() {
                 let size = min(windowWidth, windowHeight) * 0.95;
   
@@ -105,10 +107,21 @@
                 hexes[16].text = "RULES"  
                 hexes[16].color = [255,255,0]
                 
+                console.log(lastScore)
                 if(lastScore != 0){
                     hexes[0].text = lastScore
                 }
+
+                
+                canClick = false
+                setTimeout(allowClicks, 1000)
+
 			}
+
+            function allowClicks(){
+                canClick = true
+                console.log("canClick")
+            }
 
             function startEndless(){
                 setTimeout(addHexagonEndless, speed)
@@ -120,7 +133,7 @@
             }
 
             function startTimed(){
-                setTimeout(gameOver, timed_duration*1000)
+                setTimeout(gameOverTimed, timed_duration*1000)
                 resetHexagonNames()
                 addHexagon()
 
@@ -149,10 +162,51 @@
                 })
             }
 
-            function gameOver(){
-                alert(`You scored ${score}`)
+            function gameOverTimed(){
+                gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
                 lastScore = score
-                setup()
+            }
+
+            function gameOver(text){
+                //Reset any callback functions from the last game
+                const highestId = window.setTimeout(() => {
+                    for (let i = highestId; i >= 0; i--) {
+                        window.clearInterval(i);
+                    }
+                }, 0);
+                resetHexagonNames()
+                // setTimeout(setup, 3000)
+                canClick = false
+                setTimeout(allowClicks, 1000)
+
+                mode = -1
+                var textArray = text.split(" ")
+                lastScore = score
+                
+                
+                hexes[5].state = -1
+                hexes[5].text = textArray[0]
+                hexes[5].color = [255,0,0]
+                hexes[6].state = -1
+                hexes[6].text = textArray[1]
+                hexes[6].color = [255,0,0]
+                
+                hexes[4].state = -1
+                hexes[4].text = textArray[2]
+                hexes[4].color = [0,0,255]
+                hexes[0].state = -1
+                hexes[0].text = textArray[3]
+                hexes[0].color = [0,0,255]
+                hexes[1].state = -1
+                hexes[1].text = textArray[4]
+                hexes[1].color = [0,0,255]
+                
+                hexes[3].state = -1
+                hexes[3].text = textArray[5]
+                hexes[3].color = [255,255,0]
+                hexes[2].state = -1
+                hexes[2].text = textArray[6]
+                hexes[2].color = [255,255,0]
                 return
             }
 
@@ -164,11 +218,10 @@
                     }
                 })
                 if(found){
-                    
-                    alert(`LOSERRRR ${score}`)
                     console.log("ended")
                     lastScore = score
-                    setup()
+
+                    gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
                     return
                 }
                 else{
@@ -229,6 +282,7 @@
                     hexagon(hex.x*scaler, hex.y*scaler, hex.size * 0.3*scaler/40)
                     noFill()
                     if(hex.state == -1) fill(0)
+                    else fill(255).stroke(255).textSize()
                     text(hex.text, hex.x*scaler, hex.y*scaler)
 
                     noFill()
@@ -262,6 +316,7 @@
             }
 
             function touchStarted(){
+                if(!canClick) return
                 var clickedHex = getHexClicked()
                 if(clickedHex == 0) return; //If we didn't click any hex, just return
                 console.log(clickedHex)
@@ -288,7 +343,8 @@
                         clickedHex.state = 0
                     }
                     else{
-                        score--
+                        gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`)
+                        return
                     }
                 }
 
@@ -300,7 +356,8 @@
                         addHexagon()
                     }
                     else{
-                        alert("FAIL")
+                        gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`)
+                        return
                     }
                 }
 
@@ -311,16 +368,20 @@
                         clickedHex.state = 0
                     }
                     else{
-                        alert("FAIL")
+                        gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`)
+                        return
                     }
                     console.log(score, hexCount(depth))
                     if(score >= hexCount(depth)) {
                         score = floor(millis() - startTime) / 1000
-                        alert(`Win: ${score}`)
                         lastScore = score
-                        setup()
+                        gameOver(`GAME OVER BOARD CLEARED IN ${score} SECONDS`)
                         return
                     }
+                }
+
+                if(mode == -1){
+                    setup()
                 }
                 return false
             }
