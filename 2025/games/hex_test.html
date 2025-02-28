@@ -263,33 +263,26 @@
             circle(0, 0, width)
             fill(0)
 
-            push()
-            rotate(Math.PI / 6)
-            if (mode == 2) {
-                stroke(255)
-                var timer_size = (1 - ((millis() - startTime) / (endTime - startTime)))
-                // hexagon(0,0,  width/300)
-                fill(0, 255, 0, 100)
-                // hexagon(0,0,  width/300 * timer_size)
-                circle(0, 0, width * timer_size)
-                console.log(timer_size)
-            }
-            pop()
-
             hexes.forEach((hex, i) => {
-                // circle(hex[0]*scaler, hex[1]*scaler, radius)
-
+                //Resize hexagons
                 if (mode == 1 && hex.state == 1) {
                     hex.size = 1 - ((millis() - hex.startTime) / (hex.endTime - hex.startTime))
                 }
+                
+                if (mode == 2 && i < (1- (millis() - startTime) / (endTime - startTime)) *hexes.length) {
+                    fill(0,255,0)
+                    hexagon(hex.x * scaler, hex.y * scaler, 1 * 0.3 * scaler / 40)
+                }
 
+                //Draw hexagons
                 noStroke()
                 if (hex.state == 0) fill(0, 0, 255, 150)
                 else if (hex.state == 1) fill(255, 0, 0)
                 else fill(hex.color)
-
                 hex.size = lerp(hex.size, hex.state, 0.1)
                 hexagon(hex.x * scaler, hex.y * scaler, hex.size * 0.3 * scaler / 40)
+
+                //Draw text
                 noFill()
                 if (mode === -1) fill(255).stroke(0)
                 else if (hex.state == -1) fill(0)
@@ -324,11 +317,12 @@
             return null;
         }
 
-
         function touchStarted() {
             if (!canClick) return false;
 
             var clickedHex = false
+
+            if(touches.length == 0) clickedHex = getHexClicked(mouseX, mouseY)
 
             touches.forEach((touch, i) => {
                 console.log("touch", touch)
@@ -388,7 +382,6 @@
 
             return false;
         }
-
 
         function touchEnded() {
             console.log("touch ended")
