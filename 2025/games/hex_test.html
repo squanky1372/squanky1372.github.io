@@ -308,20 +308,15 @@
         }
 
         // Track active touch IDs
-        let activeTouches = new Set();
+        let parsedTouches = []
 
-        function getHexClicked() {
-            console.log("Touch detected at:", mouseX, mouseY, touches);
-
-            var latest_touch = { x: mouseX, y: mouseY }; // Default to mouse click
-
-            if (touches.length > 0) {
-                latest_touch = touches[touches.length - 1]; // Get last touch
-            }
+        function getHexClicked(xpos, ypos) {
+            console.log("Touch detected at:", xpos, ypos, touches);
 
             for (var i = 0; i < hexes.length; i++) {
                 var hex = hexes[i];
-                var d = dist(hex.x * scaler, hex.y * scaler, latest_touch.x - width / 2, latest_touch.y - height / 2);
+                var d = dist(hex.x * scaler, hex.y * scaler, xpos - width / 2, ypos - height / 2);
+                console.log(d)
                 if (d < radius) {
                     return hex;
                 }
@@ -333,7 +328,18 @@
         function touchStarted() {
             if (!canClick) return false;
 
-            var clickedHex = getHexClicked();
+            var clickedHex = false
+
+            touches.forEach((touch, i) => {
+                console.log("touch", touch)
+                if(!parsedTouches.includes(touch.id)){
+                    console.log('new click')
+                    parsedTouches.push(touch.id)
+                    console.log("unparsed touch at ", touch.x, touch.y)
+                    clickedHex = getHexClicked(touch.x, touch.y)
+                }
+            })
+
             if (!clickedHex) return false; // Ensure a hex was actually clicked
 
             console.log("Clicked hex:", clickedHex);
@@ -385,10 +391,9 @@
 
 
         function touchEnded() {
-            // Remove touch IDs when fingers are lifted
-            for (let touch of touches) {
-                activeTouches.delete(touch.id);
-            }
+            console.log("touch ended")
+            parsedTouches = touches.filter(element => parsedTouches.includes(element.id));
+            console.log(touches)
         }
 
         function mouseClicked() {
