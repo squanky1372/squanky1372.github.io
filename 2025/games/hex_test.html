@@ -28,7 +28,9 @@
             var lastScore = 0
             
             //Timed mode
-            var timedRoundLength = 15
+            var timed_duration = 15
+            var startTime = 0
+            var endTime = 0
 
             //Endless Mode
             const initialSpeed = 1000
@@ -118,9 +120,12 @@
             }
 
             function startTimed(){
-                setTimeout(gameOver, 15*1000)
+                setTimeout(gameOver, timed_duration*1000)
                 resetHexagonNames()
                 addHexagon()
+
+                startTime = millis()
+                endTime = millis() + timed_duration*1000
 
                 mode = 2
 
@@ -195,6 +200,19 @@
                 circle(0,0,width)
                 fill(0)
 
+                push()
+                rotate(Math.PI/6)
+                if(mode == 2){
+                    stroke(255)
+                    var timer_size = (1- ((millis() - startTime) / (endTime - startTime)))
+                    // hexagon(0,0,  width/300)
+                    fill(0,255,0,100)
+                    // hexagon(0,0,  width/300 * timer_size)
+                    circle(0,0,width*timer_size)
+                    console.log(timer_size)
+                }
+                pop()
+
                 hexes.forEach((hex, i) => {
                     // circle(hex[0]*scaler, hex[1]*scaler, radius)
 
@@ -209,7 +227,7 @@
 
                     hex.size = lerp(hex.size, hex.state, 0.1)
                     hexagon(hex.x*scaler, hex.y*scaler, hex.size * 0.3*scaler/40)
-                    fill(255)
+                    noFill()
                     if(hex.state == -1) fill(0)
                     text(hex.text, hex.x*scaler, hex.y*scaler)
 
