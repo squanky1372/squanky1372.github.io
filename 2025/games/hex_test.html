@@ -213,10 +213,10 @@
 
             hexes[3].state = -1
             hexes[3].text = textArray[5]
-            hexes[3].color = [255, 255, 0]
+            hexes[3].color = [0, 255, 0]
             hexes[2].state = -1
             hexes[2].text = textArray[6]
-            hexes[2].color = [255, 255, 0]
+            hexes[2].color = [0, 255, 0]
             return
         }
 
@@ -291,8 +291,9 @@
                 hex.size = lerp(hex.size, hex.state, 0.1)
                 hexagon(hex.x * scaler, hex.y * scaler, hex.size * 0.3 * scaler / 40)
                 noFill()
-                if (hex.state == -1) fill(0)
-                else fill(255).stroke(255).textSize()
+                if (mode === -1) fill(255).stroke(0)
+                else if (hex.state == -1) fill(0)
+                else fill(255).stroke(255)
                 text(hex.text, hex.x * scaler, hex.y * scaler)
 
                 noFill()
@@ -311,7 +312,7 @@
 
         function getHexClicked() {
             console.log("Touch detected at:", mouseX, mouseY, touches);
-            
+
             var latest_touch = { x: mouseX, y: mouseY }; // Default to mouse click
 
             if (touches.length > 0) {
@@ -331,10 +332,10 @@
 
         function touchStarted() {
             if (!canClick) return false;
-            
+
             var clickedHex = getHexClicked();
             if (!clickedHex) return false; // Ensure a hex was actually clicked
-            
+
             console.log("Clicked hex:", clickedHex);
 
             if (mode == 0) {
@@ -348,8 +349,8 @@
                 if (clickedHex.state === 1) {
                     score++;
                     clickedHex.state = 0;
-                } 
-                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`); 
+                }
+                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`);
             }
 
             // TIMED MODE
@@ -358,7 +359,7 @@
                     score++;
                     clickedHex.state = 0;
                     addHexagon();
-                } 
+                }
                 else return gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`);
             }
 
@@ -367,7 +368,7 @@
                 if (clickedHex.state === 1) {
                     score++;
                     clickedHex.state = 0;
-                } 
+                }
                 else return gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`);
 
                 if (score >= hexCount(depth)) {
@@ -377,10 +378,10 @@
                 }
             }
 
-            if (mode === -1) setup(); 
+            if (mode === -1) setup();
 
             return false;
-}
+        }
 
 
         function touchEnded() {
