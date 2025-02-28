@@ -173,11 +173,10 @@
         }
 
         function gameOverTimed() {
-            gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
-            lastScore = score
+            gameOver(`GAME OVER OUT OF TIME SCORE ${score}`, score)
         }
 
-        function gameOver(text) {
+        function gameOver(text, score) {
             //Reset any callback functions from the last game
             const highestId = window.setTimeout(() => {
                 for (let i = highestId; i >= 0; i--) {
@@ -185,6 +184,8 @@
                 }
             }, 0);
             resetHexagonNames()
+
+            if(score) lastScore = score
             // setTimeout(setup, 3000)
             canClick = false
             setTimeout(allowClicks, 1000)
@@ -229,7 +230,6 @@
             })
             if (found) {
                 console.log("ended")
-                lastScore = score
 
                 gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
                 return
@@ -350,7 +350,7 @@
                     score++;
                     clickedHex.state = 0;
                 }
-                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`);
+                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`, score);
             }
 
             // TIMED MODE
@@ -360,7 +360,7 @@
                     clickedHex.state = 0;
                     addHexagon();
                 }
-                else return gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`);
+                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`, score);
             }
 
             // CLEAR MODE
@@ -374,7 +374,7 @@
                 if (score >= hexCount(depth)) {
                     score = floor(millis() - startTime) / 1000;
                     lastScore = score;
-                    return gameOver(`GAME OVER BOARD CLEARED IN ${score} SECONDS`);
+                    return gameOver(`GAME OVER BOARD CLEARED IN ${score} SECONDS`, score);
                 }
             }
 
