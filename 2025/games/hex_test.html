@@ -1,471 +1,480 @@
 <!DOCTYPE html>
 <html>
-	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
-	<link rel="icon" href="/html/img/Boxes37.png">
-    <head>
-		<title>Felipe</title>
-		<style>
-			body { margin: 0; overflow: hidden}
-			canvas {width: 100%; height: 100%; overflow: hidden}
-		</style>
-	</head>
-    <body style="background-color:#0066ff;">
-        <!-- <script src="../aa_libraries/matter.js"></script> -->
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
 
-        
-		<script src="../aa_libraries/p5.js"></script>
-		<script>
-            var totalWidth
-            var scaler
-            var radius
-            
-            var hexes
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
 
-            var score = 0
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
 
-            const depth = 3
-        
-            var lastScore = 0
-            
-            //Timed mode
-            var timed_duration = 15
-            var startTime = 0
-            var endTime = 0
+<body style="background-color:#0066ff;">
+    <!-- <script src="../aa_libraries/matter.js"></script> -->
 
-            //Endless Mode
-            const initialSpeed = 1000
-            const endlessScaler = 0.98
-            var speed
 
-            //Clear mode
-            var startTime
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+        var totalWidth
+        var scaler
+        var radius
 
-            var mode = 0
+        var hexes
 
-            var canClick
+        var score = 0
 
-			function setup() {
-                let size = min(windowWidth, windowHeight) * 0.95;
-  
-                // Create the canvas with the calculated size
-                canvas = createCanvas(size, size);
-                
-                // Center the canvas on the screen
-                centerCanvas();
-                disableCanvasDefaults()
-                textAlign(CENTER, CENTER)
-                textSize((size/depth)/10)
+        const depth = 3
 
-                totalWidth = width / (depth*2 -1)
-                scaler = totalWidth/2
-                radius = scaler
+        var lastScore = 0
 
-                //Reset any callback functions from the last game
-                const highestId = window.setTimeout(() => {
-                    for (let i = highestId; i >= 0; i--) {
-                        window.clearInterval(i);
-                    }
-                }, 0);
+        //Timed mode
+        var timed_duration = 15
+        var startTime = 0
+        var endTime = 0
 
-                //initialize mode and score to 0
-                mode = 0
-                score = 0
-                
-                //set up the grid
-                hexes = generateHexGrid(depth)
+        //Endless Mode
+        const initialSpeed = 1000
+        const endlessScaler = 0.98
+        var speed
 
-                //Set up endless mode
-                hexes[1].state = -1
-                hexes[1].text = "[ENDLESS]"
-                hexes[1].color = [0,255,255]
-                hexes[18].state = -1
-                hexes[18].text = "SCORES"
-                hexes[18].color = [0,255,255]
-                hexes[8].state = -1
-                hexes[8].text = "RULES"
-                hexes[8].color = [0,255,255]
+        //Clear mode
+        var startTime
 
-                speed = initialSpeed
+        var mode = 0
 
-                hexes[3].state = -1
-                hexes[3].text = "[TIMED]"
-                hexes[3].color = [255,0,255]
-                hexes[10].state = -1
-                hexes[10].text = "SCORES"
-                hexes[10].color = [255,0,255]
-                hexes[12].state = -1
-                hexes[12].text = "RULES"
-                hexes[12].color = [255,0,255]
+        var canClick
 
-                hexes[5].state = -1
-                hexes[5].text = "[CLEAR]"
-                hexes[5].color = [255,255,0]
-                hexes[14].state = -1
-                hexes[14].text = "SCORES"
-                hexes[14].color = [255,255,0]
-                hexes[16].state = -1
-                hexes[16].text = "RULES"  
-                hexes[16].color = [255,255,0]
-                
-                console.log(lastScore)
-                if(lastScore != 0){
-                    hexes[0].text = lastScore
+        function setup() {
+            let size = min(windowWidth, windowHeight) * 0.95;
+
+            // Create the canvas with the calculated size
+            canvas = createCanvas(size, size);
+
+            // Center the canvas on the screen
+            centerCanvas();
+            disableCanvasDefaults()
+            textAlign(CENTER, CENTER)
+            textSize((size / depth) / 10)
+
+            totalWidth = width / (depth * 2 - 1)
+            scaler = totalWidth / 2
+            radius = scaler
+
+            //Reset any callback functions from the last game
+            const highestId = window.setTimeout(() => {
+                for (let i = highestId; i >= 0; i--) {
+                    window.clearInterval(i);
                 }
+            }, 0);
 
-                
-                canClick = false
-                setTimeout(allowClicks, 1000)
+            //initialize mode and score to 0
+            mode = 0
+            score = 0
 
-			}
+            //set up the grid
+            hexes = generateHexGrid(depth)
 
-            function allowClicks(){
-                canClick = true
-                console.log("canClick")
+            //Set up endless mode
+            hexes[1].state = -1
+            hexes[1].text = "[ENDLESS]"
+            hexes[1].color = [0, 255, 255]
+            hexes[18].state = -1
+            hexes[18].text = "SCORES"
+            hexes[18].color = [0, 255, 255]
+            hexes[8].state = -1
+            hexes[8].text = "RULES"
+            hexes[8].color = [0, 255, 255]
+
+            speed = initialSpeed
+
+            hexes[3].state = -1
+            hexes[3].text = "[TIMED]"
+            hexes[3].color = [255, 0, 255]
+            hexes[10].state = -1
+            hexes[10].text = "SCORES"
+            hexes[10].color = [255, 0, 255]
+            hexes[12].state = -1
+            hexes[12].text = "RULES"
+            hexes[12].color = [255, 0, 255]
+
+            hexes[5].state = -1
+            hexes[5].text = "[CLEAR]"
+            hexes[5].color = [255, 255, 0]
+            hexes[14].state = -1
+            hexes[14].text = "SCORES"
+            hexes[14].color = [255, 255, 0]
+            hexes[16].state = -1
+            hexes[16].text = "RULES"
+            hexes[16].color = [255, 255, 0]
+
+            console.log(lastScore)
+            if (lastScore != 0) {
+                hexes[0].text = lastScore
             }
 
-            function startEndless(){
-                setTimeout(addHexagonEndless, speed)
 
-                resetHexagonNames()
+            canClick = false
+            setTimeout(allowClicks, 1000)
 
-                mode = 1
+        }
 
-            }
+        function allowClicks() {
+            canClick = true
+            console.log("canClick")
+        }
 
-            function startTimed(){
-                setTimeout(gameOverTimed, timed_duration*1000)
-                resetHexagonNames()
-                addHexagon()
+        function startEndless() {
+            setTimeout(addHexagonEndless, speed)
 
-                startTime = millis()
-                endTime = millis() + timed_duration*1000
+            resetHexagonNames()
 
-                mode = 2
+            mode = 1
 
-            }
+        }
 
-            function startClear(){
-                resetHexagonNames()
-                hexes.forEach((hex, i) => {
-                    hex.state = 1
-                })
-                startTime = millis()
+        function startTimed() {
+            setTimeout(gameOverTimed, timed_duration * 1000)
+            resetHexagonNames()
+            addHexagon()
 
-                mode = 3
+            startTime = millis()
+            endTime = millis() + timed_duration * 1000
 
-            }
+            mode = 2
 
-            function resetHexagonNames(){
-                hexes.forEach((hex, i) => {
-                    hex.text = "" //i
-                    hex.state = 0
-                })
-            }
+        }
 
-            function gameOverTimed(){
+        function startClear() {
+            resetHexagonNames()
+            hexes.forEach((hex, i) => {
+                hex.state = 1
+            })
+            startTime = millis()
+
+            mode = 3
+
+        }
+
+        function resetHexagonNames() {
+            hexes.forEach((hex, i) => {
+                hex.text = "" //i
+                hex.state = 0
+            })
+        }
+
+        function gameOverTimed() {
+            gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
+            lastScore = score
+        }
+
+        function gameOver(text) {
+            //Reset any callback functions from the last game
+            const highestId = window.setTimeout(() => {
+                for (let i = highestId; i >= 0; i--) {
+                    window.clearInterval(i);
+                }
+            }, 0);
+            resetHexagonNames()
+            // setTimeout(setup, 3000)
+            canClick = false
+            setTimeout(allowClicks, 1000)
+
+            mode = -1
+            var textArray = text.split(" ")
+            lastScore = score
+
+
+            hexes[5].state = -1
+            hexes[5].text = textArray[0]
+            hexes[5].color = [255, 0, 0]
+            hexes[6].state = -1
+            hexes[6].text = textArray[1]
+            hexes[6].color = [255, 0, 0]
+
+            hexes[4].state = -1
+            hexes[4].text = textArray[2]
+            hexes[4].color = [0, 0, 255]
+            hexes[0].state = -1
+            hexes[0].text = textArray[3]
+            hexes[0].color = [0, 0, 255]
+            hexes[1].state = -1
+            hexes[1].text = textArray[4]
+            hexes[1].color = [0, 0, 255]
+
+            hexes[3].state = -1
+            hexes[3].text = textArray[5]
+            hexes[3].color = [255, 255, 0]
+            hexes[2].state = -1
+            hexes[2].text = textArray[6]
+            hexes[2].color = [255, 255, 0]
+            return
+        }
+
+        function addHexagonEndless() {
+            var found = false
+            hexes.forEach((hex, i) => {
+                if (hex.state == 1) {
+                    found = true
+                }
+            })
+            if (found) {
+                console.log("ended")
+                lastScore = score
+
                 gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
-                lastScore = score
-            }
-
-            function gameOver(text){
-                //Reset any callback functions from the last game
-                const highestId = window.setTimeout(() => {
-                    for (let i = highestId; i >= 0; i--) {
-                        window.clearInterval(i);
-                    }
-                }, 0);
-                resetHexagonNames()
-                // setTimeout(setup, 3000)
-                canClick = false
-                setTimeout(allowClicks, 1000)
-
-                mode = -1
-                var textArray = text.split(" ")
-                lastScore = score
-                
-                
-                hexes[5].state = -1
-                hexes[5].text = textArray[0]
-                hexes[5].color = [255,0,0]
-                hexes[6].state = -1
-                hexes[6].text = textArray[1]
-                hexes[6].color = [255,0,0]
-                
-                hexes[4].state = -1
-                hexes[4].text = textArray[2]
-                hexes[4].color = [0,0,255]
-                hexes[0].state = -1
-                hexes[0].text = textArray[3]
-                hexes[0].color = [0,0,255]
-                hexes[1].state = -1
-                hexes[1].text = textArray[4]
-                hexes[1].color = [0,0,255]
-                
-                hexes[3].state = -1
-                hexes[3].text = textArray[5]
-                hexes[3].color = [255,255,0]
-                hexes[2].state = -1
-                hexes[2].text = textArray[6]
-                hexes[2].color = [255,255,0]
                 return
             }
+            else {
+                console.log("Continue")
 
-            function addHexagonEndless(){
-                var found = false
-                hexes.forEach((hex, i) => {
-                    if(hex.state == 1){
-                        found = true
-                    }
-                })
-                if(found){
-                    console.log("ended")
-                    lastScore = score
+                var newHexagon = addHexagon()
 
-                    gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
-                    return
+                speed = speed * endlessScaler
+                console.log(speed)
+                setTimeout(addHexagonEndless, speed)
+                newHexagon.startTime = millis()
+                newHexagon.endTime = millis() + speed
+
+            }
+        }
+
+        function addHexagon() {
+            var selected = Math.floor(Math.random() * (hexes.length));
+            hexes[selected].state = 1
+            return hexes[selected]
+        }
+
+        function draw() {
+            // scaleContent()
+            push()
+            translate(width / 2, height / 2)
+            // background(100)
+            fill(0)
+            circle(0, 0, width)
+            fill(0)
+
+            push()
+            rotate(Math.PI / 6)
+            if (mode == 2) {
+                stroke(255)
+                var timer_size = (1 - ((millis() - startTime) / (endTime - startTime)))
+                // hexagon(0,0,  width/300)
+                fill(0, 255, 0, 100)
+                // hexagon(0,0,  width/300 * timer_size)
+                circle(0, 0, width * timer_size)
+                console.log(timer_size)
+            }
+            pop()
+
+            hexes.forEach((hex, i) => {
+                // circle(hex[0]*scaler, hex[1]*scaler, radius)
+
+                if (mode == 1 && hex.state == 1) {
+                    hex.size = 1 - ((millis() - hex.startTime) / (hex.endTime - hex.startTime))
                 }
-                else{
-                    console.log("Continue")
 
-                    var newHexagon = addHexagon()
+                noStroke()
+                if (hex.state == 0) fill(0, 0, 255, 150)
+                else if (hex.state == 1) fill(255, 0, 0)
+                else fill(hex.color)
 
-                    speed = speed * endlessScaler
-                    console.log(speed)
-                    setTimeout(addHexagonEndless, speed)
-                    newHexagon.startTime = millis()
-                    newHexagon.endTime = millis() + speed
+                hex.size = lerp(hex.size, hex.state, 0.1)
+                hexagon(hex.x * scaler, hex.y * scaler, hex.size * 0.3 * scaler / 40)
+                noFill()
+                if (hex.state == -1) fill(0)
+                else fill(255).stroke(255).textSize()
+                text(hex.text, hex.x * scaler, hex.y * scaler)
 
+                noFill()
+                stroke(255)
+                hexagon(hex.x * scaler, hex.y * scaler, 0.3 * scaler / 40)
+            })
+            pop()
+        }
+
+        function lerp(start, end, amt) {
+            return start + (end - start) * amt;
+        }
+
+        // Track active touch IDs
+        let activeTouches = new Set();
+
+        function getHexClicked() {
+            console.log("Touch detected at:", mouseX, mouseY, touches);
+            
+            var latest_touch = { x: mouseX, y: mouseY }; // Default to mouse click
+
+            if (touches.length > 0) {
+                latest_touch = touches[touches.length - 1]; // Get last touch
+            }
+
+            for (var i = 0; i < hexes.length; i++) {
+                var hex = hexes[i];
+                var d = dist(hex.x * scaler, hex.y * scaler, latest_touch.x - width / 2, latest_touch.y - height / 2);
+                if (d < radius) {
+                    return hex;
+                }
+            }
+            return null;
+        }
+
+
+        function touchStarted() {
+            if (!canClick) return false;
+            
+            var clickedHex = getHexClicked();
+            if (!clickedHex) return false; // Ensure a hex was actually clicked
+            
+            console.log("Clicked hex:", clickedHex);
+
+            if (mode == 0) {
+                if (clickedHex.text == "[ENDLESS]") return startEndless();
+                if (clickedHex.text == "[TIMED]") return startTimed();
+                if (clickedHex.text == "[CLEAR]") return startClear();
+            }
+
+            // ENDLESS MODE
+            else if (mode === 1) {
+                if (clickedHex.state === 1) {
+                    score++;
+                    clickedHex.state = 0;
+                } 
+                else return gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`); 
+            }
+
+            // TIMED MODE
+            else if (mode === 2) {
+                if (clickedHex.state === 1) {
+                    score++;
+                    clickedHex.state = 0;
+                    addHexagon();
+                } 
+                else return gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`);
+            }
+
+            // CLEAR MODE
+            else if (mode === 3) {
+                if (clickedHex.state === 1) {
+                    score++;
+                    clickedHex.state = 0;
+                } 
+                else return gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`);
+
+                if (score >= hexCount(depth)) {
+                    score = floor(millis() - startTime) / 1000;
+                    lastScore = score;
+                    return gameOver(`GAME OVER BOARD CLEARED IN ${score} SECONDS`);
                 }
             }
 
-            function addHexagon(){
-                var selected = Math.floor(Math.random() * (hexes.length));
-                hexes[selected].state = 1
-                return hexes[selected]
+            if (mode === -1) setup(); 
+
+            return false;
+}
+
+
+        function touchEnded() {
+            // Remove touch IDs when fingers are lifted
+            for (let touch of touches) {
+                activeTouches.delete(touch.id);
             }
+        }
 
-			function draw() {
-                // scaleContent()
-                push()
-                translate(width/2, height/2)
-                // background(100)
-                fill(0)
-                circle(0,0,width)
-                fill(0)
+        function mouseClicked() {
+            // checkPosition()
+        }
 
-                push()
-                rotate(Math.PI/6)
-                if(mode == 2){
-                    stroke(255)
-                    var timer_size = (1- ((millis() - startTime) / (endTime - startTime)))
-                    // hexagon(0,0,  width/300)
-                    fill(0,255,0,100)
-                    // hexagon(0,0,  width/300 * timer_size)
-                    circle(0,0,width*timer_size)
-                    console.log(timer_size)
-                }
-                pop()
-
-                hexes.forEach((hex, i) => {
-                    // circle(hex[0]*scaler, hex[1]*scaler, radius)
-
-                    if(mode == 1 && hex.state == 1){
-                        hex.size = 1- ((millis() - hex.startTime) / (hex.endTime - hex.startTime))
-                    }
-
-                    noStroke()
-                    if(hex.state == 0) fill(0,0,255, 150)
-                    else if(hex.state == 1) fill(255,0,0)
-                    else fill(hex.color)
-
-                    hex.size = lerp(hex.size, hex.state, 0.1)
-                    hexagon(hex.x*scaler, hex.y*scaler, hex.size * 0.3*scaler/40)
-                    noFill()
-                    if(hex.state == -1) fill(0)
-                    else fill(255).stroke(255).textSize()
-                    text(hex.text, hex.x*scaler, hex.y*scaler)
-
-                    noFill()
-                    stroke(255)
-                    hexagon(hex.x*scaler, hex.y*scaler, 0.3*scaler/40)
-                })
-                pop()
+        function hexCount(depth) {
+            var count = 1
+            for (var i = 0; i <= depth - 1; i++) {
+                count += i * 6
             }
+            return count
+        }
 
-            function lerp(start, end, amt) {
-                return start + (end - start) * amt;
-            }
+        function generateHexGrid(N, radius = 1) {
+            if (N < 1) return [];
 
-            function getHexClicked(){
-                console.log(mouseX, mouseY)
-                var latest_touch
-                if(touches.lenght > 0) latest_touch = touches[touches.length - 1]
-                else latest_touch = {x: mouseX, y: mouseY}
-                for(var i = 0; i < hexes.length; i++){
-                    var hex = hexes[i]
-                    var d = dist(hex.x*scaler, hex.y*scaler, latest_touch.x-width/2, latest_touch.y-height/2)
-                    if(d < radius) {
-                        return hex
-                    }
-                }
-                return 0
-            }
+            const hexes = [{ x: 0, y: 0, state: 0, text: "", size: 1, color: [0, 0, 0] }]; // Center hex
+            const sqrt3 = Math.sqrt(3);
 
-            function mouseClicked(){
-                // checkPosition()
-            }
+            for (let layer = 1; layer < N; layer++) {
+                let x = layer * radius * 2;
+                let y = 0;
 
-            function touchStarted(){
-                if(!canClick) return
-                var clickedHex = getHexClicked()
-                if(clickedHex == 0) return; //If we didn't click any hex, just return
-                console.log(clickedHex)
+                for (let side = 0; side < 6; side++) {
+                    for (let step = 0; step < layer; step++) {
+                        hexes.push({ x, y, state: 0, text: "", size: -1 / hexes.length, color: [0, 0, 0] });
 
-                if(mode == 0){
-                    if(clickedHex.text == "[ENDLESS]"){
-                        startEndless()
-                        return
-                    }
-                    if(clickedHex.text == "[TIMED]"){
-                        startTimed()
-                        return
-                    }
-                    if(clickedHex.text == "[CLEAR]"){
-                        startClear()
-                        return
-                    }
-                }
-
-                //ENDLESS
-                if(mode == 1){
-                    if(clickedHex.state == 1){
-                        score++
-                        clickedHex.state = 0
-                    }
-                    else{
-                        gameOver(`GAME OVER WRONG TILE CLICKED SCORE ${score}`)
-                        return
-                    }
-                }
-
-                //TIMED
-                if(mode == 2){
-                    if(clickedHex.state == 1){
-                        score++
-                        clickedHex.state = 0
-                        addHexagon()
-                    }
-                    else{
-                        gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`)
-                        return
-                    }
-                }
-
-                //CLEAR
-                if(mode == 3){
-                    if(clickedHex.state == 1){
-                        score++
-                        clickedHex.state = 0
-                    }
-                    else{
-                        gameOver(`GAME OVER WRONG TILE CLICKED TRY AGAIN`)
-                        return
-                    }
-                    console.log(score, hexCount(depth))
-                    if(score >= hexCount(depth)) {
-                        score = floor(millis() - startTime) / 1000
-                        lastScore = score
-                        gameOver(`GAME OVER BOARD CLEARED IN ${score} SECONDS`)
-                        return
-                    }
-                }
-
-                if(mode == -1){
-                    setup()
-                }
-                return false
-            }
-
-            function hexCount(depth){
-                var count = 1
-                for(var i = 0; i <= depth-1; i++){
-                    count += i*6
-                }
-                return count
-            }
-
-            function generateHexGrid(N, radius = 1) {
-                if (N < 1) return [];
-                
-                const hexes = [{x:0, y:0, state:0, text:"", size:1, color:[0,0,0]}]; // Center hex
-                const sqrt3 = Math.sqrt(3);
-                
-                for (let layer = 1; layer < N; layer++) {
-                    let x = layer * radius * 2;
-                    let y = 0;
-                    
-                    for (let side = 0; side < 6; side++) {
-                        for (let step = 0; step < layer; step++) {
-                            hexes.push({x, y, state:0, text:"", size:-1/hexes.length, color:[0,0,0]});
-                            
-                            switch (side) {
-                                case 0: x -= radius; y += radius * sqrt3; break;
-                                case 1: x -= radius * 2; break;
-                                case 2: x -= radius; y -= radius * sqrt3; break;
-                                case 3: x += radius; y -= radius * sqrt3; break;
-                                case 4: x += radius * 2; break;
-                                case 5: x += radius; y += radius * sqrt3; break;
-                            }
+                        switch (side) {
+                            case 0: x -= radius; y += radius * sqrt3; break;
+                            case 1: x -= radius * 2; break;
+                            case 2: x -= radius; y -= radius * sqrt3; break;
+                            case 3: x += radius; y -= radius * sqrt3; break;
+                            case 4: x += radius * 2; break;
+                            case 5: x += radius; y += radius * sqrt3; break;
                         }
                     }
                 }
-                
-                return hexes;
             }
 
-            function hexagon(transX, transY, s) {
-                // fill('rgba(255, 255, 100, .25)');
-                push();
-                translate(transX, transY);
-                scale(s);
-                beginShape();
-                    vertex(-130, -75);
-                    vertex(-130, 75);
-                    vertex(0, 150);
-                    vertex(130, 75);
-                    vertex(130, -75);
-                    vertex(0, -150);
-                endShape(CLOSE); 
-                pop();
-            }
+            return hexes;
+        }
 
-			function windowResized() {
-                // Recalculate size when the window is resized
-                let size = min(windowWidth, windowHeight) * 0.95;
-                resizeCanvas(size, size);
-                centerCanvas();
-			}
+        function hexagon(transX, transY, s) {
+            // fill('rgba(255, 255, 100, .25)');
+            push();
+            translate(transX, transY);
+            scale(s);
+            beginShape();
+            vertex(-130, -75);
+            vertex(-130, 75);
+            vertex(0, 150);
+            vertex(130, 75);
+            vertex(130, -75);
+            vertex(0, -150);
+            endShape(CLOSE);
+            pop();
+        }
 
-            function centerCanvas() {
-                // Center the canvas using CSS
-                let x = (windowWidth - width) / 2;
-                let y = (windowHeight - height) / 2;
-                canvas.position(x, y);
-            }
+        function windowResized() {
+            // Recalculate size when the window is resized
+            let size = min(windowWidth, windowHeight) * 0.95;
+            resizeCanvas(size, size);
+            centerCanvas();
+        }
 
-            function scaleContent(){
-                scale(min(windowWidth, windowHeight) * 0.95 / 600)
-            }
+        function centerCanvas() {
+            // Center the canvas using CSS
+            let x = (windowWidth - width) / 2;
+            let y = (windowHeight - height) / 2;
+            canvas.position(x, y);
+        }
 
-            function disableCanvasDefaults() {
-                // Prevent selection and zooming via CSS
-                canvas.style('touch-action', 'none'); // Disable default touch actions
+        function scaleContent() {
+            scale(min(windowWidth, windowHeight) * 0.95 / 600)
+        }
 
-                // Prevent default behaviors for double-tap and long-press
-                canvas.elt.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
-                canvas.elt.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-                canvas.elt.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
-            }
-		</script>
-    </body>
+        function disableCanvasDefaults() {
+            // Prevent selection and zooming via CSS
+            canvas.style('touch-action', 'none'); // Disable default touch actions
+
+            // Prevent default behaviors for double-tap and long-press
+            canvas.elt.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+            canvas.elt.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            canvas.elt.addEventListener('touchend', (e) => e.preventDefault(), { passive: false });
+        }
+    </script>
+</body>
+
 </html>
