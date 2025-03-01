@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes38.png">
+    <link rel="icon" href="/html/img/Boxes38.png">
+  <body style="background-color:black; color:green; font-size: 200%">
+    <style>
+        body{margin:0;overflow:hidden}
+        @font-face {  
+            src: url(../aa_libraries/slkscr.ttf) format("truetype");
+            font-family:  Market Deco;
+        }
+        div.FontMarket { 
+            font-family:  Market Deco;
+        }
+        td {
+            text-align: center;
+        }
+        table, th, td {
+            border: 1px solid green;
+        }
+    </style>
+    
+    <div class="FontMarket">
+    <table id="table">
+        <tr>
+            <th>==</th>
+            <th>===Name===</th>
+            <th>===Score===</th>
+            <th>===Date===</th>
+        </tr>
+    </table>
+    </div>
+    
+    <script>
+        getData()
+
+        async function getData() {
+            var game = "hexes"
+            var level = 1
+            var url = (`https://squanky.net/scores/scoreboard?game=${game}&level=${level}`)
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+                }
+
+                const json = await response.json();
+                console.log(json);
+
+                //Sorted in reverse order, since lower times are better
+                var sortedScores = json.newScores.sort((a, b) => b.data.score - a.data.score);
+
+                //Get only the scores for our specific mode
+                var sortedScores = sortedScores.filter(item => item.data.mode === 2)
+
+                var playerScores = []
+
+                sortedScores.forEach(score => {
+                    playerScores[score.username] = score
+                    playerScores[score.username].counter = 0
+                })
+                
+                sortedScores.forEach(score => {
+                    console.log("previous score: " + playerScores[score.username].counter)
+                    playerScores[score.username].counter = playerScores[score.username].counter + 1
+                    console.log("next score: " + playerScores[score.username].counter)
+                })
+
+                console.log(playerScores)
+                // console.log(sortedScores)
+
+                const sortedPlayerScores = Object.entries(playerScores)
+                    .sort(([, a], [, b]) => b.data.score - a.data.score)  // Sort in descending order
+                    .map(([username, score]) => ({ username, ...score }));
+
+                for (const username in sortedPlayerScores) {
+                    const score = sortedPlayerScores[username];
+                    // const visuals = playerScores[username].visuals
+                    // console.log(username, score);  // Access username and corresponding score
+                    addScore(sortedPlayerScores[username])
+                }
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        function addScore(score){
+            console.log(score)
+            var table = document.getElementById("table");
+
+            var row = table.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            
+            cell2.innerHTML = score.username;
+            cell3.innerHTML = score.data.score;
+            cell4.innerHTML = score.timestamp.substring(5,10)+"-"+score.timestamp.substring(2,4);
+            cell5.innerHTML = score.counter;
+
+            // Create a div and set its ID
+            var div = document.createElement("div");
+            div.id = "scoreDiv-" + score.username; // Unique ID using the username
+            cell1.appendChild(div); // Append div to the new cell
+
+            
+            createCanvasInDiv("scoreDiv-" + score.username, score.visuals);
+        }
+
+    </script>
+
+    
+    <script src="../aa_libraries/p5.js"></script>
+
+    <script>
+        function createCanvasInDiv(divId, visuals) {
+            new p5((sketch) => {
+                sketch.setup = function() {
+                    let canvas = sketch.createCanvas(35, 35);
+                    canvas.parent(divId);
+
+                    color1 = visuals.colors[0]
+                    color2 = visuals.colors[1]
+                    color3 = visuals.colors[2]
+                    emoji = visuals.emoji
+
+                    var size = sketch.width
+                    var posx = sketch.width/2 - size/2
+                    var posy = sketch.height/2 - size/2
+                    
+                    sketch.background(220);
+                    sketch.textSize(size*0.75);
+                    sketch.rect(posx,posy,size,size)
+
+                    sketch.fill(color1[0]*128, color1[1]*128, color1[2]*128)
+                    sketch.rect(posx, posy, size, size/3)
+                    sketch.fill(color2[0]*128, color2[1]*128, color2[2]*128)
+                    sketch.rect(posx, posy + size/3, size, size/3)
+                    sketch.fill(color3[0]*128, color3[1]*128, color3[2]*128)
+                    sketch.rect(posx, posy + 2*size/3, size, size/3)
+
+                    sketch.textAlign(sketch.CENTER, sketch.CENTER)
+                    sketch.fill(0)
+                    sketch.text(emoji, posx + size/2, posy + size/2);
+                };
+            });
+        }
+        // Call createCanvasInDiv for each row you have
+    </script>
+    
+    </body>
+</html>
