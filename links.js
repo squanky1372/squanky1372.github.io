@@ -30,9 +30,8 @@ var links_database = [
     ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
     ["/2025/games/stardunk.html", "/html/img/Boxes37.png"], //Stardunk
-    ["/2025/games/stardunk_scoreboard.html", "/html/img/Boxes36.png"], //Stardunk scoreboard
-    ["/2025/games/hex_test.html", "/html/img/Boxes40.png"], //Hex test
-    
+    ["/2025/games/hexes.html", "/html/img/Boxes40.png"], //Hexes
+
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
     // ["/weather/weather_basic.html", "/html/img/Boxes6.png"], //simplified 15-day forecast

@@ -213,10 +213,12 @@
 
         var stars = []
 
+        var testMode = false
+
         function setup() {
             const d = new Date();
 
-            verifyHash()
+            if(!testMode) verifyHash()
             // createCanvas(windowWidth, windowHeight);
             let size = min(windowWidth, windowHeight) * 0.95;
 
@@ -343,6 +345,20 @@
             textSize(50)
             scalesize = min(windowWidth, windowHeight) * 0.95 / 600
             text("STARDUNK", width/2 / scalesize, height/2 / scalesize)
+            textSize(25)
+            text("TOUCH TO START", width/2 / scalesize, (height/2 + height/10) / scalesize)
+            textSize(25)
+
+            push()
+            text("SCOREBOARD", width/2 / scalesize, (height - height/10) / scalesize)
+            rectMode(CENTER)
+            fill(100,100,100)
+            noFill()
+            stroke(255)
+            rect(width/2 / scalesize, (height - height/10) / scalesize, width/3, height/13)
+            fill(0)
+            pop()
+            
             pop()
         }
         function drawGameOver(){
@@ -526,7 +542,15 @@
         }
 
         function touchEnded() {
-            throwBall()
+            console.log(mouseX, mouseY)
+            console.log(height)
+            var scoreboardDetectionHeight = ((height - height/10) / scalesize) - (height/13)/2
+            var scoreboardDetectionWidth = (width/3)/2
+            if(gameState == 0 && mouseY > scoreboardDetectionHeight && Math.abs(mouseX - width/2) < scoreboardDetectionWidth) {
+                console.log("Redirecting to scoreboard")
+                window.location.href = "./stardunk_scoreboard.html"
+            }
+            else throwBall()
             return false
         }
 
