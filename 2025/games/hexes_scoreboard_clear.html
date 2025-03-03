@@ -47,7 +47,8 @@
                 const json = await response.json();
                 console.log(json);
 
-                var sortedScores = json.newScores.sort((a, b) => a.data.score - b.data.score);
+                //Sorted in reverse order, since lower times are better
+                var sortedScores = json.newScores.sort((a, b) => b.data.score - a.data.score);
 
                 //Get only the scores for our specific mode
                 var sortedScores = sortedScores.filter(item => item.data.mode === 3)

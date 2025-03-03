@@ -87,6 +87,8 @@
             hexes = generateHexGrid(depth)
 
             //Set up endless mode
+            speed = initialSpeed
+
             hexes[1].state = -1
             hexes[1].text = "[ENDLESS]"
             hexes[1].color = [0, 255, 255]
@@ -97,8 +99,7 @@
             hexes[8].state = -1
             hexes[8].text = "RULES"
             hexes[8].color = [0, 255, 255]
-
-            speed = initialSpeed
+            hexes[8].rulesCallback = 1
 
             hexes[3].state = -1
             hexes[3].text = "[TIMED]"
@@ -110,6 +111,7 @@
             hexes[12].state = -1
             hexes[12].text = "RULES"
             hexes[12].color = [255, 0, 255]
+            hexes[12].rulesCallback = 2
 
             hexes[5].state = -1
             hexes[5].text = "[CLEAR]"
@@ -121,6 +123,7 @@
             hexes[16].state = -1
             hexes[16].text = "RULES"
             hexes[16].color = [255, 255, 0]
+            hexes[16].rulesCallback = 3
 
             console.log(lastScore)
             if (lastScore != 0) {
@@ -243,7 +246,7 @@
             if (found) {
                 console.log("ended")
 
-                gameOver(`GAME OVER OUT OF TIME SCORE ${score}`)
+                gameOver(`GAME OVER OUT OF TIME SCORE ${score}`, score)
                 return
             }
             else {
@@ -315,6 +318,18 @@
         // Track active touch IDs
         let parsedTouches = []
 
+        function rules(index){
+            if(index == 1){
+                alert("ENDLESS MODE: Click on each red hex before it disappears. Hexes disappear faster over time. If you don't click one in time, or you click the wrong hex, the game ends.")
+            }
+            if(index == 2){
+                alert(`TIMED MODE: Click on each red hex as it appears. You have ${timed_duration} seconds to click as many as possible. The green hexes show how much time you have left.`)
+            }
+            if(index == 3){
+                alert(`CLEAR MODE: Click on every red hex as fast as possible. Be careful not to click any space more than once.`)
+            }
+        }
+
         function getHexClicked(xpos, ypos) {
             console.log("Touch detected at:", xpos, ypos, touches);
 
@@ -355,6 +370,7 @@
                 if (clickedHex.text == "[TIMED]") return startTimed();
                 if (clickedHex.text == "[CLEAR]") return startClear();
                 if (clickedHex.link) window.location.href = clickedHex.link
+                if (clickedHex.rulesCallback) rules(clickedHex.rulesCallback)
             }
 
             // ENDLESS MODE
