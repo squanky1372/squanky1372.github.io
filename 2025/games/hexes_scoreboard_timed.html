@@ -69,7 +69,7 @@
                 // console.log(sortedScores)
 
                 const sortedPlayerScores = Object.entries(playerScores)
-                    .sort(([, a], [, b]) => b.data.score - a.data.score)  // Sort in descending order
+                    .sort(([, a], [, b]) => a.data.score - b.data.score)  // Sort in ascending order (times)
                     .map(([username, score]) => ({ username, ...score }));
 
                 for (const username in sortedPlayerScores) {
