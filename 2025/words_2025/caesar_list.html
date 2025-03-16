@@ -103,6 +103,28 @@
 
                         tableBody.appendChild(tr);
                     }
+                    if (row[2] == 26-filterValue) {
+                        let tr = document.createElement("tr");
+
+                        // Add row number column
+                        let rowNumTd = document.createElement("td");
+                        rowNumTd.textContent = rowNumber++;
+                        tr.appendChild(rowNumTd);
+
+                        // Add original data columns
+                        
+                        let td = document.createElement("td");
+                        td.textContent = row[1];
+                        tr.appendChild(td);
+                        let td2 = document.createElement("td");
+                        td2.textContent = row[0];
+                        tr.appendChild(td2);
+                        let td3 = document.createElement("td");
+                        td3.textContent = "-" + (26-row[2]);
+                        tr.appendChild(td3);
+
+                        tableBody.appendChild(tr);
+                    }
                 });
             });
         }
