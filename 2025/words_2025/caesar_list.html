@@ -1,0 +1,127 @@
+<!-- //        fetch('../ab_data/caesarlist_full.json') // Ensure the JSON file is in the same directory -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Table with Row Numbers</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin-top: 10px;
+            width: auto; /* Keep table as small as needed */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 4px; /* Reduce row height */
+            text-align: left;
+            white-space: nowrap; /* Prevent columns from stretching */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>JSON Data Table</h2>
+
+    <label for="filter">Filter by third column:</label>
+    <select id="filter">
+        <option value="all">Show All</option>
+    </select>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Row #</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        let jsonData = {}; // Store the loaded JSON data
+
+        function countOccurrences(data) {
+            let counts = new Array(25).fill(0); // Initialize an array with 25 zeros
+            let counts_bilateral = new Array(25).fill(0); // Initialize an array with 25 zeros
+            let total = 0
+
+            Object.keys(data).forEach(key => {
+                data[key].forEach(row => {
+                    let value = row[2]; // The third element in each sub-array
+                    if (value >= 1 && value <= 25) {
+                        counts[value - 1]++; // Increment the corresponding index (0-based)
+                        counts_bilateral[25 - (value)]++; // Increment the corresponding index (0-based)
+                        counts_bilateral[value-1]++; // Increment the corresponding index (0-based)
+                    }
+                    total += 1
+                });
+            });
+            console.log(counts)
+            console.log(counts_bilateral)
+            console.log(total)
+
+            return counts;
+        }
+
+        // Populate dropdown with numbers 1-25
+        const dropdown = document.getElementById("filter");
+        for (let i = 1; i <= 25; i++) {
+            let option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            dropdown.appendChild(option);
+        }
+
+        // Function to load and display table data
+        function loadTable(filterValue) {
+            const tableBody = document.querySelector("#data-table tbody");
+            tableBody.innerHTML = ""; // Clear existing table data
+            let rowNumber = 1; // Start row numbering at 1
+
+            Object.keys(jsonData).forEach(key => {
+                jsonData[key].forEach(row => {
+                    if (filterValue === "all" || row[2] == filterValue) {
+                        let tr = document.createElement("tr");
+
+                        // Add row number column
+                        let rowNumTd = document.createElement("td");
+                        rowNumTd.textContent = rowNumber++;
+                        tr.appendChild(rowNumTd);
+
+                        // Add original data columns
+                        row.forEach(cell => {
+                            let td = document.createElement("td");
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+
+                        tableBody.appendChild(tr);
+                    }
+                });
+            });
+        }
+
+        // Fetch JSON data and initialize the table
+        fetch('../ab_data/caesarlist_full.json')
+            .then(response => response.json())
+            .then(data => {
+                jsonData = data;
+                countOccurrences(data)
+                loadTable("all"); // Display all data initially
+            })
+            .catch(error => console.error('Error loading JSON:', error));
+
+        // Event listener to filter the table when dropdown changes
+        dropdown.addEventListener("change", function () {
+            loadTable(this.value);
+        });
+    </script>
+
+</body>
+</html>

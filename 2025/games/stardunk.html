@@ -256,16 +256,6 @@
             }
         }
 
-        async function submitScore(game, hash, data) {
-            const response = await fetch('https://squanky.net/scores/addscore', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ game, hash, data })
-            });
-        }
-
         function endGame(){
             background(0, 0, 0, transparent_percent);
 
@@ -602,6 +592,16 @@
         var playerDatafunction
 
         var playerDataFetched = false
+
+        async function submitScore(game, hash, data) {
+            const response = await fetch('https://squanky.net/scores/addscore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ game, hash, data })
+            });
+        }
 
         function makePattern(size) {
             console.log(playerData)

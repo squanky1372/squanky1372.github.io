@@ -31,6 +31,7 @@ var links_database = [
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
     ["/2025/games/stardunk.html", "/html/img/Boxes37.png"], //Stardunk
     ["/2025/games/hexes.html", "/html/img/Boxes40.png"], //Hexes
+    ["/2025/words_2025/caesar_list.html", "/html/img/Boxes40.png"], //Hexes
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
