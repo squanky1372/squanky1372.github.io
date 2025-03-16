@@ -5,21 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Table with Row Numbers</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            margin-top: 10px;
-            width: auto; /* Keep table as small as needed */
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 4px; /* Reduce row height */
-            text-align: left;
-            white-space: nowrap; /* Prevent columns from stretching */
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+    <style>body {
+        background-color: black; /* Set background to black */
+        color: white; /* Set text to white */
+        font-family: Arial, sans-serif;
+    }
+    
+    table {
+        border-collapse: collapse;
+        margin-top: 10px;
+        width: auto;
+        color: white; /* White text */
+    }
+    
+    th, td {
+        border: 1px solid white; /* White borders */
+        padding: 4px;
+        text-align: left;
+        white-space: nowrap;
+    }
+    
+    th {
+        background-color: #444; /* Slightly lighter header background */
+    }
+    
     </style>
 </head>
 <body>
@@ -29,7 +38,7 @@
     <label for="filter">Filter by third column:</label>
     <select id="filter">
         <option value="all">Show All</option>
-    </select>
+    </select><input type="checkbox" id="myCheckbox"> Enable Feature
 
     <table id="data-table">
         <thead>
@@ -86,7 +95,11 @@
 
             Object.keys(jsonData).forEach(key => {
                 jsonData[key].forEach(row => {
-                    if (filterValue === "all" || row[2] == filterValue) {
+                    console.log(document.getElementById("myCheckbox").checked, row[0].toLowerCase() != row[0])
+                    if (document.getElementById("myCheckbox").checked && (row[0].toLowerCase() != row[0] || row[1].toLowerCase() != row[1])){
+
+                    }
+                    else if (filterValue === "all" || row[2] == filterValue) {
                         let tr = document.createElement("tr");
 
                         // Add row number column
@@ -103,7 +116,7 @@
 
                         tableBody.appendChild(tr);
                     }
-                    if (row[2] == 26-filterValue) {
+                    else if (row[2] == 26-filterValue) {
                         let tr = document.createElement("tr");
 
                         // Add row number column
@@ -143,6 +156,18 @@
         dropdown.addEventListener("change", function () {
             loadTable(this.value);
         });
+
+        function onCheckboxToggle(event) {
+            if (event.target.checked) {
+                console.log("Checkbox is checked!");
+            } else {
+                console.log("Checkbox is unchecked!");
+            }
+            loadTable(dropdown.value)
+        }
+
+        // Attach the event listener
+        document.getElementById("myCheckbox").addEventListener("change", onCheckboxToggle);
     </script>
 
 </body>
