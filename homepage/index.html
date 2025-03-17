@@ -32,6 +32,7 @@
         ["project (p)", "n (int)", "Prints all material for a given project ID number"],
         ["weekly", "none", "Prints all material for all projects in chronological order"],
         ["scrabble (s)", "validation_string (str)", "Prints all 2-15 letter words in the Scrabble dictionary that fit the validation string, with * as a wildcard.  For example, 'a*m' would return 'aim arm'"],
+        ["whitelist (w)", "whitelist_letters", "Prints all 2-15 letter words containing only the provided whitelist letters."]
     ]
 
     var sites = [
@@ -90,7 +91,9 @@
             sites.forEach((site, i) => {
                 this.echo(`${i}:${site[0]} | ${site[1]}`)
             })
-        }
+        },
+        whitelist: function(whitelist_letters){words.whitelist(this, whitelist_letters)},
+        w: function(whitelist_letters){words.whitelist(this, whitelist_letters)}
     }, {
         scrollOnEcho: false,
         greetings: greetings.innerHTML
