@@ -65,4 +65,13 @@ function blacklist(terminal, letters){
     }
 }
 
-export{scrabble, whitelist, blacklist}
+function caesar(terminal, string, count){
+    count = (count+260) % 26
+    var newString = string.replace(/[a-zA-Z]/g, (char) => {
+        const base = char >= 'a' ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+        return String.fromCharCode(((char.charCodeAt(0) - base + count) % 26) + base);
+    });
+    terminal.echo(newString)
+}
+
+export{scrabble, whitelist, blacklist, caesar}
