@@ -9,6 +9,7 @@ var links_database = [
     ["/2024/n-letter-bars-2024.html", "/html/img/Boxes7.png"], //wordle word visualizer
     ["/html/data-processing/p5letters input.html", "/html/img/Boxes8.png"], //5-letter word constraints app
     ["/html/data-processing/minifinder.html", "/html/img/Boxes26.png"], //Mini-Finder
+    ["/2025/words_2025/caesar_list.html", "/html/img/Boxes42.png"], //Caesar
     ["/html/dual-stereogram.html", "/html/img/Boxes14.png"], //Dual stereogram test program
     ["Unity/sabodash/index.html", "/html/img/Boxes16.png"], //Sabodash game
     ["Unity/pool/index.html", "/html/img/Boxes17.png"], //Pool game
@@ -31,7 +32,7 @@ var links_database = [
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
     ["/2025/games/stardunk.html", "/html/img/Boxes37.png"], //Stardunk
     ["/2025/games/hexes.html", "/html/img/Boxes40.png"], //Hexes
-    ["/2025/words_2025/caesar_list.html", "/html/img/Boxes40.png"], //Hexes
+    ["/2025/games/morse_spell.html", "/html/img/Boxes41.png"], //Morse
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
