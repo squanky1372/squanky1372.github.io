@@ -175,9 +175,11 @@
 			function draw() {
                 scaleContent()
                 background(0)
+                var ewidth = 600
+                var eheight = 600
 
                 textAlign(LEFT, CENTER)
-                textSize(height / target_text_array.length)
+                textSize(eheight / target_text_array.length)
                 stroke(255)
                 fill(255)
                 // console.log(`writing ${written_text} to screen`)
@@ -186,7 +188,7 @@
                 target_text_array.forEach((word, i) => {
                     if(i == target_text_index) fill(255,0,0).stroke(255,0,0)
                     if(i > target_text_index) fill(255).stroke(255)
-                    text(word, width*0.01, (i+0.5)*(height/target_text_array.length))
+                    text(word, ewidth*0.01, (i+0.5)*(eheight/target_text_array.length))
                 })
 
                 
