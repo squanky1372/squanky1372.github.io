@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes38.png">
+<link rel="icon" href="/html/img/Boxes38.png">
+
+<body>
+    <link rel="stylesheet" href="scoreboard_style.css">
+    <script src="fj_scoreboard_library.js"></script>
+    <script src="../../aa_libraries/p5.js"></script>
+
+    <div class="FontMarket">
+        <table id="table">
+            <tr>
+                <th>==</th>
+                <th>===Name===</th>
+                <th>===Score===</th>
+                <th>===Date===</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        getData()
+
+        async function getData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Get specific parameters
+            const game = urlParams.get('game');
+            const level = urlParams.get('level');
+            const dir = urlParams.get('dir');
+
+            // var game = "hexes"
+            // var level = 1 //used for games with multiple levels (hexes).  Use zero for non-level games (stardunk)
+            // var dir = 1 //determines wheter to sort by highest score or lowest score.  -1 for lowest, 1 for highest
+
+            var url = (`https://squanky.net/scores/scoreboard?game=${game}&level=${level}`)
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const json = await response.json();
+                console.log(json);
+
+                var sortedScores = json.newScores.sort((a, b) => dir*(a.data.score - b.data.score));
+                console.log(sortedScores)
+
+                //Get only the scores for our specific mode
+                if(level != 0) var sortedScores = sortedScores.filter(item => item.data.level == level)
+
+                console.log(sortedScores)
+
+                var playerScores = []
+
+                sortedScores.forEach(score => {
+                    playerScores[score.username] = score
+                    playerScores[score.username].counter = 0
+                })
+
+                console.log(sortedScores)
+
+                sortedScores.forEach(score => {
+                    console.log("previous score: " + playerScores[score.username].counter)
+                    playerScores[score.username].counter = playerScores[score.username].counter + 1
+                    console.log("next score: " + playerScores[score.username].counter)
+                })
+
+                console.log(playerScores)
+
+                const sortedPlayerScores = Object.entries(playerScores)
+                    .sort(([, a], [, b]) => dir*(b.data.score - a.data.score))  // Sort in ascending order (times)
+                    .map(([username, score]) => ({ username, ...score }));
+
+                for (const username in sortedPlayerScores) {
+                    const score = sortedPlayerScores[username];
+                    // const visuals = playerScores[username].visuals
+                    // console.log(username, score);  // Access username and corresponding score
+                    addScore(sortedPlayerScores[username])
+                }
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+       
+    </script>
+
+</body>
+
+</html>

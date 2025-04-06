@@ -1,0 +1,14 @@
+body{margin:0;overflow:hidden;background-color:black; color:green; font-size: 200%}
+@font-face {  
+    src: url(../../aa_libraries/slkscr.ttf) format("truetype");
+    font-family:  Market Deco;
+}
+div.FontMarket { 
+    font-family:  Market Deco;
+}
+td {
+    text-align: center;
+}
+table, th, td {
+    border: 1px solid green;
+}

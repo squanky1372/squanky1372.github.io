@@ -95,7 +95,7 @@
             hexes[18].state = -1
             hexes[18].text = "SCORES"
             hexes[18].color = [0, 255, 255]
-            hexes[18].link = "./hexes_scoreboard_endless.html"
+            hexes[18].link = "/2025/games/scoreboards/omni_scoreboard.html?game=hexes&level=1&dir=1"
             hexes[8].state = -1
             hexes[8].text = "RULES"
             hexes[8].color = [0, 255, 255]
@@ -107,7 +107,7 @@
             hexes[10].state = -1
             hexes[10].text = "SCORES"
             hexes[10].color = [255, 0, 255]
-            hexes[10].link = "./hexes_scoreboard_timed.html"
+            hexes[10].link = "/2025/games/scoreboards/omni_scoreboard.html?game=hexes&level=2&dir=1"
             hexes[12].state = -1
             hexes[12].text = "RULES"
             hexes[12].color = [255, 0, 255]
@@ -119,7 +119,7 @@
             hexes[14].state = -1
             hexes[14].text = "SCORES"
             hexes[14].color = [255, 255, 0]
-            hexes[14].link = "./hexes_scoreboard_clear.html"
+            hexes[14].link = "/2025/games/scoreboards/omni_scoreboard.html?game=hexes&level=3&dir=-1"
             hexes[16].state = -1
             hexes[16].text = "RULES"
             hexes[16].color = [255, 255, 0]
@@ -198,7 +198,7 @@
                 console.log(`Scored ${score} in mode ${mode}`)
                 submitScore("hexes", playerData.hash, {
                     score: score,
-                    mode: mode
+                    level: mode
                 })
             }
             
