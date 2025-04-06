@@ -128,58 +128,71 @@
 <script>
     
     function drawDarts() {
-      background(255);
-      translate(width / 2, height / 2);
-    
-      const numSectors = 20;
-      const angleStep = 360 / numSectors;
-    
-      const bullRadius = 10;
-      const outerBullRadius = 30;
-      const tripleRingInner = 60;
-      const tripleRingOuter = 70;
-      const doubleRingInner = 110;
-      const doubleRingOuter = 120;
-      const boardRadius = 120;
-    
-      stroke(0);
-      strokeWeight(1);
-    
-      // Draw base slices (white and black)
-      for (let i = 0; i < numSectors; i++) {
-        let startAngle = i * angleStep;
-        let endAngle = startAngle + angleStep;
-        fill(i % 2 === 0 ? 'white' : 'black');
-        arc(0, 0, boardRadius * 2, boardRadius * 2, startAngle, endAngle, PIE);
-      }
-    
-      // Draw triple ring
-      for (let i = 0; i < numSectors; i++) {
-        let startAngle = i * angleStep;
-        let endAngle = startAngle + angleStep;
-        fill(i % 2 === 0 ? 'green' : 'red');
-        arc(0, 0, tripleRingOuter * 2, tripleRingOuter * 2, startAngle, endAngle, PIE);
-        fill(i % 2 === 0 ? 'white' : 'black'); // Match slice background
-        arc(0, 0, tripleRingInner * 2, tripleRingInner * 2, startAngle, endAngle, PIE);
-      }
-    
-      // Draw double ring
-      for (let i = 0; i < numSectors; i++) {
-        let startAngle = i * angleStep;
-        let endAngle = startAngle + angleStep;
-        fill(i % 2 === 0 ? 'green' : 'red');
-        arc(0, 0, doubleRingOuter * 2, doubleRingOuter * 2, startAngle, endAngle, PIE);
-        fill(i % 2 === 0 ? 'white' : 'black'); // Match slice background
-        arc(0, 0, doubleRingInner * 2, doubleRingInner * 2, startAngle, endAngle, PIE);
-      }
-    
-      // Outer bull (green)
-      fill('green');
-      ellipse(0, 0, outerBullRadius * 2);
-    
-      // Inner bull (red)
-      fill('red');
-      ellipse(0, 0, bullRadius * 2);
+        background(255);
+        translate(width / 2, height / 2);
+
+        const numSectors = 20;
+        const angleStep = 360 / numSectors;
+
+        const bullRadius = 10;
+        const outerBullRadius = 20;
+        const tripleRingInner = 60;
+        const tripleRingOuter = 70;
+        const doubleRingInner = 110;
+        const doubleRingOuter = 120;
+        const boardRadius = 120;
+
+        stroke(0); // borders between sectors
+        strokeWeight(1);
+
+        // --- 1. Base alternating slices ---
+        for (let i = 0; i < numSectors; i++) {
+            let startAngle = i * angleStep;
+            let endAngle = startAngle + angleStep;
+            fill(i % 2 === 0 ? 'white' : 'black');
+            arc(0, 0, boardRadius * 2, boardRadius * 2, startAngle, endAngle, PIE);
+        }
+
+        // --- 2. Triple ring (red/green slices) ---
+        for (let i = 0; i < numSectors; i++) {
+            let startAngle = i * angleStep;
+            let endAngle = startAngle + angleStep;
+            fill(i % 2 === 0 ? 'green' : 'red');
+            arcRing(tripleRingInner, tripleRingOuter, startAngle, endAngle);
+        }
+
+        // --- 3. Double ring (red/green slices) ---
+        for (let i = 0; i < numSectors; i++) {
+            let startAngle = i * angleStep;
+            let endAngle = startAngle + angleStep;
+            fill(i % 2 === 0 ? 'green' : 'red');
+            arcRing(doubleRingInner, doubleRingOuter, startAngle, endAngle);
+        }
+
+        // --- 4. Outer Bull (green ring) ---
+        fill('green');
+        stroke(0);
+        ellipse(0, 0, outerBullRadius * 2);
+
+        // --- 5. Inner Bull (red dot) ---
+        fill('red');
+        ellipse(0, 0, bullRadius * 2);
+        }
+
+        // Utility function to draw an arc-shaped ring segment
+        function arcRing(innerR, outerR, startAngle, endAngle) {
+        beginShape();
+        for (let a = startAngle; a <= endAngle; a += 1) {
+            let x = cos(a) * outerR;
+            let y = sin(a) * outerR;
+            vertex(x, y);
+        }
+        for (let a = endAngle; a >= startAngle; a -= 1) {
+            let x = cos(a) * innerR;
+            let y = sin(a) * innerR;
+            vertex(x, y);
+        }
+        endShape(CLOSE);
     }
     </script>
 
