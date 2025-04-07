@@ -1,200 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gyro Physics</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        canvas { display: block; margin: auto; }
-        button { margin-top: 20px; padding: 10px; font-size: 16px; }
-    </style>
-</head>
-<body>
-
-    <h1>Gyro Physics</h1>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+            body { text-align: center; font-family: Arial, sans-serif; }
+            canvas { display: block; margin: auto; }
+            button { margin-top: 20px; padding: 10px; font-size: 16px; }
+		</style>
+	</head>
     <p id="status">Press the button to enable gyroscope control.</p>
     <button id="enableGyro">Enable Gyroscope</button>
 
-    <script>
-        let Engine = Matter.Engine,
-            Render = Matter.Render,
-            World = Matter.World,
-            Bodies = Matter.Bodies;
+    <body style="background-color:#0066ff;">
+        <script src="../aa_libraries/matter.js"></script>
+		<script src="../aa_libraries/p5.js"></script>
+        <script src="../aa_libraries/fj_window_library.js"></script>
+        <script src="../aa_libraries/fj_games_library.js"></script>
 
-        let engine;
-        let world;
-        let ground, leftWall, rightWall, topWall;
-        let objects = [];
+		<script>
+			function setup() {
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                // canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+			}
+		</script>
 
-        let gyroEnabled = false;
-
-        var ballSize = 5
-        var ballBounce = 0.9
-        var gravityScale = 5
-
-        function setup() {
-            angleMode(DEGREES);
-            createCanvas(windowWidth*0.9,windowWidth*0.9);
-            engine = Engine.create();
-            world = engine.world;
-            world.gravity.y = 1; // Default gravity downwards
-
-            // Static walls
-            let wallThickness = 50;
-            ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, { isStatic: true });
-            topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, { isStatic: true });
-            leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
-            rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
-
-            World.add(world, [ground, topWall, leftWall, rightWall]);
-
-            // Add some physics objects
-            for (let i = 0; i < 1; i++) {
-                let obj = Bodies.circle(random(width), random(height / 2), ballSize, { restitution: ballBounce });
-                objects.push(obj);
-                World.add(world, obj);
-            }
-
-            Engine.run(engine);
-        }
-
-        function draw() {
-            background(240);
-
-            push()
-            drawDarts()
-            pop()
-
-            // Draw objects
-            fill(127);
-            for (let obj of objects) {
-                let pos = obj.position;
-                ellipse(pos.x, pos.y, ballSize*2);
-            }
-
-            // Draw walls
-            fill(100);
-            rectMode(CENTER);
-            rect(ground.position.x, ground.position.y, width, 50);
-            rect(topWall.position.x, topWall.position.y, width, 50);
-            rect(leftWall.position.x, leftWall.position.y, 50, height);
-            rect(rightWall.position.x, rightWall.position.y, 50, height);
-        }
-
-        async function enableGyro() {
-            if (typeof DeviceMotionEvent.requestPermission === "function") {
-                try {
-                    let permission = await DeviceMotionEvent.requestPermission();
-                    if (permission === "granted") {
-                        gyroEnabled = true;
-                        window.addEventListener("deviceorientation", updateGravity);
-                        document.getElementById("status").innerText = "Gyroscope enabled!";
-                    } else {
-                        document.getElementById("status").innerText = "Permission denied.";
-                    }
-                } catch (error) {
-                    document.getElementById("status").innerText = "Error requesting permission.";
-                    console.error(error);
-                }
-            } else {
-                // For browsers that don't require permission
-                gyroEnabled = true;
-                window.addEventListener("deviceorientation", updateGravity);
-                document.getElementById("status").innerText = "Gyroscope enabled!";
-            }
-        }
-
-        function updateGravity(event) {
-            if (!gyroEnabled) return;
-            
-            // Convert device rotation into gravity vector
-            let beta = event.beta;   // Front-back tilt (-90 to 90)
-            let gamma = event.gamma; // Left-right tilt (-45 to 45)
-
-            // Normalize values to Matter.js gravity range
-            let gx = gamma / 45;  // Horizontal gravity (-1 to 1)
-            let gy = beta / 90;   // Vertical gravity (-1 to 1)
-
-            world.gravity.x = gx*gravityScale;
-            world.gravity.y = gy*gravityScale;
-        }
-
-        document.getElementById("enableGyro").addEventListener("click", enableGyro);
-    </script>
-
-<script>
+        <script>
+            let Engine = Matter.Engine,
+                Render = Matter.Render,
+                World = Matter.World,
+                Bodies = Matter.Bodies;
     
-    function drawDarts() {
-        background(255);
-        translate(width / 2, height / 2);
-
-        const numSectors = 20;
-        const angleStep = 360 / numSectors;
-
-        const bullRadius = 10;
-        const outerBullRadius = 20;
-        const tripleRingInner = 60;
-        const tripleRingOuter = 70;
-        const doubleRingInner = 110;
-        const doubleRingOuter = 120;
-        const boardRadius = 120;
-
-        stroke(0); // borders between sectors
-        strokeWeight(1);
-
-        // --- 1. Base alternating slices ---
-        for (let i = 0; i < numSectors; i++) {
-            let startAngle = i * angleStep;
-            let endAngle = startAngle + angleStep;
-            fill(i % 2 === 0 ? 'white' : 'black');
-            arc(0, 0, boardRadius * 2, boardRadius * 2, startAngle, endAngle, PIE);
-        }
-
-        // --- 2. Triple ring (red/green slices) ---
-        for (let i = 0; i < numSectors; i++) {
-            let startAngle = i * angleStep;
-            let endAngle = startAngle + angleStep;
-            fill(i % 2 === 0 ? 'green' : 'red');
-            arcRing(tripleRingInner, tripleRingOuter, startAngle, endAngle);
-        }
-
-        // --- 3. Double ring (red/green slices) ---
-        for (let i = 0; i < numSectors; i++) {
-            let startAngle = i * angleStep;
-            let endAngle = startAngle + angleStep;
-            fill(i % 2 === 0 ? 'green' : 'red');
-            arcRing(doubleRingInner, doubleRingOuter, startAngle, endAngle);
-        }
-
-        // --- 4. Outer Bull (green ring) ---
-        fill('green');
-        stroke(0);
-        ellipse(0, 0, outerBullRadius * 2);
-
-        // --- 5. Inner Bull (red dot) ---
-        fill('red');
-        ellipse(0, 0, bullRadius * 2);
-        }
-
-        // Utility function to draw an arc-shaped ring segment
-        function arcRing(innerR, outerR, startAngle, endAngle) {
-        beginShape();
-        for (let a = startAngle; a <= endAngle; a += 1) {
-            let x = cos(a) * outerR;
-            let y = sin(a) * outerR;
-            vertex(x, y);
-        }
-        for (let a = endAngle; a >= startAngle; a -= 1) {
-            let x = cos(a) * innerR;
-            let y = sin(a) * innerR;
-            vertex(x, y);
-        }
-        endShape(CLOSE);
-    }
-    </script>
-
-</body>
+            let engine;
+            let world;
+            let ground, leftWall, rightWall, topWall;
+            let objects = [];
+    
+            let gyroEnabled = false;
+    
+            var ballSize = 5
+            var ballBounce = 0.9
+            var gravityScale = 5
+    
+            function setup() {
+                angleMode(DEGREES);
+                createCanvas(windowWidth*0.95,windowWidth*0.95);
+                engine = Engine.create();
+                world = engine.world;
+                world.gravity.y = 1; // Default gravity downwards
+    
+                // Static walls
+                let wallThickness = 50;
+                ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, { isStatic: true });
+                topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, { isStatic: true });
+                leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+                rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+    
+                World.add(world, [ground, topWall, leftWall, rightWall]);
+    
+                // Add some physics objects
+                for (let i = 0; i < 1; i++) {
+                    let obj = Bodies.circle(random(width), random(height / 2), ballSize, { restitution: ballBounce });
+                    objects.push(obj);
+                    World.add(world, obj);
+                }
+    
+                Engine.run(engine);
+            }
+    
+            function draw() {
+                background(240);
+                push()
+                translate(width/2, height/2)
+                
+                // scaleContent()
+                scale(width/600)
+                noFill()
+                push()
+                    scale(600/240)
+                    drawDarts()
+                pop()
+                pop()
+    
+                // Draw objects
+                fill(127);
+                for (let obj of objects) {
+                    let pos = obj.position;
+                    ellipse(pos.x, pos.y, ballSize*2);
+                }
+    
+                // Draw walls
+                fill(100);
+                rectMode(CENTER);
+                // rect(ground.position.x, ground.position.y, width, 50);
+                // rect(topWall.position.x, topWall.position.y, width, 50);
+                // rect(leftWall.position.x, leftWall.position.y, 50, height);
+                // rect(rightWall.position.x, rightWall.position.y, 50, height);
+            }
+    
+            async function enableGyro() {
+                if (typeof DeviceMotionEvent.requestPermission === "function") {
+                    try {
+                        let permission = await DeviceMotionEvent.requestPermission();
+                        if (permission === "granted") {
+                            gyroEnabled = true;
+                            window.addEventListener("deviceorientation", updateGravity);
+                            document.getElementById("status").innerText = "Gyroscope enabled!";
+                        } else {
+                            document.getElementById("status").innerText = "Permission denied.";
+                        }
+                    } catch (error) {
+                        document.getElementById("status").innerText = "Error requesting permission.";
+                        console.error(error);
+                    }
+                } else {
+                    // For browsers that don't require permission
+                    gyroEnabled = true;
+                    window.addEventListener("deviceorientation", updateGravity);
+                    document.getElementById("status").innerText = "Gyroscope enabled!";
+                }
+            }
+    
+            function updateGravity(event) {
+                if (!gyroEnabled) return;
+                
+                // Convert device rotation into gravity vector
+                let beta = event.beta;   // Front-back tilt (-90 to 90)
+                let gamma = event.gamma; // Left-right tilt (-45 to 45)
+    
+                // Normalize values to Matter.js gravity range
+                let gx = gamma / 45;  // Horizontal gravity (-1 to 1)
+                let gy = beta / 90;   // Vertical gravity (-1 to 1)
+    
+                world.gravity.x = gx*gravityScale;
+                world.gravity.y = gy*gravityScale;
+            }
+    
+            document.getElementById("enableGyro").addEventListener("click", enableGyro);
+        </script>
+        <script>
+            function drawDarts() {
+                background(255);
+        
+                const numSectors = 20;
+                const angleStep = 360 / numSectors;
+        
+                const bullRadius = 10;
+                const outerBullRadius = 20;
+                const tripleRingInner = 60;
+                const tripleRingOuter = 70;
+                const doubleRingInner = 110;
+                const doubleRingOuter = 120;
+                const boardRadius = 120;
+        
+                stroke(0); // borders between sectors
+                strokeWeight(1);
+        
+                // --- 1. Base alternating slices ---
+                for (let i = 0; i < numSectors; i++) {
+                    let startAngle = i * angleStep;
+                    let endAngle = startAngle + angleStep;
+                    fill(i % 2 === 0 ? 'white' : 'black');
+                    arc(0, 0, boardRadius * 2, boardRadius * 2, startAngle, endAngle, PIE);
+                }
+        
+                // --- 2. Triple ring (red/green slices) ---
+                for (let i = 0; i < numSectors; i++) {
+                    let startAngle = i * angleStep;
+                    let endAngle = startAngle + angleStep;
+                    fill(i % 2 === 0 ? 'green' : 'red');
+                    arcRing(tripleRingInner, tripleRingOuter, startAngle, endAngle);
+                }
+        
+                // --- 3. Double ring (red/green slices) ---
+                for (let i = 0; i < numSectors; i++) {
+                    let startAngle = i * angleStep;
+                    let endAngle = startAngle + angleStep;
+                    fill(i % 2 === 0 ? 'green' : 'red');
+                    arcRing(doubleRingInner, doubleRingOuter, startAngle, endAngle);
+                }
+        
+                // --- 4. Outer Bull (green ring) ---
+                fill('green');
+                stroke(0);
+                ellipse(0, 0, outerBullRadius * 2);
+        
+                // --- 5. Inner Bull (red dot) ---
+                fill('red');
+                ellipse(0, 0, bullRadius * 2);
+                }
+        
+            // Utility function to draw an arc-shaped ring segment
+            function arcRing(innerR, outerR, startAngle, endAngle) {
+                beginShape();
+                for (let a = startAngle; a <= endAngle; a += 1) {
+                    let x = cos(a) * outerR;
+                    let y = sin(a) * outerR;
+                    vertex(x, y);
+                }
+                for (let a = endAngle; a >= startAngle; a -= 1) {
+                    let x = cos(a) * innerR;
+                    let y = sin(a) * innerR;
+                    vertex(x, y);
+                }
+                endShape(CLOSE);
+            }
+        </script>
+    </body>
 </html>
