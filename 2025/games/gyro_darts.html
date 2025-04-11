@@ -65,6 +65,8 @@
             var ballSize = 5
             var ballBounce = 0.9
             var gravityScale = 5
+
+            var shots = []
     
             function setup() {
                 angleMode(DEGREES);
@@ -116,18 +118,24 @@
                     let pos = obj.position;
                     ellipse(pos.x, pos.y, ballSize*2);
                 }
+
+                shots.forEach(point => {
+                    fill("cyan")
+                    circle(point[0], point[1], 10)
+                })
                 
                 //get and display points
                 var points = getPoints(mouseX, mouseY)
                 var points2 = getPoints(objects[0].position.x, objects[0].position.y)
-                console.log(points, points2)
-                console.log(objects[0].position.x, objects[0].position.y)
+                // console.log(points, points2)
+                // console.log(objects[0].position.x, objects[0].position.y)
                 textSize(100)
                 textAlign(LEFT, TOP)
                 text(points2, 0, 0)
 
                 textAlign(RIGHT, TOP)
                 text(score, width, 0)
+
             }
 
             function getPoints(posX, posY){
@@ -202,8 +210,11 @@
                 // console.log(angle)
 
                 var points = getPoints(objects[0].position.x, objects[0].position.y)
+                shots.push([objects[0].position.x, objects[0].position.y])
+                console.log(shots)
                 score += points
             }
+            function mouseReleased(){}
         </script>
         <script>
             function drawDarts() {
@@ -271,7 +282,7 @@
                 rotate(-18*5.5)
                 for(i in slice_values){
                     fill(i % 2 === 0 ? 'red' : 'green');
-                    console.log(i)
+                    // console.log(i)
                     text(slice_values[i], 0,-(tripleRingInner+doubleRingOuter)/2)
                     rotate(18)
                 }
