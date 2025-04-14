@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Nested Array to HTML</title>
+  
+  <style>
+  * {
+    font-size: 20px; /* Adjust this value to your preferred font size */
+    font-family: Arial, sans-serif; /* Optional, for consistent font style */
+  }
+  
+  details[open] summary {
+    font-size: 20px; /* Ensure the font size stays the same when expanded */
+  }
+  </style>
+</head>
+<body>
+  <h2>Nested Array Output</h2>
+  <div id="output"></div>
+  <div id="container"></div>
+</body>
+</html>
+
+
+
+<script>
+  const response = fetch(`https://squanky.net/scores/getDev`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json()
+        }) // Parse the response body as JSON
+        .then(data => {
+            console.log(data)
+
+            var players = {}
+
+            data.playerArray.forEach(player_data => {
+                players[player_data.hash] = player_data
+                players[player_data.hash].scores = []
+            })
+
+            data.scoresArray.forEach(score => {
+                players[score.hash].scores.push(score)
+            })
+            console.log(players)
+
+            console.log('2')
+            
+            const container = document.getElementById('container');
+
+            for(let person in players){
+                console.log(person)
+                console.log(players[person])
+                const details = document.createElement('details');
+                const summary = document.createElement('summary');
+                summary.textContent = `${players[person].username}`;
+                details.appendChild(summary);
+
+                const ul = document.createElement('ul');
+                console.log(players[person].scores)
+
+                const li = document.createElement('li');
+                var score_text = `Hash: ${players[person].hash}`
+                li.textContent = score_text;
+                ul.appendChild(li);
+
+                players[person].scores.forEach(score => {
+                    const li = document.createElement('li');
+                    var score_text = `${score.gameTitle}: ${JSON.stringify(score.data)}`
+                    li.textContent = score_text;
+                    ul.appendChild(li);
+                });
+
+                details.appendChild(ul);
+                container.appendChild(details);
+            };
+        })   // Log the parsed data
+        .catch(error => console.error(error)); // Handle errors
+
+    
+</script>
