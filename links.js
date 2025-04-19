@@ -36,6 +36,7 @@ var links_database = [
     ["/2025/games/morse_alphabet.html?hash=feli13", "/html/img/Boxes41.png"], //Morse 2
     ["/2025/games/gyro_darts.html", "/html/img/Boxes35.png"], //Gyro darts
     ["/2025/games/dev_data.html", "/html/img/Boxes35.png"], //Gyro darts
+    ["/2025/games/orbital.html", "/html/img/Boxes35.png"], //Orbital
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
