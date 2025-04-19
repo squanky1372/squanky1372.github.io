@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body style="background-color:#0066ff;">
+        <script src="../aa_libraries/matter.js"></script>
+
+        
+		<script src="../aa_libraries/p5.js"></script>
+		<script>
+            let angle = 0; // current angle of orbit
+            let a = 200;   // horizontal radius (major axis)
+            let b = 100;   // vertical radius (minor axis)
+			function setup() {
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+			}
+
+			function draw() {
+                scaleContent()
+
+                var list = [0, 1, 2, 3, 4, 5, 6]
+                
+                background(0, 0, 0, 10)
+                drawOrbit()
+            }
+
+            function drawOrbit() {
+                translate(300,300); // move origin to center of canvas
+
+                // calculate x and y position of orbiting circle
+                let x = a * cos(angle);
+                let y = b * sin(angle);
+
+                // draw central point
+                fill(0);
+                ellipse(0, 0, 10);
+
+                // draw orbiting circle
+                fill(100, 150, 255);
+                var size = cos(angle - Math.PI/2)*20 + 100
+                console.log(size)
+                ellipse(x, y, size);
+
+                angle += 0.03; // change this for faster/slower orbit
+            }
+		</script>
+        
+        <script src="../aa_libraries/fj_window_library.js"></script>
+        <script src="../aa_libraries/fj_games_library.js"></script>
+    </body>
+</html>

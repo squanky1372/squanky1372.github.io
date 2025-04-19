@@ -1,6 +1,12 @@
 function addScore(score) {
-    console.log(score)
+    console.log(score);
     var table = document.getElementById("table");
+
+    // Calculate placement number (exclude header row if present)
+    var placement = table.rows.length; // This includes the header row as row 0
+    if (table.tHead) {
+        placement -= 1;
+    }
 
     var row = table.insertRow();
     var cell1 = row.insertCell(0);
@@ -8,20 +14,23 @@ function addScore(score) {
     var cell3 = row.insertCell(2);
     var cell4 = row.insertCell(3);
     var cell5 = row.insertCell(4);
+    var cell6 = row.insertCell(5);
 
-    cell2.innerHTML = score.username;
-    cell3.innerHTML = score.data.score;
-    cell4.innerHTML = score.timestamp.substring(5, 10) + "-" + score.timestamp.substring(2, 4);
-    cell5.innerHTML = score.counter;
+    cell2.innerHTML = placement; // Placement number (1, 2, 3, ...)
+
+    cell3.innerHTML = score.username;
+    cell4.innerHTML = score.data.score;
+    cell5.innerHTML = score.timestamp.substring(5, 10) + "-" + score.timestamp.substring(2, 4);
+    cell6.innerHTML = score.counter;
 
     // Create a div and set its ID
     var div = document.createElement("div");
     div.id = "scoreDiv-" + score.username; // Unique ID using the username
-    cell1.appendChild(div); // Append div to the new cell
-
+    cell1.appendChild(div);
 
     createCanvasInDiv("scoreDiv-" + score.username, score.visuals);
 }
+
 
 
 function createCanvasInDiv(divId, visuals) {
