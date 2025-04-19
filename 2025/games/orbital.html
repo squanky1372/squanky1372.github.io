@@ -91,7 +91,7 @@
             var star_minimum = 0
             strokeWeight(random(2))
             stars.forEach(star => {
-                circle((star[0]+((millis()) / star_rate))%width, star[1], random(star_variance)+star_minimum+star[2])
+                circle((star[0]+((millis()) / star_rate))%600, star[1], random(star_variance)+star_minimum+star[2])
             })
             pop()
         }
