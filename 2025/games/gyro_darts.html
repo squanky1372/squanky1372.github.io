@@ -163,8 +163,9 @@
             }
 
             function getPointsConcentric(posX, posY){
-                var distance = dist(posX, posY, width / 2, height / 2);
-                var dist_percent = distance / doubleRingOuter
+                var rad = dist(posX, posY, width / 2, height / 2);
+                var rad_value = (rad * 600/width * 240/600)
+                var dist_percent = rad / (doubleRingOuter*dartboard_scale)
                 var score = (dist_percent > 1) ? 0 : 100 - (dist_percent*100)
                 return ceil(score)
             }
