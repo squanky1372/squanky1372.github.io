@@ -163,7 +163,10 @@
             }
 
             function getPointsConcentric(posX, posY){
-                return dist(posX, posY, width / 2, height / 2);
+                var dist = dist(posX, posY, width / 2, height / 2);
+                var dist_percent = dist / doubleRingOuter
+                var score = (dist_percent > 100) ? 0 : 100 - (dist_percent*100)
+                return ceil(score)
             }
     
             async function enableGyro() {
