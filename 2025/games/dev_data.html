@@ -60,7 +60,8 @@
                 console.log(players[person])
                 const details = document.createElement('details');
                 const summary = document.createElement('summary');
-                summary.textContent = `${players[person].username}`;
+                if(players[person].visuals) summary.textContent = `${players[person].visuals.emoji}:${players[person].username}`;
+                else summary.textContent = `New:${players[person].username}`;
                 details.appendChild(summary);
 
                 const ul = document.createElement('ul');

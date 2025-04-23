@@ -64,7 +64,7 @@
     
             var ballSize = 5
             var ballBounce = 0.9
-            var gravityScale = 5
+            var gravityScale = 10
 
             var shots = []
     
@@ -161,6 +161,10 @@
                 if(rad_value < doubleRingOuter*dartboard_scale) return slice_value * 2
                 return 0
             }
+
+            function getPointsConcentric(posX, posY){
+                return dist(posX, posY, width / 2, height / 2);
+            }
     
             async function enableGyro() {
                 if (typeof DeviceMotionEvent.requestPermission === "function") {
@@ -209,7 +213,7 @@
                 // var angle = atan(mouseX/mouseY)
                 // console.log(angle)
 
-                var points = getPoints(objects[0].position.x, objects[0].position.y)
+                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 shots.push([objects[0].position.x, objects[0].position.y])
                 console.log(shots)
                 score += points
