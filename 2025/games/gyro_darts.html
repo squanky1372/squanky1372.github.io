@@ -19,19 +19,6 @@
         <script src="../aa_libraries/fj_window_library.js"></script>
         <script src="../aa_libraries/fj_games_library.js"></script>
 
-		<script>
-			function setup() {
-                let size = min(windowWidth, windowHeight) * 0.95;
-  
-                // Create the canvas with the calculated size
-                // canvas = createCanvas(size, size);
-                
-                // Center the canvas on the screen
-                centerCanvas();
-                disableCanvasDefaults()
-			}
-		</script>
-
         <script>
 
             var score = 0
@@ -67,11 +54,20 @@
             var gravityScale = 10
 
             var shots = []
+
+            var shotCooldown = 500
+            var canShoot = true
+            var shotLimit = 10
     
             function setup() {
                 angleMode(DEGREES);
-                createCanvas(windowWidth*0.95,windowWidth*0.95);
+                canvas = createCanvas(windowWidth*0.95,windowWidth*0.95);
                 setupMatter()
+                
+                let size = min(windowWidth, windowHeight) * 0.95;
+                centerCanvas();
+                disableCanvasDefaults()
+
             }
 
             function setupMatter(){
@@ -135,6 +131,10 @@
 
                 textAlign(RIGHT, TOP)
                 text(score, width, 0)
+
+                
+                textAlign(RIGHT, BOTTOM)
+                text(points, width, height)
 
             }
 
@@ -211,18 +211,19 @@
             document.getElementById("enableGyro").addEventListener("click", enableGyro);
 
             function touchEnded(){
-                // console.log(mouseX, mouseY)
-                // console.log(mouseX-width/2, mouseY-width/2)
-
-                // var angle = atan(mouseX/mouseY)
-                // console.log(angle)
-
+                if(!canShoot) return
+                if(shots.length >= shotLimit) return
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 shots.push([objects[0].position.x, objects[0].position.y])
                 console.log(shots)
                 score += points
+                canShoot = false
+                setTimeout(setShootFlag, shotCooldown)
             }
             function mouseReleased(){}
+            function setShootFlag(){
+                canShoot = true
+            }
         </script>
         <script>
             function drawDarts() {
