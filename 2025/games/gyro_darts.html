@@ -55,9 +55,11 @@
 
             var shots = []
 
+            var shootingEnabled = false
             var shotCooldown = 500
             var canShoot = true
             var shotLimit = 10
+            var archeryLength = 10000
     
             function setup() {
                 angleMode(DEGREES);
@@ -94,6 +96,14 @@
                 Engine.run(engine);
             }
     
+            function startArchery(){
+                setTimeout(endArchery, archeryLength)
+            }
+
+            function endArchery(){
+                shootingEnabled = false
+            }
+
             function draw() {
                 background(0);
                 push()
@@ -178,6 +188,10 @@
                             gyroEnabled = true;
                             window.addEventListener("deviceorientation", updateGravity);
                             document.getElementById("status").innerText = "Gyroscope enabled!";
+                            
+                            shootingEnabled = true
+                            startArchery()
+
                         } else {
                             document.getElementById("status").innerText = "Permission denied.";
                         }
@@ -211,6 +225,7 @@
             document.getElementById("enableGyro").addEventListener("click", enableGyro);
 
             function touchEnded(){
+                if(!shootingEnabled) return
                 if(!canShoot) return
                 if(shots.length >= shotLimit) return
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
