@@ -60,6 +60,7 @@
             var canShoot = true
             var shotLimit = 10
             var archeryLength = 10000
+            var textprompt = "Waiting"
     
             function setup() {
                 angleMode(DEGREES);
@@ -98,10 +99,12 @@
     
             function startArchery(){
                 setTimeout(endArchery, archeryLength)
+                textPrompt = "Started"
             }
 
             function endArchery(){
                 shootingEnabled = false
+                textPrompt = "Ended"
             }
 
             function draw() {
@@ -141,10 +144,12 @@
 
                 textAlign(RIGHT, TOP)
                 text(score, width, 0)
-
                 
                 textAlign(RIGHT, BOTTOM)
                 text(points, width, height)
+
+                textAlign(LEFT, BOTTOM)
+                text(textprompt, 0, height)
 
             }
 
