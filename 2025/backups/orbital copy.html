@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body style="background-color:#0066ff;">
+        <script src="../aa_libraries/matter.js"></script>
+
+        
+		<script src="../aa_libraries/p5.js"></script>
+		<script>
+            let angle = 0; // current angle of orbit
+            let a = 200;   // horizontal radius (major axis)
+            let b = 50;   // vertical radius (minor axis)
+			function setup() {
+                setupStars()
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+			}
+
+			function draw() {
+                scaleContent();
+
+                background(0, 0, 0, 30);
+
+                drawStars()
+                translate(300, 300); // move origin to center of canvas
+
+                // Create list of orbiting circles with calculated positions
+                var colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+                let circles = [];
+                for (let i = 0; i < colors.length; i++) {
+                    let theta = angle + ((Math.PI / 2) * 1 / colors.length) * i * 4;
+                    let x = a * cos(theta);
+                    let y = b * sin(theta);
+                    let size = cos(theta - Math.PI / 2) * 40 + 80;
+                    let color = colors[i]
+                    circles.push({ x, y, size, theta, color });
+                }
+                circles.push({x:0,y:0,theta:0,color:"white",size:100})
+
+                // Sort by y to draw further circles first
+                circles.sort((a, b) => a.y - b.y);
+
+                // Draw central point
+                fill(0);
+                ellipse(0, 0, 10);
+
+                // Draw orbiting circles in sorted order
+                for (let circle of circles) {
+                    console.log(circle)
+                    noStroke()
+                    fill(circle.color);
+                    ellipse(circle.x, circle.y + sin(angle)*100, circle.size);
+                }
+
+                angle += 0.03;
+            }
+
+		</script>
+
+        <script>//stars
+        
+
+        function setupStars(){
+            stars = []
+            var stars_count = 500
+            var star_size = 2
+            for(var i = 0; i < stars_count; i++){
+                stars.push([random(600), random(600), random(star_size)])
+            }
+        }
+        function drawStars(){
+            push()
+            fill(255)
+            noStroke()
+            var star_rate = 10 //cycles once every minute
+            var star_variance = 2
+            var star_minimum = 0
+            strokeWeight(random(2))
+            stars.forEach(star => {
+                circle((star[0]+((millis()) / star_rate))%600, star[1], random(star_variance)+star_minimum+star[2])
+            })
+            pop()
+        }
+        </script>
+        
+        <script src="../aa_libraries/fj_window_library.js"></script>
+        <script src="../aa_libraries/fj_games_library.js"></script>
+    </body>
+</html>

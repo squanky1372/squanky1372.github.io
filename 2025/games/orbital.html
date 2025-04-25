@@ -10,14 +10,15 @@
 		</style>
 	</head>
     <body style="background-color:#0066ff;">
-        <script src="../aa_libraries/matter.js"></script>
-
-        
-		<script src="../aa_libraries/p5.js"></script>
+        <script src="../aa_libraries/matter.js"></script>        
+		<script src="../aa_libraries/p5.js"></script>    
+		<script src="../aa_libraries/fj_games_library.js"></script>    
+		<script src="../aa_libraries/fj_window_library.js"></script>
 		<script>
-            let angle = 0; // current angle of orbit
-            let a = 200;   // horizontal radius (major axis)
-            let b = 50;   // vertical radius (minor axis)
+            // let angle = 0;              // current angle of orbit
+            let a = 200;                // horizontal radius (major axis)
+            let b = 50;                 // vertical radius (minor axis)
+            let vertical_oscillate = 10 // oscillate the whole orbit up and down
 			function setup() {
                 setupStars()
                 let size = min(windowWidth, windowHeight) * 0.95;
@@ -30,6 +31,8 @@
                 disableCanvasDefaults()
 			}
 
+            var circles = []
+
 			function draw() {
                 scaleContent();
 
@@ -39,17 +42,35 @@
                 translate(300, 300); // move origin to center of canvas
 
                 // Create list of orbiting circles with calculated positions
-                var colors = ["red", "orange", "yellow", "green", "blue", "purple"]
-                let circles = [];
-                for (let i = 0; i < colors.length; i++) {
-                    let theta = angle + ((Math.PI / 2) * 1 / colors.length) * i * 4;
+                var balls = [
+                    // {color:"red",       title:"Morse",    link:"morse_alphabet.html"},
+                    {color:"orange",    title:"Stardunk",    link:"stardunk.html", icon:"🏀"},
+                    {color:"yellow",    title:"Hexes",    link:"hexes.html", icon:"⬡"},
+                    // {color:"lime",     title:"for", link:"link.html"},
+                    // {color:"green",      title:"fiv", link:"link.html"},
+                    // {color:"turquoise",    title:"six", link:"link.html"},
+                    // {color:"cyan",    title:"six", link:"link.html"},
+                    // {color:"DodgerBlue",    title:"six", link:"link.html"},
+                    // {color:"blue",    title:"six", link:"link.html"},
+                    {color:"purple",    title:"Morse", link:"morse_alphabet.html", icon:"•-•"},
+                    // {color:"magenta",    title:"six", link:"link.html"},
+                    // {color:"violet",    title:"six", link:"link.html"},
+                    {color:"gray",      title:"FAQ", link:"help.html", icon:"?"},
+                    {color:"lightgray", title:"You", link:"link.html", icon:""},
+                ]
+                let total_size = 60
+
+                circles = [];
+                for (let i = 0; i < balls.length; i++) {
+                    let theta = angle + ((Math.PI / 2) * 1 / balls.length) * i * 4;
                     let x = a * cos(theta);
                     let y = b * sin(theta);
-                    let size = cos(theta - Math.PI / 2) * 40 + 80;
-                    let color = colors[i]
-                    circles.push({ x, y, size, theta, color });
+                    let size = cos(theta - Math.PI / 2) * (total_size) + total_size*2;
+                    console.log(total_size)
+                    circles.push({ x, y, size, theta, ball:balls[i] });
                 }
-                circles.push({x:0,y:0,theta:0,color:"white",size:100})
+                white_ball = {color:"white",     title:"zer", link:"link.html"},
+                circles.push({x:0,y:0,theta:0,ball:white_ball,size:100})
 
                 // Sort by y to draw further circles first
                 circles.sort((a, b) => a.y - b.y);
@@ -60,16 +81,82 @@
 
                 // Draw orbiting circles in sorted order
                 for (let circle of circles) {
-                    console.log(circle)
+                    // console.log(circle)
+                    push()
+                    translate(circle.x, circle.y, sin(angle)*vertical_oscillate)
+                    scale(circle.size)
                     noStroke()
-                    fill(circle.color);
-                    ellipse(circle.x, circle.y + sin(angle)*100, circle.size);
+                    fill(circle.ball.color);
+                    ellipse(0, 0, 1);
+                    fill(0)
+                    textAlign(CENTER, CENTER)
+                    textSize(0.8)
+                    text(circle.ball.icon, 0,0.05)
+                    pop()
                 }
+                
+                stroke(255)
+                fill(255)
+                textAlign(CENTER, CENTER)
+                textSize(circles[circles.length-1].size/4)
+                text(circles[circles.length-1].ball.title, 
+                    circles[circles.length-1].x, 
+                    circles[circles.length-1].y+ sin(angle)*vertical_oscillate + circles[circles.length-1].size*0.6)
 
-                angle += 0.03;
+                // angle += 0.03;
             }
 
 		</script>
+
+        <script> //touch controls
+            let angle = 0;
+            let lastTouchX = null;
+            let touchStartX = null;
+            let touchStartTime = null;
+            let tapThreshold = 10;    // Max movement to count as a tap
+            let rotationSensitivity = 0.01;
+            let tapped = false;       // You can respond to this flag in your draw()
+
+            function touchStarted() {
+            if (touches.length > 0) {
+                touchStartX = touches[0].x;
+                lastTouchX = touchStartX;
+                touchStartTime = millis();
+            }
+            return false;
+            }
+
+            function touchMoved() {
+            if (touches.length > 0 && lastTouchX !== null) {
+                let currentX = touches[0].x;
+                let dx = currentX - lastTouchX;
+
+                angle += dx * rotationSensitivity;
+
+                lastTouchX = currentX;
+            }
+            return false;
+            }
+
+            function touchEnded() {
+            if (touchStartX !== null && touches.length === 0) {
+                let totalMovement = abs(mouseX - touchStartX);
+                let duration = millis() - touchStartTime;
+
+                if (totalMovement < tapThreshold) {
+                    tapped = !tapped;
+                    console.log("tapped")
+                    window.location.href=circles[circles.length-1].ball.link
+                }
+            }
+
+            lastTouchX = null;
+            touchStartX = null;
+            touchStartTime = null;
+            return false;
+            }
+
+        </script>
 
         <script>//stars
         
@@ -96,8 +183,5 @@
             pop()
         }
         </script>
-        
-        <script src="../aa_libraries/fj_window_library.js"></script>
-        <script src="../aa_libraries/fj_games_library.js"></script>
     </body>
 </html>
