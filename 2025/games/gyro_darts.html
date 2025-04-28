@@ -61,6 +61,9 @@
             var shotLimit = 10
             var archeryLength = 10000
             var textprompt = "Waiting"
+
+            var nextNumber = 1
+            var countingStart
     
             function setup() {
                 angleMode(DEGREES);
@@ -99,7 +102,12 @@
     
             function startArchery(){
                 setTimeout(endArchery, archeryLength)
-                textprompt = "Started"
+                textprompt = "Started 1"
+            }
+
+            function startCounting(){
+                textprompt = "Started 2"
+
             }
 
             function endArchery(){
@@ -135,8 +143,8 @@
                 })
                 
                 //get and display points
-                var points = getPointsConcentric(mouseX, mouseY)
-                var points2 = getPointsConcentric(objects[0].position.x, objects[0].position.y)
+                var points = getPoints(mouseX, mouseY)
+                var points2 = getPoints(objects[0].position.x, objects[0].position.y)
                 // console.log(points, points2)
                 // console.log(objects[0].position.x, objects[0].position.y)
                 textSize(100)
@@ -207,7 +215,7 @@
                             document.getElementById("status").innerText = "Gyroscope enabled!";
                             
                             shootingEnabled = true
-                            startArchery()
+                            startCounting()
 
                         } else {
                             document.getElementById("status").innerText = "Permission denied.";
