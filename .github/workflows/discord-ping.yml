@@ -1,6 +1,6 @@
-- name: Send Discord notification
-  run: |
-    curl -H "Content-Type: application/json" \
-      -X POST \
-      -d '{"content": "✅ GitHub Pages deployment complete for '${{ github.repository }}'! 🌐 Visit: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"}' \
-      ${{ secrets.DISCORD_WEBHOOK }}
+name: Send Discord notification
+run: |
+  curl -H "Content-Type: application/json" \
+    -X POST \
+    -d '{"content": "✅ GitHub Pages deployment complete for '${{ github.repository }}'! 🌐 Visit: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"}' \
+    ${{ secrets.DISCORD_WEBHOOK }}
