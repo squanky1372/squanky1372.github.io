@@ -188,12 +188,12 @@
                 var rad_value = rad_value2[rad_dist]
                 var rad_value = (rad * 600/width * 240/600)
 
-                if(rad_value < bullRadius*dartboard_scale)      return (slice_value, 0)
-                if(rad_value < outerBullRadius*dartboard_scale) return (slice_value, 1)
-                if(rad_value < tripleRingInner*dartboard_scale) return (slice_value, 2)
-                if(rad_value < tripleRingOuter*dartboard_scale) return (slice_value, 3)
-                if(rad_value < doubleRingInner*dartboard_scale) return (slice_value, 4)
-                if(rad_value < doubleRingOuter*dartboard_scale) return (slice_value, 5)
+                if(rad_value < bullRadius*dartboard_scale)      return [slice_value, 0]
+                if(rad_value < outerBullRadius*dartboard_scale) return [slice_value, 1]
+                if(rad_value < tripleRingInner*dartboard_scale) return [slice_value, 2]
+                if(rad_value < tripleRingOuter*dartboard_scale) return [slice_value, 3]
+                if(rad_value < doubleRingInner*dartboard_scale) return [slice_value, 4]
+                if(rad_value < doubleRingOuter*dartboard_scale) return [slice_value, 5]
                 return (slice_value, 6)
             }
 
