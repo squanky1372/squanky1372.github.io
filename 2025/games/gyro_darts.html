@@ -60,7 +60,7 @@
             var shootingEnabled = false
             var shotCooldown = 500
             var canShoot = true
-            var shotLimit = 10
+            var shotLimit = 999
             var archeryLength = 10000
             var textprompt = "Waiting"
 
@@ -105,6 +105,7 @@
                 setTimeout(endArchery, archeryLength)
                 textprompt = "Started 1"
                 mode = 1
+                shotLimit = 10
             }
 
             function startCounting(){
@@ -112,6 +113,7 @@
                 countingStart = millis()
                 score = 1
                 mode = 2
+                shotLimit = 999
             }
 
             function endArchery(){
@@ -143,7 +145,6 @@
                 shots.forEach(point => {
                     fill("cyan")
                     circle(point[0], point[1], 10)
-                    text(getSegment(point[0], point[1])[0], point[0], point[1] - 10)
                 })
                 
                 //get and display points
@@ -345,7 +346,7 @@
             function drawDartText(){
                 textSize(30*dartboard_scale)
                 textAlign(CENTER, CENTER)
-                var slice_values = [11,14,9,12,5,20,1,18,4,13,6,10,15,2,17,3,19,7,16,18]
+                var slice_values = [11,14,9,12,5,20,1,18,4,13,6,10,15,2,17,3,19,7,16,8]
                 rotate(-18*5.5)
                 for(i in slice_values){
                     fill(i % 2 === 0 ? 'red' : 'green');
