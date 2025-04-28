@@ -177,12 +177,11 @@
                     return segment[0] * segmentScaler[segment[1]-2]
                 }
             }
-
+            
             function getSegment(posX, posY){
                 var pos = [posX-width/2, posY-height/2]
                 var angle = atan2(pos[1], pos[0]) + 180 + 9
                 var slice = floor(angle / 18) % 20
-                var slice_values = [11,14,9,12,5,20,1,18,4,13,6,10,15,2,17,3,19,7,16,18]
                 var rad = dist(posX, posY, width / 2, height / 2);
                 var slice_value = slice_values[slice]
                 // console.log(pos, angle, slice, slice_values[slice], rad)
@@ -285,6 +284,8 @@
             }
         </script>
         <script>
+            
+            var slice_values = [11,14,9,12,5,20,1,18,4,13,6,10,15,2,17,3,19,7,16,8]
             function drawDarts() {
                 rotate(9)
         
@@ -346,7 +347,6 @@
             function drawDartText(){
                 textSize(30*dartboard_scale)
                 textAlign(CENTER, CENTER)
-                var slice_values = [11,14,9,12,5,20,1,18,4,13,6,10,15,2,17,3,19,7,16,8]
                 rotate(-18*5.5)
                 for(i in slice_values){
                     fill(i % 2 === 0 ? 'red' : 'green');
