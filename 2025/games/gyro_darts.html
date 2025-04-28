@@ -253,7 +253,7 @@
                 if(!shootingEnabled) return
                 if(!canShoot) return
                 if(shots.length >= shotLimit) return
-                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
+                var points = getPoints(objects[0].position.x, objects[0].position.y)
                 shots.push([objects[0].position.x, objects[0].position.y])
                 console.log(shots)
                 score += points
