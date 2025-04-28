@@ -1,0 +1,17 @@
+name: Notify Discord on Pages Deployment
+
+on:
+  deployment_status:
+
+jobs:
+  notify:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            ✅ GitHub Pages deployment succeeded for **${{ github.repository }}**!
+            🌐 Visit: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
