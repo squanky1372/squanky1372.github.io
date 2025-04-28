@@ -131,6 +131,7 @@
                 shots.forEach(point => {
                     fill("cyan")
                     circle(point[0], point[1], 10)
+                    text(getSegment(point[0], point[1])[0], point[0], point[1] - 10)
                 })
                 
                 //get and display points
@@ -154,6 +155,17 @@
             }
 
             function getPoints(posX, posY){
+                var segmentScaler = [1,3,1,2]
+                var segment = getSegment(posX, posY)
+                if(segment[1] == 0) return 50
+                else if(segment[1] == 1) return 25
+                else if(segment[1] ==6) return 0
+                else{
+                    return segment[0] * segmentScaler[segment[1]-2]
+                }
+            }
+
+            function getSegment(posX, posY){
                 var pos = [posX-width/2, posY-height/2]
                 var angle = atan2(pos[1], pos[0]) + 180 + 9
                 var slice = floor(angle / 18) % 20
@@ -168,13 +180,13 @@
                 var rad_value = rad_value2[rad_dist]
                 var rad_value = (rad * 600/width * 240/600)
 
-                if(rad_value < bullRadius*dartboard_scale) return 50
-                if(rad_value < outerBullRadius*dartboard_scale) return 25
-                if(rad_value < tripleRingInner*dartboard_scale) return slice_value
-                if(rad_value < tripleRingOuter*dartboard_scale) return slice_value * 3
-                if(rad_value < doubleRingInner*dartboard_scale) return slice_value
-                if(rad_value < doubleRingOuter*dartboard_scale) return slice_value * 2
-                return 0
+                if(rad_value < bullRadius*dartboard_scale)      return (slice_value, 0)
+                if(rad_value < outerBullRadius*dartboard_scale) return (slice_value, 1)
+                if(rad_value < tripleRingInner*dartboard_scale) return (slice_value, 2)
+                if(rad_value < tripleRingOuter*dartboard_scale) return (slice_value, 3)
+                if(rad_value < doubleRingInner*dartboard_scale) return (slice_value, 4)
+                if(rad_value < doubleRingOuter*dartboard_scale) return (slice_value, 5)
+                return (slice_value, 6)
             }
 
             function getPointsConcentric(posX, posY){
