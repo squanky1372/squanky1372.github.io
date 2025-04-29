@@ -89,6 +89,11 @@
                 Engine.run(engine);
             }
     
+            function startup(){
+                shootingEnabled = true
+                console.log("granted")
+                startArchery()
+            }
             function startArchery(){
                 setTimeout(endArchery, archeryLength)
                 textprompt = "Started 1"
@@ -110,6 +115,7 @@
             }
 
             function draw() {
+                console.log(mode)
                 background(0);
 
                 if(mode == 0){
@@ -233,8 +239,7 @@
                             window.addEventListener("deviceorientation", updateGravity);
                             document.getElementById("status").innerText = "Gyroscope enabled!";
                             
-                            shootingEnabled = true
-                            startArchery()
+                            startup()
 
                         } else {
                             document.getElementById("status").innerText = "Permission denied.";
@@ -248,6 +253,8 @@
                     gyroEnabled = true;
                     window.addEventListener("deviceorientation", updateGravity);
                     document.getElementById("status").innerText = "Gyroscope enabled!";
+
+                    startup()
                 }
             }
     
@@ -384,8 +391,14 @@
             }
 
             function drawConcentric(){
-                for(var i = 3; i < 10; i++){
-                    circle(0,0,boardRadius/10 * (i+1))
+                fill('green')
+                circle(0,0,boardRadius*2)
+                for(var i = 0; i < 10; i++){
+                    stroke(255)
+                    if(i%2==0) fill(255,0,0)
+                    else fill('green')
+                    circle(0,0,(boardRadius*2)/10 * (10-i))
+                    console.log(i)
                 }
             }
         </script>
