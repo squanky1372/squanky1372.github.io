@@ -391,12 +391,11 @@
             }
 
             function drawConcentric(){
-                fill('green')
+                archeryColors = ["white", "black", "blue", "red", "yellow"]
                 circle(0,0,boardRadius*2)
                 for(var i = 0; i < 10; i++){
-                    stroke(255)
-                    if(i%2==0) fill(255,0,0)
-                    else fill('green')
+                    stroke("gray")
+                    fill(archeryColors[floor(i/2)])
                     circle(0,0,(boardRadius*2)/10 * (10-i))
                     console.log(i)
                 }
