@@ -110,7 +110,7 @@
             }
             function startInvis(){
                 mode = 3
-                invisPos = [width/2, height/2]
+                invisPos = [random(width), random(height)] // invisPos = [width/2,height/2]
             }
 
             function endArchery(){
@@ -156,11 +156,8 @@
                     push()
                     translate(width/2, height/2)
                     scale(width/600)
-                    noFill()
-                    push()
-                        scale(600/240 * dartboard_scale)
-                        drawConcentric()
-                    pop()
+                    fill("red")
+                    circle(invisPos[0], invisPos[1], 10)
                     pop()
                 }
                 drawObjects()
