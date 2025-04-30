@@ -53,6 +53,8 @@
             var textprompt = "Waiting"
 
             var countingStart
+
+            var invisPos = [0,0]
     
             function setup() {
                 angleMode(DEGREES);
@@ -62,7 +64,6 @@
                 let size = min(windowWidth, windowHeight) * 0.95;
                 centerCanvas();
                 disableCanvasDefaults()
-
             }
 
             function setupMatter(){
@@ -92,7 +93,7 @@
             function startup(){
                 shootingEnabled = true
                 console.log("granted")
-                startArchery()
+                startInvis()
             }
             function startArchery(){
                 setTimeout(endArchery, archeryLength)
@@ -100,13 +101,15 @@
                 mode = 1
                 shotLimit = 10
             }
-
             function startCounting(){
                 textprompt = "Started 2"
                 countingStart = millis()
                 score = 1
                 mode = 2
                 shotLimit = 999
+            }
+            function startInvis(){
+                
             }
 
             function endArchery(){
@@ -148,7 +151,17 @@
                     pop()
                     pop()
                 }
-    
+                else if(mode == 3){
+                    push()
+                    translate(width/2, height/2)
+                    scale(width/600)
+                    noFill()
+                    push()
+                        scale(600/240 * dartboard_scale)
+                        drawConcentric()
+                    pop()
+                    pop()
+                }
                 drawObjects()
                 
                 drawText()
@@ -165,6 +178,11 @@
                 shots.forEach(point => {
                     fill("cyan")
                     circle(point[0], point[1], 10)
+
+                    if(mode == 3){
+                        textAlign(CENTER, CENTER)
+                        text(getPointsInvis(point[0], point[1]), point[0], point[1] + 10)
+                    }
                 })
             }
 
@@ -230,6 +248,14 @@
                 return ceil(score)
             }
     
+            function getPointsInvis(posX, posY){
+                var rad = dist(posX, posY, invisPos[0], invisPos[1]);
+                var rad_value = (rad * 600/width * 240/600)
+                var dist_percent = rad*dartboard_scale / (doubleRingOuter)
+                var score = (dist_percent > 1) ? 0 : 100 - (dist_percent*100)
+                return ceil(score)
+            }
+
             async function enableGyro() {
                 if (typeof DeviceMotionEvent.requestPermission === "function") {
                     try {
@@ -295,12 +321,16 @@
                     }
                     if(score > 20) textprompt = `win: ${floor((millis() - countingStart)/10)/100}`
                 }
+                if(mode == 3){
+                    var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
+                    score += points
+                }
                 shots.push([objects[0].position.x, objects[0].position.y])
                 console.log(shots)
                 canShoot = false
                 setTimeout(setShootFlag, shotCooldown)
             }
-            function mouseReleased(){}
+            function mouseReleased(){return}
             function setShootFlag(){
                 canShoot = true
             }
