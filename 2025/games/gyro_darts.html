@@ -250,7 +250,7 @@
             function getPointsInvis(posX, posY){
                 var rad = dist(posX, posY, invisPos[0], invisPos[1]);
                 var rad_value = (rad * 600/width * 240/600)
-                var dist_percent = rad*dartboard_scale / (doubleRingOuter)
+                var dist_percent = rad*dartboard_scale / (width)
                 var score = (dist_percent > 1) ? 0 : 100 - (dist_percent*100)
                 return ceil(score)
             }
