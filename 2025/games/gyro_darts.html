@@ -221,6 +221,18 @@
             for (let obj of objects) {
                 let pos = obj.position;
                 ellipse(pos.x, pos.y, ballSize * 2);
+                push()
+                translate(pos.x, pos.y)
+                strokeWeight(width*0.005)
+                stroke(255)
+                noFill()
+                circle(0,0,width*0.04)
+                stroke(255,0,0)
+                line(0, width*0.01, 0, width*0.02)
+                line(width*0.01, 0, width*0.02, 0)
+                line(0, -width*0.01, 0, -width*0.02)
+                line(-width*0.01, 0, -width*0.02, 0)
+                pop()
             }
 
             shots.forEach(point => {
