@@ -55,7 +55,6 @@
         var gravityScale = 10
 
         var shotCooldown = 500
-        var shotLimit = 999
         var archeryLength = 10000
 
         var menuSize
@@ -64,6 +63,7 @@
         var gameOverElements
 
         // Dynamic Variables
+        var shotLimit = 999
         var score = 0
         var shots = []
         var mode = 0
@@ -135,6 +135,7 @@
             textprompt = "startup"
             countingStart = 0
             invisPos = [0,0]
+            shotLimit = 999
 
             console.log("granted")
         }
@@ -143,6 +144,7 @@
             textprompt = "Started 1"
             mode = 1
             shotLimit = 10
+            shots = []
         }
         function startCounting() {
             textprompt = "Started 2"
@@ -150,10 +152,13 @@
             score = 1
             mode = 2
             shotLimit = 999
+            shots = []
         }
         function startInvis() {
             mode = 3
+            shotLimit = 5
             invisPos = [random(width), random(height)]
+            shots = []
         }
 
         function endArchery() {
