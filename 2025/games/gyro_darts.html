@@ -415,56 +415,6 @@
             text(textprompt, 0, height)
         }
 
-        function getPointsArchery(posX, posY) {
-            var segmentScaler = [1, 3, 1, 2]
-            var segment = getSegment(posX, posY)
-            if (segment[1] == 0) return 50
-            else if (segment[1] == 1) return 25
-            else if (segment[1] == 6) return 0
-            else {
-                return segment[0] * segmentScaler[segment[1] - 2]
-            }
-        }
-
-        function getSegment(posX, posY) {
-            var pos = [posX - width / 2, posY - height / 2]
-            var angle = atan2(pos[1], pos[0]) + 180 + 9
-            var slice = floor(angle / 18) % 20
-            var rad = dist(posX, posY, width / 2, height / 2);
-            var slice_value = slice_values[slice]
-            // console.log(pos, angle, slice, slice_values[slice], rad)
-            var rad_dist = floor((rad * 600 / width * 240 / 600) / 10)
-            // console.log(rad * 600/width * 240/600)
-            var rad_values = [10, 20, 60, 70, 110, 120]
-            var rad_value2 = [1, 2, 3, 3, 3, 3, 4, 5, 5, 5, 5, 6]
-            var rad_value = rad_value2[rad_dist]
-            var rad_value = (rad * 600 / width * 240 / 600)
-
-            if (rad_value < bullRadius * dartboard_scale) return [slice_value, 0]
-            if (rad_value < outerBullRadius * dartboard_scale) return [slice_value, 1]
-            if (rad_value < tripleRingInner * dartboard_scale) return [slice_value, 2]
-            if (rad_value < tripleRingOuter * dartboard_scale) return [slice_value, 3]
-            if (rad_value < doubleRingInner * dartboard_scale) return [slice_value, 4]
-            if (rad_value < doubleRingOuter * dartboard_scale) return [slice_value, 5]
-            return (slice_value, 6)
-        }
-
-        function getPointsConcentric(posX, posY) {
-            var rad = dist(posX, posY, width / 2, height / 2);
-            var rad_value = (rad * 600 / width * 240 / 600)
-            var dist_percent = rad * dartboard_scale / (doubleRingOuter)
-            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-            return ceil(score)
-        }
-
-        function getPointsInvis(posX, posY) {
-            var rad = dist(posX, posY, invisPos[0], invisPos[1]);
-            var rad_value = (rad * 600 / width * 240 / 600)
-            var dist_percent = rad / (width)
-            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-            return ceil(score*10)/10
-        }
-
         async function enableGyro() {
             if (typeof DeviceMotionEvent.requestPermission === "function") {
                 try {
@@ -524,7 +474,10 @@
         function touchEnded() {
             if (mode == -1) getMenuElement()
             if (!canShoot) return
-            if (shots.length >= shotLimit) return
+            if (shots.length >= shotLimit){
+                if(mode == 1) endArchery()
+                if(mode == 3) endInvis()
+            }
             
             if (mode == 0) getMenuElement()
             else if (mode == 1) {
@@ -558,7 +511,7 @@
         }
     </script>
 
-    <script> //dartboards
+    <script> //dartboards and points
 
         const numSectors = 20;
         const angleStep = 360 / numSectors;
@@ -650,6 +603,58 @@
                 circle(0, 0, (boardRadius * 2) / 10 * (10 - i))
             }
         }
+        
+        
+        function getPointsArchery(posX, posY) {
+            var segmentScaler = [1, 3, 1, 2]
+            var segment = getSegment(posX, posY)
+            if (segment[1] == 0) return 50
+            else if (segment[1] == 1) return 25
+            else if (segment[1] == 6) return 0
+            else {
+                return segment[0] * segmentScaler[segment[1] - 2]
+            }
+        }
+
+        function getSegment(posX, posY) {
+            var pos = [posX - width / 2, posY - height / 2]
+            var angle = atan2(pos[1], pos[0]) + 180 + 9
+            var slice = floor(angle / 18) % 20
+            var rad = dist(posX, posY, width / 2, height / 2);
+            var slice_value = slice_values[slice]
+            // console.log(pos, angle, slice, slice_values[slice], rad)
+            var rad_dist = floor((rad * 600 / width * 240 / 600) / 10)
+            // console.log(rad * 600/width * 240/600)
+            var rad_values = [10, 20, 60, 70, 110, 120]
+            var rad_value2 = [1, 2, 3, 3, 3, 3, 4, 5, 5, 5, 5, 6]
+            var rad_value = rad_value2[rad_dist]
+            var rad_value = (rad * 600 / width * 240 / 600)
+
+            if (rad_value < bullRadius * dartboard_scale) return [slice_value, 0]
+            if (rad_value < outerBullRadius * dartboard_scale) return [slice_value, 1]
+            if (rad_value < tripleRingInner * dartboard_scale) return [slice_value, 2]
+            if (rad_value < tripleRingOuter * dartboard_scale) return [slice_value, 3]
+            if (rad_value < doubleRingInner * dartboard_scale) return [slice_value, 4]
+            if (rad_value < doubleRingOuter * dartboard_scale) return [slice_value, 5]
+            return (slice_value, 6)
+        }
+
+        function getPointsConcentric(posX, posY) {
+            var rad = dist(posX, posY, width / 2, height / 2);
+            var rad_value = (rad * 600 / width * 240 / 600)
+            var dist_percent = rad * dartboard_scale / (doubleRingOuter)
+            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+            return ceil(score)
+        }
+
+        function getPointsInvis(posX, posY) {
+            var rad = dist(posX, posY, invisPos[0], invisPos[1]);
+            var rad_value = (rad * 600 / width * 240 / 600)
+            var dist_percent = rad / (width)
+            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+            return ceil(score*10)/10
+        }
+
     </script>
 </body>
 
