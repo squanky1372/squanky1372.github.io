@@ -93,7 +93,7 @@
                 [0,width,scoreboardScale, "scoreboard2"],
                 [width,0,scoreboardScale, "scoreboard3"],
                 [width, width, scoreboardScale, "scoreboard4"],
-                [width/2, 0, menuSize*0.5, "rules"],
+                [width/2, 0, menuSize*0.5, "showRules()"],
             ]
         }
 
@@ -197,8 +197,11 @@
 
         }
 
-        function drawMenu(){
-            
+        function showRules(){
+            alert("Here are the rules!")
+        }
+
+        function drawMenu(){      
             push()
             translate(width / 2, height / 2)
             textAlign(CENTER, CENTER)
@@ -486,40 +489,12 @@
         document.getElementById("enableGyro").addEventListener("click", enableGyro);
 
         function getMenuElement(){
-            var menuSize = 0.8 * width * dartboard_scale /2
-            var elements = [
-                [width*0.25, width*0.25, menuSize, "startArchery()"],
-                [width*0.25, width*0.75, menuSize, "startCounting()"],
-                [width*0.75, width*0.25, menuSize, "startInvis()"],
-                [width*0.75, width*0.75, menuSize, "not implemented"],
-                [0,0,menuSize/2, "scoreboard1"],
-                [0,width,menuSize/2, "scoreboard2"],
-                [width,0,menuSize/2, "scoreboard3"],
-                [width, width, menuSize/2, "scoreboard4"],
-                // [width/4, 0, width*0.25, "Rules"],
-                // [width/4, width*0.25, 0, "Scores"],
-            ]
-            var elements2 = [
-                [0, 0, width*0.4, "startArchery()"],
-                [0, height, width*0.4, "startCounting()"],
-                [width, 0, width*0.4, "startInvis()"],
-                [width, height, width*0.4, "not implemented"],
-                [width/4, 0, width*0.25, "Rules"],
-                [width/4, width*0.25, 0, "Scores"],
-            ]
-
-            
-
             menuElements.forEach((element, i) => {
                 console.log(i, dist(objects[0].position.x, objects[0].position.y, element[0], element[1] ))
                 if(dist(objects[0].position.x, objects[0].position.y, element[0], element[1]) < element[2]){
                     eval(element[3])
                 }
             })
-            // if(dist(objects[0].position.x, objects[0].position.y, 0, 0) < width*0.4) startArchery()
-            // if(dist(objects[0].position.x, objects[0].position.y, 0, height) < width*0.4) startCounting()
-            // if(dist(objects[0].position.x, objects[0].position.y, width, 0) < width*0.4) startInvis()
-            // if(dist(objects[0].position.x, objects[0].position.y, width, height) < width*0.8) startShooting()
         }
 
         function touchEnded() {
