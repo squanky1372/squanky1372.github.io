@@ -67,7 +67,6 @@
         var score = 0
         var shots = []
         var mode = 0
-        var shootingEnabled = false
         var canShoot = true
         var textprompt = "Waiting"
         var countingStart
@@ -132,7 +131,6 @@
             score = 0
             shots = []
             mode = 0
-            shootingEnabled = true
             canShoot = true
             textprompt = "startup"
             countingStart = 0
@@ -159,7 +157,6 @@
         }
 
         function endArchery() {
-            shootingEnabled = false
             textprompt = "Ended"
             mode = -1
         }
@@ -520,7 +517,6 @@
         }
 
         function touchEnded() {
-            if (!shootingEnabled) return
             if (!canShoot) return
             if (shots.length >= shotLimit) return
             if (mode == -1) getMenuElement()
