@@ -525,12 +525,13 @@
             if (mode == -1) getMenuElement()
             if (!canShoot) return
             if (shots.length >= shotLimit) return
+            
             if (mode == 0) getMenuElement()
-            if (mode == 1) {
+            else if (mode == 1) {
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 score += points
             }
-            if (mode == 2) {
+            else if (mode == 2) {
                 segment = getSegment(objects[0].position.x, objects[0].position.y)
                 textprompt = `${segment[0]}, ${segment[1]}`
                 if (segment[0] == score) {
@@ -542,7 +543,7 @@
                 }
                 if (score > 20) endCounting()
             }
-            if (mode == 3) {
+            else if (mode == 3) {
                 var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
                 score += points
             }
