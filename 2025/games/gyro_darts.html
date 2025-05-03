@@ -517,9 +517,9 @@
         }
 
         function touchEnded() {
+            if (mode == -1) getMenuElement()
             if (!canShoot) return
             if (shots.length >= shotLimit) return
-            if (mode == -1) getMenuElement()
             if (mode == 0) getMenuElement()
             if (mode == 1) {
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
