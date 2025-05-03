@@ -145,92 +145,89 @@
             console.log(mode)
             background(0);
 
+            push()
             if (mode == -1){
-                push()
+                textAlign(CENTER, CENTER)
                 translate(width/2, height/3)
                 text("Game Over", 0, 0)
-
                 translate(0, height/3)
-                text(`Score: ${score}`)
-                pop()
-
+                text(`Score: ${score}`, 0, 0)
             }
-            else if (mode == 0) {
-                
-                noFill()
-                noStroke()
-
-                push()
-                translate(width / 2, height / 2)
-                textAlign(CENTER, CENTER)
-                textSize(width/10)
-                fill(100)
-                text("Gyro", 0, 0)
-                pop()
-
-                push()
-                translate(0,0)
-                scale(0.8*width / 240)
-                drawConcentric()
-                pop()
-
-                push()
-                translate(0, height)
-                scale(0.8 * width / 240)
-                drawDarts()
-                pop()
-
-                push()
-                stroke(255)
-                translate(width, 0)
-                scale(0.8 * width / 240)
-                circle(0,0,240)
-                for(var i = 0 ; i < 6; i++){
-                    circle(50,50,i*20)
-                    circle(-25,60,i*20)
-                    circle(70,-10,i*20)
-                    circle(-60,-40,i*20)
-                }
-                pop()
-
-                push()
-                stroke(255)
-                translate(width, height)
-                scale(-0.8 * width / 240)
-                circle(0,0,240)
-                scale(0.4)
-                translate(width/8, width/8)
-                drawConcentric()
-                translate(-width*0.3, -width*0.1)
-                drawConcentric()
-                translate(width*0.25,-width*0.2)
-                drawConcentric()
-                pop()
-            }
+            else if (mode == 0) drawMenu()
             else if (mode == 1) {
-                push()
                 translate(width / 2, height / 2)
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 drawConcentric()
-                pop()
             }
             else if (mode == 2) {
-                push()
                 translate(width / 2, height / 2)
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 drawDarts()
-                pop()
             }
             else if (mode == 3) {
-                fill("red")
-                circle(invisPos[0], invisPos[1], 10)
-            }
+                // fill("red")
+                // circle(invisPos[0], invisPos[1], 10)
+            }          
+            pop()
+
             drawObjects()
 
             if(mode != 0) drawText()
 
+        }
+
+        function drawMenu() {
+            noFill()
+            noStroke()
+
+            push()
+            translate(width / 2, height / 2)
+            textAlign(CENTER, CENTER)
+            textSize(width/10)
+            fill(100)
+            text("Gyro", 0, 0)
+            pop()
+
+            push()
+            translate(0,0)
+            scale(0.8*width / 240)
+            drawConcentric()
+            pop()
+
+            push()
+            translate(0, height)
+            scale(0.8 * width / 240)
+            drawDarts()
+            pop()
+
+            push()
+            stroke(255)
+            translate(width, 0)
+            scale(0.8 * width / 240)
+            circle(0,0,240)
+            for(var i = 0 ; i < 6; i++){
+                circle(50,50,i*20)
+                circle(-25,60,i*20)
+                circle(70,-10,i*20)
+                circle(-60,-40,i*20)
+            }
+            pop()
+
+            push()
+            stroke(255)
+            translate(width, height)
+            scale(-0.8 * width / 240)
+            circle(0,0,240)
+            scale(0.4)
+            translate(width/8, width/8)
+            drawConcentric()
+            translate(-width*0.3, -width*0.1)
+            drawConcentric()
+            translate(width*0.25,-width*0.2)
+            drawConcentric()
+            pop()
         }
 
         function drawObjects() {
@@ -259,7 +256,7 @@
                 if (mode == 3) {
                     textAlign(CENTER, CENTER)
                     textSize(30)
-                    text(getPointsInvis(point[0], point[1]), point[0], point[1] + 10)
+                    text(getPointsInvis(point[0], point[1]), point[0], point[1] + width*0.01)
                 }
             })
         }
