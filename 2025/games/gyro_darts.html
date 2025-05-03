@@ -482,7 +482,10 @@
                 if(mode == 3) endInvis()
             }
             
-            if (mode == 0) getMenuElement()
+            if (mode == 0) {
+                getMenuElement()
+                return
+            }
             else if (mode == 1) {
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 score += points
