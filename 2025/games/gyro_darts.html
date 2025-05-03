@@ -34,7 +34,7 @@
 
     <script>
 
-        var score = 0
+        // Static Variables
 
         var dartboard_scale = 0.5
 
@@ -54,24 +54,23 @@
         var ballBounce = 0.9
         var gravityScale = 10
 
-        var shots = []
-
-        var mode = 0
-
-        var shootingEnabled = false
         var shotCooldown = 500
-        var canShoot = true
         var shotLimit = 999
         var archeryLength = 10000
-        var textprompt = "Waiting"
-
-        var countingStart
-
-        var invisPos = [0, 0]
 
         var menuSize
         var scoreboardScale
         var menuElements
+
+        // Dynamic Variables
+        var score = 0
+        var shots = []
+        var mode = 0
+        var shootingEnabled = false
+        var canShoot = true
+        var textprompt = "Waiting"
+        var countingStart
+        var invisPos = [0, 0]
 
         function setup() {
             angleMode(DEGREES);
@@ -94,6 +93,13 @@
                 [width,0,scoreboardScale, "scoreboard3"],
                 [width, width, scoreboardScale, "scoreboard4"],
                 [width/2, 0, menuSize*0.5, "showRules()"],
+            ]
+
+            gameOverElements = [
+                [0,0,scoreboardScale, "startup()"],
+                [0,width,scoreboardScale, "startup()"],
+                [width,0,scoreboardScale, "startup()menu"],
+                [width, width, scoreboardScale, "startup()"],
             ]
         }
 
@@ -122,9 +128,16 @@
         }
 
         function startup() {
+            score = 0
+            shots = []
+            mode = 0
             shootingEnabled = true
+            canShoot = true
+            textprompt = "startup"
+            countingStart = 0
+            invisPos = [0,0]
+
             console.log("granted")
-            // startCounting()
         }
         function startArchery() {
             setTimeout(endArchery, archeryLength)
@@ -168,6 +181,7 @@
             if (mode == -1){
                 textAlign(CENTER, CENTER)
                 translate(width/2, height/3)
+                fill("red")
                 text("Game Over", 0, 0)
                 translate(0, height/3)
                 text(`Score: ${score}`, 0, 0)
@@ -193,7 +207,7 @@
 
             drawObjects()
 
-            if(mode != 0) drawText()
+            if(mode > 0) drawText()
 
         }
 
@@ -381,7 +395,7 @@
         function drawText() {            
             textSize(100)
             textAlign(LEFT, TOP)
-            text(`Mode: $(mode)`, 0, 0)
+            text(`Mode: ${mode}`, 0, 0)
 
             textAlign(RIGHT, TOP)
             text(score, width, 0)
@@ -489,7 +503,9 @@
         document.getElementById("enableGyro").addEventListener("click", enableGyro);
 
         function getMenuElement(){
-            menuElements.forEach((element, i) => {
+            if(mode == -1) elements = gameOverElements
+            if(mode == 0) elements = menuElements
+            elements.forEach((element, i) => {
                 console.log(i, dist(objects[0].position.x, objects[0].position.y, element[0], element[1] ))
                 if(dist(objects[0].position.x, objects[0].position.y, element[0], element[1]) < element[2]){
                     eval(element[3])
@@ -501,6 +517,7 @@
             if (!shootingEnabled) return
             if (!canShoot) return
             if (shots.length >= shotLimit) return
+            if (mode == -1) getMenuElement()
             if (mode == 0) getMenuElement()
             if (mode == 1) {
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
