@@ -180,12 +180,14 @@
 
             push()
             if (mode == -1){
-                textAlign(CENTER, CENTER)
-                translate(width/2, height/3)
-                fill("red")
-                text("Game Over", 0, 0)
-                translate(0, height/3)
-                text(`Score: ${score}`, 0, 0)
+                push()
+                    textAlign(CENTER, CENTER)
+                    translate(width/2, height/3)
+                    fill("red")
+                    text("Game Over", 0, 0)
+                    translate(0, height/3)
+                    text(`Score: ${score}`, 0, 0)
+                pop()
                 gameOverElements.forEach((element, i) => {
                     circle(element[0], element[1], element[2]*2)
                 })
