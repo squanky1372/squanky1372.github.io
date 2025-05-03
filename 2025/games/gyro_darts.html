@@ -179,7 +179,65 @@
 
         }
 
-        function drawMenu() {
+        function drawMenu(){
+            
+            push()
+            translate(width / 2, height / 2)
+            textAlign(CENTER, CENTER)
+            textSize(width/10)
+            fill(100)
+            text("Gyro", 0, 0)
+            pop()
+
+            noFill()
+            noStroke()
+
+            //Archery/Concentric
+            push()
+            translate(width/4, height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            drawConcentric()
+            pop()
+
+            //Darts/Counting
+            push()
+            translate(width/4, 3*height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            drawDarts()
+            pop()
+
+            //Finder
+            push()
+            stroke(255)
+            translate(3*width/4, height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            circle(0,0,240)
+            for(var i = 0 ; i < 6; i++){
+                circle(50,50,i*20)
+                circle(-25,60,i*20)
+                circle(70,-10,i*20)
+                circle(-60,-40,i*20)
+            }
+            pop()
+
+            //Multi
+            push()
+            stroke(255)
+            translate(3*width/4, 3*height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            circle(0,0,240)
+            scale(0.4)
+            translate(width/8, width/8)
+            drawConcentric()
+            translate(-width*0.3, -width*0.1)
+            drawConcentric()
+            translate(width*0.25,-width*0.2)
+            drawConcentric()
+            pop()
+            
+        }
+
+        function drawMenu2() {
             noFill()
             noStroke()
 
@@ -229,6 +287,27 @@
             translate(width*0.25,-width*0.2)
             drawConcentric()
             pop()
+
+            // push()
+            // fill(255)
+            // stroke(0)
+            // var align_circle = width/3
+            // var circle_size = width*0.25
+            // circle(align_circle, 0, circle_size)
+            // circle(0, align_circle, circle_size)
+            // circle(width-align_circle, 0, circle_size)
+            // circle(0, width-align_circle, circle_size)
+            // circle(width-align_circle, width, circle_size)
+            // circle(width, width-align_circle, circle_size)
+            // circle(align_circle, width, circle_size)
+            // circle(width, align_circle, circle_size)
+
+            // fill(0)
+            // stroke(0)
+            // textAlign(CENTER, CENTER)
+            // textSize(width*0.05)
+            // text("Rules", align_circle, width*0.03)
+            // pop()
         }
 
         function drawObjects() {
@@ -385,6 +464,8 @@
                 [0, height, width*0.4, "startCounting()"],
                 [width, 0, width*0.4, "startInvis()"],
                 [width, height, width*0.4, "not implemented"],
+                [width/4, 0, width*0.25, "Rules"],
+                [width/4, width*0.25, 0, "Scores"],
             ]
 
             elements.forEach((element, i) => {
