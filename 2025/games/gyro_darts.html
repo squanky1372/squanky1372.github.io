@@ -206,6 +206,7 @@
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 drawDarts()
+                textprompt = `Elapsed: ${floor((millis() - countingStart) / 10) / 100}`
             }
             else if (mode == 3) {
                 // fill("red")
