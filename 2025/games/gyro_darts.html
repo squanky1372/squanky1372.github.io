@@ -24,7 +24,7 @@
     </style>
 </head>
 <!-- <p id="status">Press the button to enable gyroscope control.</p> -->
-<button id="enableGyro" style="width:95%; height:10%; padding:10% 20%; font-size: 200%; background:#0088ff;">Click To Enable Gyroscope</button>
+<button id="enableGyro" style="width:95%; height:10%; padding:10% 0%; font-size: 300%; background:#0088ff; color:#550000">Click To Enable Gyroscope</button>
 
 <body style="background-color:#0066ff;">
     <script src="../aa_libraries/matter.js"></script>
@@ -330,7 +330,7 @@
             var rad_value = (rad * 600 / width * 240 / 600)
             var dist_percent = rad / (width)
             var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-            return ceil(score)
+            return ceil(score*10)/10
         }
 
         async function enableGyro() {
