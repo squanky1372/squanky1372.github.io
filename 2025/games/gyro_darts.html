@@ -69,6 +69,10 @@
 
         var invisPos = [0, 0]
 
+        var menuSize
+        var scoreboardScale
+        var menuElements
+
         function setup() {
             angleMode(DEGREES);
             canvas = createCanvas(windowWidth * 0.95, windowWidth * 0.95);
@@ -77,6 +81,20 @@
             let size = min(windowWidth, windowHeight) * 0.95;
             centerCanvas();
             disableCanvasDefaults()
+
+            menuSize = 0.8 * width * dartboard_scale /2
+            scoreboardScale = menuSize * 0.75
+            menuElements = [
+                [width*0.25, width*0.25, menuSize, "startArchery()"],
+                [width*0.25, width*0.75, menuSize, "startCounting()"],
+                [width*0.75, width*0.25, menuSize, "startInvis()"],
+                [width*0.75, width*0.75, menuSize, "not implemented"],
+                [0,0,scoreboardScale, "scoreboard1"],
+                [0,width,scoreboardScale, "scoreboard2"],
+                [width,0,scoreboardScale, "scoreboard3"],
+                [width, width, scoreboardScale, "scoreboard4"],
+                [width/2, 0, menuSize*0.5, "rules"],
+            ]
         }
 
         function setupMatter() {
@@ -234,7 +252,16 @@
             translate(width*0.25,-width*0.2)
             drawConcentric()
             pop()
-            
+
+            //Scoreboards
+
+            push()
+            strokeWeight(10)
+            stroke("red")
+            menuElements.forEach((element, i) => {
+                circle(element[0], element[1], element[2]*2)
+            })
+
         }
 
         function drawMenu2() {
@@ -465,6 +492,10 @@
                 [width*0.25, width*0.75, menuSize, "startCounting()"],
                 [width*0.75, width*0.25, menuSize, "startInvis()"],
                 [width*0.75, width*0.75, menuSize, "not implemented"],
+                [0,0,menuSize/2, "scoreboard1"],
+                [0,width,menuSize/2, "scoreboard2"],
+                [width,0,menuSize/2, "scoreboard3"],
+                [width, width, menuSize/2, "scoreboard4"],
                 // [width/4, 0, width*0.25, "Rules"],
                 // [width/4, width*0.25, 0, "Scores"],
             ]
@@ -479,7 +510,7 @@
 
             
 
-            elements.forEach((element, i) => {
+            menuElements.forEach((element, i) => {
                 console.log(i, dist(objects[0].position.x, objects[0].position.y, element[0], element[1] ))
                 if(dist(objects[0].position.x, objects[0].position.y, element[0], element[1]) < element[2]){
                     eval(element[3])
