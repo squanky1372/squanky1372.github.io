@@ -24,7 +24,7 @@
     </style>
 </head>
 <p id="status">Press the button to enable gyroscope control.</p>
-<button id="enableGyro">Enable Gyroscope</button>
+<button id="enableGyro" style="width:100%; height:25%">Enable Gyroscope</button>
 
 <body style="background-color:#0066ff;">
     <script src="../aa_libraries/matter.js"></script>
@@ -256,7 +256,8 @@
                 circle(point[0], point[1], 10)
                 if(mode == 1){
                     textAlign(RIGHT, TOP)
-                    text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20)
+                    textSize(height/20)
+                    text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
                 }
                 if (mode == 3) {
                     textAlign(CENTER, CENTER)
