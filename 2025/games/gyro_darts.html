@@ -249,10 +249,13 @@
                 pop()
             }
 
-            shots.forEach(point => {
+            shots.forEach((point, i) => {
                 fill("cyan")
                 circle(point[0], point[1], 10)
-
+                if(mode == 1){
+                    textAlign(RIGHT, CENTER)
+                    text(getPointsConcentric(point[0], point[1]), width, i*height/20)
+                }
                 if (mode == 3) {
                     textAlign(CENTER, CENTER)
                     textSize(30)
@@ -325,7 +328,7 @@
         function getPointsInvis(posX, posY) {
             var rad = dist(posX, posY, invisPos[0], invisPos[1]);
             var rad_value = (rad * 600 / width * 240 / 600)
-            var dist_percent = rad / (width / 2)
+            var dist_percent = rad / (width)
             var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
             return ceil(score)
         }
