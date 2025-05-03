@@ -137,6 +137,7 @@
             mode = -1
         }
         function endInvis(){
+            score = getPointsInvis(shots[shots.length-1][0], shots[shots.length-1])
             mode = -1
 
         }
@@ -263,7 +264,7 @@
                     textAlign(CENTER, CENTER)
                     textSize(30)
                     fill("red")
-                    text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.015)
+                    text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.02)
                 }
             })
         }
