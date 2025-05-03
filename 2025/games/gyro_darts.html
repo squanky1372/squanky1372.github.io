@@ -472,7 +472,10 @@
         }
 
         function touchEnded() {
-            if (mode == -1) getMenuElement()
+            if (mode == -1) {
+                getMenuElement()
+                return
+            }
             if (!canShoot) return
             if (shots.length >= shotLimit){
                 if(mode == 1) endArchery()
