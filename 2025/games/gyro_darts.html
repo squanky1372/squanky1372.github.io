@@ -61,6 +61,7 @@
         var menuSize
         var scoreboardScale
         var menuElements
+        var gameOverElements
 
         // Dynamic Variables
         var score = 0
@@ -185,6 +186,9 @@
                 text("Game Over", 0, 0)
                 translate(0, height/3)
                 text(`Score: ${score}`, 0, 0)
+                gameOverElements.forEach((element, i) => {
+                    circle(element[0], element[1], element[2]*2)
+                })
             }
             else if (mode == 0) drawMenu()
             else if (mode == 1) {
