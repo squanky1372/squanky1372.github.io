@@ -170,9 +170,9 @@
                 score += points
             }
             this.drawShots = function(){
-                textAlign(RIGHT, TOP)
+                textAlign(LEFT, TOP)
                 textSize(height/20)
-                text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
+                text(getPointsConcentric(point[0], point[1]), 0, (i+1)*height/20+height/10)
             }
         }
 
@@ -370,14 +370,15 @@
 
         function drawText() {            
             textSize(100)
+            // textAlign(LEFT, TOP)
+            // text(`Mode: ${mode}`, 0, 0)
+
             textAlign(LEFT, TOP)
-            text(`Mode: ${mode}`, 0, 0)
+            var decimals = 2
+            text(`Score: ${Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, width, 0)
 
-            textAlign(RIGHT, TOP)
-            text(score, width, 0)
-
-            textAlign(RIGHT, BOTTOM)
-            text("Unused", width, height)
+            // textAlign(RIGHT, BOTTOM)
+            // text("Unused", width, height)
 
             textAlign(LEFT, BOTTOM)
             text(textprompt, 0, height)
