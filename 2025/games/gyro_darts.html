@@ -183,7 +183,7 @@
 
         function Archery() {
             this.start = function() {
-                setTimeout(endArchery, archeryLength)
+                setTimeout(this.end, archeryLength)
                 textprompt = "Started 1"
                 mode = 1
                 shotLimit = 10
