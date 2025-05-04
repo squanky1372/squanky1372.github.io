@@ -196,6 +196,8 @@
                 gameOverElements.forEach((element, i) => {
                     circle(element[0], element[1], element[2]*2)
                 })
+                fill("red")
+                circle(invisPos[0], invisPos[1], 10)
             }
             else if (mode == 0) drawMenu()
             else if (mode == 1) {
