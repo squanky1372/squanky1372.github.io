@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<!-- <p id="status">Press the button to enable gyroscope control.</p> -->
+<button id="enableGyro" style="width:95%; height:10%; padding:10% 0%; font-size: 300%; background:#0088ff; color:#550000">Click To Enable Gyroscope</button>
+
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+    <script src="../aa_libraries/p5.js"></script>
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+
+    <script>
+
+        // Static Variables
+
+        var dartboard_scale = 0.5
+
+        let Engine = Matter.Engine,
+            Render = Matter.Render,
+            World = Matter.World,
+            Bodies = Matter.Bodies;
+
+        let engine;
+        let world;
+        let ground, leftWall, rightWall, topWall;
+        let objects = [];
+
+        let gyroEnabled = false;
+
+        var ballSize = 5
+        var ballBounce = 0.9
+        var gravityScale = 10
+
+        var shotCooldown = 500
+        var archeryLength = 10000
+
+        var menuSize
+        var scoreboardScale
+        var menuElements
+        var gameOverElements
+
+        // Dynamic Variables
+        var shotLimit = 999
+        var score = 0
+        var shots = []
+        var mode = 0
+        var canShoot = true
+        var textprompt = "Waiting"
+        var countingStart
+        var invisPos = [0, 0]
+
+        function setup() {
+            angleMode(DEGREES);
+            canvas = createCanvas(windowWidth * 0.95, windowWidth * 0.95);
+            setupMatter()
+
+            let size = min(windowWidth, windowHeight) * 0.95;
+            centerCanvas();
+            disableCanvasDefaults()
+
+            menuSize = 0.8 * width * dartboard_scale /2
+            scoreboardScale = menuSize * 0.75
+            menuElements = [
+                [width*0.25, width*0.25, menuSize, "startArchery()"],
+                [width*0.25, width*0.75, menuSize, "startCounting()"],
+                [width*0.75, width*0.25, menuSize, "startInvis()"],
+                [width*0.75, width*0.75, menuSize, "not implemented"],
+                [0,0,scoreboardScale, "scoreboard1"],
+                [0,width,scoreboardScale, "scoreboard2"],
+                [width,0,scoreboardScale, "scoreboard3"],
+                [width, width, scoreboardScale, "scoreboard4"],
+                [width/2, 0, menuSize*0.5, "showRules()"],
+            ]
+
+            gameOverElements = [
+                [0,0,scoreboardScale, "startup()"],
+                [0,width,scoreboardScale, "startup()"],
+                [width,0,scoreboardScale, "startup()menu"],
+                [width, width, scoreboardScale, "startup()"],
+            ]
+        }
+
+        function setupMatter() {
+            engine = Engine.create();
+            world = engine.world;
+            world.gravity.y = 1; // Default gravity downwards
+
+            // Static walls
+            let wallThickness = 50;
+            ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, { isStatic: true });
+            topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, { isStatic: true });
+            leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+            rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+
+            World.add(world, [ground, topWall, leftWall, rightWall]);
+
+            // Add some physics objects
+            for (let i = 0; i < 1; i++) {
+                let obj = Bodies.circle(random(width), random(height / 2), ballSize, { restitution: ballBounce });
+                objects.push(obj);
+                World.add(world, obj);
+            }
+
+            Engine.run(engine);
+        }
+
+        function startup() {
+            score = 0
+            shots = []
+            mode = 0
+            canShoot = true
+            textprompt = "startup"
+            countingStart = 0
+            invisPos = [0,0]
+            shotLimit = 999
+
+            // objects[0].position.x = width/2
+            // objects[0].position.y = width/2
+
+            console.log("granted")
+        }
+        function startArchery() {
+            setTimeout(endArchery, archeryLength)
+            textprompt = "Started 1"
+            mode = 1
+            shotLimit = 10
+            shots = []
+        }
+        function startCounting() {
+            textprompt = "Started 2"
+            countingStart = millis()
+            score = 1
+            mode = 2
+            shotLimit = 999
+            shots = []
+        }
+        function startInvis() {
+            mode = 3
+            shotLimit = 5
+            invisPos = [random(width), random(height)]
+            shots = []
+        }
+
+        function endArchery() {
+            textprompt = "Ended"
+            mode = -1
+        }
+        function endCounting(){
+            score = floor((millis() - countingStart) / 10) / 100
+            textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
+            mode = -1
+        }
+        function endInvis(){
+            score = getPointsInvis(shots[shots.length-1][0], shots[shots.length-1][1])
+            mode = -1
+
+        }
+
+        function draw() {
+            console.log(mode)
+            background(0);
+
+            push()
+            if (mode == -1){
+                push()
+                    textAlign(CENTER, CENTER)
+                    translate(width/2, height/3)
+                    fill("red")
+                    text("Game Over", 0, 0)
+                    translate(0, height/3)
+                    text(`Score: ${score}`, 0, 0)
+                pop()
+                gameOverElements.forEach((element, i) => {
+                    circle(element[0], element[1], element[2]*2)
+                })
+                fill("red")
+                circle(invisPos[0], invisPos[1], 10)
+            }
+            else if (mode == 0) drawMenu()
+            else if (mode == 1) {
+                translate(width / 2, height / 2)
+                noFill()
+                scale(width / 240 * dartboard_scale)
+                drawConcentric()
+            }
+            else if (mode == 2) {
+                translate(width / 2, height / 2)
+                noFill()
+                scale(width / 240 * dartboard_scale)
+                drawDarts()
+                textprompt = `Elapsed: ${floor((millis() - countingStart) / 10) / 100}`
+            }
+            else if (mode == 3) {
+                // fill("red")
+                // circle(invisPos[0], invisPos[1], 10)
+            }          
+            pop()
+
+            drawObjects()
+
+            if(mode > 0) drawText()
+
+        }
+
+        function showRules(){
+            alert("Rules: \n\nArchery: 10 seconds to make 10 shots closest to center.  \n\nFinder: 5 shots to get closest to the invisible target.  \n\nDarts: hit 1-20 in order fast- hitting inner rings saves time.")
+        }
+
+        function drawMenu(){      
+            push()
+            translate(width / 2, height / 2)
+            textAlign(CENTER, CENTER)
+            textSize(width/10)
+            fill(100)
+            text("Gyro", 0, 0)
+            pop()
+
+            noFill()
+            noStroke()
+
+            //Archery/Concentric
+            push()
+            translate(width/4, height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            drawConcentric()
+            pop()
+
+            //Darts/Counting
+            push()
+            translate(width/4, 3*height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            drawDarts()
+            pop()
+
+            //Finder
+            push()
+            stroke(255)
+            translate(3*width/4, height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            circle(0,0,240)
+            for(var i = 0 ; i < 6; i++){
+                circle(50,50,i*20)
+                circle(-25,60,i*20)
+                circle(70,-10,i*20)
+                circle(-60,-40,i*20)
+            }
+            pop()
+
+            //Multi
+            push()
+            stroke(255)
+            translate(3*width/4, 3*height/4)
+            scale(0.8 * width / 240 * dartboard_scale)
+            circle(0,0,240)
+            scale(0.4)
+            translate(width/8, width/8)
+            drawConcentric()
+            translate(-width*0.3, -width*0.1)
+            drawConcentric()
+            translate(width*0.25,-width*0.2)
+            drawConcentric()
+            pop()
+
+            //Scoreboards
+
+            push()
+            strokeWeight(10)
+            stroke("red")
+            menuElements.forEach((element, i) => {
+                circle(element[0], element[1], element[2]*2)
+            })
+
+        }
+
+        function drawMenu2() {
+            noFill()
+            noStroke()
+
+            push()
+            translate(width / 2, height / 2)
+            textAlign(CENTER, CENTER)
+            textSize(width/10)
+            fill(100)
+            text("Gyro", 0, 0)
+            pop()
+
+            push()
+            translate(0,0)
+            scale(0.8*width / 240)
+            drawConcentric()
+            pop()
+
+            push()
+            translate(0, height)
+            scale(0.8 * width / 240)
+            drawDarts()
+            pop()
+
+            push()
+            stroke(255)
+            translate(width, 0)
+            scale(0.8 * width / 240)
+            circle(0,0,240)
+            for(var i = 0 ; i < 6; i++){
+                circle(50,50,i*20)
+                circle(-25,60,i*20)
+                circle(70,-10,i*20)
+                circle(-60,-40,i*20)
+            }
+            pop()
+
+            push()
+            stroke(255)
+            translate(width, height)
+            scale(-0.8 * width / 240)
+            circle(0,0,240)
+            scale(0.4)
+            translate(width/8, width/8)
+            drawConcentric()
+            translate(-width*0.3, -width*0.1)
+            drawConcentric()
+            translate(width*0.25,-width*0.2)
+            drawConcentric()
+            pop()
+
+            // push()
+            // fill(255)
+            // stroke(0)
+            // var align_circle = width/3
+            // var circle_size = width*0.25
+            // circle(align_circle, 0, circle_size)
+            // circle(0, align_circle, circle_size)
+            // circle(width-align_circle, 0, circle_size)
+            // circle(0, width-align_circle, circle_size)
+            // circle(width-align_circle, width, circle_size)
+            // circle(width, width-align_circle, circle_size)
+            // circle(align_circle, width, circle_size)
+            // circle(width, align_circle, circle_size)
+
+            // fill(0)
+            // stroke(0)
+            // textAlign(CENTER, CENTER)
+            // textSize(width*0.05)
+            // text("Rules", align_circle, width*0.03)
+            // pop()
+        }
+
+        function drawObjects() {
+            fill(127);
+
+            //draw cursor
+            for (let obj of objects) {
+                let pos = obj.position;
+                ellipse(pos.x, pos.y, ballSize * 2);
+                push()
+                translate(pos.x, pos.y)
+                strokeWeight(width*0.005)
+                stroke(255)
+                noFill()
+                circle(0,0,width*0.04)
+                stroke(255,0,0)
+                line(0, width*0.01, 0, width*0.02)
+                line(width*0.01, 0, width*0.02, 0)
+                line(0, -width*0.01, 0, -width*0.02)
+                line(-width*0.01, 0, -width*0.02, 0)
+                pop()
+            }
+
+            shots.forEach((point, i) => {
+                fill("cyan")
+                circle(point[0], point[1], 10)
+                if(mode == 1){
+                    textAlign(RIGHT, TOP)
+                    textSize(height/20)
+                    text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
+                }
+                if (mode == 3) {
+                    textAlign(CENTER, CENTER)
+                    textSize(30)
+                    fill("red")
+                    text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.02)
+                }
+            })
+        }
+
+        function drawText() {            
+            textSize(100)
+            textAlign(LEFT, TOP)
+            text(`Mode: ${mode}`, 0, 0)
+
+            textAlign(RIGHT, TOP)
+            text(score, width, 0)
+
+            textAlign(RIGHT, BOTTOM)
+            text("Unused", width, height)
+
+            textAlign(LEFT, BOTTOM)
+            text(textprompt, 0, height)
+        }
+
+        async function enableGyro() {
+            if (typeof DeviceMotionEvent.requestPermission === "function") {
+                try {
+                    let permission = await DeviceMotionEvent.requestPermission();
+                    if (permission === "granted") {
+                        gyroEnabled = true;
+                        window.addEventListener("deviceorientation", updateGravity);
+                        document.getElementById("enableGyro").innerText = "Gyroscope enabled!";
+
+                        startup()
+
+                    } else {
+                        document.getElementById("enableGyro").innerText = "Permission denied.";
+                    }
+                } catch (error) {
+                    document.getElementById("enableGyro").innerText = "Error requesting permission.";
+                    console.error(error);
+                }
+            } else {
+                // For browsers that don't require permission
+                gyroEnabled = true;
+                window.addEventListener("deviceorientation", updateGravity);
+                document.getElementById("enableGyro").innerText = "Gyroscope enabled!";
+
+                startup()
+            }
+        }
+
+        function updateGravity(event) {
+            if (!gyroEnabled) return;
+
+            // Convert device rotation into gravity vector
+            let beta = event.beta;   // Front-back tilt (-90 to 90)
+            let gamma = event.gamma; // Left-right tilt (-45 to 45)
+
+            // Normalize values to Matter.js gravity range
+            let gx = gamma / 45;  // Horizontal gravity (-1 to 1)
+            let gy = beta / 90;   // Vertical gravity (-1 to 1)
+
+            world.gravity.x = gx * gravityScale;
+            world.gravity.y = gy * gravityScale;
+        }
+
+        document.getElementById("enableGyro").addEventListener("click", enableGyro);
+
+        function getMenuElement(){
+            if(mode == -1) elements = gameOverElements
+            if(mode == 0) elements = menuElements
+            elements.forEach((element, i) => {
+                console.log(i, dist(objects[0].position.x, objects[0].position.y, element[0], element[1] ))
+                if(dist(objects[0].position.x, objects[0].position.y, element[0], element[1]) < element[2]){
+                    eval(element[3])
+                }
+            })
+        }
+
+        function touchEnded() {
+            if (mode == -1) {
+                getMenuElement()
+                return
+            }
+            if (!canShoot) return
+            if (shots.length >= shotLimit){
+                if(mode == 1) endArchery()
+                if(mode == 3) endInvis()
+            }
+            
+            if (mode == 0) {
+                getMenuElement()
+                return
+            }
+            else if (mode == 1) {
+                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
+                score += points
+            }
+            else if (mode == 2) {
+                segment = getSegment(objects[0].position.x, objects[0].position.y)
+                textprompt = `${segment[0]}, ${segment[1]}`
+                if (segment[0] == score) {
+                    score = score + 1
+                    if (segment[1] == 0) countingStart += 5000
+                    if (segment[1] == 1) countingStart += 4000
+                    if (segment[1] == 3) countingStart += 2000
+                    if (segment[1] == 5) countingStart += 1000
+                }
+                if (score > 20) endCounting()
+            }
+            else if (mode == 3) {
+                var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
+                score += points
+            }
+            shots.push([objects[0].position.x, objects[0].position.y])
+            // console.log(shots)
+            canShoot = false
+            setTimeout(setShootFlag, shotCooldown)
+        }
+        function mouseReleased() { return }
+        function setShootFlag() {
+            canShoot = true
+        }
+    </script>
+
+    <script> //dartboards and points
+
+        const numSectors = 20;
+        const angleStep = 360 / numSectors;
+
+        const bullRadius = 10;
+        const outerBullRadius = 20;
+        const tripleRingInner = 60;
+        const tripleRingOuter = 70;
+        const doubleRingInner = 110;
+        const doubleRingOuter = 120;
+        const boardRadius = 120;
+
+        var slice_values = [11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8]
+        function drawDarts() {
+            rotate(9)
+
+            stroke(0); // borders between sectors
+            strokeWeight(1);
+
+            // --- 1. Base alternating slices ---
+            for (let i = 0; i < numSectors; i++) {
+                let startAngle = i * angleStep;
+                let endAngle = startAngle + angleStep;
+                fill(i % 2 === 0 ? 'white' : 'black');
+                arc(0, 0, boardRadius * 2, boardRadius * 2, startAngle, endAngle, PIE);
+            }
+
+            // --- 2. Triple ring (red/green slices) ---
+            for (let i = 0; i < numSectors; i++) {
+                let startAngle = i * angleStep;
+                let endAngle = startAngle + angleStep;
+                fill(i % 2 === 0 ? 'green' : 'red');
+                arcRing(tripleRingInner, tripleRingOuter, startAngle, endAngle);
+            }
+
+            // --- 3. Double ring (red/green slices) ---
+            for (let i = 0; i < numSectors; i++) {
+                let startAngle = i * angleStep;
+                let endAngle = startAngle + angleStep;
+                fill(i % 2 === 0 ? 'green' : 'red');
+                arcRing(doubleRingInner, doubleRingOuter, startAngle, endAngle);
+            }
+
+            // --- 4. Outer Bull (green ring) ---
+            fill('green');
+            stroke(0);
+            ellipse(0, 0, outerBullRadius * 2);
+
+            // --- 5. Inner Bull (red dot) ---
+            fill('red');
+            ellipse(0, 0, bullRadius * 2);
+
+            drawDartText()
+        }
+
+        // Utility function to draw an arc-shaped ring segment
+        function arcRing(innerR, outerR, startAngle, endAngle) {
+            beginShape();
+            for (let a = startAngle; a <= endAngle; a += 1) {
+                let x = cos(a) * outerR;
+                let y = sin(a) * outerR;
+                vertex(x, y);
+            }
+            for (let a = endAngle; a >= startAngle; a -= 1) {
+                let x = cos(a) * innerR;
+                let y = sin(a) * innerR;
+                vertex(x, y);
+            }
+            endShape(CLOSE);
+        }
+
+        function drawDartText() {
+            textSize(30 * dartboard_scale)
+            textAlign(CENTER, CENTER)
+            rotate(-18 * 5.5)
+            for (i in slice_values) {
+                fill(i % 2 === 0 ? 'red' : 'green');
+                text(slice_values[i], 0, -(tripleRingInner + doubleRingOuter) / 2)
+                rotate(18)
+            }
+        }
+
+        function drawConcentric() {
+            archeryColors = ["white", "black", "blue", "red", "yellow"]
+            circle(0, 0, boardRadius * 2)
+            for (var i = 0; i < 10; i++) {
+                stroke("gray")
+                fill(archeryColors[floor(i / 2)])
+                circle(0, 0, (boardRadius * 2) / 10 * (10 - i))
+            }
+        }
+        
+        
+        function getPointsArchery(posX, posY) {
+            var segmentScaler = [1, 3, 1, 2]
+            var segment = getSegment(posX, posY)
+            if (segment[1] == 0) return 50
+            else if (segment[1] == 1) return 25
+            else if (segment[1] == 6) return 0
+            else {
+                return segment[0] * segmentScaler[segment[1] - 2]
+            }
+        }
+
+        function getSegment(posX, posY) {
+            var pos = [posX - width / 2, posY - height / 2]
+            var angle = atan2(pos[1], pos[0]) + 180 + 9
+            var slice = floor(angle / 18) % 20
+            var rad = dist(posX, posY, width / 2, height / 2);
+            var slice_value = slice_values[slice]
+            // console.log(pos, angle, slice, slice_values[slice], rad)
+            var rad_dist = floor((rad * 600 / width * 240 / 600) / 10)
+            // console.log(rad * 600/width * 240/600)
+            var rad_values = [10, 20, 60, 70, 110, 120]
+            var rad_value2 = [1, 2, 3, 3, 3, 3, 4, 5, 5, 5, 5, 6]
+            var rad_value = rad_value2[rad_dist]
+            var rad_value = (rad * 600 / width * 240 / 600)
+
+            if (rad_value < bullRadius * dartboard_scale) return [slice_value, 0]
+            if (rad_value < outerBullRadius * dartboard_scale) return [slice_value, 1]
+            if (rad_value < tripleRingInner * dartboard_scale) return [slice_value, 2]
+            if (rad_value < tripleRingOuter * dartboard_scale) return [slice_value, 3]
+            if (rad_value < doubleRingInner * dartboard_scale) return [slice_value, 4]
+            if (rad_value < doubleRingOuter * dartboard_scale) return [slice_value, 5]
+            return (slice_value, 6)
+        }
+
+        function getPointsConcentric(posX, posY) {
+            var rad = dist(posX, posY, width / 2, height / 2);
+            var rad_value = (rad * 600 / width * 240 / 600)
+            var dist_percent = rad * dartboard_scale / (doubleRingOuter)
+            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+            return ceil(score)
+        }
+
+        function getPointsInvis(posX, posY) {
+            var rad = dist(posX, posY, invisPos[0], invisPos[1]);
+            var rad_value = (rad * 600 / width * 240 / 600)
+            var dist_percent = rad / (width)
+            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+            return ceil(score*10)/10
+        }
+
+    </script>
+</body>
+
+</html>
