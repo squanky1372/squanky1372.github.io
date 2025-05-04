@@ -180,7 +180,7 @@
         }
 
         function archery() {
-            this.start = new function() {
+            this.start = function() {
                 setTimeout(endArchery, archeryLength)
                 textprompt = "Started 1"
                 mode = 1
@@ -188,24 +188,24 @@
                 shots = []
             }
 
-            this.end = new function(){
+            this.end = function(){
                 textprompt = "Ended"
                 mode = -1
             }
 
-            this.draw = new function() {
+            this.draw = function() {
                 translate(width / 2, height / 2)
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 drawConcentric()
             }
 
-            this.touched = new function(){
+            this.touched = function(){
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 score += points
             }
 
-            this.drawShots = new function(){
+            this.drawShots = function(){
                 textAlign(RIGHT, TOP)
                 textSize(height/20)
                 text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
