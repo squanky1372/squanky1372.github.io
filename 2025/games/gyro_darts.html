@@ -84,7 +84,7 @@
             menuSize = 0.8 * width * dartboard_scale /2
             scoreboardScale = menuSize * 0.75
             menuElements = [
-                [width*0.25, width*0.25, menuSize, "startArchery()"],
+                [width*0.25, width*0.25, menuSize, "archery.start()"],
                 [width*0.25, width*0.75, menuSize, "startCounting()"],
                 [width*0.75, width*0.25, menuSize, "startInvis()"],
                 [width*0.75, width*0.75, menuSize, "not implemented"],
@@ -177,6 +177,16 @@
             score = getPointsInvis(shots[shots.length-1][0], shots[shots.length-1][1])
             mode = -1
 
+        }
+
+        function archery() {
+            this.start = new Function() {
+                setTimeout(endArchery, archeryLength)
+                textprompt = "Started 1"
+                mode = 1
+                shotLimit = 10
+                shots = []
+            }
         }
 
         function draw() {
