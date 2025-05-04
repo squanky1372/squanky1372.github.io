@@ -142,13 +142,13 @@
 
             console.log("granted")
         }
-        function startArchery() {
-            setTimeout(endArchery, archeryLength)
-            textprompt = "Started 1"
-            mode = 1
-            shotLimit = 10
-            shots = []
-        }
+        // function startArchery() {
+        //     setTimeout(endArchery, archeryLength)
+        //     textprompt = "Started 1"
+        //     mode = 1
+        //     shotLimit = 10
+        //     shots = []
+        // }
         function startCounting() {
             textprompt = "Started 2"
             countingStart = millis()
@@ -180,7 +180,7 @@
         }
 
         function archery() {
-            this.start = new Function() {
+            this.start = new function() {
                 setTimeout(endArchery, archeryLength)
                 textprompt = "Started 1"
                 mode = 1
