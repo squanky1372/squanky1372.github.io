@@ -164,10 +164,10 @@
             shots = []
         }
 
-        function endArchery() {
-            textprompt = "Ended"
-            mode = -1
-        }
+        // function endArchery() {
+        //     textprompt = "Ended"
+        //     mode = -1
+        // }
         function endCounting(){
             score = floor((millis() - countingStart) / 10) / 100
             textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
@@ -186,6 +186,29 @@
                 mode = 1
                 shotLimit = 10
                 shots = []
+            }
+
+            this.end = new function(){
+                textprompt = "Ended"
+                mode = -1
+            }
+
+            this.draw = new function() {
+                translate(width / 2, height / 2)
+                noFill()
+                scale(width / 240 * dartboard_scale)
+                drawConcentric()
+            }
+
+            this.touched = new function(){
+                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
+                score += points
+            }
+
+            this.drawShots = new function(){
+                textAlign(RIGHT, TOP)
+                textSize(height/20)
+                text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
             }
         }
 
@@ -210,12 +233,7 @@
                 circle(invisPos[0], invisPos[1], 10)
             }
             else if (mode == 0) drawMenu()
-            else if (mode == 1) {
-                translate(width / 2, height / 2)
-                noFill()
-                scale(width / 240 * dartboard_scale)
-                drawConcentric()
-            }
+            else if (mode == 1) archery.draw()
             else if (mode == 2) {
                 translate(width / 2, height / 2)
                 noFill()
@@ -402,11 +420,7 @@
             shots.forEach((point, i) => {
                 fill("cyan")
                 circle(point[0], point[1], 10)
-                if(mode == 1){
-                    textAlign(RIGHT, TOP)
-                    textSize(height/20)
-                    text(getPointsConcentric(point[0], point[1]), width, (i+1)*height/20+height/10)
-                }
+                if(mode == 1) archery.drawShots()
                 if (mode == 3) {
                     textAlign(CENTER, CENTER)
                     textSize(30)
@@ -494,7 +508,7 @@
             }
             if (!canShoot) return
             if (shots.length >= shotLimit){
-                if(mode == 1) endArchery()
+                if(mode == 1) archery.end()
                 if(mode == 3) endInvis()
             }
             
@@ -502,10 +516,7 @@
                 getMenuElement()
                 return
             }
-            else if (mode == 1) {
-                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
-                score += points
-            }
+            else if (mode == 1) archery.touched()
             else if (mode == 2) {
                 segment = getSegment(objects[0].position.x, objects[0].position.y)
                 textprompt = `${segment[0]}, ${segment[1]}`
