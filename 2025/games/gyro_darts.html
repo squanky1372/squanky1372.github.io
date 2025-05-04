@@ -62,6 +62,8 @@
         var menuElements
         var gameOverElements
 
+        var archery = new Archery()
+
         // Dynamic Variables
         var shotLimit = 999
         var score = 0
@@ -179,7 +181,7 @@
 
         }
 
-        function archery() {
+        function Archery() {
             this.start = function() {
                 setTimeout(endArchery, archeryLength)
                 textprompt = "Started 1"
