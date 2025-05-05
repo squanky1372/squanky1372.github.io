@@ -177,7 +177,7 @@
                 archery.drawConcentric()
                 pop()
             }
-            this.drawShot = function(point){
+            this.drawShot = function(point, i){
                 textAlign(LEFT, TOP)
                 textSize(height/20)
                 text(this.getPoints(point[0], point[1]), 0, (i+1)*height/20+height/10)
@@ -278,7 +278,7 @@
                 }
                 pop()
             }
-            this.drawShot = function(point){
+            this.drawShot = function(point, i){
                 textAlign(CENTER, CENTER)
                 textSize(30)
                 fill("red")
@@ -409,8 +409,8 @@
             shots.forEach((point, i) => {
                 fill("cyan")
                 circle(point[0], point[1], 10)
-                if(mode == 1) archery.drawShot(point)
-                if(mode == 3) invis.drawShot(point)
+                if(mode == 1) archery.drawShot(point, i)
+                if(mode == 3) invis.drawShot(point, i)
             })
         }
 
