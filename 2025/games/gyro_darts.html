@@ -197,7 +197,7 @@
             }
             this.getPoints = function(posX, posY) {
                 var rad = dist(posX, posY, width / 2, height / 2);
-                var rad_value = (rad * 600 / width * 240 / 600)
+                var rad_value = (rad * 600 / width * 240 * 2 * this.dartboardScale / 600)
                 var dist_percent = rad * this.dartboardScale / (doubleRingOuter)
                 var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
                 return ceil(score)
