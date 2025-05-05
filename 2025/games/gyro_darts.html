@@ -181,10 +181,12 @@
                 pop()
             }
             this.drawShot = function(point){
-                console.log("drawing shot")
                 textAlign(LEFT, TOP)
                 textSize(height/20)
                 text(this.getPoints(point[0], point[1]), 0, (i+1)*height/20+height/10)
+                console.log("drawing shot")
+                console.log(this.getPoints(point[0], point[1]))
+                console.log((i+1)*height/20+height/10)
             }
             this.getPoints = function(posX, posY) {
                 var rad = dist(posX, posY, width / 2, height / 2);
