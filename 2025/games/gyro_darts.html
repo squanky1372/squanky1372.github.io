@@ -123,7 +123,7 @@
 
             // Add some physics objects
             for (let i = 0; i < 1; i++) {
-                let obj = Bodies.circle(random(width), random(height / 2), ballSize, { restitution: ballBounce });
+                let obj = Bodies.circle(width/2, height/2, ballSize, { restitution: ballBounce });
                 objects.push(obj);
                 World.add(world, obj);
             }
@@ -143,6 +143,10 @@
 
             // objects[0].position.x = width/2
             // objects[0].position.y = width/2
+
+            Matter.Body.setVelocity(objects[0],  { x: 0, y: -0 })
+            Matter.Body.setPosition(objects[0], {x: width/2, y: height/2})
+            
 
             console.log("granted")
         }
