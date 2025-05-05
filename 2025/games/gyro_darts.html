@@ -173,7 +173,7 @@
                 var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
                 score += points
             }
-            this.drawShots = function(){
+            this.drawShot = function(point){
                 textAlign(LEFT, TOP)
                 textSize(height/20)
                 text(getPointsConcentric(point[0], point[1]), 0, (i+1)*height/20+height/10)
@@ -234,7 +234,7 @@
                 var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
                 score += points
             }
-            this.drawShots = function(){
+            this.drawShot = function(point){
                 textAlign(CENTER, CENTER)
                 textSize(30)
                 fill("red")
@@ -368,8 +368,8 @@
             shots.forEach((point, i) => {
                 fill("cyan")
                 circle(point[0], point[1], 10)
-                if(mode == 1) archery.drawShots()
-                if(mode == 3) invis.drawShots()
+                if(mode == 1) archery.drawShot(point)
+                if(mode == 3) invis.drawShot(point)
             })
         }
 
