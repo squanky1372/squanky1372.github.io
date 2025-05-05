@@ -144,6 +144,8 @@
             
 
             console.log("granted")
+
+            archery.start()
         }
 
         function Archery() {
@@ -173,11 +175,11 @@
                 this.drawConcentric()
                 textprompt = `Remaining: ${10 - floor((millis()-this.countingStart)/1000)}`
                 this.dartboard_scale = this.dartboardStartingScale * (10-(millis()-this.countingStart)/1000)/10
-                console.log(this.dartboard_scale)
             }
             this.touched = function(){
-                var points = this.getPoints(cursor.position.x, cursor.position.y)
-                this.scores.push(this.getPoints(cursor.position.x, cursor.position.y))
+                var points = this.getPoints(cursor.position.x, cursor.position.y) // var points = this.getPoints(mouseX, mouseY)
+                this.scores.push(points)
+                console.log(this.getPoints(mouseX, mouseY))
                 score += points
             }
             this.drawMenu = function(){
@@ -191,13 +193,13 @@
                 textAlign(LEFT, TOP)
                 textSize(height/20)
                 text(this.scores[i], 0, (i+1)*height/20+height/10)
-                console.log("drawing shot")
-                console.log(this.getPoints(point[0], point[1]))
-                console.log((i+1)*height/20+height/10)
             }
             this.getPoints = function(posX, posY) {
                 var rad = dist(posX, posY, width / 2, height / 2);
-                var dist_percent = rad / (doubleRingOuter * this.dartboard_scale)
+                // console.log(`rad: ${rad}`)
+                // console.log(`board: ${boardRadius * this.dartboard_scale}`)
+                var dist_percent = rad / (boardRadius * this.dartboard_scale *4)
+                // console.log(`percent: ${dist_percent}`)
                 var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
                 return ceil(score)
             }
@@ -312,6 +314,8 @@
         }
 
         function Multi(){
+            this.countingStart = 0
+
             this.draw = function(){}
             this.start = function(){}
             this.end = function(){}
@@ -334,7 +338,6 @@
         }
 
         function draw() {
-            console.log(mode)
             background(0);
 
             push()
@@ -541,7 +544,6 @@
             else if (mode == 2) darts.touched()
             else if (mode == 3) invis.touched()
             shots.push([cursor.position.x, cursor.position.y])
-            // console.log(shots)
             canShoot = false
             setTimeout(setShootFlag, shotCooldown)
         }
