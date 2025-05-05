@@ -115,10 +115,10 @@
 
             // Static walls
             let wallThickness = 500;
-            ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, { isStatic: true });
-            topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, { isStatic: true });
-            leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
-            rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+            ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width*2, wallThickness, { isStatic: true });
+            topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width*2, wallThickness, { isStatic: true });
+            leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height*2, { isStatic: true });
+            rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height*2, { isStatic: true });
 
             World.add(world, [ground, topWall, leftWall, rightWall]);
 
