@@ -144,17 +144,16 @@
             
 
             console.log("granted")
-
-            mode = 1
         }
 
         function Archery() {
             this.start = function() {
                 setTimeout(this.end, archeryLength)
-                textprompt = "Started 1"
+                textprompt = ""
                 mode = 1
                 shotLimit = 10
                 shots = []
+                countingStart = millis()
             }
             this.end = function(){
                 textprompt = "Ended"
@@ -165,6 +164,7 @@
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 this.drawConcentric()
+                textPrompt = `Remaining: ${10 - floor((millis()-countingStart)/1000)}`
             }
             this.touched = function(){
                 var points = this.getPoints(cursor.position.x, cursor.position.y)
