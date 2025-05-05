@@ -167,16 +167,32 @@
                 translate(width / 2, height / 2)
                 noFill()
                 scale(width / 240 * dartboard_scale)
-                drawConcentric()
+                this.drawConcentric()
             }
             this.touched = function(){
-                var points = getPointsConcentric(objects[0].position.x, objects[0].position.y)
+                var points = this.getPoints(objects[0].position.x, objects[0].position.y)
                 score += points
             }
             this.drawShot = function(point){
                 textAlign(LEFT, TOP)
                 textSize(height/20)
-                text(getPointsConcentric(point[0], point[1]), 0, (i+1)*height/20+height/10)
+                text(this.getPoints(point[0], point[1]), 0, (i+1)*height/20+height/10)
+            }
+            this.getPoints = function(posX, posY) {
+                var rad = dist(posX, posY, width / 2, height / 2);
+                var rad_value = (rad * 600 / width * 240 / 600)
+                var dist_percent = rad * dartboard_scale / (doubleRingOuter)
+                var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+                return ceil(score)
+            }
+            this.drawConcentric = function(){
+                archeryColors = ["white", "black", "blue", "red", "yellow"]
+                circle(0, 0, boardRadius * 2)
+                for (var i = 0; i < 10; i++) {
+                    stroke("gray")
+                    fill(archeryColors[floor(i / 2)])
+                    circle(0, 0, (boardRadius * 2) / 10 * (10 - i))
+                }
             }
         }
 
@@ -223,7 +239,7 @@
                 shots = []
             }
             this.end = function(){
-                score = getPointsInvis(shots[shots.length-1][0], shots[shots.length-1][1])
+                score = this.getPoints(shots[shots.length-1][0], shots[shots.length-1][1])
                 mode = -1
             }
             this.draw = function(){
@@ -231,14 +247,14 @@
                 // circle(invisPos[0], invisPos[1], 10)
             }
             this.touched = function(){
-                var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
+                var points = this.getPoints(objects[0].position.x, objects[0].position.y)
                 score += points
             }
             this.drawShot = function(point){
                 textAlign(CENTER, CENTER)
                 textSize(30)
                 fill("red")
-                text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.02)
+                text(this.getPoints(point[0], point[1]), point[0], point[1] - width*0.02)
             }
             this.drawPoint = function(){
                 fill("red")
@@ -248,7 +264,13 @@
                 circle(invisPos[0], invisPos[1], 30)
                 circle(invisPos[0], invisPos[1], 50)
                 circle(invisPos[0], invisPos[1], 70)
-
+            }
+            this.getPoints = function(posX, posY) {
+                var rad = dist(posX, posY, invisPos[0], invisPos[1]);
+                var rad_value = (rad * 600 / width * 240 / 600)
+                var dist_percent = rad / (width)
+                var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+                return ceil(score*10)/10
             }
         }
 
@@ -303,7 +325,7 @@
             push()
             translate(width/4, height/4)
             scale(0.8 * width / 240 * dartboard_scale)
-            drawConcentric()
+            archery.drawConcentric()
             pop()
 
             //Darts/Counting
@@ -335,11 +357,11 @@
             circle(0,0,240)
             scale(0.4)
             translate(width/8, width/8)
-            drawConcentric()
+            archery.drawConcentric()
             translate(-width*0.3, -width*0.1)
-            drawConcentric()
+            archery.drawConcentric()
             translate(width*0.25,-width*0.2)
-            drawConcentric()
+            archery.drawConcentric()
             pop()
 
             //Scoreboards
@@ -566,16 +588,6 @@
                 rotate(18)
             }
         }
-
-        function drawConcentric() {
-            archeryColors = ["white", "black", "blue", "red", "yellow"]
-            circle(0, 0, boardRadius * 2)
-            for (var i = 0; i < 10; i++) {
-                stroke("gray")
-                fill(archeryColors[floor(i / 2)])
-                circle(0, 0, (boardRadius * 2) / 10 * (10 - i))
-            }
-        }
          
         function getPointsArchery(posX, posY) {
             var segmentScaler = [1, 3, 1, 2]
@@ -609,22 +621,6 @@
             if (rad_value < doubleRingInner * dartboard_scale) return [slice_value, 4]
             if (rad_value < doubleRingOuter * dartboard_scale) return [slice_value, 5]
             return (slice_value, 6)
-        }
-
-        function getPointsConcentric(posX, posY) {
-            var rad = dist(posX, posY, width / 2, height / 2);
-            var rad_value = (rad * 600 / width * 240 / 600)
-            var dist_percent = rad * dartboard_scale / (doubleRingOuter)
-            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-            return ceil(score)
-        }
-
-        function getPointsInvis(posX, posY) {
-            var rad = dist(posX, posY, invisPos[0], invisPos[1]);
-            var rad_value = (rad * 600 / width * 240 / 600)
-            var dist_percent = rad / (width)
-            var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-            return ceil(score*10)/10
         }
 
     </script>
