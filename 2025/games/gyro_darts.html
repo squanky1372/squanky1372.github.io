@@ -150,6 +150,7 @@
             this.countingStart = 0
             this.dartboardStartingScale = 0.5
             this.dartboard_scale = 0.5
+            this.scores = []
 
             this.start = function() {
                 setTimeout(this.end, archeryLength)
@@ -159,6 +160,7 @@
                 shots = []
                 this.countingStart = millis()
                 this.dartboardScale = 0.5
+                this.scores = []
             }
             this.end = function(){
                 textprompt = "Ended"
@@ -175,6 +177,7 @@
             }
             this.touched = function(){
                 var points = this.getPoints(cursor.position.x, cursor.position.y)
+                this.scores.push(this.getPoints(cursor.position.x, cursor.position.y))
                 score += points
             }
             this.drawMenu = function(){
@@ -187,7 +190,7 @@
             this.drawShot = function(point, i){
                 textAlign(LEFT, TOP)
                 textSize(height/20)
-                text(this.getPoints(point[0], point[1]), 0, (i+1)*height/20+height/10)
+                text(this.scores[i], 0, (i+1)*height/20+height/10)
                 console.log("drawing shot")
                 console.log(this.getPoints(point[0], point[1]))
                 console.log((i+1)*height/20+height/10)
