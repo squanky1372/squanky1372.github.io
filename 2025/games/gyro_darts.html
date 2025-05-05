@@ -114,7 +114,7 @@
             world.gravity.y = 1; // Default gravity downwards
 
             // Static walls
-            let wallThickness = 50;
+            let wallThickness = 500;
             ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, { isStatic: true });
             topWall = Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, { isStatic: true });
             leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
@@ -164,7 +164,7 @@
                 noFill()
                 scale(width / 240 * dartboard_scale)
                 this.drawConcentric()
-                textPrompt = `Remaining: ${10 - floor((millis()-countingStart)/1000)}`
+                textprompt = `Remaining: ${10 - floor((millis()-countingStart)/1000)}`
             }
             this.touched = function(){
                 var points = this.getPoints(cursor.position.x, cursor.position.y)
