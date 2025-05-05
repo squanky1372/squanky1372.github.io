@@ -65,6 +65,7 @@
         var archery = new Archery()
         var darts = new Darts()
         var invis = new Invis()
+        var multi = new Multi()
 
         // Dynamic Variables
         var shotLimit = 999
@@ -141,14 +142,13 @@
             invisPos = [0,0]
             shotLimit = 999
 
-            // objects[0].position.x = width/2
-            // objects[0].position.y = width/2
-
             Matter.Body.setVelocity(objects[0],  { x: 0, y: -0 })
             Matter.Body.setPosition(objects[0], {x: width/2, y: height/2})
             
 
             console.log("granted")
+
+            mode = 1
         }
 
         function Archery() {
@@ -173,7 +173,15 @@
                 var points = this.getPoints(objects[0].position.x, objects[0].position.y)
                 score += points
             }
+            this.drawMenu = function(){
+                push()
+                translate(width/4, height/4)
+                scale(0.8 * width / 240 * dartboard_scale)
+                archery.drawConcentric()
+                pop()
+            }
             this.drawShot = function(point){
+                console.log("drawing shot")
                 textAlign(LEFT, TOP)
                 textSize(height/20)
                 text(this.getPoints(point[0], point[1]), 0, (i+1)*height/20+height/10)
@@ -229,6 +237,13 @@
                 }
                 if (score > 20) this.end()
             }
+            this.drawMenu = function(){
+                push()
+                translate(width/4, 3*height/4)
+                scale(0.8 * width / 240 * dartboard_scale)
+                drawDarts()
+                pop()
+            }
         }
 
         function Invis(){
@@ -249,6 +264,20 @@
             this.touched = function(){
                 var points = this.getPoints(objects[0].position.x, objects[0].position.y)
                 score += points
+            }
+            this.drawMenu = function(){
+                push()
+                stroke(255)
+                translate(3*width/4, height/4)
+                scale(0.8 * width / 240 * dartboard_scale)
+                circle(0,0,240)
+                for(var i = 0 ; i < 6; i++){
+                    circle(50,50,i*20)
+                    circle(-25,60,i*20)
+                    circle(70,-10,i*20)
+                    circle(-60,-40,i*20)
+                }
+                pop()
             }
             this.drawShot = function(point){
                 textAlign(CENTER, CENTER)
@@ -271,6 +300,28 @@
                 var dist_percent = rad / (width)
                 var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
                 return ceil(score*10)/10
+            }
+        }
+
+        function Multi(){
+            this.draw = function(){}
+            this.start = function(){}
+            this.end = function(){}
+            this.touched = function(){}
+            this.drawMenu = function(){
+                push()
+                stroke(255)
+                translate(3*width/4, 3*height/4)
+                scale(0.8 * width / 240 * dartboard_scale)
+                circle(0,0,240)
+                scale(0.4)
+                translate(width/8, width/8)
+                archery.drawConcentric()
+                translate(-width*0.3, -width*0.1)
+                archery.drawConcentric()
+                translate(width*0.25,-width*0.2)
+                archery.drawConcentric()
+                pop()
             }
         }
 
@@ -321,48 +372,10 @@
             noFill()
             noStroke()
 
-            //Archery/Concentric
-            push()
-            translate(width/4, height/4)
-            scale(0.8 * width / 240 * dartboard_scale)
-            archery.drawConcentric()
-            pop()
-
-            //Darts/Counting
-            push()
-            translate(width/4, 3*height/4)
-            scale(0.8 * width / 240 * dartboard_scale)
-            drawDarts()
-            pop()
-
-            //Finder
-            push()
-            stroke(255)
-            translate(3*width/4, height/4)
-            scale(0.8 * width / 240 * dartboard_scale)
-            circle(0,0,240)
-            for(var i = 0 ; i < 6; i++){
-                circle(50,50,i*20)
-                circle(-25,60,i*20)
-                circle(70,-10,i*20)
-                circle(-60,-40,i*20)
-            }
-            pop()
-
-            //Multi
-            push()
-            stroke(255)
-            translate(3*width/4, 3*height/4)
-            scale(0.8 * width / 240 * dartboard_scale)
-            circle(0,0,240)
-            scale(0.4)
-            translate(width/8, width/8)
-            archery.drawConcentric()
-            translate(-width*0.3, -width*0.1)
-            archery.drawConcentric()
-            translate(width*0.25,-width*0.2)
-            archery.drawConcentric()
-            pop()
+            archery.drawMenu()
+            darts.drawMenu()
+            invis.drawMenu()
+            multi.drawMenu()
 
             //Scoreboards
 
