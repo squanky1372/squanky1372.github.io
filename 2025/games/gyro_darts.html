@@ -230,6 +230,12 @@
                 var points = getPointsInvis(objects[0].position.x, objects[0].position.y)
                 score += points
             }
+            this.drawShots = function(){
+                textAlign(CENTER, CENTER)
+                textSize(30)
+                fill("red")
+                text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.02)
+            }
         }
 
         function draw() {
@@ -359,12 +365,7 @@
                 fill("cyan")
                 circle(point[0], point[1], 10)
                 if(mode == 1) archery.drawShots()
-                if (mode == 3) {
-                    textAlign(CENTER, CENTER)
-                    textSize(30)
-                    fill("red")
-                    text(getPointsInvis(point[0], point[1]), point[0], point[1] - width*0.02)
-                }
+                if(mode == 3) invis.drawShots()
             })
         }
 
