@@ -350,9 +350,9 @@
                 if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
                     this.centerPosition = [random(width), random(height)]
-                    score = score - targetsHit
+                    score = targetsNeeded - targetsHit
                 }
-                if(score >= this.targetsNeeded) this.end()
+                if(score == 0) this.end()
             }
             this.drawMenu = function(){
                 push()
