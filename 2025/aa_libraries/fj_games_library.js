@@ -78,7 +78,7 @@ function verifyHash() {
     const urlParams = new URLSearchParams(window.location.search);
 
     // Get specific parameters
-    hash = urlParams.get('hash'); // "John"
+    hash = urlParams.get('hash');
 
     if (hash) console.log(hash);
     else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
@@ -95,14 +95,23 @@ function verifyHash() {
             }
             return response.json()
         }) // Parse the response body as JSON
-        .then(data => verifyFields(data.foundRow))   // Log the parsed data
+        .then(data => verifyFields(data.foundRow)) 
         .catch(error => {
             console.error(error)
             // window.location.href = "https://squanky1372.github.io/2025/games/login.html"
         }); // Handle errors
 }
 
+var newPlayerFlag = false
 function verifyFields(incomingPlayerData) {
+    if (!incomingPlayerData.username) newPlayerFlag = true
+    else if (incomingPlayerData.visuals) {
+      console.log("visuals!")
+      if (!incomingPlayerData.visuals.colors)  newPlayerFlag = true
+      else if (!incomingPlayerData.visuals.emoji)  newPlayerFlag = true
+    }
+    else newPlayerFlag = true
+
     playerData = incomingPlayerData
     console.log("Finished obtaining all player data.")
     playerDataFetched = true
