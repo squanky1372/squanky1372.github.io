@@ -316,7 +316,7 @@
         function Multi(){
             this.countingStart = 0
             this.centerPosition = [0,0]
-            this.targetRadius = 0.2
+            this.targetScale = 0.2
             this.targetsHit = 0
             this.targetsNeeded = 10
 
@@ -327,7 +327,7 @@
                 shots = []
                 countingStart = millis()
                 this.centerPosition = [random(width), random(height)]
-                this.targetRadius = 0.1
+                this.targetScale = 0.1
                 this.targetsHit = 0
             }
             this.end = function(){
@@ -339,8 +339,8 @@
                 push()
                 translate(this.centerPosition[0], this.centerPosition[1])
                 noFill()
-                console.log("scaled", (width / 240) * this.targetRadius)
-                scale((width / 240) * this.targetRadius)
+                console.log("scaled", (width / 240) * this.targetScale)
+                scale((width / 240) * this.targetScale)
                 this.drawConcentric()
                 textprompt = `Elapsed: ${floor((millis()-this.countingStart)/1000)}`
                 this.dartboard_scale = this.dartboardStartingScale * (10-(millis()-this.countingStart)/1000)/10
@@ -380,9 +380,8 @@
             }
             this.isPointHit = function(posX, posY) {
                 var rad = dist(posX, posY, width / 2, height / 2);
-                var dist_percent = rad / (boardRadius * this.dartboard_scale *4)
-                var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
-                return score > 0
+                var dist_percent = rad / (boardRadius * this.targetScale *4)
+                return (dist_percent > 1)
             }
         }
 
