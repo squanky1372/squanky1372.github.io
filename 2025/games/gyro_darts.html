@@ -346,8 +346,8 @@
                 pop()
             }
             this.touched = function(){
-                if(this.isPointHit(mouseX, mouseY)){
-                // if(this.isPointHit(cursor.position.x, cursor.position.y)){
+                // if(this.isPointHit(mouseX, mouseY)){
+                if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
                     this.centerPosition = [random(width), random(height)]
                     score = this.targetsNeeded - this.targetsHit
