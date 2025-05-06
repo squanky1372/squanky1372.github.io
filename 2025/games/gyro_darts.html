@@ -145,7 +145,7 @@
 
             console.log("granted")
 
-            multi.start()
+            // multi.start()
         }
 
         function Archery() {
@@ -325,7 +325,7 @@
                 mode = 4
                 shotLimit = 999
                 shots = []
-                countingStart = millis()
+                this.countingStart = millis()
                 this.centerPosition = [random(width), random(height)]
                 this.targetScale = 0.1
                 this.targetsHit = 0
@@ -346,8 +346,8 @@
                 pop()
             }
             this.touched = function(){
-                // if(this.isPointHit(mouseX, mouseY)){
-                if(this.isPointHit(cursor.position.x, cursor.position.y)){
+                if(this.isPointHit(mouseX, mouseY)){
+                // if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
                     this.centerPosition = [random(width), random(height)]
                     score = this.targetsNeeded - this.targetsHit
