@@ -457,6 +457,32 @@ Targets: Hit 10 randomly placed targets as quickly as possible.`)
                 circle(element[0], element[1], element[2]*2)
             })
 
+            
+            var cornerAlignment = 0.07
+            textAlign(CENTER, CENTER)
+            textSize(width/20)
+            fill("blue")
+            push()
+            translate(width*cornerAlignment, width*cornerAlignment)
+            rotate(-45)
+            text("Scores", 0, 0)
+            pop()
+            push()
+            translate(width*cornerAlignment, width*(1-cornerAlignment))
+            rotate(45)
+            text("Scores", 0, 0)
+            pop()
+            push()
+            translate(width*(1-cornerAlignment), width*(cornerAlignment))
+            rotate(45)
+            text("Scores", 0, 0)
+            pop()
+            push()
+            translate(width*(1-cornerAlignment), width*(1-cornerAlignment))
+            rotate(-45)
+            text("Scores", 0, 0)
+            pop()
+
         }
 
         function drawGameOver(){
@@ -530,7 +556,7 @@ Targets: Hit 10 randomly placed targets as quickly as possible.`)
             fill(100)
             textAlign(LEFT, TOP)
 
-            if(mode == 1) archery.topText()
+            if(mode == 1) archery.showText()
             if(mode == 2) darts.showText()
             if(mode == 3) invis.showText()
             if(mode == 4) multi.showText()
