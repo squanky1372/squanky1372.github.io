@@ -189,6 +189,10 @@
                 this.drawConcentric()
                 pop()
             }
+            this.showText = function(){
+                var decimals = 2
+                text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
             this.drawShot = function(point, i){
                 textAlign(LEFT, TOP)
                 textSize(height/20)
@@ -254,6 +258,10 @@
                 drawDarts()
                 pop()
             }
+            this.showText = function(){
+                var decimals = 2
+                text(`Elapsed: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
         }
 
         function Invis(){
@@ -288,6 +296,10 @@
                     circle(-60,-40,i*20)
                 }
                 pop()
+            }
+            this.showText = function(){
+                var decimals = 2
+                text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
             }
             this.drawShot = function(point, i){
                 textAlign(CENTER, CENTER)
@@ -369,6 +381,10 @@
                 this.drawConcentric()
                 pop()
             }
+            this.showText = function(){
+                var decimals = 2
+                text(`Elapsed: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
             this.drawConcentric = function(){
                 archeryColors = ["lightcoral", "white", "lightcoral", "white", "lightcoral"]
                 circle(0, 0, boardRadius * 2)
@@ -404,7 +420,15 @@
         }
 
         function showRules(){
-            alert("Rules: \n\nArchery: 10 seconds to make 10 shots closest to center.  \n\nFinder: 5 shots to get closest to the invisible target.  \n\nDarts: hit 1-20 in order fast- hitting inner rings saves time.")
+            alert(`Rules: 
+            
+            Archery: Within 10 seconds, take up to 10 shots at a shrinking target.  Points are scored out of 100.
+            
+            Finder: With 5 shots, get as close as possible to a hidden target as possible.  Points are scored out of 100.
+            
+            Darts: Hit segments 1-20 in order as quickly as posisble- hitting the red and green zones gives a time bonus, with higher bonus for harder rings.
+            
+            Targets: Hit 10 randomly placed targets as quickly as possible.`)
         }
 
         function drawMenu(){      
@@ -504,16 +528,12 @@
         function drawText() {            
             textSize(100)
             fill(100)
-            // textAlign(LEFT, TOP)
-            // text(`Mode: ${mode}`, 0, 0)
-
             textAlign(LEFT, TOP)
-            var decimals = 2
-            text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
-            // text(score, width, 0)
 
-            // textAlign(RIGHT, BOTTOM)
-            // text("Unused", width, height)
+            if(mode == 1) archery.topText()
+            if(mode == 2) darts.showText()
+            if(mode == 3) invis.showText()
+            if(mode == 4) multi.showText()
 
             textAlign(LEFT, BOTTOM)
             text(textprompt, 0, height)
