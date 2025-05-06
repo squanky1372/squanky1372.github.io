@@ -78,6 +78,8 @@
         var invisPos = [0, 0]
 
         function setup() {
+            verifyHash()
+
             angleMode(DEGREES);
             canvas = createCanvas(windowWidth * 0.95, windowWidth * 0.95);
             setupMatter()
@@ -93,10 +95,10 @@
                 [width*0.25, width*0.75, menuSize, "darts.start()"],
                 [width*0.75, width*0.25, menuSize, "invis.start()"],
                 [width*0.75, width*0.75, menuSize, "multi.start()"],
-                [0,0,scoreboardScale, "scoreboard1"],
-                [0,width,scoreboardScale, "scoreboard2"],
-                [width,0,scoreboardScale, "scoreboard3"],
-                [width, width, scoreboardScale, "scoreboard4"],
+                [0,0,scoreboardScale, "archery.toLeaderboard()"],
+                [0,width,scoreboardScale, "darts.toLeaderboard()"],
+                [width,0,scoreboardScale, "invis.toLeaderboard()"],
+                [width, width, scoreboardScale, "multi.toLeaderboard()"],
                 [width/2, 0, menuSize*0.5, "showRules()"],
             ]
 
@@ -166,6 +168,7 @@
             }
             this.end = function(){
                 textprompt = "Ended"
+                submitScoreWrapper("gyro", {score, level:1})
                 mode = -1
             }
             this.draw = function() {
@@ -192,6 +195,10 @@
             this.showText = function(){
                 var decimals = 2
                 text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
+            this.toLeaderboard = function(){
+                var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=1&dir=1"
+                window.location.href = path
             }
             this.drawShot = function(point, i){
                 textAlign(LEFT, TOP)
@@ -230,6 +237,7 @@
             this.end = function(){
                 score = floor((millis() - countingStart) / 10) / 100
                 textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
+                submitScoreWrapper("gyro", {score, level:2})
                 mode = -1
             }
             this.draw = function(){
@@ -261,6 +269,10 @@
             this.showText = function(){
                 text(`Next: ${score}`, 0, 0)
             }
+            this.toLeaderboard = function(){
+                var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=2&dir=-1"
+                window.location.href = path
+            }
         }
 
         function Invis(){
@@ -272,6 +284,7 @@
             }
             this.end = function(){
                 score = this.getPoints(shots[shots.length-1][0], shots[shots.length-1][1])
+                submitScoreWrapper("gyro", {score, level:3})
                 mode = -1
             }
             this.draw = function(){
@@ -299,6 +312,10 @@
             this.showText = function(){
                 var decimals = 2
                 text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
+            this.toLeaderboard = function(){
+                var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=3&dir=1"
+                window.location.href = path
             }
             this.drawShot = function(point, i){
                 textAlign(CENTER, CENTER)
@@ -343,6 +360,7 @@
             }
             this.end = function(){
                 score = floor((millis()-this.countingStart)/10) / 100
+                submitScoreWrapper("gyro", {score, level:4})
                 mode = -1
             }
             this.draw = function(){
@@ -383,6 +401,10 @@
             this.showText = function(){
                 var decimals = 2
                 text(`Elapsed: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+            }
+            this.toLeaderboard = function(){
+                var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=4&dir=-1"
+                window.location.href = path
             }
             this.drawConcentric = function(){
                 archeryColors = ["lightcoral", "white", "lightcoral", "white", "lightcoral"]
