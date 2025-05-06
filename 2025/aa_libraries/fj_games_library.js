@@ -70,13 +70,15 @@ function checkDataFetchSuccess(){
     }
 }
 
+var hash
+
 function verifyHash() {
 
     // Get the full URL or just the query string
     const urlParams = new URLSearchParams(window.location.search);
 
     // Get specific parameters
-    const hash = urlParams.get('hash'); // "John"
+    hash = urlParams.get('hash'); // "John"
 
     if (hash) console.log(hash);
     else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
