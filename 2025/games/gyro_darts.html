@@ -350,7 +350,7 @@
                 if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
                     this.centerPosition = [random(width), random(height)]
-                    score = targetsNeeded - targetsHit
+                    score = this.targetsNeeded - this.targetsHit
                 }
                 if(score == 0) this.end()
             }
@@ -379,9 +379,9 @@
                 }
             }
             this.isPointHit = function(posX, posY) {
-                var rad = dist(posX, posY, width / 2, height / 2);
-                var dist_percent = rad / (boardRadius * this.targetScale *4)
-                return (dist_percent > 1)
+                var rad = dist(posX, posY, this.centerPosition[0], this.centerPosition[1]);
+                var dist_percent = rad / (boardRadius* this.targetScale * 4)
+                return (dist_percent < 1)
             }
         }
 
