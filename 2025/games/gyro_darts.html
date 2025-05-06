@@ -87,7 +87,7 @@
             disableCanvasDefaults()
 
             menuSize = 0.8 * width * dartboard_scale /2
-            scoreboardScale = menuSize * 0.75
+            scoreboardScale = menuSize * 0.6
             menuElements = [
                 [width*0.25, width*0.25, menuSize, "archery.start()"],
                 [width*0.25, width*0.75, menuSize, "darts.start()"],
@@ -259,8 +259,7 @@
                 pop()
             }
             this.showText = function(){
-                var decimals = 2
-                text(`Elapsed: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+                text(`Next: ${score}`, 0, 0)
             }
         }
 
@@ -451,42 +450,51 @@ Targets: Hit 10 randomly placed targets as quickly as possible.`)
             //Scoreboards
 
             push()
-            strokeWeight(10)
-            stroke("red")
+            strokeWeight(2)
+            stroke(100)
             menuElements.forEach((element, i) => {
                 circle(element[0], element[1], element[2]*2)
             })
 
             
-            var cornerAlignment = 0.05
+            var cornerAlignment = 0.044
             textAlign(CENTER, CENTER)
             textSize(width*0.03)
             strokeWeight(1)
             fill("yellow")
             stroke("yellow")
+
             push()
             translate(width*cornerAlignment, width*cornerAlignment)
             rotate(-45)
             text("Archery", 0, 0)
             text("Scores", 0, width*0.03)
             pop()
+
             push()
             translate(width*cornerAlignment, width*(1-cornerAlignment))
             rotate(45)
             text("Finder", 0, -width*0.03)
             text("Scores", 0, 0)
             pop()
+
             push()
             translate(width*(1-cornerAlignment), width*(cornerAlignment))
             rotate(45)
             text("Darts", 0, 0)
             text("Scores", 0, width*0.03)
             pop()
+
             push()
             translate(width*(1-cornerAlignment), width*(1-cornerAlignment))
             rotate(-45)
             text("Target", 0, -width*0.03)
             text("Scores", 0, 0)
+            pop()
+
+            push()
+            translate(width/2, width*0.04)
+            text("Rules", 0, 0)
             pop()
 
         }
