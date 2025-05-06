@@ -92,7 +92,7 @@
                 [width*0.25, width*0.25, menuSize, "archery.start()"],
                 [width*0.25, width*0.75, menuSize, "darts.start()"],
                 [width*0.75, width*0.25, menuSize, "invis.start()"],
-                [width*0.75, width*0.75, menuSize, "not implemented"],
+                [width*0.75, width*0.75, menuSize, "multi.start()"],
                 [0,0,scoreboardScale, "scoreboard1"],
                 [0,width,scoreboardScale, "scoreboard2"],
                 [width,0,scoreboardScale, "scoreboard3"],
@@ -145,7 +145,7 @@
 
             console.log("granted")
 
-            archery.start()
+            multi.start()
         }
 
         function Archery() {
@@ -186,7 +186,7 @@
                 push()
                 translate(width/4, height/4)
                 scale(0.8 * width / 240 * this.dartboardStartingScale)
-                archery.drawConcentric()
+                this.drawConcentric()
                 pop()
             }
             this.drawShot = function(point, i){
@@ -315,11 +315,45 @@
 
         function Multi(){
             this.countingStart = 0
+            this.centerPosition = [0,0]
+            this.targetRadius = 0.2
+            this.targetsHit = 0
+            this.targetsNeeded = 10
 
-            this.draw = function(){}
-            this.start = function(){}
-            this.end = function(){}
-            this.touched = function(){}
+            this.start = function(){
+                score = 1
+                mode = 4
+                shotLimit = 999
+                shots = []
+                countingStart = millis()
+                this.centerPosition = [random(width), random(height)]
+                this.targetRadius = 0.1
+                this.targetsHit = 0
+            }
+            this.end = function(){
+                score = floor((millis() - this.countingStart) / 10) / 100
+                textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
+                mode = -1
+            }
+            this.draw = function(){
+                push()
+                translate(this.centerPosition[0], this.centerPosition[1])
+                noFill()
+                console.log("scaled", (width / 240) * this.targetRadius)
+                scale((width / 240) * this.targetRadius)
+                this.drawConcentric()
+                textprompt = `Elapsed: ${floor((millis()-this.countingStart)/1000)}`
+                this.dartboard_scale = this.dartboardStartingScale * (10-(millis()-this.countingStart)/1000)/10
+                pop()
+            }
+            this.touched = function(){
+                if(this.isPointHit(cursor.position.x, cursor.position.y)){
+                    this.targetsHit++
+                    this.centerPosition = [random(width), random(height)]
+                    score = score - targetsHit
+                }
+                if(score >= this.targetsNeeded) this.end()
+            }
             this.drawMenu = function(){
                 push()
                 stroke(255)
@@ -328,12 +362,27 @@
                 circle(0,0,240)
                 scale(0.4)
                 translate(width/8, width/8)
-                archery.drawConcentric()
+                this.drawConcentric()
                 translate(-width*0.3, -width*0.1)
-                archery.drawConcentric()
+                this.drawConcentric()
                 translate(width*0.25,-width*0.2)
-                archery.drawConcentric()
+                this.drawConcentric()
                 pop()
+            }
+            this.drawConcentric = function(){
+                archeryColors = ["lightcoral", "white", "lightcoral", "white", "lightcoral"]
+                circle(0, 0, boardRadius * 2)
+                for (var i = 0; i < 10; i++) {
+                    stroke("gray")
+                    fill(archeryColors[i%2])
+                    circle(0, 0, (boardRadius * 2) / 10 * (10 - i))
+                }
+            }
+            this.isPointHit = function(posX, posY) {
+                var rad = dist(posX, posY, width / 2, height / 2);
+                var dist_percent = rad / (boardRadius * this.dartboard_scale *4)
+                var score = (dist_percent > 1) ? 0 : 100 - (dist_percent * 100)
+                return score > 0
             }
         }
 
@@ -345,7 +394,8 @@
             else if (mode == 0) drawMenu()
             else if (mode == 1) archery.draw()
             else if (mode == 2) darts.draw()
-            else if (mode == 3) invis.draw()          
+            else if (mode == 3) invis.draw()   
+            else if (mode == 4) multi.draw()          
             pop()
 
             drawObjects()
@@ -543,6 +593,7 @@
             else if (mode == 1) archery.touched()
             else if (mode == 2) darts.touched()
             else if (mode == 3) invis.touched()
+            else if (mode == 4) multi.touched()
             shots.push([cursor.position.x, cursor.position.y])
             canShoot = false
             setTimeout(setShootFlag, shotCooldown)
