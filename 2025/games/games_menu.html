@@ -1,269 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
-<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes24.png">
-<link rel="icon" href="/html/img/Boxes24.png">
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body style="background-color:#0066ff;">
+        <script src="../aa_libraries/matter.js"></script>        
+		<script src="../aa_libraries/p5.js"></script>    
+		<script src="../aa_libraries/fj_games_library.js"></script>    
+		<script src="../aa_libraries/fj_window_library.js"></script>
+		<script>
+            // let angle = 0;              // current angle of orbit
+            var redirected = false
 
-<head>
-  <title>Felipe</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      /* Ensures full viewport height */
-      background-color: #0066ff;
-    }
+            let a = 200;                // horizontal radius (major axis)
+            let b = 50;                 // vertical radius (minor axis)
+            let vertical_oscillate = 10 // oscillate the whole orbit up and down
+			function setup() {
+                verifyHash()
+                setupStars()
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+			}
 
-    canvas {
-      width: 100%;
-      height: 100%;
-      overflow: hidden
-    }
-  </style>
-</head>
+            var circles = []
 
-<body style="background-color:#0066ff;">
-  <script>
-    var ball_size = 5
-    var restitution = 1
-    var mass = 1
-    var gravity = 4;
-    var horiz_force = 0.001;
-    var jump = 0.04
-  </script>
+			function draw() {
+                if(redirected) return
+                scaleContent();
 
+                background(0, 0, 0, 30);
 
-  <script src="../aa_libraries/p5.js"></script>
-  <script>
+                drawStars()
+                translate(300, 300); // move origin to center of canvas
 
-    let patternCnv;
-    let bufferCnv;
+                // Create list of orbiting circles with calculated positions
+                var balls = [
+                    {color:"red",       title:"Gyro",    link:"gyro_darts.html", icon: "🎯"},
+                    {color:"orange",    title:"Stardunk",    link:"stardunk.html", icon:"🏀"},
+                    {color:"yellow",    title:"Hexes",    link:"hexes.html", icon:"⬡"},
+                    // {color:"lime",     title:"for", link:"link.html"},
+                    // {color:"green",      title:"fiv", link:"link.html"},
+                    // {color:"turquoise",    title:"six", link:"link.html"},
+                    // {color:"cyan",    title:"six", link:"link.html"},
+                    // {color:"DodgerBlue",    title:"six", link:"link.html"},
+                    // {color:"blue",    title:"six", link:"link.html"},
+                    {color:"purple",    title:"Morse", link:"morse_alphabet.html", icon:"•-•"},
+                    // {color:"magenta",    title:"six", link:"link.html"},
+                    // {color:"violet",    title:"six", link:"link.html"},
+                    {color:"gray",      title:"FAQ", link:"help.html", icon:"?"},
+                    {color:"lightgray", title:"You", link:"player_data.html", icon:""},
+                ]
+                let total_size = 60
 
-    let pattern;
-    
-    var iconsize = 0
-    var hash
+                circles = [];
+                for (let i = 0; i < balls.length; i++) {
+                    let theta = angle + ((Math.PI / 2) * 1 / balls.length) * i * 4;
+                    let x = a * cos(theta);
+                    let y = b * sin(theta);
+                    let size = cos(theta - Math.PI / 2) * (total_size) + total_size*2;
+                    circles.push({ x, y, size, theta, ball:balls[i] });
+                }
+                white_ball = {color:"white",     title:"zer", link:"link.html"},
+                circles.push({x:0,y:0,theta:0,ball:white_ball,size:100})
 
-    var links = [[ "./stardunk.html", "/html/img/Boxes37.png"], //stardunk
-                 [ "./hexes.html", "/html/img/Boxes40.png"], //hexes
-                 ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
-                 ["./help.html", "/html/img/Boxes39.png"],] // Help
+                // Sort by y to draw further circles first
+                circles.sort((a, b) => a.y - b.y);
 
-    var numlinks = 4
-    var imgs = Array(numlinks)
-    function preload() {
-      for(var i = 0; i < numlinks; i++){
-        imgs[i] = loadImage(links[i][1])
-      }
-      console.log(imgs)
-    }
+                // Draw central point
+                fill(0);
+                ellipse(0, 0, 10);
 
-    function setup() {
+                // Draw orbiting circles in sorted order
+                for (let circle of circles) {
+                    // console.log(circle)
+                    push()
+                    translate(circle.x, circle.y, sin(angle)*vertical_oscillate)
+                    scale(circle.size)
+                    
+                    if(circle.ball.title == "You"){
+                        scale(0.01)
+                        drawPlayerIcon()
+                    }
+                    else{
+                        noStroke()
+                        fill(circle.ball.color);
+                        ellipse(0, 0, 1);
+                        fill(0)
+                        textAlign(CENTER, CENTER)
+                        textSize(0.8)
+                        text(circle.ball.icon, 0,0.05)
+                    }
+                    pop()
+                }
+                
+                stroke(255)
+                fill(255)
+                textAlign(CENTER, CENTER)
+                textSize(circles[circles.length-1].size/4)
+                text(circles[circles.length-1].ball.title, 
+                    circles[circles.length-1].x, 
+                    circles[circles.length-1].y+ sin(angle)*vertical_oscillate + circles[circles.length-1].size*0.6)
 
-      pixelDensity(1);
+                // angle += 0.03;
+            }
 
-      verifyHash()
-      let size = min(windowWidth, windowHeight) * 0.95;
-      iconsize = size / 4
+            function drawPlayerIcon(){
+                if(newPlayerFlag) {
+                    redirectPlayerData()
+                    return
+                }
+                console.log(playerDataFetched)
+                push()
+                if(playerDataFetched == 2){
+                    setFill(pattern, bufferCnv);
+                    bufferCnv.circle(0.5 * iconsize,0.5 * iconsize,iconsize)
+                    image(bufferCnv, -iconsize/2, -iconsize/2);
+                }
+                pop()
 
-      // Create the canvas with the calculated size
-      canvas = createCanvas(size, size);
+                if(playerDataFetched == 1) {
+                    console.log("done waiting")
+                    //setup buffer canvas
+                    let size = min(windowWidth, windowHeight) * 0.95;
+                    bufferCnv = createGraphics(size, size);
+                    bufferCnv.pixelDensity(1);
 
+                    //setup pattern
+                    iconsize = 100
+                    makePattern(iconsize)
 
-    }
+                    playerDataFetched = 2
+                    
+                }
+            }
 
-    function draw() {
-      push()
-      // scale(0.5)
-      background(200, 200, 200, 50);
-      // drawPlayer(width / 15, 0, 0)
+            function redirectPlayerData(){
+                alert("Welcome, new player!  Before we start, let's go over a few things!")
+                alert("This is the main menu, where you can navigate to all the available pages by scrolling and clicking on one of the icons.")
+                alert("Your player icon will be available as one of the icons, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
+                window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
+                redirected = true
+            }
 
-      image(imgs[0], 0, 0, width/2, height/2)
-      image(imgs[1], width/2, 0, width/2, height/2)
-      image(imgs[2], 0, height/2, width/2, height/2)
-      image(imgs[3], width/2, height/2, width/2, height/2)
+		</script>
 
-      // image(imgs[0], 0, 0, width/2, height/2)
-      // image(imgs[1], width/2, 0, width/2, height/2)
-      // image(imgs[2], 0, height/2, width/2, height/2)
-      // image(imgs[3], width/2, height/2, width/2, height/2)
-      
-      translate(width/2, height/2)
-      if(playerDataFetched == 2){
-        setFill(pattern, bufferCnv);
-        bufferCnv.circle(0.5 * iconsize,0.5 * iconsize,iconsize)
-        image(bufferCnv, -iconsize/2, -iconsize/2);
-      }
-      pop()
+        <script> //touch controls
+            let angle = 0;
+            let lastTouchX = null;
+            let touchStartX = null;
+            let touchStartTime = null;
+            let tapThreshold = 10;    // Max movement to count as a tap
+            let rotationSensitivity = 0.01;
+            let tapped = false;       // You can respond to this flag in your draw()
 
-      if(playerDataFetched == 1) {
-        console.log("done waiting")
-        //setup buffer canvas
-        let size = min(windowWidth, windowHeight) * 0.95;
-        bufferCnv = createGraphics(size, size);
-        bufferCnv.pixelDensity(1);
+            function touchStarted() {
+            if (touches.length > 0) {
+                touchStartX = touches[0].x;
+                lastTouchX = touchStartX;
+                touchStartTime = millis();
+            }
+            return false;
+            }
 
-        //setup pattern
-        makePattern(iconsize)
+            function touchMoved() {
+            if (touches.length > 0 && lastTouchX !== null) {
+                let currentX = touches[0].x;
+                let dx = currentX - lastTouchX;
 
-        playerDataFetched = 2
+                angle -= dx * rotationSensitivity;
+
+                lastTouchX = currentX;
+            }
+            return false;
+            }
+
+            function touchEnded() {
+            if (touchStartX !== null && touches.length === 0) {
+                let totalMovement = abs(mouseX - touchStartX);
+                let duration = millis() - touchStartTime;
+
+                if (totalMovement < tapThreshold) {
+                    tapped = !tapped;
+                    console.log("tapped")
+                    window.location.href=`${circles[circles.length-1].ball.link}?hash=${hash}`
+                }
+            }
+
+            lastTouchX = null;
+            touchStartX = null;
+            touchStartTime = null;
+            return false;
+            }
+
+        </script>
+
+        <script>//stars
         
-      }
-    }
-    
-    function touchStarted() {
-      if(touches.length > 0){
-        console.log(mouseX, mouseY)
-        var clicked_index = Math.floor(mouseX/(width/2)) + 2 * Math.floor(mouseY/(height/2))
-        console.log(clicked_index)
-        console.log(Math.sqrt(Math.pow(width - mouseX,2) + Math.pow(height-mouseY,2)))
-        if(Math.sqrt(Math.pow(width/2 - mouseX,2) + Math.pow(height/2-mouseY,2)) < width/8){
-          console.log("center")
-          window.history.pushState({}, '', window.location.href); // Adds a history entry
-          window.location.assign(`./player_data.html?hash=${hash}`)
+
+        function setupStars(){
+            stars = []
+            var stars_count = 500
+            var star_size = 2
+            for(var i = 0; i < stars_count; i++){
+                stars.push([random(600), random(600), random(star_size)])
+            }
         }
-        else{
-          window.history.pushState({}, '', window.location.href); // Adds a history entry
-          window.location.href = `${links[clicked_index][0]}?hash=${hash}`
+        function drawStars(){
+            push()
+            fill(255)
+            noStroke()
+            var star_rate = 10 //cycles once every minute
+            var star_variance = 2
+            var star_minimum = 0
+            strokeWeight(random(2))
+            stars.forEach(star => {
+                circle((star[0]+((millis()) / star_rate))%600, star[1], random(star_variance)+star_minimum+star[2])
+            })
+            pop()
         }
-      }
-    }
-
-    function mouseClicked(){
-        console.log(mouseX, mouseY)
-        var clicked_index = Math.floor(mouseX/(width/2)) + 2 * Math.floor(mouseY/(height/2))
-        console.log(clicked_index)
-        if(Math.sqrt(Math.pow(width/2 - mouseX,2) + Math.pow(height/2-mouseY,2)) < width/8){
-          console.log("center")
-          window.history.pushState({}, '', window.location.href); // Adds a history entry
-          window.location.assign(`./player_data.html?hash=${hash}`)
-        }
-        else{
-          window.history.pushState({}, '', window.location.href); // Adds a history entry
-          window.location.href = `${links[clicked_index][0]}?hash=${hash}`
-        }
-    }
-
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
-
-    function makePattern(size) {
-      console.log(playerData)
-      patternCnv = createGraphics(size, size);
-      patternCnv.pixelDensity(1);
-
-      patternCnv.translate(size/2, size/2)
-      // Draw a pattern
-      patternCnv.background(220).textSize(size * 0.75).textAlign(CENTER, CENTER).noStroke()
-      patternCnv.rect(-size / 2, -size / 2, size, size)
-      patternCnv.fill(playerData.visuals.colors[0][0] * 128, playerData.visuals.colors[0][1] * 128, playerData.visuals.colors[0][2] * 128)
-      patternCnv.rect(-size / 2, -size / 2, size, size / 3)
-      patternCnv.fill(playerData.visuals.colors[1][0] * 128, playerData.visuals.colors[1][1] * 128, playerData.visuals.colors[1][2] * 128)
-      patternCnv.rect(-size / 2, -size / 2 + size / 3, size, size / 3)
-      patternCnv.fill(playerData.visuals.colors[2][0] * 128, playerData.visuals.colors[2][1] * 128, playerData.visuals.colors[2][2] * 128)
-      patternCnv.rect(-size / 2, -size / 2 + 2 * size / 3, size, size / 3)
-
-      patternCnv.fill(0)
-      patternCnv.text(playerData.visuals.emoji, 0, 0);
-
-      // Uses canvas method createPattern on the buffer canvas, 
-      // using the pattern canvas to create the pattern
-      pattern = setupPattern(patternCnv, bufferCnv);
-
-    }
-    function setupPattern(p, b) {
-      return b.drawingContext.createPattern(p.canvas, 'repeat');
-    }
-    function setFill(p, b) {
-      b.fill(0);
-      b._renderer._setFill(p);
-    }
-
-    var playerDataFetched = false
-
-    var playerData = {
-      visuals: {
-        colors: [
-          [0, 0, 0], [0, 0, 0], [0, 0, 0]
-        ],
-        emoji: "?"
-      }
-    }
-
-    function windowResized() {
-      var dim = 0
-      if (windowWidth > windowHeight) {
-        dim = windowHeight / 2 * 0.75
-      }
-      else {
-        dim = windowHeight / 4 * 0.75
-      }
-      resizeCanvas(dim, dim);
-    }
-
-    function verifyHash() {
-
-      // Get the full URL or just the query string
-      const urlParams = new URLSearchParams(window.location.search);
-
-      // Get specific parameters
-      hash = urlParams.get('hash'); // "John"
-
-      if (hash) console.log(hash);
-      else window.location.href = "https://squanky1372.github.io/2025/games/login.html"
-
-      const response = fetch(`https://squanky.net/scores/getPlayer?hash=${hash}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json()
-        }) // Parse the response body as JSON
-        .then(data => verifyFields(data.foundRow))   // Log the parsed data
-        .catch(error => {
-          console.error(error)
-          window.location.href = "https://squanky1372.github.io/2025/games/login.html"
-        }); // Handle errors
-    }
-
-    function verifyFields(incomingPlayerData) {
-
-      console.log("Parsing player data")
-      console.log(playerData)
-      playerData = incomingPlayerData
-
-      if (!playerData.username) redirectPlayerData()
-      else if (playerData.visuals) {
-        console.log("visuals!")
-        if (!playerData.visuals.colors)  redirectPlayerData()
-        else if (!playerData.visuals.emoji)  redirectPlayerData()
-      }
-      else redirectPlayerData()
-
-
-      playerData = incomingPlayerData
-      console.log("Finished obtaining all player data.")
-      playerDataFetched = true
-    }
-
-    function redirectPlayerData(){
-      alert("Welcome, new player!  Before we start, let's go over a few things!")
-      alert("This is the main menu, where you can navigate to all the available pages by clicking on one of the four square icons.")
-      alert("Your player icon will appear in the middle, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
-      window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
-
-    }
-
-  </script>
-</body>
-
+        </script>
+    </body>
 </html>
