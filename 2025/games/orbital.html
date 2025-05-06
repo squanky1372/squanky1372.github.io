@@ -16,6 +16,8 @@
 		<script src="../aa_libraries/fj_window_library.js"></script>
 		<script>
             // let angle = 0;              // current angle of orbit
+            var redirected = false
+
             let a = 200;                // horizontal radius (major axis)
             let b = 50;                 // vertical radius (minor axis)
             let vertical_oscillate = 10 // oscillate the whole orbit up and down
@@ -35,6 +37,7 @@
             var circles = []
 
 			function draw() {
+                if(redirected) return
                 scaleContent();
 
                 background(0, 0, 0, 30);
@@ -85,13 +88,20 @@
                     push()
                     translate(circle.x, circle.y, sin(angle)*vertical_oscillate)
                     scale(circle.size)
-                    noStroke()
-                    fill(circle.ball.color);
-                    ellipse(0, 0, 1);
-                    fill(0)
-                    textAlign(CENTER, CENTER)
-                    textSize(0.8)
-                    text(circle.ball.icon, 0,0.05)
+                    
+                    if(circle.ball.title == "You"){
+                        scale(0.01)
+                        drawPlayerIcon()
+                    }
+                    else{
+                        noStroke()
+                        fill(circle.ball.color);
+                        ellipse(0, 0, 1);
+                        fill(0)
+                        textAlign(CENTER, CENTER)
+                        textSize(0.8)
+                        text(circle.ball.icon, 0,0.05)
+                    }
                     pop()
                 }
                 
@@ -104,6 +114,44 @@
                     circles[circles.length-1].y+ sin(angle)*vertical_oscillate + circles[circles.length-1].size*0.6)
 
                 // angle += 0.03;
+            }
+
+            function drawPlayerIcon(){
+                if(newPlayerFlag) {
+                    redirectPlayerData()
+                    return
+                }
+                console.log(playerDataFetched)
+                push()
+                if(playerDataFetched == 2){
+                    setFill(pattern, bufferCnv);
+                    bufferCnv.circle(0.5 * iconsize,0.5 * iconsize,iconsize)
+                    image(bufferCnv, -iconsize/2, -iconsize/2);
+                }
+                pop()
+
+                if(playerDataFetched == 1) {
+                    console.log("done waiting")
+                    //setup buffer canvas
+                    let size = min(windowWidth, windowHeight) * 0.95;
+                    bufferCnv = createGraphics(size, size);
+                    bufferCnv.pixelDensity(1);
+
+                    //setup pattern
+                    iconsize = 100
+                    makePattern(iconsize)
+
+                    playerDataFetched = 2
+                    
+                }
+            }
+
+            function redirectPlayerData(){
+                alert("Welcome, new player!  Before we start, let's go over a few things!")
+                alert("This is the main menu, where you can navigate to all the available pages by scrolling and clicking on one of the icons.")
+                alert("Your player icon will be available as one of the icons, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
+                window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
+                redirected = true
             }
 
 		</script>
