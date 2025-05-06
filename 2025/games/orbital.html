@@ -20,6 +20,7 @@
             let b = 50;                 // vertical radius (minor axis)
             let vertical_oscillate = 10 // oscillate the whole orbit up and down
 			function setup() {
+                verifyHash()
                 setupStars()
                 let size = min(windowWidth, windowHeight) * 0.95;
   
@@ -43,7 +44,7 @@
 
                 // Create list of orbiting circles with calculated positions
                 var balls = [
-                    // {color:"red",       title:"Morse",    link:"morse_alphabet.html"},
+                    {color:"red",       title:"Gyro",    link:"gyro_darts.html", icon: "🎯"},
                     {color:"orange",    title:"Stardunk",    link:"stardunk.html", icon:"🏀"},
                     {color:"yellow",    title:"Hexes",    link:"hexes.html", icon:"⬡"},
                     // {color:"lime",     title:"for", link:"link.html"},
@@ -56,7 +57,7 @@
                     // {color:"magenta",    title:"six", link:"link.html"},
                     // {color:"violet",    title:"six", link:"link.html"},
                     {color:"gray",      title:"FAQ", link:"help.html", icon:"?"},
-                    {color:"lightgray", title:"You", link:"link.html", icon:""},
+                    {color:"lightgray", title:"You", link:"player_data.html", icon:""},
                 ]
                 let total_size = 60
 
@@ -66,7 +67,6 @@
                     let x = a * cos(theta);
                     let y = b * sin(theta);
                     let size = cos(theta - Math.PI / 2) * (total_size) + total_size*2;
-                    console.log(total_size)
                     circles.push({ x, y, size, theta, ball:balls[i] });
                 }
                 white_ball = {color:"white",     title:"zer", link:"link.html"},
@@ -131,7 +131,7 @@
                 let currentX = touches[0].x;
                 let dx = currentX - lastTouchX;
 
-                angle += dx * rotationSensitivity;
+                angle -= dx * rotationSensitivity;
 
                 lastTouchX = currentX;
             }
@@ -146,7 +146,7 @@
                 if (totalMovement < tapThreshold) {
                     tapped = !tapped;
                     console.log("tapped")
-                    window.location.href=circles[circles.length-1].ball.link
+                    window.location.href=`${circles[circles.length-1].ball.link}?hash=${hash}`
                 }
             }
 
