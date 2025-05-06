@@ -331,8 +331,7 @@
                 this.targetsHit = 0
             }
             this.end = function(){
-                score = floor((millis() - this.countingStart) / 10) / 100
-                textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
+                score = floor((millis()-this.countingStart)/10) / 100
                 mode = -1
             }
             this.draw = function(){
@@ -342,11 +341,12 @@
                 console.log("scaled", (width / 240) * this.targetScale)
                 scale((width / 240) * this.targetScale)
                 this.drawConcentric()
-                textprompt = `Elapsed: ${floor((millis()-this.countingStart)/1000)}`
+                textprompt = `Elapsed: ${floor((millis()-this.countingStart)/10) / 100}`
                 this.dartboard_scale = this.dartboardStartingScale * (10-(millis()-this.countingStart)/1000)/10
                 pop()
             }
             this.touched = function(){
+                // if(this.isPointHit(mouseX, mouseY)){
                 if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
                     this.centerPosition = [random(width), random(height)]
