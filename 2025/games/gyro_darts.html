@@ -311,7 +311,9 @@
             }
             this.showText = function(){
                 var decimals = 2
-                text(`Score: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+                text(``, 0, 0)
+                    
+                textprompt = ""
             }
             this.toLeaderboard = function(){
                 var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=3&dir=1"
@@ -399,8 +401,7 @@
                 pop()
             }
             this.showText = function(){
-                var decimals = 2
-                text(`Elapsed: ${Math.round(score * Math.pow(10, decimals)) / Math.pow(10, decimals)}`, 0, 0)
+                text(`Remaining: ${score}`, 0, 0)
             }
             this.toLeaderboard = function(){
                 var path = "/2025/games/scoreboards/omni_scoreboard.html?game=gyro&level=4&dir=-1"
