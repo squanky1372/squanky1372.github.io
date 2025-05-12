@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Nested Array to HTML</title>
+  
+  <style>
+  * {
+    font-size: 30px; /* Adjust this value to your preferred font size */
+    font-family: Arial, sans-serif; /* Optional, for consistent font style */
+  }
+  details[open] summary {
+    font-size: 30px; /* Ensure the font size stays the same when expanded */
+  }
+  </style>
+</head>
+<body>
+  
+<div id="achievements-container"></div>
+</body>
+</html>
+
+
+
+<script>
+  const response = fetch(`https://squanky.net/scores/getDev`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json()
+    }) // Parse the response body as JSON
+    .then(data => {
+        console.log(data)
+
+        var achievements_list = {
+            "stardunk":[
+                {"slam_dunk":       0},
+                {"consistency":     0},
+                {"nothing_but_net": 0},
+                {"10k_club":        0},
+                {"triple_threat":   0},
+                {"wrong_way":       0},
+                {"too_strong":      0},
+            ],
+            "hexes":[
+                {"indecisive":      0},
+                {"reading_comp":    0},
+                {"gone":            0},
+                {"precision":       0},
+                {"afk":             0},
+                {"popup_blocker":   0},
+                {"green_means_go":  0},
+                {"whacked_a_mole":  0},
+                {"i_blinked":       0},
+            ],
+            "morse":[
+                {"alphabet_aerobics":       0},
+                {"numerical_ninja":         0},
+                {"morse_master":            0},
+                {"dit_dit_dah_dit":         0},
+                {"look_it_up":              0},
+                {"getting_there":           0},
+                {"asap":                    0},
+                {"what?":                   0},
+                {"creator":                 0},
+
+            ],
+            "gyro":[
+                {"bullseye":        0},
+                {"blind_as_a_bat":  0},
+                {"rainbow":         0},
+                {"the_count":       0},
+                {"centered":        0},
+                {"ranged":          0},
+                {"gotcha":          0},
+                {"early_bird":      0},
+                {"wrong_way":       0}, 
+                {"hawk_eyed":       0}, 
+                {"robbing_hood":    0}, 
+                {"katmiss":         0}, 
+
+            ]
+        }
+
+        var hashArray = data.scoresArray.filter(item => item.hash === "feli13");
+
+        
+        console.log(hashArray)
+        
+        console.log(Object.keys(achievements_list))
+
+        Object.keys(achievements_list).forEach(game => {
+            hashArray.filter(item => item.gameTitle === "stardunk").forEach((score, i) => {
+                if("achievements" in score.data){
+                    score.data.achievements.forEach((achievement, j) => {
+                        achievements_list.stardunk.find(item => item[achievement] !== undefined)[achievement] = 1;
+                    })
+                }
+            })
+        })
+
+        console.log(achievements_list)
+
+        displayAchievements(achievements_list)
+
+    })   // Log the parsed data
+    .catch(error => console.error(error)); // Handle errors
+
+
+    function displayAchievements(achievements_list) {
+        const container = document.getElementById("achievements-container");
+        container.innerHTML = ""; // Clear any existing content
+
+        Object.entries(achievements_list).forEach(([category, achievements]) => {
+            if (achievements.length === 0) return; // Skip empty categories
+
+            const categoryHeader = document.createElement("h2");
+            categoryHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            container.appendChild(categoryHeader);
+
+            const list = document.createElement("ul");
+
+            achievements.forEach(achievement => {
+            const [name, value] = Object.entries(achievement)[0];
+            const listItem = document.createElement("li");
+            listItem.textContent = `${value === 1 ? "✅" : "❌"} : ${name}`;
+            list.appendChild(listItem);
+            });
+
+            container.appendChild(list);
+        });
+    }
+    
+</script>
