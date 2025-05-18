@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
+
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+        let gravity = 0;
+        let ballStart = { x: 100, y: 100 };
+        let ball_size = 5;
+        let restitution = 1;
+        let ball, engine, runner;
+
+        function setup() {
+            let world_size = min(windowWidth, windowHeight) * 0.95;
+            canvas = createCanvas(world_size, world_size);
+            centerCanvas();
+            disableCanvasDefaults();
+
+            // Configure the engine for better collision detection and enable sleeping
+            engine = Matter.Engine.create({
+                enableSleeping: true // Enable sleeping globally
+            });
+            engine.world.gravity.y = gravity;
+            engine.positionIterations = 15;
+            engine.velocityIterations = 15;
+            engine.constraintIterations = 10;
+
+            // Set the ball with sleeping properties
+            ball = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {
+                restitution: 0.9,
+                density: 0.005,
+                friction: 0,
+                frictionStatic: 0,
+                frictionAir: 0.01,
+                inertia: 100,
+                slop: 0.0001,
+                collisionFilter: {
+                    category: 0x0001,
+                    mask: 0xFFFF
+                },
+                sleepThreshold: 10, // Lower value makes it sleep faster
+                sleepTimeLimit: 60  // Number of ticks before it sleeps
+            });
+
+
+            Matter.Composite.add(engine.world, [ball]);
+
+            let thickness = 1000;
+            let size = { x: world_size, y: world_size };
+            let borders = [
+                Matter.Bodies.rectangle(size.x / 2, -thickness / 2, size.x * 2, thickness, { isStatic: true }),
+                Matter.Bodies.rectangle(size.x / 2, size.y + thickness / 2, size.x * 2, thickness, { isStatic: true }),
+                Matter.Bodies.rectangle(-thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true }),
+                Matter.Bodies.rectangle(size.x + thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true })
+            ];
+
+            Matter.Composite.add(engine.world, borders);
+
+            runner = Matter.Runner.create();
+            Matter.Runner.run(runner, engine);
+            runner.delta = 1000 / 60; // Force a consistent frame rate for physics
+
+            Matter.Body.set(ball, {
+                collisionFilter: {
+                    category: 0x0001,
+                    mask: 0xFFFF
+                },
+                slop: 0.001, // Lower value for stricter collision
+                restitution: 0.9, // Slightly lower to reduce excess bounce
+            });
+
+            buildCourse()
+
+
+            // Detect collisions with the force field
+            Matter.Events.on(engine, 'collisionStart', function (event) {
+                var pairs = event.pairs;
+                pairs.forEach(pair => {
+                    let bodyA = pair.bodyA;
+                    let bodyB = pair.bodyB;
+
+                    let ballBody = (bodyA === ball) ? bodyA : (bodyB === ball ? bodyB : null);
+                    let fieldBody = (bodyA.label === "forceField") ? bodyA : (bodyB.label === "forceField" ? bodyB : null);
+
+                    if (ballBody && fieldBody) {
+                        if (!activeForceFields.includes(fieldBody)) {
+                            activeForceFields.push(fieldBody);
+                        }
+                    }
+                });
+            });
+
+            // Detect when the ball leaves a force field
+            Matter.Events.on(engine, 'collisionEnd', function (event) {
+                var pairs = event.pairs;
+                pairs.forEach(pair => {
+                    let bodyA = pair.bodyA;
+                    let bodyB = pair.bodyB;
+
+                    let ballBody = (bodyA === ball) ? bodyA : (bodyB === ball ? bodyB : null);
+                    let fieldBody = (bodyA.label === "forceField") ? bodyA : (bodyB.label === "forceField" ? bodyB : null);
+
+                    if (ballBody && fieldBody) {
+                        activeForceFields = activeForceFields.filter(field => field !== fieldBody);
+                    }
+                });
+            });
+
+            
+
+        }
+        
+        let activeForceFields = [];
+
+        function applyForceFields() {
+            if (activeForceFields.length > 0) {
+                activeForceFields.forEach(fieldBody => {
+                    console.log("Applying continuous force due to field");
+                    let speed = 0.05; // Lower value for continuous application
+                    let velocityChange = { x: 0, y: 0 };
+
+                    switch (fieldBody.plugin.forceDirection) {
+                        case 0: // Up
+                            velocityChange.y = -speed;
+                            break;
+                        case 1: // Right
+                            velocityChange.x = speed;
+                            break;
+                        case 2: // Down
+                            velocityChange.y = speed;
+                            break;
+                        case 3: // Left
+                            velocityChange.x = -speed;
+                            break;
+                    }
+
+                    // Add the continuous force to the ball
+                    Matter.Sleeping.set(ball, false);
+                    Matter.Body.setVelocity(ball, {
+                        x: ball.velocity.x + velocityChange.x,
+                        y: ball.velocity.y + velocityChange.y
+                    });
+                });
+            }
+        }
+
+        function draw() {
+            scaleContent();
+            background(100);
+            drawCourse()
+            fill(250).circle(ball.position.x, ball.position.y, ball.circleRadius * 2);
+            line(mouseX, mouseY, ball.position.x, ball.position.y);
+            applyForceFields();
+        }
+
+        function touchEnded() {
+            var scaler = -0.1;
+            Matter.Sleeping.set(ball, false);
+
+            // Calculate initial velocity
+            let vx = (ball.position.x - mouseX) * scaler;
+            let vy = (ball.position.y - mouseY) * scaler;
+
+            // Set your desired maximum speed (adjust as needed)
+            const maxSpeed = 10;
+
+            // Calculate the magnitude of the velocity
+            let speed = Math.sqrt(vx * vx + vy * vy);
+
+            // Apply the limit if the speed exceeds the max
+            if (speed > maxSpeed) {
+                vx = (vx / speed) * maxSpeed;
+                vy = (vy / speed) * maxSpeed;
+            }
+
+            // Set the limited velocity
+            Matter.Body.setVelocity(ball, { x: vx, y: vy });
+
+        }
+    </script>
+
+
+    <script> //Course
+        var boxes = []
+        function buildCourse() {
+            console.log(golf_course)
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < n; j++) {
+                    var box_size = width / n
+                    var p0 = [i * box_size, j * box_size]
+
+                    if (golf_course[i][j][0] == 1) {
+                        console.log("box at ", p0)
+                        boxes.push(Matter.Bodies.rectangle(p0[0] + box_size / 2, p0[1] + box_size / 2, box_size, box_size, {
+                            isStatic: true,
+                            friction: 0.1,
+                            restitution: 0.1,
+                            collisionFilter: {
+                                category: 0x0002,
+                                mask: 0xFFFF
+                            }
+                        }));
+                    }
+                    if (golf_course[i][j][0] == 3) { // Force field tile
+                        let direction = golf_course[i][j][1]; // Use this to determine direction (0: up, 1: right, 2: down, 3: left)
+                        let forceField = Matter.Bodies.rectangle(
+                            p0[0] + box_size / 2,
+                            p0[1] + box_size / 2,
+                            box_size,
+                            box_size,
+                            {
+                                isStatic: true,
+                                isSensor: true, // This makes it a sensor
+                                label: "forceField",
+                                plugin: { forceDirection: direction } // Correctly set the forceDirection
+                            }
+                        );
+                        boxes.push(forceField);
+                    }
+                }
+            }
+            Matter.Composite.add(engine.world, boxes)
+        }
+
+        const n = 15; // number of rows
+        const m = 15; // number of columns
+
+        // var golf_course = [[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[2,2],[0,0],[0,0],[2,1],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[2,2],[1,0],[0,0],[0,0],[1,0],[2,1],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[2,2],[1,0],[3,2],[3,2],[3,2],[3,1],[1,0],[2,1],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[3,3],[0,0],[0,0],[3,1],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[3,3],[0,0],[0,0],[3,1],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[2,3],[1,0],[3,3],[3,0],[3,0],[3,0],[1,0],[2,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[2,3],[1,0],[0,0],[0,0],[1,0],[2,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[2,3],[0,0],[0,0],[2,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]]
+        var golf_course = [[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[2,2],[3,1],[3,1],[3,1],[2,1],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[2,2],[1,0],[3,1],[3,1],[3,1],[1,0],[2,1],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[2,2],[1,0],[3,2],[3,2],[3,2],[3,1],[3,1],[1,0],[2,1],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[3,2],[3,2],[3,2],[3,2],[3,2],[3,1],[3,1],[3,0],[3,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[3,2],[3,2],[3,3],[3,3],[1,0],[3,1],[3,1],[3,0],[3,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[3,2],[3,2],[3,3],[3,3],[3,0],[3,0],[3,0],[3,0],[3,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[2,3],[1,0],[3,3],[3,3],[3,0],[3,0],[3,0],[1,0],[2,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[2,3],[1,0],[3,3],[3,3],[3,3],[1,0],[2,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[2,3],[3,3],[3,3],[3,3],[2,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]]
+
+        function drawCourse() {
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < n; j++) {
+                    push()
+                    translate(width / n * i, width / m * j)
+                    fill("green")
+                    noStroke()
+                    if (!keyIsDown(81)) stroke(50)
+                    textAlign(CENTER, CENTER)
+                    textSize(30)
+
+                    rect(0, 0, width / n, width / n)
+
+                    noStroke()
+                    fill("black")
+
+                    if (golf_course[i][j][0] < tiles.length) {
+                        tiles[golf_course[i][j][0]][golf_course[i][j][1]]()
+                    }
+
+
+                    pop()
+                }
+            }
+        }
+
+        var tiles = [
+            [function () { }],
+            [function () { rect(0, 0, width / n, width / n) }],
+            [
+                function () { triangle(0, 0, width / n, 0, 0, width / n) },
+                function () { triangle(0, 0, width / n, 0, width / n, width / n) },
+                function () { triangle(width / n, width / n, width / n, 0, 0, width / n) },
+                function () { triangle(0, 0, 0, width / n, width / n, width / n) }
+            ],
+            [
+                function () { text("⬆️", 0.5 * (width / n), 0.5 * (width / n)) },
+                function () { text("➡️", 0.5 * (width / n), 0.5 * (width / n)) },
+                function () { text("⬇️", 0.5 * (width / n), 0.5 * (width / n)) },
+                function () { text("⬅️", 0.5 * (width / n), 0.5 * (width / n)) },
+            ],
+            [
+                function () { circle(0.5 * (width / n), 0.5 * (width / n), 0.25 * (width / n)) },
+                function () { circle(0.5 * (width / n), 0.5 * (width / n), 0.50 * (width / n)) },
+                function () { circle(0.5 * (width / n), 0.5 * (width / n), 1.00 * (width / n)) },
+                function () { circle(0.5 * (width / n), 0.5 * (width / n), 2.00 * (width / n)) },
+            ],
+            [
+                function () { rect(0, 0, 0.75 * width / n, width / n) },
+                function () { rect(0, 0, width / n, 0.75 * width / n) },
+                function () { rect(width / n, width / n, -0.75 * width / n, -width / n) },
+                function () { rect(width / n, width / n, -width / n, -0.75 * width / n) },
+            ]
+        ]
+    </script>
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+</body>
+
+</html>

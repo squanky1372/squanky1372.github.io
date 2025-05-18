@@ -30,13 +30,12 @@ var links_database = [
     ["/2024/testers/level_editor.html", "/html/img/Boxes32.png"], //Level editor
     ["/2024/noon/place.html", "/html/img/Boxes33.png"], // f/place
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
-    ["/2025/games/stardunk.html", "/html/img/Boxes37.png"], //Stardunk
-    ["/2025/games/hexes.html", "/html/img/Boxes40.png"], //Hexes
     ["/2025/games/morse_spell.html", "/html/img/Boxes41.png"], //Morse
-    ["/2025/games/morse_alphabet.html?hash=feli13", "/html/img/Boxes41.png"], //Morse 2
-    ["/2025/games/gyro_darts.html", "/html/img/Boxes35.png"], //Gyro darts
-    ["/2025/games/dev_data.html", "/html/img/Boxes35.png"], //Gyro darts
+    ["/2025/games/dev_data.html", "/html/img/Boxes35.png"], //Dev data
     ["/2025/games/orbital.html", "/html/img/Boxes35.png"], //Orbital
+    ["/2025/games/orbital.html?hash=feli13", "/html/img/Boxes45.png"], //Orbital (Felipe's Hash)
+    ["/2025/games/golf_player.html?hash=feli13", "/html/img/Boxes44.png"], //Golf Player
+    ["/2025/games/golf_maker.html?hash=feli13", "/html/img/Boxes43.png"], //Golf Maker
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game

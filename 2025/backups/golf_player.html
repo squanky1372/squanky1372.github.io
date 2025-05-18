@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+  <link rel="icon" href="/html/img/Boxes37.png">
+  <head>
+    <title>Felipe</title>
+    <style>
+      body { margin: 0; overflow: hidden }
+      canvas { width: 100%; height: 100%; overflow: hidden }
+    </style>
+  </head>
+  <body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+      let gravity = 0;
+      let ballStart = {x:100, y:100};
+      let ball_size = 5;
+      let restitution = 1;
+      let ball, engine, runner;
+
+      function setup() {
+        let world_size = min(windowWidth, windowHeight) * 0.95;
+        canvas = createCanvas(world_size, world_size);
+        centerCanvas();
+        disableCanvasDefaults();
+
+        engine = Matter.Engine.create();
+        engine.world.gravity.y = gravity;
+        engine.velocityThreshold = 0.00001;
+
+        ball = Matter.Bodies.circle(ballStart.x, ballStart.y, ball_size, {
+          restitution: 1,
+          density: 0.001, 
+          friction: 0,
+          frictionStatic: 0,
+          frictionAir: 0.01,
+          inertia: Infinity
+        });
+
+        Matter.Composite.add(engine.world, [ball]);
+
+        let thickness = 1000;
+        let size = { x: world_size, y: world_size };
+        let borders = [
+          Matter.Bodies.rectangle(size.x / 2, -thickness / 2, size.x * 2, thickness, { isStatic: true }),
+          Matter.Bodies.rectangle(size.x / 2, size.y + thickness / 2, size.x * 2, thickness, { isStatic: true }),
+          Matter.Bodies.rectangle(-thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true }),
+          Matter.Bodies.rectangle(size.x + thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true })
+        ];
+
+        Matter.Composite.add(engine.world, borders);
+
+        runner = Matter.Runner.create();
+        Matter.Runner.run(runner, engine);
+      }
+
+      function draw() {
+        scaleContent();
+        background(100);
+        fill(250).circle(ball.position.x, ball.position.y, ball.circleRadius * 2);
+        line(mouseX, mouseY, ball.position.x, ball.position.y);
+      }
+
+      function touchEnded(){
+        var scaler = -0.25;
+        Matter.Sleeping.set(ball, false);
+        Matter.Body.setVelocity(ball, { x: (ball.position.x - mouseX) * scaler, y: (ball.position.y - mouseY) * scaler });
+      }
+    </script>
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+  </body>
+</html>
