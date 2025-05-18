@@ -397,7 +397,7 @@
             this.end = function(){
                 score = floor((millis()-this.countingStart)/10) / 100
 
-                if(score < 13) achieve("hawk_eyed")
+                if(score < 15) achieve("hawk_eyed")
                 if(shots.length < 11) achieve("robbing_hood")
                 
                 submitScoreWrapper("gyro", {score, level:4, achievements})
