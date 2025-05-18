@@ -171,14 +171,14 @@
 
                 if(shots.length > 9 && score == 0) achieve("blind_as_a_bat")
                 if(
-                    this.scores.some(value => value >= 0 && value < 20) &&
-                    this.scores.some(value => value >= 20 && value < 40) &&
-                    this.scores.some(value => value >= 40 && value < 60) &&
-                    this.scores.some(value => value >= 60 && value < 80) &&
-                    this.scores.some(value => value >= 80 && value < 100)
+                    archery.scores.some(value => value >= 0 && value < 20) &&
+                    archery.scores.some(value => value >= 20 && value < 40) &&
+                    archery.scores.some(value => value >= 40 && value < 60) &&
+                    archery.scores.some(value => value >= 60 && value < 80) &&
+                    archery.scores.some(value => value >= 80 && value < 100)
                 ) achieve("rainbow")
 
-                if(this.scores.some(value => value > 99)) achieve("bullseye")
+                if(archery.scores.some(value => value > 99)) achieve("bullseye")
 
                 submitScoreWrapper("gyro", {score, level:1, achievements})
                 mode = -1
