@@ -168,6 +168,18 @@
             }
             this.end = function(){
                 textprompt = "Ended"
+
+                if(shots.length > 9 && score == 0) achieve("blind_as_a_bat")
+                if(
+                    this.scores.some(value => value >= 0 && value < 20) &&
+                    this.scores.some(value => value >= 20 && value < 40) &&
+                    this.scores.some(value => value >= 40 && value < 60) &&
+                    this.scores.some(value => value >= 60 && value < 80) &&
+                    this.scores.some(value => value >= 80 && value < 100)
+                ) achieve("rainbow")
+
+                if(this.scores.some(value => value > 99)) achieve("bullseye")
+
                 submitScoreWrapper("gyro", {score, level:1})
                 mode = -1
             }
@@ -226,6 +238,7 @@
         }
 
         function Darts(){
+            this.segments = [0,0,0,0,0,0]
             this.start = function(){
                 textprompt = "Started 2"
                 countingStart = millis()
@@ -237,6 +250,10 @@
             this.end = function(){
                 score = floor((millis() - countingStart) / 10) / 100
                 textprompt = `win: ${floor((millis() - countingStart) / 10) / 100}`
+
+                if(shots.length < 21) achieve("the_count")
+                if(this.segments.every(value => value == 1)) achieve("ranged")
+
                 submitScoreWrapper("gyro", {score, level:2})
                 mode = -1
             }
@@ -252,7 +269,11 @@
                 textprompt = `${segment[0]}, ${segment[1]}`
                 if (segment[0] == score) {
                     score = score + 1
-                    if (segment[1] == 0) countingStart += 5000
+                    this.segments[segment[1]] = 1
+                    if (segment[1] == 0) {
+                        countingStart += 5000
+                        achieve("centered")
+                    }
                     if (segment[1] == 1) countingStart += 4000
                     if (segment[1] == 3) countingStart += 2000
                     if (segment[1] == 5) countingStart += 1000
@@ -284,12 +305,24 @@
             }
             this.end = function(){
                 score = this.getPoints(shots[shots.length-1][0], shots[shots.length-1][1])
+
+                if(score >= 95) achieve("gotcha")
+                var worse = true
+                for(var i = 0; i < 4; i++){
+                    if(this.getPoints(shots[i]) > 0.95) achieve("early_bird")
+                    if(this.getPoints(shots[i]) < this.getPoints(shots[i+1])) worse = false
+                }
+                if(worse) achieve("wrong_way")
+
                 submitScoreWrapper("gyro", {score, level:3})
                 mode = -1
             }
             this.draw = function(){
                 // fill("red")
                 // circle(invisPos[0], invisPos[1], 10)
+                push()
+                this.drawPoint()
+                pop()
             }
             this.touched = function(){
                 var points = this.getPoints(cursor.position.x, cursor.position.y)
@@ -327,12 +360,12 @@
             }
             this.drawPoint = function(){
                 fill("red")
-                circle(invisPos[0], invisPos[1], 10)
+                circle(invisPos[0], invisPos[1], width*0.025)
                 noFill()
                 stroke("red")
-                circle(invisPos[0], invisPos[1], 30)
-                circle(invisPos[0], invisPos[1], 50)
-                circle(invisPos[0], invisPos[1], 70)
+                circle(invisPos[0], invisPos[1], width*0.05)
+                circle(invisPos[0], invisPos[1], width*0.075)
+                circle(invisPos[0], invisPos[1], width*0.1)
             }
             this.getPoints = function(posX, posY) {
                 var rad = dist(posX, posY, invisPos[0], invisPos[1]);
@@ -349,6 +382,7 @@
             this.targetScale = 0.2
             this.targetsHit = 0
             this.targetsNeeded = 10
+            this.misses = 0
 
             this.start = function(){
                 score = 1
@@ -362,6 +396,10 @@
             }
             this.end = function(){
                 score = floor((millis()-this.countingStart)/10) / 100
+
+                if(score < 13) achieve("hawk_eyed")
+                if(shots.length < 11) achieve("robbing_hood")
+                
                 submitScoreWrapper("gyro", {score, level:4})
                 mode = -1
             }
@@ -380,8 +418,13 @@
                 // if(this.isPointHit(mouseX, mouseY)){
                 if(this.isPointHit(cursor.position.x, cursor.position.y)){
                     this.targetsHit++
+                    this.misses = 0
                     this.centerPosition = [random(width), random(height)]
                     score = this.targetsNeeded - this.targetsHit
+                }
+                else{ 
+                    this.misses++
+                    if(this.misses >= 10) achieve("katmiss")
                 }
                 if(score == 0) this.end()
             }
@@ -664,10 +707,6 @@ Targets: Hit 10 randomly placed targets as quickly as possible.`)
                 return
             }
             if (!canShoot) return
-            if (shots.length >= shotLimit){
-                if(mode == 1) archery.end()
-                if(mode == 3) invis.end()
-            }
             
             if (mode == 0) {
                 getMenuElement()
@@ -678,6 +717,12 @@ Targets: Hit 10 randomly placed targets as quickly as possible.`)
             else if (mode == 3) invis.touched()
             else if (mode == 4) multi.touched()
             shots.push([cursor.position.x, cursor.position.y])
+        
+            if (shots.length >= shotLimit){
+                if(mode == 1) archery.end()
+                if(mode == 3) invis.end()
+            }
+
             canShoot = false
             setTimeout(setShootFlag, shotCooldown)
         }

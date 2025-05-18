@@ -39,6 +39,7 @@
 
             var morseDoneTimer;
             var target_text_array = getRandomAlphabet()
+            var target_text_correct = Array.from({ length: target_text_array.length }, () => 1);
             var target_text = target_text_array[0]
             var target_text_index = 0
 
@@ -78,14 +79,34 @@
                         if(target_text_index >= target_text_array.length){
                             console.log("YOU WIN!!!")
                             score = floor(millis() - gameStartTime)/1000
-                            submitScoreWrapper("morse_alphabet", {score})
+                            checkAchievements()
+                            submitScoreWrapper("morse_alphabet", {score, achievements})
                             mode = 3
                         }
                         else target_text = target_text_array[target_text_index]
+                        console.log(target_text_correct)
+                    }
+                    else{
+                        console.log("wrong")
+                        if(translatedText == "?") achieve("what?")
+                        if(translatedText == "FELIPE") achieve("creator")
+                        target_text_correct[target_text_index] = 0
+                        console.log(target_text_correct)
                     }
                     gatheredMorse = []
 
                 }, amount); // Set a new timeout
+            }
+
+            function checkAchievements(){
+                if(target_text_correct.every(num => num === 1)) achieve("morse_master")
+                if(target_text_correct.every(num => num === 0)) achieve("dit_dit_dat_dit")
+                if(target_text_array.every((char, index) => !/[a-zA-Z]/.test(char) || target_text_correct[index] === 1)) achieve("alphabet_aerobics")
+                if(target_text_array.every((char, index) => !/[0-9]/.test(char) || target_text_correct[index] === 1)) achieve("numerical_ninja")
+
+                if(score > 60*5) achieve(".. -.. -.-")
+                else if(score > 60*2) achieve(".-- .. .--.")
+                else if(score < 60*1) achieve(".- ... .- .--.")
             }
 
 			function setup() {
@@ -178,7 +199,7 @@
                     mode = 1
                     gameStartTime = millis()
                 }
-                if(mode == 1){
+                else if(mode == 1){
                     startTimer(morseTimeoutLength); // Starts the timer
                     console.log(`Touch ended at ${millis()}`)
                     gatheredMorse.push({time: millis(), state:0})

@@ -116,3 +116,10 @@ function verifyFields(incomingPlayerData) {
     console.log("Finished obtaining all player data.")
     playerDataFetched = true
 }
+
+var achievements = []
+
+function achieve(achievement){
+    if(!achievements.includes(achievement)) achievements.push(achievement)
+    console.log("achieved " + achievement)
+}

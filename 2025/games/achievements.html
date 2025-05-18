@@ -59,7 +59,7 @@
                 {"whacked_a_mole":  0},
                 {"i_blinked":       0},
             ],
-            "morse":[
+            "morse_alphabet":[
                 {"alphabet_aerobics":       0},
                 {"numerical_ninja":         0},
                 {"morse_master":            0},
@@ -96,10 +96,10 @@
         console.log(Object.keys(achievements_list))
 
         Object.keys(achievements_list).forEach(game => {
-            hashArray.filter(item => item.gameTitle === "stardunk").forEach((score, i) => {
+            hashArray.filter(item => item.gameTitle === game).forEach((score, i) => {
                 if("achievements" in score.data){
                     score.data.achievements.forEach((achievement, j) => {
-                        achievements_list.stardunk.find(item => item[achievement] !== undefined)[achievement] = 1;
+                        achievements_list[game].find(item => item[achievement] !== undefined)[achievement] = 1;
                     })
                 }
             })

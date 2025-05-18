@@ -78,6 +78,20 @@
         var rimWidth = 5
         var rimHeight = 15
         var rimRestitution = 1
+
+        //Achievements
+        /* names: 
+        slam_dunk: score 600pts in one shot
+        consistency: get to x10 multiplier
+        nothing_but_net: score an extra clean shot
+        10k_club: score 10,000 points in one round
+        triple_threat: get all 3 powerups in one round
+        wrong_way: hit the right side of the screen
+        too_strong: hit the left side of the screen
+        */
+        var powerups_obtained = [0,0,0]
+
+
     </script>
 
     <script> //setup the Matter things
@@ -105,10 +119,10 @@
         //Add border walls to the screen
         let thickness = 1000
         let borders = [
-            Matter.Bodies.rectangle(size.x / 2, 0 - thickness / 2, size.x * 2, thickness, { isStatic: true, label: 'border', }),
-            Matter.Bodies.rectangle(size.x / 2, size.y + thickness / 2, size.x * 2, thickness, { isStatic: true, label: 'border', }),
-            Matter.Bodies.rectangle(0 - thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true, label: 'border', }),
-            Matter.Bodies.rectangle(size.x + thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true, label: 'border', })
+            Matter.Bodies.rectangle(size.x / 2, 0 - thickness / 2, size.x * 2, thickness, { isStatic: true, label: 'border_top', }),
+            Matter.Bodies.rectangle(size.x / 2, size.y + thickness / 2, size.x * 2, thickness, { isStatic: true, label: 'border_bottom', }),
+            Matter.Bodies.rectangle(0 - thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true, label: 'border_left', }),
+            Matter.Bodies.rectangle(size.x + thickness / 2, size.y / 2, thickness, size.y * 2, { isStatic: true, label: 'border_right', })
         ]
         Matter.Composite.add(engine.world, borders);
 
@@ -133,22 +147,33 @@
             pairs.forEach((pair) => {
                 const { bodyA, bodyB } = pair;
 
-                if ((bodyA.label === 'ball' && bodyB.label === 'border') ||
-                    (bodyA.label === 'border' && bodyB.label === 'ball')) {
+                if ((bodyA.label === 'ball' && bodyB.label.includes('border')) ||
+                    (bodyA.label.includes('border') && bodyB.label === 'ball')) {
                     console.log('The ball collided with the border!');
                     combo_multiplier = 1
                     resetBall()
                 }
-                if ((bodyA.label === 'ball2' && bodyB.label === 'border') ||
-                    (bodyA.label === 'border' && bodyB.label === 'ball2')) {
+                if ((bodyA.label === 'ball2' && bodyB.label.includes('border')) ||
+                    (bodyA.label.includes('border') && bodyB.label === 'ball2')) {
                     console.log('The ball collided with the border!');
                     resetBall2()
                 }
-                if ((bodyA.label === 'ball3' && bodyB.label === 'border') ||
-                    (bodyA.label === 'border' && bodyB.label === 'ball3')) {
+                if ((bodyA.label === 'ball3' && bodyB.label.includes('border')) ||
+                    (bodyA.label.includes('border') && bodyB.label === 'ball3')) {
                     console.log('The ball collided with the border!');
                     resetBall3()
                 }
+
+                //achievements
+                if ((bodyA.label.includes('ball') && bodyB.label.includes('border_right')) ||
+                    (bodyA.label.includes('border_right') && bodyB.label.includes('ball'))) {
+                    achieve("wrong_way")
+                }
+                if ((bodyA.label.includes('ball') && bodyB.label.includes('border_left')) ||
+                    (bodyA.label.includes('border_left') && bodyB.label.includes('ball'))) {
+                    achieve("too_strong")
+                }
+
 
                 if ((bodyA.label.includes('ball') && bodyB.label.includes('backboard')) ||
                     (bodyA.label.includes('backboard') && bodyB.label.includes("ball"))) {
@@ -317,6 +342,8 @@
             var randomIndex = Math.floor(Math.random() * 3);
             // randomIndex = 1 //Randomized in advance
             console.log(`Powerup Gained! ${randomIndex}`)
+            powerups_obtained[randomIndex] = 1
+            if(powerups_obtained[0] && powerups_obtained[1] && powerups_obtained[2]) achieve("triple_threat")
 
             if (randomIndex == 0) {
                 actualHoopWidth = bigHoopWidth
@@ -432,6 +459,12 @@
         function scorePoints() {
             pointsScored = scorePotential * (fireballActive ? fireballMultiplier : 1) * combo_multiplier
             score += pointsScored
+
+            if(scorePotential == 30) achieve("nothing_but_net")
+            if(combo_multiplier == 10) achieve("consistency")
+            if(pointsScored == 600) achieve("slam_dunk")
+            if(score >= 10000) achieve("10k_club")
+
             combo_multiplier++
             if (combo_multiplier > max_combo) combo_multiplier = max_combo
 
@@ -461,7 +494,7 @@
             scorePotential = 30
 
             if (gameState == 1 && gameDuration - Math.floor((millis() - startTime) / 1000) < 0) {
-                submitScore("stardunk", playerData.hash, { score: score })
+                submitScore("stardunk", playerData.hash, { score: score, achievements: achievements })
                 gameState = 2
 
             }
