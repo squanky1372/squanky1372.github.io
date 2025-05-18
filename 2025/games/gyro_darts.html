@@ -309,8 +309,8 @@
                 if(score >= 95) achieve("gotcha")
                 var worse = true
                 for(var i = 0; i < 4; i++){
-                    if(this.getPoints(shots[i]) > 0.95) achieve("early_bird")
-                    if(this.getPoints(shots[i]) < this.getPoints(shots[i+1])) worse = false
+                    if(this.getPoints(shots[i][0], shots[i][1]) > 95) achieve("early_bird")
+                    if(this.getPoints(shots[i][0], shots[i][1]) < this.getPoints(shots[i+1][0], shots[i+1][1])) worse = false
                 }
                 if(worse) achieve("wrong_way")
 
