@@ -180,7 +180,7 @@
 
                 if(this.scores.some(value => value > 99)) achieve("bullseye")
 
-                submitScoreWrapper("gyro", {score, level:1})
+                submitScoreWrapper("gyro", {score, level:1, achievements})
                 mode = -1
             }
             this.draw = function() {
@@ -254,7 +254,7 @@
                 if(shots.length < 21) achieve("the_count")
                 if(this.segments.every(value => value == 1)) achieve("ranged")
 
-                submitScoreWrapper("gyro", {score, level:2})
+                submitScoreWrapper("gyro", {score, level:2, achievements})
                 mode = -1
             }
             this.draw = function(){
@@ -314,7 +314,7 @@
                 }
                 if(worse) achieve("wrong_way")
 
-                submitScoreWrapper("gyro", {score, level:3})
+                submitScoreWrapper("gyro", {score, level:3, achievements})
                 mode = -1
             }
             this.draw = function(){
@@ -400,7 +400,7 @@
                 if(score < 13) achieve("hawk_eyed")
                 if(shots.length < 11) achieve("robbing_hood")
                 
-                submitScoreWrapper("gyro", {score, level:4})
+                submitScoreWrapper("gyro", {score, level:4, achievements})
                 mode = -1
             }
             this.draw = function(){
