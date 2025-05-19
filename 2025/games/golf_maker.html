@@ -98,14 +98,14 @@
                 for(var i = 0; i < n; i++){
                     for(var j = 0; j < n; j++){
                         push()
-                        translate(width/n * i, width/m * j)
+                        translate(600/n * i, 600/m * j)
                         fill("green")
                         noStroke()
                         if(!keyIsDown(81)) stroke(50)
                         textAlign(CENTER, CENTER)
                         textSize(30)
 
-                        rect(0,0,width/n, width/n)
+                        rect(0,0,600/n, 600/n)
 
                         noStroke()
                         fill("black")
@@ -122,36 +122,36 @@
 
             var tiles = [
                 [function(){}],
-                [function(){rect(0,0,width/n, width/n)}],
+                [function(){rect(0,0,600/n, 600/n)}],
                 [
-                    function(){triangle(0,0, width/n,0, 0,width/n)},
-                    function(){triangle(0,0, width/n,0, width/n, width/n)},
-                    function(){triangle(width/n,width/n, width/n,0, 0,width/n)},
-                    function(){triangle(0,0, 0,width/n, width/n, width/n)}
+                    function(){triangle(0,0, 600/n,0, 0,600/n)},
+                    function(){triangle(0,0, 600/n,0, 600/n, 600/n)},
+                    function(){triangle(600/n,600/n, 600/n,0, 0,600/n)},
+                    function(){triangle(0,0, 0,600/n, 600/n, 600/n)}
                 ],
                 [
-                    function(){text("⬆️",0.5*(width/n),0.5*(width/n))}, 
-                    function(){text("➡️",0.5*(width/n),0.5*(width/n))}, 
-                    function(){text("⬇️",0.5*(width/n),0.5*(width/n))}, 
-                    function(){text("⬅️",0.5*(width/n),0.5*(width/n))}, 
+                    function(){text("⬆️",0.5*(600/n),0.5*(600/n))}, 
+                    function(){text("➡️",0.5*(600/n),0.5*(600/n))}, 
+                    function(){text("⬇️",0.5*(600/n),0.5*(600/n))}, 
+                    function(){text("⬅️",0.5*(600/n),0.5*(600/n))}, 
                 ],
                 [
-                    function(){circle(0.5*(width/n),0.5*(width/n),0.25*(width/n))}, 
-                    function(){circle(0.5*(width/n),0.5*(width/n),0.50*(width/n))}, 
-                    function(){circle(0.5*(width/n),0.5*(width/n),1.00*(width/n))}, 
-                    function(){circle(0.5*(width/n),0.5*(width/n),2.00*(width/n))}, 
+                    function(){circle(0.5*(600/n),0.5*(600/n),0.25*(600/n))}, 
+                    function(){circle(0.5*(600/n),0.5*(600/n),0.50*(600/n))}, 
+                    function(){circle(0.5*(600/n),0.5*(600/n),1.00*(600/n))}, 
+                    function(){circle(0.5*(600/n),0.5*(600/n),2.00*(600/n))}, 
                 ],
                 [
-                    function(){rect(0,0,0.75*width/n,width/n)},
-                    function(){rect(0,0,width/n,0.75*width/n)},
-                    function(){rect(width/n,width/n,-0.75*width/n,-width/n)},
-                    function(){rect(width/n,width/n,-width/n,-0.75*width/n)},
+                    function(){rect(0,0,0.75*600/n,600/n)},
+                    function(){rect(0,0,600/n,0.75*600/n)},
+                    function(){rect(600/n,600/n,-0.75*600/n,-600/n)},
+                    function(){rect(600/n,600/n,-600/n,-0.75*600/n)},
                 ]
             ]
 
             function touchStarted(){
                 //get clicked cell
-                clickedCell = [floor(mouseX/(width/n)), floor(mouseY/(width/m))]
+                clickedCell = [floor(mouseX*(600/width)/(600/n)), floor(mouseY*(600/width)/(600/m))]
 
                 if(clickedCell[0] < 0 || clickedCell[1] < 0) return
 

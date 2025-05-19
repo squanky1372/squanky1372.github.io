@@ -168,7 +168,7 @@
             background(100);
             drawCourse()
             fill(250).circle(ball.position.x, ball.position.y, ball.circleRadius * 2);
-            line(mouseX, mouseY, ball.position.x, ball.position.y);
+            line(mouseX*600/width, mouseY*600/width, ball.position.x, ball.position.y);
             applyForceFields();
         }
 
@@ -177,8 +177,8 @@
             Matter.Sleeping.set(ball, false);
 
             // Calculate initial velocity
-            let vx = (ball.position.x - mouseX) * scaler;
-            let vy = (ball.position.y - mouseY) * scaler;
+            let vx = (ball.position.x - mouseX*600/width) * scaler;
+            let vy = (ball.position.y - mouseY*600/width) * scaler;
 
             // Set your desired maximum speed (adjust as needed)
             const maxSpeed = 10;
