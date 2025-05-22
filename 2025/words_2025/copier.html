@@ -2,35 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Viewport for responsive scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Text Saver</title>
   <style>
+    /* Base styles */
     body {
       font-family: sans-serif;
       padding: 1rem;
+      margin: 0;
+      /* Use min-height instead of fixed height */
+      min-height: 100vh;
+      /* Allow content to flow vertically */
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      background: #f9f9f9;
+      box-sizing: border-box;
+    }
+
+    /* Make all elements respect box-sizing */
+    *, *::before, *::after {
+      box-sizing: inherit;
     }
 
     input, textarea, button {
+      font-size: 1.1rem; /* slightly bigger base font */
+      padding: 0.5rem;
       margin-bottom: 1rem;
-      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      box-sizing: border-box;
     }
 
+    /* Responsive width for index input */
     #index {
-      width: 200px;
-    }
-
-    #text {
-      flex: 1;
       width: 100%;
-      resize: none;
+      max-width: 200px;
     }
 
+    /* Textarea fills available width, with a reasonable height */
+    #text {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      font-size: 1.1rem;
+    }
+
+    /* Buttons row layout */
     .button-row {
       display: flex;
+      flex-wrap: wrap; /* wrap on narrow screens */
       gap: 1rem;
+    }
+
+    button {
+      flex: 1 1 100px; /* buttons grow but have min width */
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 600px) {
+      body {
+        padding: 0.5rem;
+      }
+
+      input, textarea, button {
+        font-size: 1.3rem; /* bigger fonts on mobile */
+      }
+
+      /* Make buttons full width stacked */
+      .button-row {
+        flex-direction: column;
+      }
+
+      button {
+        flex: 1 1 auto;
+      }
     }
   </style>
 </head>
