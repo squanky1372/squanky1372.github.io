@@ -32,8 +32,8 @@ var links_database = [
     ["/index_gyro.html", "/html/img/Boxes35.png"], // Gyro version of S-cubey
     ["/2025/games/morse_spell.html", "/html/img/Boxes41.png"], //Morse
     ["/2025/games/dev_data.html", "/html/img/Boxes18.png"], //Dev data
-    ["/2025/games/games_menu.html", "/html/img/Boxes35.png"], //Orbital
-    ["/2025/games/games_menu.html?hash=feli13", "/html/img/Boxes46.png"], //Orbital (Felipe's Hash)
+    ["/2025/games/games_menu.html", "/html/img/Boxes45.png"], //Games Menu
+    ["/2025/games/games_menu.html?hash=feli13", "/html/img/Boxes46.png"], //Games Menu (Felipe's Hash)
     ["/2025/games/golf_player.html?hash=feli13", "/html/img/Boxes44.png"], //Golf Player
     ["/2025/games/golf_maker.html?hash=feli13", "/html/img/Boxes43.png"], //Golf Maker
     ["/2025/words_2025/copier.html", "/html/img/Boxes47.png"], //Copier
