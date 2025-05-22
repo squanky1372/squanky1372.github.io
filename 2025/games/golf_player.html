@@ -135,7 +135,7 @@
             if (activeForceFields.length > 0) {
                 activeForceFields.forEach(fieldBody => {
                     console.log("Applying continuous force due to field");
-                    let speed = 0.05; // Lower value for continuous application
+                    let speed = 0.1; // Lower value for continuous application
                     let velocityChange = { x: 0, y: 0 };
 
                     switch (fieldBody.plugin.forceDirection) {
@@ -220,6 +220,72 @@
                             }
                         }));
                     }
+                    if (golf_course[i][j][0] == 2) { // Triangle tile
+                        let direction = golf_course[i][j][1];
+                        let x = p0[0];
+                        let y = p0[1];
+                        let triangleVertices;
+
+                        // Define triangle corners in clockwise order
+                        switch (direction) {
+                            case 0: // right angle top-left
+                                triangleVertices = [
+                                    { x: x, y: y },
+                                    { x: x + box_size, y: y },
+                                    { x: x, y: y + box_size }
+                                ];
+                                break;
+                            case 1: // right angle top-right
+                                triangleVertices = [
+                                    { x: x + box_size, y: y },
+                                    { x: x + box_size, y: y + box_size },
+                                    { x: x, y: y }
+                                ];
+                                break;
+                            case 2: // right angle bottom-right
+                                triangleVertices = [
+                                    { x: x + box_size, y: y + box_size },
+                                    { x: x, y: y + box_size },
+                                    { x: x + box_size, y: y }
+                                ];
+                                break;
+                            case 3: // right angle bottom-left
+                                triangleVertices = [
+                                    { x: x, y: y + box_size },
+                                    { x: x, y: y },
+                                    { x: x + box_size, y: y + box_size }
+                                ];
+                                break;
+                        }
+
+                        // Compute centroid of the triangle
+                        let center = Matter.Vertices.centre(triangleVertices);
+
+                        // Offset vertices relative to center
+                        let offsetVertices = triangleVertices.map(v => ({
+                            x: v.x - center.x,
+                            y: v.y - center.y
+                        }));
+
+                        let triangle = Matter.Bodies.fromVertices(
+                            center.x,
+                            center.y,
+                            [offsetVertices],
+                            {
+                                isStatic: true,
+                                friction: 0.1,
+                                restitution: 0.1,
+                                collisionFilter: {
+                                    category: 0x0002,
+                                    mask: 0xFFFF
+                                }
+                            },
+                            true // auto correct
+                        );
+
+                        boxes.push(triangle);
+                    }
+
                     if (golf_course[i][j][0] == 3) { // Force field tile
                         let direction = golf_course[i][j][1]; // Use this to determine direction (0: up, 1: right, 2: down, 3: left)
                         let forceField = Matter.Bodies.rectangle(
