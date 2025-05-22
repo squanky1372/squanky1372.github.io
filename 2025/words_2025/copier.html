@@ -25,18 +25,46 @@
       box-sizing: inherit;
     }
 
-    #index {
-      width: 100%;
-      max-width: 200px;
-      font-size: 1.2rem;
-      padding: 0.5rem;
+    .index-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      align-items: center;
       margin-bottom: 1rem;
+    }
+
+    #index {
+      width: 80px;
+      font-size: 1.2rem;
+      padding: 0.4rem;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
 
+    .letter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
+    .letter-buttons button {
+      flex: 0 0 32px;
+      padding: 0.4rem;
+      font-size: 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .letter-buttons button:hover {
+      background-color: #1e7e34;
+    }
+
     #text {
-      flex-grow: 1;         /* <-- fills vertical space */
+      flex-grow: 1;
       width: 100%;
       font-size: 1.2rem;
       padding: 0.5rem;
@@ -53,7 +81,7 @@
       flex-wrap: wrap;
     }
 
-    button {
+    .button-row button {
       flex: 1 1 120px;
       cursor: pointer;
       background-color: #007bff;
@@ -66,7 +94,7 @@
       min-height: 48px;
     }
 
-    button:hover {
+    .button-row button:hover {
       background-color: #0056b3;
     }
 
@@ -76,7 +104,7 @@
       }
 
       #index, #text, button {
-        font-size: 1.6rem; /* bigger font */
+        font-size: 1.6rem;
       }
 
       #index, #text {
@@ -84,23 +112,31 @@
       }
 
       #text {
-        min-height: 250px; /* bigger textarea on mobile */
+        min-height: 250px;
       }
 
       .button-row {
         flex-direction: column;
       }
 
-      button {
+      .button-row button {
         min-height: 56px;
         flex: none;
         width: 100%;
+      }
+
+      .letter-buttons button {
+        flex: 0 0 calc(100% / 8 - 0.25rem);
       }
     }
   </style>
 </head>
 <body>
-  <input type="text" id="index" placeholder="Index" />
+  <div class="index-row">
+    <input type="text" id="index" placeholder="A-Z" />
+    <div class="letter-buttons" id="letterButtons"></div>
+  </div>
+
   <textarea id="text" placeholder="Enter your text here..."></textarea>
   <div class="button-row">
     <button onclick="saveText()">Save</button>
@@ -109,37 +145,51 @@
 
   <script>
     const BASE_URL = 'https://squanky.net/copier/';
-  
+
+    function setIndex(letter) {
+      document.getElementById('index').value = letter;
+    }
+
+    // Create A-Z buttons dynamically
+    const letterButtonsContainer = document.getElementById('letterButtons');
+    for (let i = 65; i <= 90; i++) {
+      const letter = String.fromCharCode(i);
+      const button = document.createElement('button');
+      button.textContent = letter;
+      button.onclick = () => setIndex(letter);
+      letterButtonsContainer.appendChild(button);
+    }
+
     async function saveText() {
       const index = document.getElementById('index').value.trim();
       const text = document.getElementById('text').value;
-  
+
       if (!index) {
         alert('Please enter an index.');
         return;
       }
-  
+
       const response = await fetch(`${BASE_URL}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ index, text })
       });
-  
+
       const result = await response.json();
       alert(result.message || result.error);
     }
-  
+
     async function loadText() {
       const index = document.getElementById('index').value.trim();
-  
+
       if (!index) {
         alert('Please enter an index.');
         return;
       }
-  
+
       const response = await fetch(`${BASE_URL}/load?index=${encodeURIComponent(index)}`);
       const result = await response.json();
-  
+
       if (result.text !== undefined) {
         document.getElementById('text').value = result.text;
       } else {
@@ -147,6 +197,5 @@
       }
     }
   </script>
-  
 </body>
 </html>
