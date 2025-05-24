@@ -6,18 +6,51 @@
   
   <style>
   * {
-    font-size: 30px; /* Adjust this value to your preferred font size */
-    font-family: Arial, sans-serif; /* Optional, for consistent font style */
-  }
-  details[open] summary {
-    font-size: 30px; /* Ensure the font size stays the same when expanded */
-  }
+        font-size: 30px; /* Adjust this value to your preferred font size */
+    }
+    details[open] summary {
+        font-size: 30px; /* Ensure the font size stays the same when expanded */
+    }
+    body{
+        margin:0;
+        /* overflow:hidden; */
+        background-color:black; 
+        color:green; 
+        font-size: 200%
+    }
+    @font-face {  
+        src: url(../aa_libraries/slkscr.ttf) format("truetype");
+        font-family:  Market Deco;
+    }
+    div.FontMarket { 
+        font-family:  Market Deco;
+    }
+    td {
+        /* text-align: center; */
+    }
+    table, th, td {
+        border: 1px solid green;
+        font-size: 100%;  /* or whatever size you prefer */
+    }
+    h1 {
+        font-size: 400%;
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 40px;
+        color: green;
+    }
+    h2 {
+        font-size: 250%;  /* or whatever size you prefer */
+        text-align: center;
+        margin-top: 40px; /* optional: space between sections */
+        margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
-  
-<div id="achievements-container"></div>
-</body>
+    <div class="FontMarket" style="font-size: 200%; text-align: center;">Achievements</div>
+    <div id="achievements-container" class="FontMarket"></div>
+  </body>
 </html>
 
 
@@ -40,66 +73,62 @@
 
         var achievements_list = {
             "stardunk":[
-                {"slam_dunk":       0},
-                {"consistency":     0},
-                {"nothing_but_net": 0},
-                {"10k_club":        0},
-                {"triple_threat":   0},
-                {"wrong_way":       0},
-                {"too_strong":      0},
+                ["slam_dunk",       0, "Slam Dunk", "Score a perfect 600-point shot."],
+                ["consistency",     0, "Consistency", "Get a 10x point multiplier."],
+                ["nothing_but_net", 0, "Nothing but Net", "Score an extra clean shot."],
+                ["10k_club",        0, "10k Club", "Score 10,000 points or more."],
+                ["triple_threat",   0, "Triple Threat", "Get all three power-ups in one round."],
+                ["wrong_way",       0, "Wrong Way", "Throw the ball backwards."],
+                ["too_strong",      0, "Too Strong", "Throw the ball over the backboard."],
             ],
             "hexes":[
-                {"indecisive":      0},
-                {"reading_comp":    0},
-                {"gone":            0},
-                {"precision":       0},
-                {"afk":             0},
-                {"popup_blocker":   0},
-                {"green_means_go":  0},
-                {"whacked_a_mole":  0},
-                {"i_blinked":       0},
+                ["indecisive",      0, "Indecisive", "Play all three modes, one after the other."],
+                ["reading_comp",    0, "Reading Comp", "Read all possible text in one session."],
+                ["gone",            0, "Gone", "Beat Clear mode in under 2.5 seconds."],
+                // ["precision",       0, "Precision", "Get a score under 10 seconds in less"],
+                ["afk",             0, "AFK", "Get a three-digit score in Clear mode."],
+                ["popup_blocker",   0, "Popup Blocker", "Get a score of 35 or higher in Timed mode."],
+                ["green_means_go",  0, "Green = Go", "Get a score of 0 in Timed by clicking green."],
+                ["whacked_a_mole",  0, "Whacked-a-mole", "Get a score of 40 or higher in Endless mode."],
+                ["i_blinked",       0, "I Blinked...", "End a game of Endless without pressing anything."],
             ],
             "morse_alphabet":[
-                {"alphabet_aerobics":       0},
-                {"numerical_ninja":         0},
-                {"morse_master":            0},
-                {"dit_dit_dah_dit":         0},
-                {"look_it_up":              0},
-                {"getting_there":           0},
-                {"asap":                    0},
-                {"what?":                   0},
-                {"creator":                 0},
-
+                ["alphabet_aerobics",   0, "Alphabet Aerobics", "Make no mistakes on any letters in one round."],
+                ["numerical_ninja",     0, "Numerical Ninja", "Make no mistakes on any numbers in one round."],
+                ["morse_master",        0, "Morse Master", "Make no mistakes in one round."],
+                ["dit_dit_dah_dit",     0, "Dit Dit Dah Dit", "Make a mistake on everything in one round."],
+                ["look_it_up",          0, ".. -.. -.-", "Get a score higher than 5 minutes."],
+                ["getting_there",       0, ".-- .. .--.", "Get a score under 2 minutes."],
+                ["asap",                0, ".- ... .- .--.", "Get a score under 1 minute."],
+                ["what?",               0, "What?", "Type a non-character."],
+                ["creator",             0, "Creator", "?... Who made this?"],
             ],
             "gyro":[
-                {"bullseye":        0},
-                {"blind_as_a_bat":  0},
-                {"rainbow":         0},
-                {"the_count":       0},
-                {"centered":        0},
-                {"ranged":          0},
-                {"gotcha":          0},
-                {"early_bird":      0},
-                {"wrong_way":       0}, 
-                {"hawk_eyed":       0}, 
-                {"robbing_hood":    0}, 
-                {"katmiss":         0}, 
-
+                ["bullseye",        0, "Bullseye!", "Get a perfect 100-point shot in Archery mode."],
+                ["blind_as_a_bat",  0, "Blind as a Bat", "Miss all 10 shots in Archery mode."],
+                ["rainbow",         0, "Rainbow", "Make one shot in each color band in Archery mode."],
+                ["the_count",       0, "The Count", "Win a round of Darts mode in exactly 20 shots."],
+                ["centered",        0, "Centered", "Score from within the bullseye ring in Darts mode."],
+                ["ranged",          0, "Ranged", "Score from within all rings in Darts mode."],
+                ["gotcha",          0, "Gotcha!", "Hit the target zone on your last shot in Finder mode."],
+                ["early_bird",      0, "Early Bird", "Hit the target zone before your last shot in Finder mode."],
+                ["wrong_way",       0, "Wrong Way", "Do worse on each shot in Finder mode."], 
+                ["hawk_eyed",       0, "Hawk-eyed", "Win a round of Target mode in under 15 seconds."], 
+                ["robbing_hood",    0, "Robbing Hood", "Win a round of Target mode in exactly 10 shots."], 
+                ["katmiss",         0, "KatMiss", "Miss ten times on a single target in Target mode."], 
             ]
         }
 
         var hashArray = data.scoresArray.filter(item => item.hash === "feli13");
-
-        
         console.log(hashArray)
-        
         console.log(Object.keys(achievements_list))
 
         Object.keys(achievements_list).forEach(game => {
             hashArray.filter(item => item.gameTitle === game).forEach((score, i) => {
                 if("achievements" in score.data){
                     score.data.achievements.forEach((achievement, j) => {
-                        achievements_list[game].find(item => item[achievement] !== undefined)[achievement] = 1;
+                        found_game = achievements_list[game].find(item => item[0] == achievement)
+                        found_game[1] = 1;
                     })
                 }
             })
@@ -114,27 +143,61 @@
 
 
     function displayAchievements(achievements_list) {
-        const container = document.getElementById("achievements-container");
-        container.innerHTML = ""; // Clear any existing content
+    const container = document.getElementById("achievements-container");
+    container.innerHTML = ""; // Clear any existing content
 
-        Object.entries(achievements_list).forEach(([category, achievements]) => {
-            if (achievements.length === 0) return; // Skip empty categories
+    Object.entries(achievements_list).forEach(([category, achievements]) => {
+        if (achievements.length === 0) return; // Skip empty categories
 
-            const categoryHeader = document.createElement("h2");
-            categoryHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-            container.appendChild(categoryHeader);
+        const categoryHeader = document.createElement("h2");
+        categoryHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        container.appendChild(categoryHeader);
 
-            const list = document.createElement("ul");
+        const table = document.createElement("table");
+        table.border = "1";
+        table.cellPadding = "8";
+        table.style.borderCollapse = "collapse";
+        table.style.marginBottom = "20px";
+        table.style.width = "100%";
 
-            achievements.forEach(achievement => {
-            const [name, value] = Object.entries(achievement)[0];
-            const listItem = document.createElement("li");
-            listItem.textContent = `${value === 1 ? "✅" : "❌"} : ${name}`;
-            list.appendChild(listItem);
-            });
 
-            container.appendChild(list);
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
+        ["", "Name", "Description"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
         });
-    }
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+
+        achievements.forEach(achievement => {
+            const row = document.createElement("tr");
+            const [name, value, desc] = [achievement[2], achievement[1], achievement[3]];
+
+            const valueCell = document.createElement("td");
+            valueCell.textContent = value === 1 ? "🟩" : "🟥";
+            row.appendChild(valueCell);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = name || achievement[0]; // Fallback to ID if name is missing
+            row.appendChild(nameCell);
+
+            const descCell = document.createElement("td");
+            descCell.textContent = desc || ""; // Fallback to empty if desc is missing
+            row.appendChild(descCell);
+
+            tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+        container.appendChild(table);
+    });
+}
+
     
 </script>
