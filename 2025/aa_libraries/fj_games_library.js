@@ -106,7 +106,6 @@ var newPlayerFlag = false
 function verifyFields(incomingPlayerData) {
     if (!incomingPlayerData.username) newPlayerFlag = true
     else if (incomingPlayerData.visuals) {
-      console.log("visuals!")
       if (!incomingPlayerData.visuals.colors)  newPlayerFlag = true
       else if (!incomingPlayerData.visuals.emoji)  newPlayerFlag = true
     }
@@ -121,5 +120,5 @@ var achievements = []
 
 function achieve(achievement){
     if(!achievements.includes(achievement)) achievements.push(achievement)
-    console.log("achieved " + achievement)
+    console.log("Player achieved " + achievement)
 }
