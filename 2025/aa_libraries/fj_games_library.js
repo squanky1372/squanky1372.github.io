@@ -98,7 +98,7 @@ function verifyHash() {
         .then(data => verifyFields(data.foundRow)) 
         .catch(error => {
             console.error(error)
-            // window.location.href = "https://squanky1372.github.io/2025/games/login.html"
+            window.location.href = "https://squanky1372.github.io/2025/games/login.html"
         }); // Handle errors
 }
 
