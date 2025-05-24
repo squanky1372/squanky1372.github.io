@@ -71,7 +71,7 @@
 
 </html>
 
-
+<script src="../aa_libraries/fj_games_library.js"></script>
 
 <script>
     var achievements_list = {
@@ -122,7 +122,10 @@
         ]
     }
 
-    const response = fetch(`https://squanky.net/scores/getDev`, {
+    verifyHash()
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const response = fetch(`https://squanky.net/scores/achievements?hash=${urlParams.get('hash')}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -137,7 +140,7 @@
         .then(data => {
             console.log(data)
 
-            var hashArray = data.scoresArray.filter(item => item.hash === "feli13");
+            var hashArray = data.newScores
             console.log(hashArray)
             console.log(Object.keys(achievements_list))
 
