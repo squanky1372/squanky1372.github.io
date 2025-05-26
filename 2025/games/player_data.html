@@ -153,17 +153,6 @@
         text(emoji, posx + size/2, posy + size/2);
     }
 
-    function windowResized() {
-        var dim = 0
-        if(windowWidth > windowHeight){
-        dim = windowHeight/2 * 0.75
-        }
-        else{
-        dim = windowHeight/4 * 0.75
-        }
-        resizeCanvas(dim, dim);
-    }
-
     function verifyHash(){
 
         // Get the full URL or just the query string
