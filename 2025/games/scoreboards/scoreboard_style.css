@@ -10,5 +10,6 @@ td {
     text-align: center;
 }
 table, th, td {
-    border: 1px solid lime;
+    border: 2px solid lime;
+    font-size: 120%
 }
