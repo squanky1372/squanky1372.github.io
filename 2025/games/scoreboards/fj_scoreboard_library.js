@@ -36,7 +36,7 @@ function addScore(score) {
 function createCanvasInDiv(divId, visuals) {
     new p5((sketch) => {
         sketch.setup = function () {
-            let canvas = sketch.createCanvas(100,100);
+            let canvas = sketch.createCanvas(80,80);
             canvas.parent(divId);
 
             color1 = visuals.colors[0]
