@@ -2,17 +2,25 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>Nested Array to HTML</title>
   
   <style>
-  * {
-    font-size: 30px; /* Adjust this value to your preferred font size */
-    font-family: Arial, sans-serif; /* Optional, for consistent font style */
-  }
-  details[open] summary {
-    font-size: 30px; /* Ensure the font size stays the same when expanded */
-  }
+    body {
+      background-color: black;
+      color: white;
+      font-size: 50px; /* Updated font size */
+      font-family: Arial, sans-serif;
+    }
+  
+    summary {
+      font-size: inherit;
+    }
   </style>
+  
+  
+  
 </head>
 <body>
   <h2>Nested Array Output</h2>
@@ -46,12 +54,13 @@
                 players[player_data.hash].scores = []
             })
 
-            data.scoresArray.forEach(score => {
-                players[score.hash].scores.push(score)
-            })
             console.log(players)
 
-            console.log('2')
+            data.scoresArray.forEach(score => {
+                if(players[score.hash]){
+                  players[score.hash].scores.push(score)
+                }
+            })
             
             const container = document.getElementById('container');
 
@@ -72,7 +81,7 @@
                 li.textContent = score_text;
                 ul.appendChild(li);
 
-                players[person].scores.forEach(score => {
+                [...players[person].scores].reverse().forEach(score => {
                     const li = document.createElement('li');
                     var score_text = `${score.gameTitle}: ${JSON.stringify(score.data)}`
                     li.textContent = score_text;
