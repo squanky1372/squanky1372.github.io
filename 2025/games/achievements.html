@@ -155,12 +155,39 @@
                 })
             })
 
+            
+
             console.log(achievements_list)
 
             displayAchievements(achievements_list)
 
+            var leaderboards = groupIntoLeaderboards(data.allScores)
+            console.log(leaderboards)
+
         })   // Log the parsed data
         .catch(error => console.error(error)); // Handle errors
+
+
+    function groupIntoLeaderboards(dataArray) {
+        const leaderboards = {};
+
+        dataArray.forEach(entry => {
+            const gameTitle = entry.gameTitle;
+            const level = entry.data.level !== undefined ? entry.data.level : 0;
+
+            if (!leaderboards[gameTitle]) {
+            leaderboards[gameTitle] = {};
+            }
+
+            if (!leaderboards[gameTitle][level]) {
+            leaderboards[gameTitle][level] = [];
+            }
+
+            leaderboards[gameTitle][level].push(entry);
+        });
+
+        return leaderboards;
+    }
 
 
     function displayAchievements(achievements_list) {
