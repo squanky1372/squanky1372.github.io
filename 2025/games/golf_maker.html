@@ -9,8 +9,10 @@
 			canvas {width: 100%; height: 100%; overflow: hidden}
 		</style>
 	</head>
-    <button onclick="saveCourse()" id="enableGyro" style="width:5%; height:50%; padding:0% 0%; font-size: 100%; background:#0088ff; color:#550000">Save</button><br>
-    <button onclick="copyCourse()" id="enableGyro" style="width:5%; height:50%; padding:0% 0%; font-size: 100%; background:#0088ff; color:#550000">Copy</button><br>
+    <button onclick="saveCourse()" style="width:5%; height:50%; padding:0% 0%; font-size: 100%; background:#0088ff; color:#550000">Save</button><br>
+    <button onclick="copyCourse()" style="width:5%; height:50%; padding:0% 0%; font-size: 100%; background:#ff0088; color:#005500">Copy</button><br>
+    <button onclick="pasteCourse()" style="width:5%; height:50%; padding:0% 0%; font-size: 100%; background:#88ff00; color:#000055">Paste</button><br>
+
 
     <body style="background-color:#0066ff;">
         <script src="../aa_libraries/matter.js"></script>
@@ -30,6 +32,23 @@
             var  savedState = [0,0]
 
             console.log(golf_course);
+
+            async function pasteCourse() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    const parsed = JSON.parse(text);
+
+                    // Validate dimensions
+                    if (Array.isArray(parsed) && parsed.length === n && parsed[0].length === m) {
+                        golf_course = parsed;
+                        console.log('Level pasted successfully.');
+                    } else {
+                        console.error('Invalid course format or dimensions.');
+                    }
+                } catch (err) {
+                    console.error('Failed to paste level from clipboard:', err);
+                }
+            }
 
             async function saveCourse(filename = 'array3D.txt'){
                 try {
