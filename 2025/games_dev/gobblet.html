@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+    <head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden}
+			canvas {width: 100%; height: 100%; overflow: hidden}
+		</style>
+	</head>
+    <body style="background-color:#0066ff;">
+        <script src="../aa_libraries/matter.js"></script>
+
+        
+		<script src="../aa_libraries/p5.js"></script>
+		<script>
+            
+            var grid_size = 600/8
+            var my_player_num = 1
+            var selected_piece = -1
+            var selection_color = "gold"
+
+            // var game = {
+            //     state: 1,
+            //     external: [[4,4,4],[4,4,4]],
+            //     board: [
+            //         [[-4,3,-2,1],[0,0,0,0],[0,0,0,0],[4,-3,2,-1]],
+            //         [[0,-3,0,0],[0,3,0,0],[0,0,0,0],[0,0,0,0]],
+            //         [[0,0,-2,0],[0,0,0,0],[0,0,-2,0],[0,0,0,0]],
+            //         [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,1]]
+            //     ]
+            // }
+
+            var game = {
+                state: 1,
+                external: [[4,4,4],[4,4,4]],
+                board: [
+                    [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+                    [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+                    [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+                    [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+                ]
+            }
+
+
+			function setup() {
+                let size = min(windowWidth, windowHeight) * 0.95;
+  
+                // Create the canvas with the calculated size
+                canvas = createCanvas(size, size);
+                
+                // Center the canvas on the screen
+                centerCanvas();
+                disableCanvasDefaults()
+            }
+
+            function draw(){
+                scaleContent()
+                
+                background("sienna")
+                
+                fill("tan")
+                rect(grid_size*2, grid_size*2, grid_size*4, grid_size*4)
+
+                noFill()
+                stroke(128)
+
+
+                for(var i = 0; i < 8; i++){
+                    for(var j = 0; j < 8; j++){                    
+                        rect(grid_size*i, grid_size*j, grid_size, grid_size)
+                    }
+                }
+
+                drawBoard()
+
+                fill("gold")
+                if(Math.sign(game.state) < 0) circle(grid_size*4, grid_size*7, grid_size)
+
+                push()
+                if(Math.abs(game.state) == 1) fill(255)
+                if(Math.abs(game.state) == 2) fill(0)
+                rectMode(CENTER)
+                rect(grid_size*4, grid_size*7, grid_size*3/4, grid_size*3/4, grid_size/4)
+                pop()
+            }
+
+            function touchEnded(){
+                //process menu touches
+
+                //game is the json struct with the board, turn, etc.
+                if(game.state != my_player_num) {
+                    console.log("not my turn")
+                    return
+                }
+
+                //find any touched pieces
+                var touched_piece = getTouchedPiece(mouseX, mouseY, my_player_num)
+                console.log("touched at ",touched_piece)
+                //If touched piece is external, select the external piece
+                if([0,1,2].includes(touched_piece)){
+                    //Deselect external piece if it was previously selected
+                    if(selected_piece == touched_piece){
+                        console.log("Deselecting external piece")
+                        selected_piece = -1
+                        return
+                    }
+                    selected_piece = touched_piece
+                    console.log("Selecting external piece ", selected_piece)
+                    return
+                }
+
+                //If no touched piece was found, make no selections
+                if(touched_piece == -1) {
+                    console.log("No piece found at touched point")
+                }
+                //touched_piece is now definitely a board piece [x,y]
+                //If no piece was previously selected, select the new touched piece
+                else if(selected_piece == -1){
+                    console.log("Selecting piece ", touched_piece)
+                    selected_piece = touched_piece
+                    return
+                }
+                //If the touched board space is the same as the selected one, deselect it.
+                else if(touched_piece[0] == selected_piece[0] && touched_piece[1] == selected_piece[1]){
+                    console.log("Deselected piece", selected_piece)
+                    selected_piece = -1
+                    return
+                }
+                if([0,1,2].includes(touched_piece)) return
+
+                
+                var boardSpace = getBoardSpace(mouseX, mouseY)
+                console.log("placing piece in ", boardSpace)
+                if(boardSpace == -1){
+                    console.log("not a board space")
+                    return
+                }
+
+                // If the touched spot is a valid move, play that move
+                if(selected_piece == -1){
+                    console.log("No piece is selected.")
+                    return
+                }
+                else if(![-1,0,1,2].includes(selected_piece)){
+                    var touchedSlotSize = Math.abs(getPieceAt(...boardSpace))
+                    var level_to_place = getPieceAt(...selected_piece)
+                    var selectedSlotSize = Math.abs(level_to_place)
+                    console.log("Trying to move board piece", touchedSlotSize, "on", selectedSlotSize)
+                }
+                else{
+                    var touchedSlotSize = Math.abs(getPieceAt(...boardSpace))
+                    var player_to_place = (game.state == 1) ? 1 : -1
+                    var level_to_place = game.external[my_player_num-1][selected_piece] * player_to_place
+                    var selectedSlotSize = Math.abs(game.external[my_player_num-1][selected_piece])
+                    console.log("Trying to place external piece ", touchedSlotSize, "on", selectedSlotSize)
+                }
+                if(touchedSlotSize < selectedSlotSize){
+                    game.board[boardSpace[0]][boardSpace[1]][4-Math.abs(level_to_place)] = level_to_place
+                    removePiece(selected_piece, my_player_num)
+                    selected_piece = -1
+                }
+                else{
+                    console.log("cannot be placed here")
+                    return
+                }
+
+                //check for game over and update game state
+                var gameEnded = checkGameEnd()
+                if(gameEnded) game.state = -1 * gameEnded
+                else game.state = (game.state == 1) ? 2 : 1
+                my_player_num = Math.abs(game.state)
+                console.log("Game state is now ", game.state)
+            }
+
+            //Returns 1 if P1 has won, else 2 if P2 has won, else 0.
+            function checkGameEnd(){
+                var winning_lines = []
+                for(var i = 0; i < 4; i++){
+                    var col = [Math.sign(getPieceAt(i,0)), Math.sign(getPieceAt(i,1)), Math.sign(getPieceAt(i,2)), Math.sign(getPieceAt(i,3))]
+                    var row = [Math.sign(getPieceAt(0,i)), Math.sign(getPieceAt(1,i)), Math.sign(getPieceAt(2,i)), Math.sign(getPieceAt(3,i))]
+                    var di1 = [Math.sign(getPieceAt(0,0)), Math.sign(getPieceAt(1,1)), Math.sign(getPieceAt(2,2)), Math.sign(getPieceAt(3,3))]
+                    var di2 = [Math.sign(getPieceAt(3,0)), Math.sign(getPieceAt(2,1)), Math.sign(getPieceAt(1,2)), Math.sign(getPieceAt(0,3))]
+                    if(row.every(v => v === row[0])){
+                        console.log("player wins by row: ", getPieceAt(0,i), Math.sign(getPieceAt(0,i)), i)
+                        winning_lines.push(Math.sign(getPieceAt(0,i)))
+                    }
+                    if(col.every(v => v === col[0])){
+                        console.log("player wins by col: ", getPieceAt(i,0), Math.sign(getPieceAt(i,0)), i)
+                        winning_lines.push(Math.sign(getPieceAt(i,0)))
+                    }
+                    if(di1.every(v => v === di1[0])){
+                        console.log("player wins by di1: ", Math.sign(getPieceAt(0,0)))
+                        winning_lines.push(Math.sign(getPieceAt(0,0)))
+                    }
+                    if(di2.every(v => v === di2[0])){
+                        console.log("player wins by di2: ", Math.sign(getPieceAt(3,0)))
+                        winning_lines.push(Math.sign(getPieceAt(3,0)))
+                    }
+                }
+
+                console.log("winners: ", winning_lines)
+                var winners = [winning_lines.includes(1), winning_lines.includes(-1)]
+                if(winners[0] && !winners[1]){
+                    console.log("P1 wins!")
+                    return 1
+                }
+                else if(winners[1] && !winners[0]) {
+                    console.log("P2 wins!")
+                    return 2
+                }
+                else if(winners[0] && winners[1] && my_player_num == 1) {
+                    console.log("P1 caused P2 to win!")
+                    return 2
+                }
+                else if(winners[0] && winners[1] && my_player_num == 2) {
+                    console.log("P2 caused P1 to win!")
+                    return 1
+                }
+                else return 0
+            }
+
+            //Removes the selected piece (board or external) from its existing spot.
+            function removePiece(selected_piece, my_player_num){
+                if([0,1,2].includes(selected_piece)){
+                    game.external[my_player_num-1][selected_piece]-- //different
+                }
+                else{
+                    game.board[selected_piece[0]][selected_piece[1]][4-Math.abs(getPieceAt(...selected_piece))] = 0 //different
+                }
+            }
+
+            function drawBoard(){
+                drawBoardVisible()
+                drawExternal()
+            }
+
+            //Draws the board, without larger pieces hiding the pieces below them.
+            function drawBoardVisible(){
+                for(var i = 0; i < 4; i++){
+                    for(var j = 0; j < 4; j++){
+                        push()
+                        translate(grid_size*(2.5+i), grid_size*(2.5+j))
+                        var found = false
+                        for(var k = 0; k < 4; k++){
+                            fill(0)
+                            if(game.board[i][j][k] > 0) fill (255)
+                            if(i == selected_piece[0] && j == selected_piece[1] && !found) {
+                                fill(selection_color)
+                            }
+                            if(game.board[i][j][k] != 0) found = true
+                            circle(0,0, grid_size*(Math.abs(game.board[i][j][k])/4))
+                        }
+                        pop()
+                    }
+                }
+            }
+
+            //Draws the board using transparent pieces
+            function drawBoardTransparent(){
+                for(var i = 0; i < 4; i++){
+                    for(var j = 0; j < 4; j++){
+                        push()
+                        translate(grid_size*(2.5+i), grid_size*(2.5+j))
+                        var found = false
+                        for(var k = 3; k >= 0; k--){
+                            fill(0, 0, 0, 100)
+                            if(game.board[i][j][k] > 0) fill (255,255,255,100)
+                            if(i == selected_piece[0] && j == selected_piece[1]) {
+                                fill(selection_color)
+                            }
+                            circle(0,0, grid_size*(Math.abs(game.board[i][j][k])/4))
+                        }
+                        pop()
+                    }
+                }
+            }
+
+            //Draws the board, with larger pieces hiding the pieces below them.
+            function drawBoardInvisible(){
+                for(var i = 0; i < 4; i++){
+                    for(var j = 0; j < 4; j++){
+                        push()
+                        var piece = getPieceAt(i, j)
+                        fill(0)
+                        if(piece > 0) fill(255) 
+                        if(i == selected_piece[0] && j == selected_piece[1]) {
+                            fill(selection_color)
+                        }
+
+                        translate(grid_size*(2.5+i), grid_size*(2.5+j))
+                        circle(0,0, grid_size*(Math.abs(piece)/4))
+                        pop()
+                    }
+                }
+            }
+
+            //Draws the P1 and P2 external piece collections.
+            function drawExternal(){
+                game.external[0].forEach((ext, i) => {
+                    fill(255)
+                    push()
+                    if(i == selected_piece && game.state == 1) fill(selection_color)
+                    translate(grid_size*(1), grid_size*(3+i))
+                    circle(0,0, grid_size*(Math.abs(ext)/4))
+                    pop()
+                })
+                game.external[1].forEach((ext, i) => {
+                    fill(0)
+                    push()
+                    if(i == selected_piece && game.state == 2) fill(selection_color)
+                    translate(grid_size*(7), grid_size*(3+i))
+                    circle(0,0, grid_size*(Math.abs(ext)/4))
+                    pop()
+                })
+            }
+
+            //returns the piece value (-4, 4) of the piece at at the given 4x4 board position.
+            function getPieceAt(x, y){
+                var board_pos = game.board[x][y]
+                for(var i = 0; i < 4; i++){
+                    if(board_pos[i] != 0) return board_pos[i]
+                }
+                return 0
+            }
+
+            //Returns [x,y] if board position is touched.
+            //Returns N if external piece is touched.
+            //Returns -1 if nothing valid was touched.
+            function getTouchedPiece(touchx, touchy, my_player_num){
+                var grid_size = width/8
+                var touched_point = [touchx, touchy]
+                for(var i = 0; i < 4; i++){
+                    for(var j = 0; j < 4; j++){
+                        var x = grid_size * (i + 2.5)
+                        var y = grid_size * (j + 2.5)
+                        if(dist(touched_point[0], touched_point[1], x,y) < grid_size/2){
+                            if(Math.sign(getPieceAt(i,j)) == (my_player_num==1 ? 1 : -1)){
+                                return [i,j]
+                            }	
+                        }
+                    }
+                }
+                for(var i = 0; i < 3; i++){
+                    var x = grid_size * 1 + (my_player_num - 1) * grid_size * 6
+                    var y = grid_size * (i + 3)
+                    console.log("External touched at ", x, y)
+                    if(dist(touched_point[0], touched_point[1], x,y) < grid_size/2){
+                        if(game.external[my_player_num-1][i] > 0) return i
+                    }
+                }
+                return -1
+            }
+
+            //Returns a board position of a given touch if one exists.
+            //Returns -1 if the given touch is not on the board.
+            function getBoardSpace(touchx, touchy){
+                var grid_size = width/8
+                var touched_point = [touchx, touchy]
+                for(var i = 0; i < 4; i++){
+                    for(var j = 0; j < 4; j++){
+                        var x = grid_size * (i + 2.5)
+                        var y = grid_size * (j + 2.5)
+                        if(dist(touched_point[0], touched_point[1], x,y) < grid_size/2){
+                            return [i,j]
+                        }
+                    }
+                }
+                return -1
+            }
+
+		</script>
+        
+        <script src="../aa_libraries/fj_window_library.js"></script>
+        <script src="../aa_libraries/fj_games_library.js"></script>
+    </body>
+</html>
