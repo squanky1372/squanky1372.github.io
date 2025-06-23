@@ -45,6 +45,7 @@
         var game
         var gameid = 0
         var opponent = 0
+        var player_order = []
 
 
         function setup() {
@@ -82,6 +83,7 @@
                         opponent = pulled_data.p1
                     }
                     else my_player_num = 3
+                    player_order = [p1,p2]
                 })
         }
 
@@ -217,7 +219,7 @@
         
         function uploadNewGameState(){
             console.log(game, hash, opponent, gameid)
-            submitGameUpdate(game, hash, opponent, gameid)
+            submitGameUpdate(game, player_order[1], player_order[2], gameid)
         }
 
         function submitGameUpdate(game, p1, p2, gameid) {
