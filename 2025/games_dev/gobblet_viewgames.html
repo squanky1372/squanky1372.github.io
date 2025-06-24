@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gobblet</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-size: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        summary {
+            font-size: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid white;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Select a Gobblet Game</h2>
+    <div id="output"></div>
+    <div id="container"></div>
+</body>
+
+</html>
+
+<script src="../aa_libraries/fj_games_library.js"></script>
+<script>
+    verifyHash();
+
+    fetch(`https://squanky.net/scores/getMy2pGames?hash=${hash}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const filtered = getMostRecentGames(data.all_games);
+            createTable(filtered);
+        })
+        .catch(error => console.error(error));
+
+    // Group games by gameid and keep most recent
+    function getMostRecentGames(games) {
+        const gameMap = new Map();
+
+        games.forEach(game => {
+            const existing = gameMap.get(game.gameid);
+            if (!existing || new Date(game.timestamp) > new Date(existing.mostRecent.timestamp)) {
+                gameMap.set(game.gameid, {
+                    mostRecent: game,
+                    count: (existing ? existing.count + 1 : 1)
+                });
+            } else {
+                existing.count++;
+            }
+        });
+
+        // Convert map to array with additional info
+        return Array.from(gameMap.entries()).map(([gameid, { mostRecent, count }]) => ({
+            ...mostRecent,
+            count,
+            opponent: mostRecent.p1 === hash ? mostRecent.p2 : mostRecent.p1
+        }));
+    }
+
+    function createTable(games) {
+        const container = document.getElementById('container');
+        const table = document.createElement('table');
+
+        const headerRow = document.createElement('tr');
+        ['Game ID', 'State', 'Opponent', 'Turn #', 'Timestamp', 'Launch'].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        games.forEach(game => {
+            const row = document.createElement('tr');
+
+            const gameIdCell = document.createElement('td');
+            gameIdCell.textContent = game.gameid;
+            gameIdCell.style.cursor = 'pointer';
+            gameIdCell.onclick = () => launchGame(game.gameid);
+
+            // const p1Cell = document.createElement('td');
+            // p1Cell.textContent = game.p1;
+
+            // const p2Cell = document.createElement('td');
+            // p2Cell.textContent = game.p2;
+
+            const opponentCell = document.createElement('td');
+            opponentCell.textContent = game.opponent;
+            
+            const stateCell = document.createElement('td');
+            var my_player_number = game.p2 == game.opponent ? 1 : 2
+            if(game.game.state == my_player_number) stateCell.textContent = "Your Turn";
+            else if (game.game.state > 0) stateCell.textContent = "Opponent's Turn";
+            else if (game.game.state == my_player_number*-1) stateCell.textContent = "You Won!";
+            else stateCell.textContent = "You Lost!";
+
+            const countCell = document.createElement('td');
+            countCell.textContent = game.count;
+
+            const timestampCell = document.createElement('td');
+            const date = new Date(game.timestamp);
+            timestampCell.textContent = date.toLocaleString();
+
+            const launchCell = document.createElement('td');
+            const button = document.createElement('button');
+            button.textContent = 'Launch';
+            button.onclick = () => launchGame(game.gameid);
+            launchCell.appendChild(button);
+
+            [
+                gameIdCell, stateCell,
+                opponentCell, countCell, timestampCell, launchCell
+            ].forEach(cell => row.appendChild(cell));
+
+            table.appendChild(row);
+        });
+
+        container.appendChild(table);
+    }
+
+    function launchGame(gameid) {
+        console.log("Opening", gameid);
+        window.location.href = `https://squanky1372.github.io/2025/games_dev/gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+    }
+</script>
+
