@@ -20,11 +20,32 @@
             font-size: inherit;
         }
     
-        table {
+        /* table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1em;
             table-layout: fixed;
+        } */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 45%;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 45%;
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 10%;
         }
     
         th, td {
@@ -131,6 +152,7 @@
                 font-size: 4vw;
             }
         }
+        
     </style>
     
     
