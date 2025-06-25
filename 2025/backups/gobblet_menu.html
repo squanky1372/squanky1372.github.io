@@ -15,11 +15,11 @@
             padding: 0;
             text-align: center;
         }
-
+    
         summary {
             font-size: inherit;
         }
-
+    
         /* table {
             width: 100%;
             border-collapse: collapse;
@@ -47,21 +47,20 @@
         td:nth-child(3) {
             width: 15%;
         }
-
-        th,
-        td {
+    
+        th, td {
             padding: 1em;
             border: 1px solid white;
             font-size: clamp(18px, 4.5vw, 35px);
             word-wrap: break-word;
         }
-
+    
         button {
             padding: 0.7em 1.2em;
             font-size: clamp(14px, 3.5vw, 30px);
             cursor: pointer;
         }
-
+    
         #opponentContainer {
             display: flex;
             flex-wrap: wrap;
@@ -69,7 +68,7 @@
             gap: 10px;
             padding: 10px;
         }
-
+    
         .player-button {
             background-color: #222;
             border: 2px solid #555;
@@ -85,12 +84,12 @@
             flex-direction: column;
             align-items: center;
         }
-
+    
         .player-button:hover {
             background-color: #333;
             transform: scale(1.03);
         }
-
+    
         .player-button.disabled {
             background-color: #444;
             border-color: #666;
@@ -98,64 +97,65 @@
             cursor: not-allowed;
             transform: none;
         }
-
+    
         .player-button.disabled .note {
             font-size: clamp(9px, 2vw, 50px);
             color: #888;
         }
-
+    
         .emoji {
             font-size: clamp(28px, 9vw, 70px);
             line-height: 1;
         }
-
+    
         .username {
             font-size: clamp(14px, 4.5vw, 50px);
             margin-top: 8px;
             word-wrap: break-word;
         }
-
+    
         .note {
             font-size: clamp(12px, 3.5vw, 30px);
             margin-top: 4px;
             color: #ccc;
         }
-
+    
         .player-button.local {
             background-color: blue;
             border-color: #0055cc;
         }
-
+    
         .player-button.local:hover {
             background-color: #003d99;
         }
-
+    
         @media (max-width: 480px) {
             #opponentContainer {
                 gap: 6px;
                 padding: 4px;
             }
-
+    
             .player-button {
                 flex: 0 1 calc(33.33% - 8px);
                 padding: 10px;
             }
-
+    
             .emoji {
                 font-size: 11vw;
             }
-
+    
             .username {
                 font-size: 5vw;
             }
-
+    
             .note {
                 font-size: 4vw;
             }
         }
+        
     </style>
-
-
+    
+    
 </head>
 
 <body>
@@ -220,62 +220,76 @@
     }
 
     function createGameButtons() {
-        const showAll = document.getElementById('showAll').checked;
-        const filteredGames = allGames.filter(game => showAll || game.game.state > 0);
+    const showAll = document.getElementById('showAll').checked;
+    const filteredGames = allGames.filter(game => showAll || game.game.state > 0);
 
-        const container = document.getElementById('container');
-        container.innerHTML = '';
-        container.style.display = 'flex';
-        container.style.flexWrap = 'wrap';
-        container.style.justifyContent = 'center';
-        container.style.gap = '10px';
-        container.style.padding = '10px';
+    const container = document.getElementById('container');
+    container.innerHTML = '';
+    container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
+    container.style.justifyContent = 'center';
+    container.style.gap = '10px';
+    container.style.padding = '10px';
 
-        [...filteredGames].reverse().forEach(game => {
-            const opponentData = playersByHash.get(game.opponent);
-            const username = game.opponent === hash ? "Yourself" : (opponentData?.username || "Unknown");
-            const emoji = opponentData?.visuals?.emoji || "❓";
+    [...filteredGames].reverse().forEach(game => {
+        const opponentData = playersByHash.get(game.opponent);
+        const username = game.opponent === hash ? "Yourself" : (opponentData?.username || "Unknown");
+        const emoji = opponentData?.visuals?.emoji || "❓";
 
-            const my_player_number = game.p2 === game.opponent ? 1 : 2;
-            let stateText = "";
-            if (game.game.state === my_player_number) stateText = "Your Turn";
-            else if (game.game.state > 0) stateText = "Opponent's Turn";
-            else if (game.game.state === my_player_number * -1) stateText = "You Won!";
-            else stateText = "You Lost!";
-
-            const button = document.createElement('button');
-            button.className = 'player-button';
-            button.onclick = () => launchGame(game.gameid);
-
-            const emojiSpan = document.createElement('span');
-            emojiSpan.className = 'emoji';
-            emojiSpan.textContent = emoji;
-
-            const usernameDiv = document.createElement('div');
-            usernameDiv.className = 'username';
-            usernameDiv.textContent = username;
-
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note';
-            noteDiv.textContent = `Turn ${game.count}: ${stateText}`;
-
-            button.appendChild(emojiSpan);
-            button.appendChild(usernameDiv);
-            button.appendChild(noteDiv);
-
-            // Set background according to turn state
-            const color = getGameColor(game, hash);
-            button.style.backgroundColor = color;
-
-            container.appendChild(button);
-        });
-    }
-    function getGameColor(game, hash) {
         const my_player_number = game.p2 === game.opponent ? 1 : 2;
-        if (game.game.state === my_player_number) return "#002500";       // Your turn - hint of green
-        else if (game.game.state > 0) return "#151555";                   // Their turn - hint of blue
-        else if (game.game.state === my_player_number * -1) return "#443a00"; // You won - hint of gold
-        else return "#330000";                                            // They won - hint of red
+        let stateText = "";
+        if (game.game.state === my_player_number) stateText = "Your Turn";
+        else if (game.game.state > 0) stateText = "Opponent's Turn";
+        else if (game.game.state === my_player_number * -1) stateText = "You Won!";
+        else stateText = "You Lost!";
+
+        const button = document.createElement('button');
+        button.className = 'player-button';
+        button.onclick = () => launchGame(game.gameid);
+
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'emoji';
+        emojiSpan.textContent = emoji;
+
+        const usernameDiv = document.createElement('div');
+        usernameDiv.className = 'username';
+        usernameDiv.textContent = username;
+
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'note';
+        noteDiv.textContent = `Turn ${game.count}: ${stateText}`;
+
+        button.appendChild(emojiSpan);
+        button.appendChild(usernameDiv);
+        button.appendChild(noteDiv);
+
+        // Set background according to turn state
+        const color = getGameColor(game, hash);
+        button.style.backgroundColor = color;
+
+        container.appendChild(button);
+    });
+}
+function getGameColor(game, hash) {
+    const my_player_number = game.p2 === game.opponent ? 1 : 2;
+    if (game.game.state === my_player_number) return "green";       // Your turn
+    else if (game.game.state > 0) return "blue";                    // Their turn
+    else if (game.game.state === my_player_number * -1) return "gold"; // You won
+    else return "darkred";                                          // They won
+}
+
+    function setRowBackground(row, game, hash) {
+        const my_player_number = game.p2 === game.opponent ? 1 : 2;
+        if (game.game.state === my_player_number) {
+            row.style.color = "white";  // Your turn
+        } else if (game.game.state > 0) {
+            row.style.color = 'DimGray';   // Their turn
+        } else if (game.game.state === my_player_number * -1) {
+            row.style.color = 'gold';   // You won
+        } else {
+            row.style.color = 'darkred';    // They won
+        }
+        row.style.fontWeight = 'bold';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -287,12 +301,12 @@
         window.location.href = `./gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
     }
 
-    function newGame() {
+    function newGame(){
         console.log("Redirecting to new games");
         window.location.href = `./gobblet_newgame.html?hash=${hash}`;
     }
 
-    function localGame() {
+    function localGame(){
         console.log("Redirecting to local game");
         window.location.href = `./gobblet.html?hash=${hash}`;
     }
