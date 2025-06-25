@@ -40,6 +40,10 @@
     <h2>Select a Gobblet Game</h2>
     <div id="output"></div>
     <div id="container"></div>
+    <br>
+    <button onclick="newGame()">New Game</button>
+
+
 </body>
 
 </html>
@@ -151,6 +155,11 @@
     function launchGame(gameid) {
         console.log("Opening", gameid);
         window.location.href = `https://squanky1372.github.io/2025/games_dev/gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+    }
+
+    function newGame(){
+        console.log("Redirecting to new games");
+        window.location.href = `https://squanky1372.github.io/2025/games_dev/gobblet_newgame.html?hash=${hash}`;
     }
 </script>
 
