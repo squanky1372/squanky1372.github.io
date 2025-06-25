@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gobblet</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-size: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        summary {
+            font-size: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid white;
+            font-size: 220%;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* --- From Program 2 --- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #opponentContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .player-button {
+            background-color: #222;
+            border: 2px solid #555;
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            width: 42vw;
+            min-width: 120px;
+            max-width: 200px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .player-button:hover {
+            background-color: #333;
+            transform: scale(1.03);
+        }
+
+        .player-button.disabled {
+            background-color: #444;
+            border-color: #666;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .player-button.disabled .note {
+            font-size: 2vw;
+            color: #888;
+        }
+
+        .emoji {
+            font-size: 9vw;
+            line-height: 1;
+        }
+
+        .username {
+            font-size: 4vw;
+            margin-top: 8px;
+            word-wrap: break-word;
+        }
+
+        .note {
+            font-size: 3.5vw;
+            margin-top: 4px;
+            color: #ccc;
+        }
+
+        @media (max-width: 480px) {
+            #opponentContainer {
+                gap: 6px;
+                padding: 4px;
+            }
+
+            .player-button {
+                width: 46vw;
+                padding: 10px;
+            }
+
+            .emoji {
+                font-size: 12vw;
+            }
+
+            .username {
+                font-size: 5vw;
+            }
+
+            .note {
+                font-size: 4vw;
+            }
+        }
+
+        .player-button.local {
+            background-color: blue;
+            border-color: #0055cc;
+        }
+        .player-button.local:hover {
+            background-color: #003d99;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h2>Select a Gobblet Game</h2>
+
+    <label>
+        <input type="checkbox" id="showAll" checked>
+        Show finished games
+    </label>
+
+    <div id="output"></div>
+    <div id="container"></div>
+    <br>
+
+    <hr>
+
+    <h2>Challenge a New Opponent</h2>
+    <div id="opponentContainer"></div>
+</body>
+
+<script src="../../aa_libraries/fj_games_library.js"></script>
+<script>
+    verifyHash();
+
+    let allGames = [];
+
+    fetch(`https://squanky.net/scores/getMy2pGames?hash=${hash}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            allGames = getMostRecentGames(data.all_games);
+            createTable();
+        })
+        .catch(error => console.error(error));
+
+    function getMostRecentGames(games) {
+        const gameMap = new Map();
+
+        games.forEach(game => {
+            const existing = gameMap.get(game.gameid);
+            if (!existing || new Date(game.timestamp) > new Date(existing.mostRecent.timestamp)) {
+                gameMap.set(game.gameid, {
+                    mostRecent: game,
+                    count: (existing ? existing.count + 1 : 1)
+                });
+            } else {
+                existing.count++;
+            }
+        });
+
+        return Array.from(gameMap.entries()).map(([gameid, { mostRecent, count }]) => ({
+            ...mostRecent,
+            count,
+            opponent: mostRecent.p1 === hash ? mostRecent.p2 : mostRecent.p1
+        }));
+    }
+
+    function createTable() {
+    const showAll = document.getElementById('showAll').checked;
+    const filteredGames = allGames.filter(game => showAll || game.game.state > 0);
+
+    const container = document.getElementById('container');
+    container.innerHTML = '';
+
+    const table = document.createElement('table');
+
+    const headerRow = document.createElement('tr');
+    ['Opponent', 'Turn #', 'Play'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    [...filteredGames].reverse().forEach(game => {
+        const row = document.createElement('tr');
+
+        const opponentCell = document.createElement('td');
+        opponentCell.textContent = game.opponent;
+        opponentCell.onclick = () => launchGame(game.gameid);
+        opponentCell.style.cursor = 'pointer';
+
+        var stateText = ""
+        var my_player_number = game.p2 == game.opponent ? 1 : 2;
+        if (game.game.state == my_player_number) stateText = "Your Turn";
+        else if (game.game.state > 0) stateText = "Opponent's Turn";
+        else if (game.game.state == my_player_number * -1) stateText = "You Won!";
+        else stateText = "You Lost!";
+
+        const countCell = document.createElement('td');
+        countCell.textContent = "Turn " + game.count + ": " + stateText;
+
+        const launchCell = document.createElement('td');
+        launchCell.textContent = '▶️';
+        launchCell.onclick = () => launchGame(game.gameid);
+        launchCell.style.cursor = 'pointer';
+
+        [opponentCell, countCell, launchCell].forEach(cell => row.appendChild(cell));
+
+        // Set background color according to game state
+        setRowBackground(row, game, hash);
+
+        table.appendChild(row);
+    });
+
+    container.appendChild(table);
+}
+
+    function setRowBackground(row, game, hash) {
+        const my_player_number = game.p2 === game.opponent ? 1 : 2;
+        if (game.game.state === my_player_number) {
+            row.style.color = "white";  // Your turn
+        } else if (game.game.state > 0) {
+            row.style.color = 'DimGray';   // Their turn
+        } else if (game.game.state === my_player_number * -1) {
+            row.style.color = 'gold';   // You won
+        } else {
+            row.style.color = 'darkred';    // They won
+        }
+        row.style.fontWeight = 'bold';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('showAll').addEventListener('change', createTable);
+    });
+
+    function launchGame(gameid) {
+        console.log("Opening", gameid);
+        window.location.href = `./gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+    }
+
+    function newGame(){
+        console.log("Redirecting to new games");
+        window.location.href = `./gobblet_newgame.html?hash=${hash}`;
+    }
+
+    function localGame(){
+        console.log("Redirecting to local game");
+        window.location.href = `./gobblet.html?hash=${hash}`;
+    }
+
+    // ---- Program 2 logic ----
+    fetch(`https://squanky.net/scores/getAllPlayers`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            createPlayerButtons(data.players);
+        })
+        .catch(error => console.error(error));
+
+    function createPlayerButtons(players) {
+        
+        const container = document.getElementById('opponentContainer');
+        container.innerHTML = '';
+        
+        // Add the local game button as an extra opponent button
+        createLocalOpponentButton(container);
+
+        players.forEach(player => {
+            const emoji = player.visuals?.emoji || '';
+            if (!emoji) return;
+
+            const isOutdated = player.hash.length > 8;
+
+            const button = document.createElement('button');
+            button.className = 'player-button' + (isOutdated ? ' disabled' : '');
+            if (!isOutdated) {
+                button.onclick = () => issueChallenge(player);
+            }
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = 'emoji';
+            emojiSpan.textContent = emoji;
+
+            const usernameDiv = document.createElement('div');
+            usernameDiv.className = 'username';
+            usernameDiv.textContent = player.username;
+
+            button.appendChild(emojiSpan);
+            button.appendChild(usernameDiv);
+
+            if (isOutdated) {
+                const note = document.createElement('div');
+                note.className = 'note';
+                note.textContent = 'Outdated Account';
+                button.appendChild(note);
+            }
+
+            container.appendChild(button);
+
+        });
+
+    }
+
+    function createLocalOpponentButton(container) {
+        const button = document.createElement('button');
+        button.className = 'player-button local';
+        button.onclick = localGame;
+
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'emoji';
+        emojiSpan.textContent = '+';
+
+        const usernameDiv = document.createElement('div');
+        usernameDiv.className = 'username';
+        usernameDiv.textContent = 'Local';
+
+        button.appendChild(emojiSpan);
+        button.appendChild(usernameDiv);
+
+        container.appendChild(button);
+    }
+
+    function issueChallenge(player) {
+        console.log("Challenging", player.username, "with hash", player.hash);
+
+        var game = {
+            state: 1,
+            external: [[4, 4, 4], [4, 4, 4]],
+            board: Array(4).fill().map(() => Array(4).fill().map(() => [0, 0, 0, 0]))
+        };
+
+        var gameid = generateUniqueHash();
+        submitGameUpdate(game, hash, player.hash, gameid);
+
+        window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+    }
+
+    function generateUniqueHash() {
+        const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        const startTime = new Date('2000-10-13T00:00:00Z').getTime();
+        const now = Date.now();
+        const seconds = Math.floor((now - startTime) / 1000);
+        let base64Seconds = btoa(String.fromCharCode(
+            (seconds >> 24) & 0xFF,
+            (seconds >> 16) & 0xFF,
+            (seconds >> 8) & 0xFF,
+            seconds & 0xFF
+        ));
+        const random1 = base64Chars[Math.floor(Math.random() * 64)];
+        const random2 = base64Chars[Math.floor(Math.random() * 64)];
+        let result = base64Seconds + random1 + random2;
+        return result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/g, '~');
+    }
+
+    function submitGameUpdate(game, p1, p2, gameid) {
+        fetch('https://squanky.net/scores/updateBoard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game, p1, p2, gameid })
+        });
+    }
+</script>
+
+</html>

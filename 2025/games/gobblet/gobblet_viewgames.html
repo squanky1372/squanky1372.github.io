@@ -38,37 +38,43 @@
 
 <body>
     <h2>Select a Gobblet Game</h2>
+    
+    <label>
+        <input type="checkbox" id="showAll" checked>
+        Show finished games
+    </label>
+
     <div id="output"></div>
     <div id="container"></div>
     <br>
     <button onclick="newGame()">New Game</button>
+    <button onclick="localGame()">Local Game</button>
 
 
 </body>
 
 </html>
 
-<script src="../aa_libraries/fj_games_library.js"></script>
+<script src="../../aa_libraries/fj_games_library.js"></script>
 <script>
     verifyHash();
+
+    let allGames = []; // ✅ Store all processed games globally
 
     fetch(`https://squanky.net/scores/getMy2pGames?hash=${hash}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            const filtered = getMostRecentGames(data.all_games);
-            createTable(filtered);
+            allGames = getMostRecentGames(data.all_games);
+            createTable(); // ✅ Don't pass data directly
         })
         .catch(error => console.error(error));
 
-    // Group games by gameid and keep most recent
     function getMostRecentGames(games) {
         const gameMap = new Map();
 
@@ -84,7 +90,6 @@
             }
         });
 
-        // Convert map to array with additional info
         return Array.from(gameMap.entries()).map(([gameid, { mostRecent, count }]) => ({
             ...mostRecent,
             count,
@@ -92,8 +97,13 @@
         }));
     }
 
-    function createTable(games) {
+    function createTable() {
+        const showAll = document.getElementById('showAll').checked;
+        const filteredGames = allGames.filter(game => showAll || game.game.state > 0);
+
         const container = document.getElementById('container');
+        container.innerHTML = ''; 
+
         const table = document.createElement('table');
 
         const headerRow = document.createElement('tr');
@@ -104,7 +114,7 @@
         });
         table.appendChild(headerRow);
 
-        games.forEach(game => {
+        [...filteredGames].reverse().forEach(game => {
             const row = document.createElement('tr');
 
             const gameIdCell = document.createElement('td');
@@ -112,17 +122,11 @@
             gameIdCell.style.cursor = 'pointer';
             gameIdCell.onclick = () => launchGame(game.gameid);
 
-            // const p1Cell = document.createElement('td');
-            // p1Cell.textContent = game.p1;
-
-            // const p2Cell = document.createElement('td');
-            // p2Cell.textContent = game.p2;
-
             const opponentCell = document.createElement('td');
             opponentCell.textContent = game.opponent;
-            
+
             const stateCell = document.createElement('td');
-            var my_player_number = game.p2 == game.opponent ? 1 : 2
+            var my_player_number = game.p2 == game.opponent ? 1 : 2;
             if(game.game.state == my_player_number) stateCell.textContent = "Your Turn";
             else if (game.game.state > 0) stateCell.textContent = "Opponent's Turn";
             else if (game.game.state == my_player_number*-1) stateCell.textContent = "You Won!";
@@ -152,14 +156,25 @@
         container.appendChild(table);
     }
 
+    // ✅ Rebuild table on checkbox change
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('showAll').addEventListener('change', createTable);
+    });
+
     function launchGame(gameid) {
         console.log("Opening", gameid);
-        window.location.href = `https://squanky1372.github.io/2025/games_dev/gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+        window.location.href = `./gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
     }
 
     function newGame(){
         console.log("Redirecting to new games");
-        window.location.href = `https://squanky1372.github.io/2025/games_dev/gobblet_newgame.html?hash=${hash}`;
+        window.location.href = `./gobblet_newgame.html?hash=${hash}`;
+    }
+
+    function localGame(){
+        console.log("Redirecting to local game");
+        window.location.href = `./gobblet.html?hash=${hash}`;
     }
 </script>
+
 

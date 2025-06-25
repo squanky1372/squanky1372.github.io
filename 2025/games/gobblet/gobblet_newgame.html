@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gobblet</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    
+        h2 {
+            margin: 16px 0;
+        }
+    
+        #container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+        }
+    
+        .player-button {
+            background-color: #222;
+            border: 2px solid #555;
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            width: 42vw;
+            min-width: 120px;
+            max-width: 200px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .player-button:hover {
+            background-color: #333;
+            transform: scale(1.03);
+        }
+    
+        .player-button.disabled {
+            background-color: #444;
+            border-color: #666;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .player-button.disabled .note {
+            font-size: 2vw;
+            color: #888;
+        }
+    
+        .emoji {
+            font-size: 9vw;
+            line-height: 1;
+        }
+    
+        .username {
+            font-size: 4vw;
+            margin-top: 8px;
+            word-wrap: break-word;
+        }
+    
+        .note {
+            font-size: 3.5vw;
+            margin-top: 4px;
+            color: #ccc;
+        }
+    
+        /* 🔧 Maximize space on very narrow screens */
+        @media (max-width: 480px) {
+            #container {
+                gap: 6px;
+                padding: 4px;
+            }
+    
+            .player-button {
+                width: 46vw;
+                padding: 10px;
+            }
+    
+            .emoji {
+                font-size: 12vw;
+            }
+    
+            .username {
+                font-size: 5vw;
+            }
+    
+            .note {
+                font-size: 4vw;
+            }
+        }
+    </style>
+    
+    
+    
+</head>
+
+<body>
+    <h2>Select a Gobblet Opponent</h2>
+    <div id="container"></div>
+</body>
+
+<script src="../../aa_libraries/fj_games_library.js"></script>
+<script>
+    verifyHash();
+
+    fetch(`https://squanky.net/scores/getAllPlayers`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            createPlayerButtons(data.players);
+        })
+        .catch(error => console.error(error));
+
+    function createPlayerButtons(players) {
+        const container = document.getElementById('container');
+        container.innerHTML = ''; // Clear previous content
+
+        players.forEach(player => {
+            const emoji = player.visuals?.emoji || '';
+            if (!emoji) return;
+
+            const isOutdated = player.hash.length > 8;
+
+            const button = document.createElement('button');
+            button.className = 'player-button' + (isOutdated ? ' disabled' : '');
+            if (!isOutdated) {
+                button.onclick = () => issueChallenge(player);
+            }
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = 'emoji';
+            emojiSpan.textContent = emoji;
+
+            const usernameDiv = document.createElement('div');
+            usernameDiv.className = 'username';
+            usernameDiv.textContent = player.username;
+
+            button.appendChild(emojiSpan);
+            button.appendChild(usernameDiv);
+
+            if (isOutdated) {
+                const note = document.createElement('div');
+                note.className = 'note';
+                note.textContent = 'Outdated Account';
+                button.appendChild(note);
+            }
+
+            container.appendChild(button);
+        });
+    }
+
+    function issueChallenge(player) {
+        console.log("Challenging", player.username, "with hash", player.hash);
+
+        var game = {
+            state: 1,
+            external: [[4, 4, 4], [4, 4, 4]],
+            board: Array(4).fill().map(() => Array(4).fill().map(() => [0, 0, 0, 0]))
+        };
+
+        var gameid = generateUniqueHash();
+        submitGameUpdate(game, hash, player.hash, gameid);
+
+        window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+    }
+
+    function generateUniqueHash() {
+        const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        const startTime = new Date('2000-10-13T00:00:00Z').getTime();
+        const now = Date.now();
+        const seconds = Math.floor((now - startTime) / 1000);
+        let base64Seconds = btoa(String.fromCharCode(
+            (seconds >> 24) & 0xFF,
+            (seconds >> 16) & 0xFF,
+            (seconds >> 8) & 0xFF,
+            seconds & 0xFF
+        ));
+        const random1 = base64Chars[Math.floor(Math.random() * 64)];
+        const random2 = base64Chars[Math.floor(Math.random() * 64)];
+        let result = base64Seconds + random1 + random2;
+        return result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/g, '~');
+    }
+
+    function submitGameUpdate(game, p1, p2, gameid) {
+        fetch('https://squanky.net/scores/updateBoard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game, p1, p2, gameid })
+        });
+    }
+</script>
+
+</html>
