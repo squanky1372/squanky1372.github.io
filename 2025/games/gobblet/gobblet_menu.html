@@ -9,68 +9,66 @@
         body {
             background-color: black;
             color: white;
-            font-size: 20px;
             font-family: Arial, sans-serif;
-        }
-
-        summary {
-            font-size: inherit;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid white;
-            font-size: 220%;
-        }
-
-        button {
-            padding: 5px 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* --- From Program 2 --- */
-        html, body {
+            font-size: clamp(16px, 3vw, 30px);
             margin: 0;
             padding: 0;
             text-align: center;
         }
-
+    
+        summary {
+            font-size: inherit;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+            table-layout: fixed;
+        }
+    
+        th, td {
+            padding: 1em;
+            border: 1px solid white;
+            font-size: clamp(18px, 4.5vw, 35px);
+            word-wrap: break-word;
+        }
+    
+        button {
+            padding: 0.7em 1.2em;
+            font-size: clamp(14px, 3.5vw, 30px);
+            cursor: pointer;
+        }
+    
         #opponentContainer {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
-            padding: 8px;
+            gap: 10px;
+            padding: 10px;
         }
-
+    
         .player-button {
             background-color: #222;
             border: 2px solid #555;
             color: white;
             border-radius: 12px;
-            padding: 12px;
-            width: 42vw;
-            min-width: 120px;
-            max-width: 200px;
+            padding: 14px;
+            flex: 0 1 calc(33.33% - 12px);
+            max-width: 100%;
+            box-sizing: border-box;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
+    
         .player-button:hover {
             background-color: #333;
             transform: scale(1.03);
         }
-
+    
         .player-button.disabled {
             background-color: #444;
             border-color: #666;
@@ -78,62 +76,64 @@
             cursor: not-allowed;
             transform: none;
         }
-
+    
         .player-button.disabled .note {
-            font-size: 2vw;
+            font-size: clamp(9px, 2vw, 50px);
             color: #888;
         }
-
+    
         .emoji {
-            font-size: 9vw;
+            font-size: clamp(28px, 9vw, 70px);
             line-height: 1;
         }
-
+    
         .username {
-            font-size: 4vw;
+            font-size: clamp(14px, 4.5vw, 50px);
             margin-top: 8px;
             word-wrap: break-word;
         }
-
+    
         .note {
-            font-size: 3.5vw;
+            font-size: clamp(12px, 3.5vw, 30px);
             margin-top: 4px;
             color: #ccc;
         }
-
+    
+        .player-button.local {
+            background-color: blue;
+            border-color: #0055cc;
+        }
+    
+        .player-button.local:hover {
+            background-color: #003d99;
+        }
+    
         @media (max-width: 480px) {
             #opponentContainer {
                 gap: 6px;
                 padding: 4px;
             }
-
+    
             .player-button {
-                width: 46vw;
+                flex: 0 1 calc(33.33% - 8px);
                 padding: 10px;
             }
-
+    
             .emoji {
-                font-size: 12vw;
+                font-size: 11vw;
             }
-
+    
             .username {
                 font-size: 5vw;
             }
-
+    
             .note {
                 font-size: 4vw;
             }
         }
-
-        .player-button.local {
-            background-color: blue;
-            border-color: #0055cc;
-        }
-        .player-button.local:hover {
-            background-color: #003d99;
-        }
-
     </style>
+    
+    
 </head>
 
 <body>
