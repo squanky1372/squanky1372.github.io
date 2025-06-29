@@ -58,6 +58,11 @@
             centerCanvas();
             disableCanvasDefaults()
 
+            fetchGameState()
+            setInterval(fetchGameState, 5000);
+        }
+
+        function fetchGameState(){
             const response = fetch(`https://squanky.net/scores/get2pGame?gameid=${gameid}&hash=${hash}`, {
                 method: 'GET',
                 headers: {
