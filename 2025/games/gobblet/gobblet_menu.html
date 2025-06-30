@@ -374,7 +374,7 @@
         container.appendChild(button);
     }
 
-    function issueChallenge(player) {
+    async function issueChallenge(player) {
         console.log("Challenging", player.username, "with hash", player.hash);
 
         var game = {
@@ -384,9 +384,15 @@
         };
 
         var gameid = generateUniqueHash();
-        submitGameUpdate(game, hash, player.hash, gameid);
+        console.log("Generated new gameid", gameid);
 
-        window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+        try {
+            await submitGameUpdate(game, hash, player.hash, gameid);
+            window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
+        } catch (error) {
+            console.error("Failed to submit game update:", error);
+            alert("An error occurred while starting the game. Please try again.");
+        }
     }
 
     function generateUniqueHash() {
@@ -407,12 +413,17 @@
     }
 
     function submitGameUpdate(game, p1, p2, gameid) {
-        fetch('https://squanky.net/scores/updateBoard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ game, p1, p2, gameid })
-        });
-    }
+    return fetch('https://squanky.net/scores/updateBoard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ game, p1, p2, gameid })
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(`Server responded with ${response.status}`);
+        }
+        return response;
+    });
+}
 </script>
 
 </html>
