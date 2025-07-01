@@ -234,7 +234,12 @@
             else{
                 lastScore = 0
                 console.log(`Scored ${0} in mode ${mode}`)
-                submitScore("hexes", playerData.hash, {
+                if(mode == 3) submitScore("hexes", playerData.hash, {
+                    score: 999,
+                    level: mode,
+                    achievements: achievements
+                })
+                else submitScore("hexes", playerData.hash, {
                     score: 0,
                     level: mode,
                     achievements: achievements
