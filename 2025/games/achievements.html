@@ -145,17 +145,17 @@
             console.log(Object.keys(achievements_list))
 
             Object.keys(achievements_list).forEach(game => {
+                console.log("game: ", game)
                 hashArray.filter(item => item.gameTitle === game).forEach((score, i) => {
                     if ("achievements" in score.data) {
                         score.data.achievements.forEach((achievement, j) => {
                             found_game = achievements_list[game].find(item => item[0] == achievement)
-                            found_game[1] = 1;
+                            console.log("found game:" , found_game)
+                            if(found_game && found_game.length >= 2 && found_game[1]) found_game[1] = 1;
                         })
                     }
                 })
             })
-
-            
 
             console.log(achievements_list)
 
