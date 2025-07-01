@@ -151,7 +151,13 @@
                         score.data.achievements.forEach((achievement, j) => {
                             found_game = achievements_list[game].find(item => item[0] == achievement)
                             console.log("found game:" , found_game)
-                            if(found_game && found_game.length >= 2 && found_game[1]) found_game[1] = 1;
+                            if (!found_game) {
+                                console.warn("Achievement not found:", achievement, "in", game);
+                            } else if (found_game.length < 2) {
+                                console.warn("Achievement found but too short:", found_game);
+                            } else {
+                                found_game[1] = 1;
+                            }
                         })
                     }
                 })
