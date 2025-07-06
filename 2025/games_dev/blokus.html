@@ -13,6 +13,14 @@
 		<script src="../aa_libraries/p5.js"></script>
 
 		<script>
+            let used_pieces =[Array(21).fill(false),  Array(21).fill(false)]
+            let board = Array.from({ length: 22 }, (_, y) =>
+                Array.from({ length: 22 }, (_, x) =>
+                    (x < 4 || x >= 18 || y < 4 || y >= 18) ? -1 : 0
+                )
+            );
+            board[8][8] = -2
+            board[13][13] = -2
 
             var turnNumber = 0
             var my_player_num = 1
@@ -28,16 +36,8 @@
             let rightButton = { x: 18, y: 9 };
             let centerButton = { x: 9, y: 18 };
         
-            let selected_piece_index = 0
-            let selected_piece = [
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 3, 2, 2, 3, 0, 0],
-                [0, 2, 1, 1, 2, 3, 0],
-                [0, 3, 2, 1, 1, 2, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-            ];
+            let selected_piece_index = undefined
+            let selected_piece = undefined
             let selected_pieces = [
             //1-pieces
                 [[0, 0, 0, 0, 0, 0, 0],
@@ -209,14 +209,6 @@
                 [0, 0, 0, 0, 0, 0, 0]],
             ];
 
-            let board = Array.from({ length: 22 }, (_, y) =>
-                Array.from({ length: 22 }, (_, x) =>
-                    (x < 4 || x >= 18 || y < 4 || y >= 18) ? -1 : 0
-                )
-            );
-
-            let used_pieces = Array(selected_pieces.length).fill(false);
-
             console.log(board)
         
             function setup() {
@@ -241,7 +233,8 @@
 
                         if (value === -1) fill("sienna");
                         else if (value === 0) fill("tan");
-                        else if (value === 1) fill("cyan");
+                        else if (value === 1) fill("#5555FF");
+                        else if (value === 2) fill("#FF55FF");
                         else fill("gray"); // fallback for other values
 
                         rect(xPos, yPos, cellSize, cellSize);
@@ -256,8 +249,13 @@
                             let py = selectedCell.y + dy;
                             if (px >= 0 && px < 22 && py >= 0 && py < 22) {
                                 let value = selected_piece[dy + 3][dx + 3];
-                                if (value === 1) {
+                                if (value === 1 && my_player_num === 1) {
                                     fill("#0000FF");
+                                    noStroke();
+                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                                }
+                                if (value === 1 && my_player_num === 2) {
+                                    fill("#FF00FF");
                                     noStroke();
                                     rect(px * cellSize, py * cellSize, cellSize, cellSize);
                                 }
@@ -319,8 +317,8 @@
                         index: i
                     });
 
-                    const isUsed = used_pieces[i];
-                    const isSelected = (i === selected_piece_index);
+                    var isUsed = used_pieces[my_player_num-1][i];
+                    var isSelected = (i === selected_piece_index);
 
                     if (isSelected) {
                         fill("#888800");
@@ -335,7 +333,8 @@
                             let val = piece[y][x];
                             if (val !== 1) continue;
 
-                            fill(isUsed ? "#888888" : "#0000FF");
+                            if(my_player_num==1)fill(isUsed ? "#888888" : "#0000FF");
+                            if(my_player_num==2)fill(isUsed ? "#888888" : "#FF00FF");
                             noStroke();
 
                             let drawX = baseX + (x - 1) * scaleFactor;
@@ -343,11 +342,35 @@
                             rect(drawX, drawY, scaleFactor, scaleFactor);
                         }
                     }
+                    
+
+                    // Flip the canvas 180° around the center
+                    push();
+                    translate(width, height); // Move origin to bottom-right
+                    rotate(PI);               // Rotate 180 degrees (PI radians)
+
+                    isUsed = used_pieces[my_player_num==1?1:0][i];
+
+                    piece = selected_pieces[i];
+
+                    for (let y = 1; y <= 5; y++) {
+                        for (let x = 1; x <= 5; x++) {
+                            let val = piece[y][x];
+                            if (val !== 1) continue;
+
+                            if(my_player_num==1)fill(isUsed ? "#888888" : "#FF00FF");
+                            if(my_player_num==2)fill(isUsed ? "#888888" : "#0000FF");
+                            noStroke();
+
+                            let drawX = baseX + (x - 1) * scaleFactor;
+                            let drawY = baseY + (y - 1) * scaleFactor;
+                            rect(drawX, drawY, scaleFactor, scaleFactor);
+                        }
+                    }
+
+                    pop()
                 }
             }
-
-
-
 
             function drawButton(gx, gy, label) {
                 fill("#444");
@@ -406,7 +429,7 @@
                 for (let box of piece_click_boxes) {
                     if (px >= box.x && px <= box.x + box.size &&
                         py >= box.y && py <= box.y + box.size) {
-                            if (!used_pieces[box.index]) {
+                            if (!used_pieces[my_player_num-1][box.index]) {
                                 selected_piece = selected_pieces[box.index];
                                 selected_piece_index = box.index;
                                 console.log("Selected piece", box.index);
@@ -416,8 +439,7 @@
                 }
                 return false;
             }
-
-        
+   
             function rotateSelectedPiece() {
                 selected_piece = selected_piece[0].map((_, i) =>
                     selected_piece.map(row => row[i]).reverse()
@@ -443,6 +465,7 @@
 
                 let valid = true;
                 let foundCorner = false;
+                let foundStart = false;
 
                 for (let dy = -3; dy <= 3; dy++) {
                     for (let dx = -3; dx <= 3; dx++) {
@@ -457,6 +480,8 @@
 
                         let boardValue = board[boardY][boardX];
                         let pieceValue = selected_piece[dy + 3][dx + 3];
+
+                        if(pieceValue==1 && boardValue == -2) foundStart = true
 
                         if(boardValue==my_player_num && pieceValue==3){
                             console.log("Found a valid corner")
@@ -488,9 +513,20 @@
                 }
 
                 if(valid){
-                    if(foundCorner || turnNumber == 0){
+                    if(!used_pieces[my_player_num-1].includes(true)){ //Check that no pieces have been placed yet
+                        if(foundStart){ //Check that the piece is placed on a starting space
+                            placePiece()
+                            turnNumber++
+                            my_player_num = my_player_num==1?2:1
+                        }
+                        else console.log("Failed due to not on start space.")
+                        return
+                    }
+
+                    if(foundCorner){
                         placePiece()
                         turnNumber++
+                        my_player_num = my_player_num==1?2:1
                     }
                     else console.log("Failed due to no connected corner.")
                 }
@@ -522,7 +558,7 @@
                 }
 
                 if (selected_piece_index !== undefined) {
-                    used_pieces[selected_piece_index] = true;
+                    used_pieces[my_player_num-1][selected_piece_index] = true;
                     selected_piece = null;
                     selected_piece_index = undefined;
                 }
