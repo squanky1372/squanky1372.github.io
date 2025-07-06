@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+	<link rel="icon" href="/html/img/Boxes37.png">
+	<head>
+		<title>Felipe</title>
+		<style>
+			body { margin: 0; overflow: hidden }
+			canvas { width: 100%; height: 100%; overflow: hidden }
+		</style>
+	</head>
+	<body style="background-color:#0066ff;">
+		<script src="../aa_libraries/p5.js"></script>
+
+		<script>
+
+            var turnNumber = 0
+            var my_player_num = 1
+
+            let gridSize = 22;
+            let cellSize;
+            let selectedCell = null;
+        
+            const BUTTON_SIZE = 4;
+        
+            // Button positions in grid coordinates
+            let leftButton = { x: 0, y: 9 };
+            let rightButton = { x: 18, y: 9 };
+            let centerButton = { x: 9, y: 18 };
+        
+            let selected_piece_index = 0
+            let selected_piece = [
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 3, 2, 2, 3, 0, 0],
+                [0, 2, 1, 1, 2, 3, 0],
+                [0, 3, 2, 1, 1, 2, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+            ];
+            let selected_pieces = [
+            //1-pieces
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+            //2-pieces
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+            //3-pieces    
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+                
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+            //4-pieces
+                [[0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+                
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 1, 2, 0],
+                [0, 0, 0, 3, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 3, 2, 1, 2, 3, 0],
+                [0, 2, 1, 1, 1, 2, 0],
+                [0, 3, 2, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+            //5-pieces
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 3, 2, 2, 3, 0, 0],
+                [0, 2, 1, 1, 2, 3, 0],
+                [0, 3, 2, 1, 1, 2, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0]],
+
+                [[0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 1, 2, 0],
+                [0, 0, 0, 3, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 3, 2, 1, 2, 3, 0],
+                [0, 2, 1, 1, 1, 2, 0],
+                [0, 3, 2, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 3, 2, 3, 2, 3, 0],
+                [0, 2, 1, 2, 1, 2, 0],
+                [0, 2, 1, 1, 1, 2, 0],
+                [0, 3, 2, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 3, 2, 3, 0],
+                [0, 0, 0, 2, 1, 2, 0],
+                [0, 3, 2, 2, 1, 2, 0],
+                [0, 2, 1, 1, 1, 2, 0],
+                [0, 3, 2, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 3, 2, 3, 0],
+                [0, 0, 3, 2, 1, 2, 0],
+                [0, 3, 2, 1, 1, 2, 0],
+                [0, 2, 1, 1, 2, 3, 0],
+                [0, 3, 2, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 3, 2, 1, 2, 3, 0],
+                [0, 2, 1, 1, 1, 2, 0],
+                [0, 3, 2, 1, 2, 3, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 2, 1, 2, 0, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 2, 1, 2, 3, 0],
+                [0, 0, 3, 2, 3, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+
+                [[0, 0, 0, 0, 0, 0, 0],
+                [0, 3, 2, 2, 3, 0, 0],
+                [0, 2, 1, 1, 2, 0, 0],
+                [0, 3, 2, 1, 2, 3, 0],
+                [0, 0, 2, 1, 1, 2, 0],
+                [0, 0, 3, 2, 2, 3, 0],
+                [0, 0, 0, 0, 0, 0, 0]],
+            ];
+
+            let board = Array.from({ length: 22 }, (_, y) =>
+                Array.from({ length: 22 }, (_, x) =>
+                    (x < 4 || x >= 18 || y < 4 || y >= 18) ? -1 : 0
+                )
+            );
+
+            let used_pieces = Array(selected_pieces.length).fill(false);
+
+            console.log(board)
+        
+            function setup() {
+                let size = min(windowWidth, windowHeight) * 0.95;
+                canvas = createCanvas(size, size);
+                centerCanvas();
+                cellSize = width / gridSize;
+            }
+        
+            function draw() {
+                background(0); // Clear with black
+
+                stroke(128);
+                noFill();
+
+                // Step 1: Draw the board background
+                for (let y = 0; y < 22; y++) {
+                    for (let x = 0; x < 22; x++) {
+                        let value = board[y][x];
+                        let xPos = x * cellSize;
+                        let yPos = y * cellSize;
+
+                        if (value === -1) fill("sienna");
+                        else if (value === 0) fill("tan");
+                        else if (value === 1) fill("cyan");
+                        else fill("gray"); // fallback for other values
+
+                        rect(xPos, yPos, cellSize, cellSize);
+                    }
+                }
+
+                // Step 2: Draw the selected_piece on top of the board
+                if (selectedCell && selected_piece) {
+                    for (let dy = -3; dy <= 3; dy++) {
+                        for (let dx = -3; dx <= 3; dx++) {
+                            let px = selectedCell.x + dx;
+                            let py = selectedCell.y + dy;
+                            if (px >= 0 && px < 22 && py >= 0 && py < 22) {
+                                let value = selected_piece[dy + 3][dx + 3];
+                                if (value === 1) {
+                                    fill("#0000FF");
+                                    noStroke();
+                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                                }
+                                if (value === 2) {
+                                    fill("#FF000011");
+                                    noStroke();
+                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                                }
+                                if (value === 3) {
+                                    fill("#0000FF11");
+                                    noStroke();
+                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Step 3: Draw buttons last (on top of everything)
+                drawButton(leftButton.x, leftButton.y, "⟳");
+                drawButton(rightButton.x, rightButton.y, "⇋");
+                drawButton(centerButton.x, centerButton.y, "O");
+
+                drawAllPiecesGrid()
+            }
+
+            var piece_positions = [
+                [0,14],
+                [0,16],[0,18],[0,20],
+                [2,20],[4,20],[6,20],
+                [14,20],[16,20],[18,20],
+                [20,20],[20,18],[20,16],
+                // [20,14],[18,14],
+                [18,16],[18,18],
+                [16,18],[14,18],
+                [6,18],[4,18],
+                [2,18],[2,16],
+                // [2,14]
+            ]
+            let piece_click_boxes = [];
+
+
+            function drawAllPiecesGrid() {
+                const pieceSize = 2; // 2x2 grid cells per piece
+                const innerSize = 5; // we're only drawing the center 5x5 area of the 7x7
+                const scaleFactor = (cellSize * pieceSize) / innerSize;
+
+                piece_click_boxes = []; // clear old boxes
+
+                for (let i = 0; i < selected_pieces.length; i++) {
+                    let [gx, gy] = piece_positions[i];
+                    let baseX = gx * cellSize;
+                    let baseY = gy * cellSize;
+
+                    piece_click_boxes.push({
+                        x: baseX,
+                        y: baseY,
+                        size: cellSize * pieceSize,
+                        index: i
+                    });
+
+                    const isUsed = used_pieces[i];
+                    const isSelected = (i === selected_piece_index);
+
+                    if (isSelected) {
+                        fill("#888800");
+                        noStroke();
+                        rect(baseX, baseY, cellSize * pieceSize, cellSize * pieceSize);
+                    }
+
+                    let piece = selected_pieces[i];
+
+                    for (let y = 1; y <= 5; y++) {
+                        for (let x = 1; x <= 5; x++) {
+                            let val = piece[y][x];
+                            if (val !== 1) continue;
+
+                            fill(isUsed ? "#888888" : "#0000FF");
+                            noStroke();
+
+                            let drawX = baseX + (x - 1) * scaleFactor;
+                            let drawY = baseY + (y - 1) * scaleFactor;
+                            rect(drawX, drawY, scaleFactor, scaleFactor);
+                        }
+                    }
+                }
+            }
+
+
+
+
+            function drawButton(gx, gy, label) {
+                fill("#444");
+                stroke(255);
+                rect(gx * cellSize, gy * cellSize, BUTTON_SIZE * cellSize, BUTTON_SIZE * cellSize, 5);
+        
+                fill(255);
+                noStroke();
+                textAlign(CENTER, CENTER);
+                textSize(cellSize * 1.5);
+                text(label, (gx + 2) * cellSize, (gy + 2) * cellSize);
+            }
+        
+            function mousePressed() {
+                handleInput(mouseX, mouseY);
+            }
+        
+            function touchStarted() {
+                // handleInput(touchX, touchY); 
+                // return false;
+            }
+        
+            function handleInput(px, py) {
+
+                if(handlePieceClick(px, py)) return;
+
+                let x = floor(px / cellSize);
+                let y = floor(py / cellSize);
+        
+                if (x >= leftButton.x && x < leftButton.x + BUTTON_SIZE &&
+                    y >= leftButton.y && y < leftButton.y + BUTTON_SIZE) {
+                    rotateSelectedPiece();
+                    return;
+                }
+        
+                if (x >= rightButton.x && x < rightButton.x + BUTTON_SIZE &&
+                    y >= rightButton.y && y < rightButton.y + BUTTON_SIZE) {
+                    flipSelectedPiece();
+                    return;
+                }
+
+                if (x >= centerButton.x && x < centerButton.x + BUTTON_SIZE &&
+                    y >= centerButton.y && y < centerButton.y + BUTTON_SIZE) {
+                    checkPlacement();
+                    return;
+                }
+        
+                if (x >= 4 && x <= 17 && y >= 4 && y <= 17) {
+                    selectedCell = { x, y };
+                } else {
+                    selectedCell = null;
+                }
+            }
+            
+            function handlePieceClick(px, py) {
+                for (let box of piece_click_boxes) {
+                    if (px >= box.x && px <= box.x + box.size &&
+                        py >= box.y && py <= box.y + box.size) {
+                            if (!used_pieces[box.index]) {
+                                selected_piece = selected_pieces[box.index];
+                                selected_piece_index = box.index;
+                                console.log("Selected piece", box.index);
+                                return true;
+                            }
+                    }
+                }
+                return false;
+            }
+
+        
+            function rotateSelectedPiece() {
+                selected_piece = selected_piece[0].map((_, i) =>
+                    selected_piece.map(row => row[i]).reverse()
+                );
+            }
+        
+            function flipSelectedPiece() {
+                selected_piece = selected_piece.map(row => row.slice().reverse());
+            }
+        
+            function centerCanvas() {
+                let x = (windowWidth - width) / 2;
+                let y = (windowHeight - height) / 2;
+                canvas.position(x, y);
+            }
+
+            function checkPlacement() {
+
+                if (!selectedCell) return;
+
+                let cx = selectedCell.x;
+                let cy = selectedCell.y;
+
+                let valid = true;
+                let foundCorner = false;
+
+                for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                        let boardX = cx + dx;
+                        let boardY = cy + dy;
+
+                        // Bounds check
+                        if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) {
+                            valid = false;
+                            continue;
+                        }
+
+                        let boardValue = board[boardY][boardX];
+                        let pieceValue = selected_piece[dy + 3][dx + 3];
+
+                        if(boardValue==my_player_num && pieceValue==3){
+                            console.log("Found a valid corner")
+                            foundCorner = true;
+                        }
+
+                        if(boardValue==my_player_num && pieceValue==2){
+                            valid = false;
+                            console.log("Failed due to adjacent edges.")
+                            break;
+                        }
+
+                        // Placeholder comparison logic:
+                        // Skip if pieceValue is 0 (empty)
+                        if (pieceValue !== 1) continue;
+
+                        if (boardValue == -1) {
+                            valid = false;
+                            console.log("Failed due to out-of-bounds.")
+                            break;
+                        }
+
+                        if(boardValue>0 && pieceValue==1){
+                            console.log("Failed due to overlapping pieces.")
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(valid){
+                    if(foundCorner || turnNumber == 0){
+                        placePiece()
+                        turnNumber++
+                    }
+                    else console.log("Failed due to no connected corner.")
+                }
+
+
+            }
+
+            function placePiece() {
+                if (!selectedCell) return;
+
+                let cx = selectedCell.x;
+                let cy = selectedCell.y;
+
+                for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                        let boardX = cx + dx;
+                        let boardY = cy + dy;
+
+                        // Bounds check
+                        if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) continue;
+
+                        let pieceValue = selected_piece[dy + 3][dx + 3];
+
+                        // Apply piece where value is 1
+                        if (pieceValue === 1) {
+                            board[boardY][boardX] = my_player_num;
+                        }
+                    }
+                }
+
+                if (selected_piece_index !== undefined) {
+                    used_pieces[selected_piece_index] = true;
+                    selected_piece = null;
+                    selected_piece_index = undefined;
+                }
+            }
+
+
+        </script>
+        
+	</body>
+</html>
