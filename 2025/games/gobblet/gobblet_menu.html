@@ -239,7 +239,7 @@
             const my_player_number = game.p2 === game.opponent ? 1 : 2;
             let stateText = "";
             if (game.game.state === my_player_number) stateText = "Your Turn";
-            else if (game.game.state > 0) stateText = "Opponent's Turn";
+            else if (game.game.state > 0) stateText = `${emoji}'s Turn`;
             else if (game.game.state === my_player_number * -1) stateText = "You Won!";
             else stateText = "You Lost!";
 
@@ -265,7 +265,7 @@
 
             // Set background according to turn state
             const color = getGameColor(game, hash);
-            button.style.border = `10px solid ${color}`;
+            button.style.border = `5px solid ${color}`;
 
             container.appendChild(button);
         });
