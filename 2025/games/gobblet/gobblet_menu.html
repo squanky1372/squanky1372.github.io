@@ -162,7 +162,7 @@
     <h2>Select a Gobblet Game</h2>
 
     <label>
-        <input type="checkbox" id="showAll" checked>
+        <input type="checkbox" id="showAll">
         Show finished games
     </label>
 
@@ -265,17 +265,17 @@
 
             // Set background according to turn state
             const color = getGameColor(game, hash);
-            button.style.backgroundColor = color;
+            button.style.border = `10px solid ${color}`;
 
             container.appendChild(button);
         });
     }
     function getGameColor(game, hash) {
         const my_player_number = game.p2 === game.opponent ? 1 : 2;
-        if (game.game.state === my_player_number) return "#002500";       // Your turn - hint of green
-        else if (game.game.state > 0) return "#151555";                   // Their turn - hint of blue
-        else if (game.game.state === my_player_number * -1) return "#443a00"; // You won - hint of gold
-        else return "#330000";                                            // They won - hint of red
+        if (game.game.state === my_player_number) return "#005000";       // Your turn - hint of green
+        else if (game.game.state > 0) return "#000088";                   // Their turn - hint of blue
+        else if (game.game.state === my_player_number * -1) return "#645a00"; // You won - hint of gold
+        else return "#550000";                                            // They won - hint of red
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -387,13 +387,15 @@
         console.log("Generated new gameid", gameid);
 
         try {
-            await submitGameUpdate(game, hash, player.hash, gameid);
+            await submitGameUpdate(game, hash, player.hash, gameid, "gobblet");
             window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
         } catch (error) {
             console.error("Failed to submit game update:", error);
             alert("An error occurred while starting the game. Please try again.");
         }
     }
+
+    //Add to libraries
 
     function generateUniqueHash() {
         const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -412,11 +414,11 @@
         return result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/g, '~');
     }
 
-    function submitGameUpdate(game, p1, p2, gameid) {
+    function submitGameUpdate(game, p1, p2, gameid, name) {
     return fetch('https://squanky.net/scores/updateBoard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ game, p1, p2, gameid })
+        body: JSON.stringify({ game, p1, p2, gameid, name })
     }).then(response => {
         if (!response.ok) {
             throw new Error(`Server responded with ${response.status}`);
