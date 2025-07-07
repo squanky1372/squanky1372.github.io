@@ -21,8 +21,8 @@
             );
             board[8][8] = -2
             board[13][13] = -2
+            var scores = [0,0]
 
-            var turnNumber = 0
             var my_player_num = 1
 
             let gridSize = 22;
@@ -414,7 +414,20 @@
 
                 if (x >= centerButton.x && x < centerButton.x + BUTTON_SIZE &&
                     y >= centerButton.y && y < centerButton.y + BUTTON_SIZE) {
-                    checkPlacement();
+                    if(checkPlacement(selectedCell.x, selectedCell.y, selected_piece)){
+                        var last_piece = selected_piece_index
+                        placePiece()
+                        if(used_pieces[my_player_num-1].every(true)) {
+                            console.log("Used all pieces")
+                            if(last_piece == 0) console.log("And got bonus for dot being last")
+                        }
+                    
+                        my_player_num = my_player_num==1?2:1
+                        console.log("Can still play: ", checkRemainingPlacements())
+                        console.log("P1 score: ", sumRemainingPieceTiles(1))
+                        console.log("P2 score: ", sumRemainingPieceTiles(2))
+
+                    }
                     return;
                 }
         
@@ -456,12 +469,9 @@
                 canvas.position(x, y);
             }
 
-            function checkPlacement() {
-
-                if (!selectedCell) return;
-
-                let cx = selectedCell.x;
-                let cy = selectedCell.y;
+            function checkPlacement(cx, cy, selected_piece) {
+                // let cx = selectedCell.x;
+                // let cy = selectedCell.y;
 
                 let valid = true;
                 let foundCorner = false;
@@ -493,9 +503,7 @@
                             console.log("Failed due to adjacent edges.")
                             break;
                         }
-
-                        // Placeholder comparison logic:
-                        // Skip if pieceValue is 0 (empty)
+                        
                         if (pieceValue !== 1) continue;
 
                         if (boardValue == -1) {
@@ -515,22 +523,20 @@
                 if(valid){
                     if(!used_pieces[my_player_num-1].includes(true)){ //Check that no pieces have been placed yet
                         if(foundStart){ //Check that the piece is placed on a starting space
-                            placePiece()
-                            turnNumber++
-                            my_player_num = my_player_num==1?2:1
+                            return true
                         }
                         else console.log("Failed due to not on start space.")
-                        return
+                        return false
                     }
 
                     if(foundCorner){
-                        placePiece()
-                        turnNumber++
-                        my_player_num = my_player_num==1?2:1
+                        return true
                     }
                     else console.log("Failed due to no connected corner.")
+                    return false
                 }
 
+                return false
 
             }
 
@@ -563,6 +569,61 @@
                     selected_piece_index = undefined;
                 }
             }
+
+            function checkRemainingPlacements() {
+                for (let i = 0; i < selected_pieces.length; i++) {
+                    if (used_pieces[my_player_num - 1][i]) continue; // Skip used pieces
+
+                    let piece = selected_pieces[i];
+
+                    // Try all 4 rotations and 2 flipped versions (total 8 orientations)
+                    for (let flip = 0; flip < 2; flip++) {
+                        let testPiece = flip ? flipPiece(piece) : piece;
+
+                        for (let r = 0; r < 4; r++) {
+                            if (r > 0) testPiece = rotatePiece(testPiece);
+
+                            for (let y = 0; y < 22; y++) {
+                                for (let x = 0; x < 22; x++) {
+                                    if (checkPlacement(x, y, testPiece)) {
+                                        console.log(`Piece ${i} is placeable at (${x},${y})`);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            function rotatePiece(piece) {
+                return piece[0].map((_, i) => piece.map(row => row[i]).reverse());
+            }
+
+            function flipPiece(piece) {
+                return piece.map(row => row.slice().reverse());
+            }
+
+            function sumRemainingPieceTiles(player_num) {
+                let total = 0;
+
+                for (let i = 0; i < selected_pieces.length; i++) {
+                    if (used_pieces[player_num - 1][i]) continue; // skip used pieces
+
+                    let piece = selected_pieces[i];
+
+                    for (let y = 0; y < piece.length; y++) {
+                        for (let x = 0; x < piece[y].length; x++) {
+                            if (piece[y][x] === 1) total++;
+                        }
+                    }
+                }
+
+                return total;
+            }
+
 
 
         </script>
