@@ -417,11 +417,11 @@
                     if(checkPlacement(selectedCell.x, selectedCell.y, selected_piece)){
                         var last_piece = selected_piece_index
                         placePiece()
-                        if(used_pieces[my_player_num-1].every(true)) {
+                        if(used_pieces[my_player_num-1].every((value) => value)) {
                             console.log("Used all pieces")
                             if(last_piece == 0) console.log("And got bonus for dot being last")
                         }
-                    
+
                         my_player_num = my_player_num==1?2:1
                         console.log("Can still play: ", checkRemainingPlacements())
                         console.log("P1 score: ", sumRemainingPieceTiles(1))
