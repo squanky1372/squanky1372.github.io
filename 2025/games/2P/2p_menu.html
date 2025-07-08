@@ -153,13 +153,24 @@
                 font-size: 4vw;
             }
         }
+
+        #challengeDropdown {
+            font-size: inherit;
+            background-color: #333;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 6px;
+            padding: 0.2em 0.5em;
+            margin-left: 0.5em;
+        }
+
     </style>
 
 
 </head>
 
 <body>
-    <h2>Select a Gobblet Game</h2>
+    <h2>Select a Game</h2>
 
     <label>
         <input type="checkbox" id="showAll">
@@ -172,11 +183,17 @@
 
     <hr>
 
-    <h2>Challenge a New Opponent</h2>
+    <h2>Challenge a New Opponent In <select id="challengeDropdown"></select> </h2>
+    
+    <div id="challengeFilterContainer">
+    </div>
     <div id="opponentContainer"></div>
+
 </body>
 
 <script src="../../aa_libraries/fj_games_library.js"></script>
+<script src="../../aa_libraries/fj_2p_library.js"></script>
+
 <script>
     verifyHash();
 
@@ -225,51 +242,80 @@
 
         const container = document.getElementById('container');
         container.innerHTML = '';
-        container.style.display = 'flex';
-        container.style.flexWrap = 'wrap';
-        container.style.justifyContent = 'center';
-        container.style.gap = '10px';
-        container.style.padding = '10px';
 
-        [...filteredGames].reverse().forEach(game => {
-            const opponentData = playersByHash.get(game.opponent);
-            const username = game.opponent === hash ? "Yourself" : (opponentData?.username || "Unknown");
-            const emoji = opponentData?.visuals?.emoji || "❓";
-
-            const my_player_number = game.p2 === game.opponent ? 1 : 2;
-            let stateText = "";
-            if (game.game.state === my_player_number) stateText = "Your Turn";
-            else if (game.game.state > 0) stateText = `${emoji}'s Turn`;
-            else if (game.game.state === my_player_number * -1) stateText = "You Won!";
-            else stateText = "You Lost!";
-
-            const button = document.createElement('button');
-            button.className = 'player-button';
-            button.onclick = () => launchGame(game.gameid);
-
-            const emojiSpan = document.createElement('span');
-            emojiSpan.className = 'emoji';
-            emojiSpan.textContent = emoji;
-
-            const usernameDiv = document.createElement('div');
-            usernameDiv.className = 'username';
-            usernameDiv.textContent = username;
-
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note';
-            noteDiv.textContent = `Turn ${game.count}: ${stateText}`;
-
-            button.appendChild(emojiSpan);
-            button.appendChild(usernameDiv);
-            button.appendChild(noteDiv);
-
-            // Set background according to turn state
-            const color = getGameColor(game, hash);
-            button.style.border = `5px solid ${color}`;
-
-            container.appendChild(button);
+        // Group games by game name
+        const gamesByName = {};
+        filteredGames.forEach(game => {
+            const name = game.game.name || "Unknown Game";
+            if (!gamesByName[name]) {
+                gamesByName[name] = [];
+            }
+            gamesByName[name].push(game);
         });
+
+        // For each game name group, create a section
+        for (const name in gamesByName) {
+            const hr = document.createElement('hr');
+            hr.style.border = 'none';
+            hr.style.height = '2px';
+            hr.style.backgroundColor = 'white';
+            hr.style.margin = '40px 0 20px';
+            container.appendChild(hr);
+
+            const sectionHeader = document.createElement('h3');
+            sectionHeader.textContent = `${name} Games`;
+            sectionHeader.style.marginTop = "30px";
+            container.appendChild(sectionHeader);
+
+            const sectionDiv = document.createElement('div');
+            sectionDiv.style.display = 'flex';
+            sectionDiv.style.flexWrap = 'wrap';
+            sectionDiv.style.justifyContent = 'center';
+            sectionDiv.style.gap = '10px';
+            sectionDiv.style.padding = '10px';
+
+            gamesByName[name].reverse().forEach(game => {
+                const opponentData = playersByHash.get(game.opponent);
+                const username = game.opponent === hash ? "Yourself" : (opponentData?.username || "Unknown");
+                const emoji = opponentData?.visuals?.emoji || "❓";
+
+                const my_player_number = game.p2 === game.opponent ? 1 : 2;
+                let stateText = "";
+                if (game.game.state === my_player_number) stateText = "Your Turn";
+                else if (game.game.state > 0) stateText = `${emoji}'s Turn`;
+                else if (game.game.state === my_player_number * -1) stateText = "You Won!";
+                else stateText = "You Lost!";
+
+                const button = document.createElement('button');
+                button.className = 'player-button';
+                button.onclick = () => launchGame(game.gameid, game.game.name);
+
+                const emojiSpan = document.createElement('span');
+                emojiSpan.className = 'emoji';
+                emojiSpan.textContent = emoji;
+
+                const usernameDiv = document.createElement('div');
+                usernameDiv.className = 'username';
+                usernameDiv.textContent = username;
+
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note';
+                noteDiv.textContent = `Turn ${game.count}: ${stateText}`;
+
+                button.appendChild(emojiSpan);
+                button.appendChild(usernameDiv);
+                button.appendChild(noteDiv);
+
+                const color = getGameColor(game, hash);
+                button.style.border = `5px solid ${color}`;
+
+                sectionDiv.appendChild(button);
+            });
+
+            container.appendChild(sectionDiv);
+        }
     }
+
     function getGameColor(game, hash) {
         const my_player_number = game.p2 === game.opponent ? 1 : 2;
         if (game.game.state === my_player_number) return "#005000";       // Your turn - hint of green
@@ -280,16 +326,12 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('showAll').addEventListener('change', createGameButtons);
+        populateChallengeDropdown();
     });
 
-    function launchGame(gameid) {
+    function launchGame(gameid, game_name) {
         console.log("Opening", gameid);
-        window.location.href = `./gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
-    }
-
-    function newGame() {
-        console.log("Redirecting to new games");
-        window.location.href = `./gobblet_newgame.html?hash=${hash}`;
+        window.location.href = `./${game_name}_2p.html?hash=${hash}&gameid=${gameid}`;
     }
 
     function localGame() {
@@ -330,7 +372,7 @@
             const button = document.createElement('button');
             button.className = 'player-button' + (isOutdated ? ' disabled' : '');
             if (!isOutdated) {
-                button.onclick = () => issueChallenge(player);
+                button.onclick = () => issueChallenge(player, document.getElementById('challengeDropdown').value);
             }
 
             const emojiSpan = document.createElement('span');
@@ -374,58 +416,24 @@
         container.appendChild(button);
     }
 
-    async function issueChallenge(player) {
-        console.log("Challenging", player.username, "with hash", player.hash);
+    function populateChallengeDropdown() {
+        const dropdown = document.getElementById('challengeDropdown');
+        dropdown.innerHTML = '';
 
-        var game = {
-            state: 1,
-            external: [[4, 4, 4], [4, 4, 4]],
-            board: Array(4).fill().map(() => Array(4).fill().map(() => [0, 0, 0, 0]))
-        };
+        challengeOptions.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            dropdown.appendChild(opt);
+        });
 
-        var gameid = generateUniqueHash();
-        console.log("Generated new gameid", gameid);
-
-        try {
-            await submitGameUpdate(game, hash, player.hash, gameid, "gobblet");
-            window.location.href = `gobblet_2p.html?hash=${hash}&gameid=${gameid}`;
-        } catch (error) {
-            console.error("Failed to submit game update:", error);
-            alert("An error occurred while starting the game. Please try again.");
-        }
+        // Optional: handle selection change
+        dropdown.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            console.log("Selected challenge filter:", selected);
+            // You can trigger filtering here if needed
+        });
     }
-
-    //Add to libraries
-
-    function generateUniqueHash() {
-        const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-        const startTime = new Date('2000-10-13T00:00:00Z').getTime();
-        const now = Date.now();
-        const seconds = Math.floor((now - startTime) / 1000);
-        let base64Seconds = btoa(String.fromCharCode(
-            (seconds >> 24) & 0xFF,
-            (seconds >> 16) & 0xFF,
-            (seconds >> 8) & 0xFF,
-            seconds & 0xFF
-        ));
-        const random1 = base64Chars[Math.floor(Math.random() * 64)];
-        const random2 = base64Chars[Math.floor(Math.random() * 64)];
-        let result = base64Seconds + random1 + random2;
-        return result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/g, '~');
-    }
-
-    function submitGameUpdate(game, p1, p2, gameid, name) {
-    return fetch('https://squanky.net/scores/updateBoard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ game, p1, p2, gameid, name })
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error(`Server responded with ${response.status}`);
-        }
-        return response;
-    });
-}
 </script>
 
 </html>
