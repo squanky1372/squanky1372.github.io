@@ -334,9 +334,9 @@
         window.location.href = `./${game_name}_2p.html?hash=${hash}&gameid=${gameid}`;
     }
 
-    function localGame() {
+    function localGame(game_name) {
         console.log("Redirecting to local game");
-        window.location.href = `./gobblet.html?hash=${hash}`;
+        window.location.href = `./${game_name}.html?hash=${hash}`;
     }
 
     // ---- Program 2 logic ----
@@ -400,7 +400,7 @@
     function createLocalOpponentButton(container) {
         const button = document.createElement('button');
         button.className = 'player-button local';
-        button.onclick = localGame;
+        button.onclick = button.onclick = function () { localGame(document.getElementById('challengeDropdown').value); };
 
         const emojiSpan = document.createElement('span');
         emojiSpan.className = 'emoji';

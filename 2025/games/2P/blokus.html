@@ -20,13 +20,16 @@
 </head>
 
 <body style="background-color:#0066ff;">
-    <script src="../aa_libraries/p5.js"></script>
+    <script src="../../aa_libraries/p5.js"></script>
+    <script src="../../aa_libraries/fj_window_library.js"></script>
 
     <script>
-        let used_pieces = [Array(21).fill(false), Array(21).fill(false)]
-        let board = (() => { let b = Array.from({ length: 22 }, (_, y) => Array.from({ length: 22 }, (_, x) => (x < 4 || x > 17 || y < 4 || y > 17 ? -1 : 0))); b[8][8] = b[13][13] = -2; return b; })();
-        var scores = [0, 0]
-        var game_state = 1
+        var game = {
+            used_pieces:[Array(21).fill(false), Array(21).fill(false)],
+            board:(() => { let b = Array.from({ length: 22 }, (_, y) => Array.from({ length: 22 }, (_, x) => (x < 4 || x > 17 || y < 4 || y > 17 ? -1 : 0))); b[8][8] = b[13][13] = -2; return b; })(),
+            scores:[0, 0],
+            state:1
+        }
 
         var my_player_num = 1
 
@@ -214,16 +217,16 @@
             [0, 0, 0, 0, 0, 0, 0]],
         ];
 
-        console.log(board)
-
         function setup() {
             let size = min(windowWidth, windowHeight) * 0.95;
             canvas = createCanvas(size, size);
             centerCanvas();
             cellSize = width / gridSize;
+            disableCanvasDefaults()
         }
 
         function draw() {
+            // scaleContent()
             background(0); // Clear with black
 
             stroke(128);
@@ -232,7 +235,7 @@
             // Step 1: Draw the board background
             for (let y = 0; y < 22; y++) {
                 for (let x = 0; x < 22; x++) {
-                    let value = board[y][x];
+                    let value = game.board[y][x];
                     let xPos = x * cellSize;
                     let yPos = y * cellSize;
 
@@ -286,7 +289,7 @@
 
             drawAllPiecesGrid()
 
-            drawCurrentTurn(cellSize*11, cellSize*2, cellSize*2, game_state)
+            drawCurrentTurn(cellSize*11, cellSize*2, cellSize*2, game.state)
         }
 
         function drawCurrentTurn(x, y, size, state){
@@ -336,7 +339,7 @@
                     index: i
                 });
 
-                var isUsed = used_pieces[my_player_num - 1][i];
+                var isUsed = game.used_pieces[my_player_num - 1][i];
                 var isSelected = (i === selected_piece_index);
 
                 if (isSelected) {
@@ -369,7 +372,7 @@
                 translate(width, height); // Move origin to bottom-right
                 rotate(PI);               // Rotate 180 degrees (PI radians)
 
-                isUsed = used_pieces[my_player_num == 1 ? 1 : 0][i];
+                isUsed = game.used_pieces[my_player_num == 1 ? 1 : 0][i];
 
                 piece = selected_pieces[i];
 
@@ -435,7 +438,7 @@
 
             if (x >= centerButton.x && x < centerButton.x + BUTTON_SIZE &&
                 y >= centerButton.y && y < centerButton.y + BUTTON_SIZE) {
-                if (my_player_num == game_state && checkPlacement(selectedCell.x, selectedCell.y, selected_piece, my_player_num)) {
+                if (my_player_num == game.state && checkPlacement(selectedCell.x, selectedCell.y, selected_piece, my_player_num)) {
                     handleSuccessfulPlacement()
                 }
                 return;
@@ -451,31 +454,34 @@
         function handleSuccessfulPlacement() {
             var last_piece = selected_piece_index
             placePiece()
+
             var opponent_player_num = my_player_num == 1 ? 2 : 1
             var next_player = opponent_player_num
+            
+            console.log("Scores: ", -sumRemainingPieceTiles(my_player_num), -sumRemainingPieceTiles(opponent_player_num))
 
-            var opponent_finished = scores[opponent_player_num-1] != 0
-            var my_player_finished = scores[my_player_num-1] != 0
+            var opponent_finished = game.scores[opponent_player_num-1] != 0
+            var my_player_finished = game.scores[my_player_num-1] != 0
 
             //If I just placed my last piece, set my score accordingly
-            if (used_pieces[my_player_num - 1].every((value) => value)) {
+            if (game.used_pieces[my_player_num - 1].every((value) => value)) {
                 console.log("Used all pieces")
-                scores[my_player_num-1] = 15
+                game.scores[my_player_num-1] = 15
                 if (last_piece == 0) {
                     console.log("And got bonus for the dot being last")
-                    scores[my_player_num-1] = 20
+                    game.scores[my_player_num-1] = 20
                 }
                 my_player_finished = true
             }
             //If I can no longer place any more pieces, set my score accordingly.
             console.log("Checking if I'm out of moves: ")
             if(my_player_finished){
-                console.log("I already got a score (this output should never appear)")
+                console.log("I already got a score")
             }
             else if (!checkRemainingPlacements(my_player_num)) {
                 console.log("I now have no more moves.")
-                scores[my_player_num-1] = -sumRemainingPieceTiles(my_player_num)
-                console.log(`Set player's score: scores[${my_player_num-1}] = ${scores[my_player_num-1]}`)
+                game.scores[my_player_num-1] = -sumRemainingPieceTiles(my_player_num)
+                console.log(`Set player's score: scores[${my_player_num-1}] = ${game.scores[my_player_num-1]}`)
                 my_player_finished = true
             }
             //If my opponent has no more moves, set their score and go again
@@ -486,20 +492,20 @@
             }
             else if(!checkRemainingPlacements(opponent_player_num)) {
                 console.log("Opponent has no further moves.  Go again.")
-                scores[opponent_player_num-1] = -sumRemainingPieceTiles(opponent_player_num)
-                console.log(`Set opponent's score: scores[${opponent_player_num-1}] = ${scores[opponent_player_num-1]}`)
+                game.scores[opponent_player_num-1] = -sumRemainingPieceTiles(opponent_player_num)
+                console.log(`Set opponent's score: scores[${opponent_player_num-1}] = ${game.scores[opponent_player_num-1]}`)
                 next_player = my_player_num
                 opponent_finished = true
             }
             //If we both have assigned scores, determine the winner of the game
             if(my_player_finished && opponent_finished){
-                console.log((scores[0]>scores[1])?"Player 1 Wins!":"Player 2 Wins!")
-                console.log(scores)
-                game_state = (scores[0]>scores[1])?-1:-2
+                console.log((game.scores[0]>game.scores[1])?"Player 1 Wins!":"Player 2 Wins!")
+                console.log(game.scores)
+                game.state = (game.scores[0]>game.scores[1])?-1:-2
                 return
             }
 
-            game_state = next_player
+            game.state = next_player
             my_player_num = next_player
 
             //This is where API call would go... IF I HAD ONE
@@ -509,7 +515,7 @@
             for (let box of piece_click_boxes) {
                 if (px >= box.x && px <= box.x + box.size &&
                     py >= box.y && py <= box.y + box.size) {
-                    if (!used_pieces[my_player_num - 1][box.index]) {
+                    if (!game.used_pieces[my_player_num - 1][box.index]) {
                         selected_piece = selected_pieces[box.index];
                         selected_piece_index = box.index;
                         console.log("Selected piece", box.index);
@@ -530,12 +536,6 @@
             selected_piece = selected_piece.map(row => row.slice().reverse());
         }
 
-        function centerCanvas() {
-            let x = (windowWidth - width) / 2;
-            let y = (windowHeight - height) / 2;
-            canvas.position(x, y);
-        }
-
         function checkPlacement(cx, cy, selected_piece, player_num) {
             let valid = true;
             let foundCorner = false;
@@ -552,7 +552,7 @@
                         continue;
                     }
 
-                    let boardValue = board[boardY][boardX];
+                    let boardValue = game.board[boardY][boardX];
                     let pieceValue = selected_piece[dy + 3][dx + 3];
 
                     if (pieceValue == 1 && boardValue == -2) foundStart = true
@@ -585,7 +585,7 @@
             }
 
             if (valid) {
-                if (!used_pieces[player_num - 1].includes(true)) { //Check that no pieces have been placed yet
+                if (!game.used_pieces[player_num - 1].includes(true)) { //Check that no pieces have been placed yet
                     if (foundStart) { //Check that the piece is placed on a starting space
                         return true
                     }
@@ -622,13 +622,13 @@
 
                     // Apply piece where value is 1
                     if (pieceValue === 1) {
-                        board[boardY][boardX] = my_player_num;
+                        game.board[boardY][boardX] = my_player_num;
                     }
                 }
             }
 
             if (selected_piece_index !== undefined) {
-                used_pieces[my_player_num - 1][selected_piece_index] = true;
+                game.used_pieces[my_player_num - 1][selected_piece_index] = true;
                 selected_piece = null;
                 selected_piece_index = undefined;
             }
@@ -636,8 +636,7 @@
 
         function checkRemainingPlacements(player_num) {
             for (let i = 0; i < selected_pieces.length; i++) {
-                if (used_pieces[player_num - 1][i]) continue; // Skip used pieces
-                console.log("checking piece", i)
+                if (game.used_pieces[player_num - 1][i]) continue; // Skip used pieces
 
                 let piece = selected_pieces[i];
 
@@ -675,7 +674,7 @@
             let total = 0;
 
             for (let i = 0; i < selected_pieces.length; i++) {
-                if (used_pieces[player_num - 1][i]) continue; // skip used pieces
+                if (game.used_pieces[player_num - 1][i]) continue; // skip used pieces
 
                 let piece = selected_pieces[i];
 

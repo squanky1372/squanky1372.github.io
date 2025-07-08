@@ -24,6 +24,7 @@
     <script src="../../aa_libraries/p5.js"></script>
     <script src="../../aa_libraries/fj_window_library.js"></script>
     <script src="../../aa_libraries/fj_games_library.js"></script>
+    <script src="../../aa_libraries/fj_2p_library.js"></script>
 
     <script>
 
@@ -62,38 +63,8 @@
             setInterval(fetchGameState, 5000);
         }
 
-        function fetchGameState(){
-            const response = fetch(`https://squanky.net/scores/get2pGame?gameid=${gameid}&hash=${hash}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json()
-                }) // Parse the response body as JSON
-                .then(data => {
-                    console.log(data)
-                    pulled_data = data.latest_game_state
-                    game = pulled_data.game
-                    if(pulled_data.p1 == hash) {
-                        my_player_num = 1
-                        opponent = pulled_data.p2
-                    }
-                    else if(pulled_data.p2 == hash) {
-                        my_player_num = 2
-                        opponent = pulled_data.p1
-                    }
-                    else my_player_num = 3
-                    player_order = [pulled_data.p1,pulled_data.p2]
-                })
-        }
-
         function draw() {
-            if(!game) return
+            if (!game) return
 
             scaleContent()
 
@@ -220,21 +191,6 @@
             console.log("Game state is now ", game.state)
 
             uploadNewGameState()
-        }
-        
-        function uploadNewGameState(){
-            console.log(game, player_order[0], player_order[1], gameid)
-            submitGameUpdate(game, player_order[0], player_order[1], gameid)
-        }
-
-        function submitGameUpdate(game, p1, p2, gameid) {
-            const response = fetch('https://squanky.net/scores/updateBoard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ game, p1, p2, gameid })
-            });
         }
 
         //Returns 1 if P1 has won, else 2 if P2 has won, else 0.
