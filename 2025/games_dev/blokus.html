@@ -1,632 +1,696 @@
 <!DOCTYPE html>
 <html>
-	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
-	<link rel="icon" href="/html/img/Boxes37.png">
-	<head>
-		<title>Felipe</title>
-		<style>
-			body { margin: 0; overflow: hidden }
-			canvas { width: 100%; height: 100%; overflow: hidden }
-		</style>
-	</head>
-	<body style="background-color:#0066ff;">
-		<script src="../aa_libraries/p5.js"></script>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
 
-		<script>
-            let used_pieces =[Array(21).fill(false),  Array(21).fill(false)]
-            let board = Array.from({ length: 22 }, (_, y) =>
-                Array.from({ length: 22 }, (_, x) =>
-                    (x < 4 || x >= 18 || y < 4 || y >= 18) ? -1 : 0
-                )
-            );
-            board[8][8] = -2
-            board[13][13] = -2
-            var scores = [0,0]
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
 
-            var my_player_num = 1
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
 
-            let gridSize = 22;
-            let cellSize;
-            let selectedCell = null;
-        
-            const BUTTON_SIZE = 4;
-        
-            // Button positions in grid coordinates
-            let leftButton = { x: 0, y: 9 };
-            let rightButton = { x: 18, y: 9 };
-            let centerButton = { x: 9, y: 18 };
-        
-            let selected_piece_index = undefined
-            let selected_piece = undefined
-            let selected_pieces = [
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/p5.js"></script>
+
+    <script>
+        let used_pieces = [Array(21).fill(false), Array(21).fill(false)]
+        let board = (() => { let b = Array.from({ length: 22 }, (_, y) => Array.from({ length: 22 }, (_, x) => (x < 4 || x > 17 || y < 4 || y > 17 ? -1 : 0))); b[8][8] = b[13][13] = -2; return b; })();
+        var scores = [0, 0]
+        var game_state = 1
+
+        var my_player_num = 1
+
+        let gridSize = 22;
+        let cellSize;
+        let selectedCell = null;
+
+        const BUTTON_SIZE = 4;
+
+        // Button positions in grid coordinates
+        let leftButton = { x: 0, y: 9 };
+        let rightButton = { x: 18, y: 9 };
+        let centerButton = { x: 9, y: 18 };
+
+        let selected_piece_index = undefined
+        let selected_piece = undefined
+        let selected_pieces = [
             //1-pieces
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
             //2-pieces
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
             //3-pieces    
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
-                
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
+
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
             //4-pieces
-                [[0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
-                
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 1, 2, 0],
-                [0, 0, 0, 3, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 1, 2, 0],
+            [0, 0, 0, 3, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 3, 2, 1, 2, 3, 0],
-                [0, 2, 1, 1, 1, 2, 0],
-                [0, 3, 2, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
+
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 3, 2, 1, 2, 3, 0],
+            [0, 2, 1, 1, 1, 2, 0],
+            [0, 3, 2, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
             //5-pieces
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 3, 2, 2, 3, 0, 0],
-                [0, 2, 1, 1, 2, 3, 0],
-                [0, 3, 2, 1, 1, 2, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 3, 2, 2, 3, 0, 0],
+            [0, 2, 1, 1, 2, 3, 0],
+            [0, 3, 2, 1, 1, 2, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0]],
+            [[0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0]],
 
-                [[0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 1, 2, 0],
-                [0, 0, 0, 3, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 1, 2, 0],
+            [0, 0, 0, 3, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 3, 2, 1, 2, 3, 0],
-                [0, 2, 1, 1, 1, 2, 0],
-                [0, 3, 2, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 3, 2, 1, 2, 3, 0],
+            [0, 2, 1, 1, 1, 2, 0],
+            [0, 3, 2, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 3, 2, 3, 2, 3, 0],
-                [0, 2, 1, 2, 1, 2, 0],
-                [0, 2, 1, 1, 1, 2, 0],
-                [0, 3, 2, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 3, 2, 3, 2, 3, 0],
+            [0, 2, 1, 2, 1, 2, 0],
+            [0, 2, 1, 1, 1, 2, 0],
+            [0, 3, 2, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 3, 2, 3, 0],
-                [0, 0, 0, 2, 1, 2, 0],
-                [0, 3, 2, 2, 1, 2, 0],
-                [0, 2, 1, 1, 1, 2, 0],
-                [0, 3, 2, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 3, 2, 3, 0],
+            [0, 0, 0, 2, 1, 2, 0],
+            [0, 3, 2, 2, 1, 2, 0],
+            [0, 2, 1, 1, 1, 2, 0],
+            [0, 3, 2, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 3, 2, 3, 0],
-                [0, 0, 3, 2, 1, 2, 0],
-                [0, 3, 2, 1, 1, 2, 0],
-                [0, 2, 1, 1, 2, 3, 0],
-                [0, 3, 2, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 3, 2, 3, 0],
+            [0, 0, 3, 2, 1, 2, 0],
+            [0, 3, 2, 1, 1, 2, 0],
+            [0, 2, 1, 1, 2, 3, 0],
+            [0, 3, 2, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 3, 2, 1, 2, 3, 0],
-                [0, 2, 1, 1, 1, 2, 0],
-                [0, 3, 2, 1, 2, 3, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 3, 2, 1, 2, 3, 0],
+            [0, 2, 1, 1, 1, 2, 0],
+            [0, 3, 2, 1, 2, 3, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 2, 1, 2, 0, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 2, 1, 2, 3, 0],
-                [0, 0, 3, 2, 3, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 2, 1, 2, 0, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 2, 1, 2, 3, 0],
+            [0, 0, 3, 2, 3, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
 
-                [[0, 0, 0, 0, 0, 0, 0],
-                [0, 3, 2, 2, 3, 0, 0],
-                [0, 2, 1, 1, 2, 0, 0],
-                [0, 3, 2, 1, 2, 3, 0],
-                [0, 0, 2, 1, 1, 2, 0],
-                [0, 0, 3, 2, 2, 3, 0],
-                [0, 0, 0, 0, 0, 0, 0]],
-            ];
+            [[0, 0, 0, 0, 0, 0, 0],
+            [0, 3, 2, 2, 3, 0, 0],
+            [0, 2, 1, 1, 2, 0, 0],
+            [0, 3, 2, 1, 2, 3, 0],
+            [0, 0, 2, 1, 1, 2, 0],
+            [0, 0, 3, 2, 2, 3, 0],
+            [0, 0, 0, 0, 0, 0, 0]],
+        ];
 
-            console.log(board)
-        
-            function setup() {
-                let size = min(windowWidth, windowHeight) * 0.95;
-                canvas = createCanvas(size, size);
-                centerCanvas();
-                cellSize = width / gridSize;
-            }
-        
-            function draw() {
-                background(0); // Clear with black
+        console.log(board)
 
-                stroke(128);
-                noFill();
+        function setup() {
+            let size = min(windowWidth, windowHeight) * 0.95;
+            canvas = createCanvas(size, size);
+            centerCanvas();
+            cellSize = width / gridSize;
+        }
 
-                // Step 1: Draw the board background
-                for (let y = 0; y < 22; y++) {
-                    for (let x = 0; x < 22; x++) {
-                        let value = board[y][x];
-                        let xPos = x * cellSize;
-                        let yPos = y * cellSize;
+        function draw() {
+            background(0); // Clear with black
 
-                        if (value === -1) fill("sienna");
-                        else if (value === 0) fill("tan");
-                        else if (value === 1) fill("#5555FF");
-                        else if (value === 2) fill("#FF55FF");
-                        else fill("gray"); // fallback for other values
+            stroke(128);
+            noFill();
 
-                        rect(xPos, yPos, cellSize, cellSize);
-                    }
-                }
+            // Step 1: Draw the board background
+            for (let y = 0; y < 22; y++) {
+                for (let x = 0; x < 22; x++) {
+                    let value = board[y][x];
+                    let xPos = x * cellSize;
+                    let yPos = y * cellSize;
 
-                // Step 2: Draw the selected_piece on top of the board
-                if (selectedCell && selected_piece) {
-                    for (let dy = -3; dy <= 3; dy++) {
-                        for (let dx = -3; dx <= 3; dx++) {
-                            let px = selectedCell.x + dx;
-                            let py = selectedCell.y + dy;
-                            if (px >= 0 && px < 22 && py >= 0 && py < 22) {
-                                let value = selected_piece[dy + 3][dx + 3];
-                                if (value === 1 && my_player_num === 1) {
-                                    fill("#0000FF");
-                                    noStroke();
-                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
-                                }
-                                if (value === 1 && my_player_num === 2) {
-                                    fill("#FF00FF");
-                                    noStroke();
-                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
-                                }
-                                if (value === 2) {
-                                    fill("#FF000011");
-                                    noStroke();
-                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
-                                }
-                                if (value === 3) {
-                                    fill("#0000FF11");
-                                    noStroke();
-                                    rect(px * cellSize, py * cellSize, cellSize, cellSize);
-                                }
-                            }
-                        }
-                    }
-                }
+                    if (value === -1) fill("sienna");
+                    else if (value === 0) fill("tan");
+                    else if (value === 1) fill("#EEEEEE");
+                    else if (value === 2) fill("#333333");
+                    else fill("gray"); // fallback for other values
 
-                // Step 3: Draw buttons last (on top of everything)
-                drawButton(leftButton.x, leftButton.y, "⟳");
-                drawButton(rightButton.x, rightButton.y, "⇋");
-                drawButton(centerButton.x, centerButton.y, "O");
-
-                drawAllPiecesGrid()
-            }
-
-            var piece_positions = [
-                [0,14],
-                [0,16],[0,18],[0,20],
-                [2,20],[4,20],[6,20],
-                [14,20],[16,20],[18,20],
-                [20,20],[20,18],[20,16],
-                // [20,14],[18,14],
-                [18,16],[18,18],
-                [16,18],[14,18],
-                [6,18],[4,18],
-                [2,18],[2,16],
-                // [2,14]
-            ]
-            let piece_click_boxes = [];
-
-
-            function drawAllPiecesGrid() {
-                const pieceSize = 2; // 2x2 grid cells per piece
-                const innerSize = 5; // we're only drawing the center 5x5 area of the 7x7
-                const scaleFactor = (cellSize * pieceSize) / innerSize;
-
-                piece_click_boxes = []; // clear old boxes
-
-                for (let i = 0; i < selected_pieces.length; i++) {
-                    let [gx, gy] = piece_positions[i];
-                    let baseX = gx * cellSize;
-                    let baseY = gy * cellSize;
-
-                    piece_click_boxes.push({
-                        x: baseX,
-                        y: baseY,
-                        size: cellSize * pieceSize,
-                        index: i
-                    });
-
-                    var isUsed = used_pieces[my_player_num-1][i];
-                    var isSelected = (i === selected_piece_index);
-
-                    if (isSelected) {
-                        fill("#888800");
-                        noStroke();
-                        rect(baseX, baseY, cellSize * pieceSize, cellSize * pieceSize);
-                    }
-
-                    let piece = selected_pieces[i];
-
-                    for (let y = 1; y <= 5; y++) {
-                        for (let x = 1; x <= 5; x++) {
-                            let val = piece[y][x];
-                            if (val !== 1) continue;
-
-                            if(my_player_num==1)fill(isUsed ? "#888888" : "#0000FF");
-                            if(my_player_num==2)fill(isUsed ? "#888888" : "#FF00FF");
-                            noStroke();
-
-                            let drawX = baseX + (x - 1) * scaleFactor;
-                            let drawY = baseY + (y - 1) * scaleFactor;
-                            rect(drawX, drawY, scaleFactor, scaleFactor);
-                        }
-                    }
-                    
-
-                    // Flip the canvas 180° around the center
-                    push();
-                    translate(width, height); // Move origin to bottom-right
-                    rotate(PI);               // Rotate 180 degrees (PI radians)
-
-                    isUsed = used_pieces[my_player_num==1?1:0][i];
-
-                    piece = selected_pieces[i];
-
-                    for (let y = 1; y <= 5; y++) {
-                        for (let x = 1; x <= 5; x++) {
-                            let val = piece[y][x];
-                            if (val !== 1) continue;
-
-                            if(my_player_num==1)fill(isUsed ? "#888888" : "#FF00FF");
-                            if(my_player_num==2)fill(isUsed ? "#888888" : "#0000FF");
-                            noStroke();
-
-                            let drawX = baseX + (x - 1) * scaleFactor;
-                            let drawY = baseY + (y - 1) * scaleFactor;
-                            rect(drawX, drawY, scaleFactor, scaleFactor);
-                        }
-                    }
-
-                    pop()
+                    rect(xPos, yPos, cellSize, cellSize);
                 }
             }
 
-            function drawButton(gx, gy, label) {
-                fill("#444");
-                stroke(255);
-                rect(gx * cellSize, gy * cellSize, BUTTON_SIZE * cellSize, BUTTON_SIZE * cellSize, 5);
-        
-                fill(255);
-                noStroke();
-                textAlign(CENTER, CENTER);
-                textSize(cellSize * 1.5);
-                text(label, (gx + 2) * cellSize, (gy + 2) * cellSize);
-            }
-        
-            function mousePressed() {
-                handleInput(mouseX, mouseY);
-            }
-        
-            function touchStarted() {
-                handleInput(mouseX, mouseY); 
-                return false;
-            }
-        
-            function handleInput(px, py) {
-
-                if(handlePieceClick(px, py)) return;
-
-                let x = floor(px / cellSize);
-                let y = floor(py / cellSize);
-        
-                if (x >= leftButton.x && x < leftButton.x + BUTTON_SIZE &&
-                    y >= leftButton.y && y < leftButton.y + BUTTON_SIZE) {
-                    rotateSelectedPiece();
-                    return;
-                }
-        
-                if (x >= rightButton.x && x < rightButton.x + BUTTON_SIZE &&
-                    y >= rightButton.y && y < rightButton.y + BUTTON_SIZE) {
-                    flipSelectedPiece();
-                    return;
-                }
-
-                if (x >= centerButton.x && x < centerButton.x + BUTTON_SIZE &&
-                    y >= centerButton.y && y < centerButton.y + BUTTON_SIZE) {
-                    if(checkPlacement(selectedCell.x, selectedCell.y, selected_piece)){
-                        var last_piece = selected_piece_index
-                        placePiece()
-                        if(used_pieces[my_player_num-1].every((value) => value)) {
-                            console.log("Used all pieces")
-                            if(last_piece == 0) console.log("And got bonus for dot being last")
-                        }
-
-                        my_player_num = my_player_num==1?2:1
-                        console.log("Can still play: ", checkRemainingPlacements())
-                        console.log("P1 score: ", sumRemainingPieceTiles(1))
-                        console.log("P2 score: ", sumRemainingPieceTiles(2))
-
-                    }
-                    return;
-                }
-        
-                if (x >= 4 && x <= 17 && y >= 4 && y <= 17) {
-                    selectedCell = { x, y };
-                } else {
-                    selectedCell = null;
-                }
-            }
-            
-            function handlePieceClick(px, py) {
-                for (let box of piece_click_boxes) {
-                    if (px >= box.x && px <= box.x + box.size &&
-                        py >= box.y && py <= box.y + box.size) {
-                            if (!used_pieces[my_player_num-1][box.index]) {
-                                selected_piece = selected_pieces[box.index];
-                                selected_piece_index = box.index;
-                                console.log("Selected piece", box.index);
-                                return true;
-                            }
-                    }
-                }
-                return false;
-            }
-   
-            function rotateSelectedPiece() {
-                selected_piece = selected_piece[0].map((_, i) =>
-                    selected_piece.map(row => row[i]).reverse()
-                );
-            }
-        
-            function flipSelectedPiece() {
-                selected_piece = selected_piece.map(row => row.slice().reverse());
-            }
-        
-            function centerCanvas() {
-                let x = (windowWidth - width) / 2;
-                let y = (windowHeight - height) / 2;
-                canvas.position(x, y);
-            }
-
-            function checkPlacement(cx, cy, selected_piece) {
-                // let cx = selectedCell.x;
-                // let cy = selectedCell.y;
-
-                let valid = true;
-                let foundCorner = false;
-                let foundStart = false;
-
+            // Step 2: Draw the selected_piece on top of the board
+            if (selectedCell && selected_piece) {
                 for (let dy = -3; dy <= 3; dy++) {
                     for (let dx = -3; dx <= 3; dx++) {
-                        let boardX = cx + dx;
-                        let boardY = cy + dy;
-
-                        // Bounds check
-                        if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) {
-                            valid = false;
-                            continue;
-                        }
-
-                        let boardValue = board[boardY][boardX];
-                        let pieceValue = selected_piece[dy + 3][dx + 3];
-
-                        if(pieceValue==1 && boardValue == -2) foundStart = true
-
-                        if(boardValue==my_player_num && pieceValue==3){
-                            console.log("Found a valid corner")
-                            foundCorner = true;
-                        }
-
-                        if(boardValue==my_player_num && pieceValue==2){
-                            valid = false;
-                            console.log("Failed due to adjacent edges.")
-                            break;
-                        }
-                        
-                        if (pieceValue !== 1) continue;
-
-                        if (boardValue == -1) {
-                            valid = false;
-                            console.log("Failed due to out-of-bounds.")
-                            break;
-                        }
-
-                        if(boardValue>0 && pieceValue==1){
-                            console.log("Failed due to overlapping pieces.")
-                            valid = false;
-                            break;
+                        let px = selectedCell.x + dx;
+                        let py = selectedCell.y + dy;
+                        if (px >= 0 && px < 22 && py >= 0 && py < 22) {
+                            let value = selected_piece[dy + 3][dx + 3];
+                            if (value === 1 && my_player_num === 1) {
+                                fill("#FFFFFF");
+                                noStroke();
+                                rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                            }
+                            if (value === 1 && my_player_num === 2) {
+                                fill("#000000");
+                                noStroke();
+                                rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                            }
+                            if (value === 2) {
+                                fill("#FF000011");
+                                noStroke();
+                                rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                            }
+                            if (value === 3) {
+                                fill("#0000FF11");
+                                noStroke();
+                                rect(px * cellSize, py * cellSize, cellSize, cellSize);
+                            }
                         }
                     }
                 }
+            }
 
-                if(valid){
-                    if(!used_pieces[my_player_num-1].includes(true)){ //Check that no pieces have been placed yet
-                        if(foundStart){ //Check that the piece is placed on a starting space
-                            return true
-                        }
-                        else console.log("Failed due to not on start space.")
-                        return false
+            // Step 3: Draw buttons last (on top of everything)
+            drawButton(leftButton.x, leftButton.y, "⟳");
+            drawButton(rightButton.x, rightButton.y, "⇋");
+            drawButton(centerButton.x, centerButton.y, "O");
+
+            drawAllPiecesGrid()
+
+            drawCurrentTurn(cellSize*11, cellSize*2, cellSize*2, game_state)
+        }
+
+        function drawCurrentTurn(x, y, size, state){
+            fill("gold")
+            if(Math.sign(state) < 0) circle(x, y, size)
+
+            push()
+            if(Math.abs(state) == 1) fill(255)
+            if(Math.abs(state) == 2) fill(0)
+            rectMode(CENTER)
+            rect(x, y, size*.75, size*.75, size/4)
+            pop()
+        }
+
+        var piece_positions = [
+            [0, 14],
+            [0, 16], [0, 18], [0, 20],
+            [2, 20], [4, 20], [6, 20],
+            [14, 20], [16, 20], [18, 20],
+            [20, 20], [20, 18], [20, 16],
+            // [20,14],[18,14],
+            [18, 16], [18, 18],
+            [16, 18], [14, 18],
+            [6, 18], [4, 18],
+            [2, 18], [2, 16],
+            // [2,14]
+        ]
+        let piece_click_boxes = [];
+
+
+        function drawAllPiecesGrid() {
+            const pieceSize = 2; // 2x2 grid cells per piece
+            const innerSize = 5; // we're only drawing the center 5x5 area of the 7x7
+            const scaleFactor = (cellSize * pieceSize) / innerSize;
+
+            piece_click_boxes = []; // clear old boxes
+
+            for (let i = 0; i < selected_pieces.length; i++) {
+                let [gx, gy] = piece_positions[i];
+                let baseX = gx * cellSize;
+                let baseY = gy * cellSize;
+
+                piece_click_boxes.push({
+                    x: baseX,
+                    y: baseY,
+                    size: cellSize * pieceSize,
+                    index: i
+                });
+
+                var isUsed = used_pieces[my_player_num - 1][i];
+                var isSelected = (i === selected_piece_index);
+
+                if (isSelected) {
+                    fill("#888800");
+                    noStroke();
+                    rect(baseX, baseY, cellSize * pieceSize, cellSize * pieceSize);
+                }
+
+                let piece = selected_pieces[i];
+
+                for (let y = 1; y <= 5; y++) {
+                    for (let x = 1; x <= 5; x++) {
+                        let val = piece[y][x];
+                        if (val !== 1) continue;
+
+                        if (my_player_num == 1) fill(isUsed ? "#888888" : "#FFFFFF");
+                        if (my_player_num == 2) fill(isUsed ? "#888888" : "#000000");
+                        stroke("#888888");
+                        strokeWeight(0.5)
+
+                        let drawX = baseX + (x - 1) * scaleFactor;
+                        let drawY = baseY + (y - 1) * scaleFactor;
+                        rect(drawX, drawY, scaleFactor, scaleFactor);
+                    }
+                }
+
+
+                // Flip the canvas 180° around the center
+                push();
+                translate(width, height); // Move origin to bottom-right
+                rotate(PI);               // Rotate 180 degrees (PI radians)
+
+                isUsed = used_pieces[my_player_num == 1 ? 1 : 0][i];
+
+                piece = selected_pieces[i];
+
+                for (let y = 1; y <= 5; y++) {
+                    for (let x = 1; x <= 5; x++) {
+                        let val = piece[y][x];
+                        if (val !== 1) continue;
+
+                        if (my_player_num == 1) fill(isUsed ? "#888888" : "#000000");
+                        if (my_player_num == 2) fill(isUsed ? "#888888" : "#FFFFFF");
+                        stroke("#888888");
+                        strokeWeight(0.5)
+
+                        let drawX = baseX + (x - 1) * scaleFactor;
+                        let drawY = baseY + (y - 1) * scaleFactor;
+                        rect(drawX, drawY, scaleFactor, scaleFactor);
+                    }
+                }
+
+                pop()
+            }
+        }
+
+        function drawButton(gx, gy, label) {
+            fill("#444");
+            stroke(255);
+            rect(gx * cellSize, gy * cellSize, BUTTON_SIZE * cellSize, BUTTON_SIZE * cellSize, 5);
+
+            fill(255);
+            noStroke();
+            textAlign(CENTER, CENTER);
+            textSize(cellSize * 1.5);
+            text(label, (gx + 2) * cellSize, (gy + 2) * cellSize);
+        }
+
+        function mousePressed() {
+            handleInput(mouseX, mouseY);
+        }
+
+        function touchStarted() {
+            handleInput(mouseX, mouseY);
+            return false;
+        }
+
+        function handleInput(px, py) {
+
+            if (handlePieceClick(px, py)) return;
+
+            let x = floor(px / cellSize);
+            let y = floor(py / cellSize);
+
+            if (x >= leftButton.x && x < leftButton.x + BUTTON_SIZE &&
+                y >= leftButton.y && y < leftButton.y + BUTTON_SIZE) {
+                rotateSelectedPiece();
+                return;
+            }
+
+            if (x >= rightButton.x && x < rightButton.x + BUTTON_SIZE &&
+                y >= rightButton.y && y < rightButton.y + BUTTON_SIZE) {
+                flipSelectedPiece();
+                return;
+            }
+
+            if (x >= centerButton.x && x < centerButton.x + BUTTON_SIZE &&
+                y >= centerButton.y && y < centerButton.y + BUTTON_SIZE) {
+                if (my_player_num == game_state && checkPlacement(selectedCell.x, selectedCell.y, selected_piece, my_player_num)) {
+                    handleSuccessfulPlacement()
+                }
+                return;
+            }
+
+            if (x >= 4 && x <= 17 && y >= 4 && y <= 17) {
+                selectedCell = { x, y };
+            } else {
+                selectedCell = null;
+            }
+        }
+
+        function handleSuccessfulPlacement() {
+            var last_piece = selected_piece_index
+            placePiece()
+            var opponent_player_num = my_player_num == 1 ? 2 : 1
+            var next_player = opponent_player_num
+
+            var opponent_finished = scores[opponent_player_num-1] != 0
+            var my_player_finished = scores[my_player_num-1] != 0
+
+            //If I just placed my last piece, set my score accordingly
+            if (used_pieces[my_player_num - 1].every((value) => value)) {
+                console.log("Used all pieces")
+                scores[my_player_num-1] = 15
+                if (last_piece == 0) {
+                    console.log("And got bonus for the dot being last")
+                    scores[my_player_num-1] = 20
+                }
+                my_player_finished = true
+            }
+            //If I can no longer place any more pieces, set my score accordingly.
+            console.log("Checking if I'm out of moves: ")
+            if(my_player_finished){
+                console.log("I already got a score (this output should never appear)")
+            }
+            else if (!checkRemainingPlacements(my_player_num)) {
+                console.log("I now have no more moves.")
+                scores[my_player_num-1] = -sumRemainingPieceTiles(my_player_num)
+                console.log(`Set player's score: scores[${my_player_num-1}] = ${scores[my_player_num-1]}`)
+                my_player_finished = true
+            }
+            //If my opponent has no more moves, set their score and go again
+            console.log("Checking if opponent can place: ")
+            if(opponent_finished){
+                console.log("Opponent was already scored.  Go again.")
+                next_player = my_player_num
+            }
+            else if(!checkRemainingPlacements(opponent_player_num)) {
+                console.log("Opponent has no further moves.  Go again.")
+                scores[opponent_player_num-1] = -sumRemainingPieceTiles(opponent_player_num)
+                console.log(`Set opponent's score: scores[${opponent_player_num-1}] = ${scores[opponent_player_num-1]}`)
+                next_player = my_player_num
+                opponent_finished = true
+            }
+            //If we both have assigned scores, determine the winner of the game
+            if(my_player_finished && opponent_finished){
+                console.log((scores[0]>scores[1])?"Player 1 Wins!":"Player 2 Wins!")
+                console.log(scores)
+                game_state = (scores[0]>scores[1])?-1:-2
+                return
+            }
+
+            game_state = next_player
+            my_player_num = next_player
+
+            //This is where API call would go... IF I HAD ONE
+        }
+
+        function handlePieceClick(px, py) {
+            for (let box of piece_click_boxes) {
+                if (px >= box.x && px <= box.x + box.size &&
+                    py >= box.y && py <= box.y + box.size) {
+                    if (!used_pieces[my_player_num - 1][box.index]) {
+                        selected_piece = selected_pieces[box.index];
+                        selected_piece_index = box.index;
+                        console.log("Selected piece", box.index);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function rotateSelectedPiece() {
+            selected_piece = selected_piece[0].map((_, i) =>
+                selected_piece.map(row => row[i]).reverse()
+            );
+        }
+
+        function flipSelectedPiece() {
+            selected_piece = selected_piece.map(row => row.slice().reverse());
+        }
+
+        function centerCanvas() {
+            let x = (windowWidth - width) / 2;
+            let y = (windowHeight - height) / 2;
+            canvas.position(x, y);
+        }
+
+        function checkPlacement(cx, cy, selected_piece, player_num) {
+            let valid = true;
+            let foundCorner = false;
+            let foundStart = false;
+
+            for (let dy = -3; dy <= 3; dy++) {
+                for (let dx = -3; dx <= 3; dx++) {
+                    let boardX = cx + dx;
+                    let boardY = cy + dy;
+
+                    // Bounds check
+                    if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) {
+                        valid = false;
+                        continue;
                     }
 
-                    if(foundCorner){
+                    let boardValue = board[boardY][boardX];
+                    let pieceValue = selected_piece[dy + 3][dx + 3];
+
+                    if (pieceValue == 1 && boardValue == -2) foundStart = true
+
+                    if (boardValue == player_num && pieceValue == 3) {
+                        // console.log("Found a valid corner")
+                        foundCorner = true;
+                    }
+
+                    if (boardValue == player_num && pieceValue == 2) {
+                        valid = false;
+                        // console.log("Failed due to adjacent edges.")
+                        break;
+                    }
+
+                    if (pieceValue !== 1) continue;
+
+                    if (boardValue == -1) {
+                        valid = false;
+                        // console.log("Failed due to out-of-bounds.")
+                        break;
+                    }
+
+                    if (boardValue > 0 && pieceValue == 1) {
+                        // console.log("Failed due to overlapping pieces.")
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+
+            if (valid) {
+                if (!used_pieces[player_num - 1].includes(true)) { //Check that no pieces have been placed yet
+                    if (foundStart) { //Check that the piece is placed on a starting space
                         return true
                     }
-                    else console.log("Failed due to no connected corner.")
+                    // else console.log("Failed due to not on start space.")
                     return false
                 }
 
+                if (foundCorner) {
+                    return true
+                }
+                // else console.log("Failed due to no connected corner.")
                 return false
-
             }
 
-            function placePiece() {
-                if (!selectedCell) return;
+            return false
 
-                let cx = selectedCell.x;
-                let cy = selectedCell.y;
+        }
 
-                for (let dy = -3; dy <= 3; dy++) {
-                    for (let dx = -3; dx <= 3; dx++) {
-                        let boardX = cx + dx;
-                        let boardY = cy + dy;
+        function placePiece() {
+            if (!selectedCell) return;
 
-                        // Bounds check
-                        if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) continue;
+            let cx = selectedCell.x;
+            let cy = selectedCell.y;
 
-                        let pieceValue = selected_piece[dy + 3][dx + 3];
+            for (let dy = -3; dy <= 3; dy++) {
+                for (let dx = -3; dx <= 3; dx++) {
+                    let boardX = cx + dx;
+                    let boardY = cy + dy;
 
-                        // Apply piece where value is 1
-                        if (pieceValue === 1) {
-                            board[boardY][boardX] = my_player_num;
-                        }
+                    // Bounds check
+                    if (boardX < 0 || boardX >= 22 || boardY < 0 || boardY >= 22) continue;
+
+                    let pieceValue = selected_piece[dy + 3][dx + 3];
+
+                    // Apply piece where value is 1
+                    if (pieceValue === 1) {
+                        board[boardY][boardX] = my_player_num;
                     }
                 }
-
-                if (selected_piece_index !== undefined) {
-                    used_pieces[my_player_num-1][selected_piece_index] = true;
-                    selected_piece = null;
-                    selected_piece_index = undefined;
-                }
             }
 
-            function checkRemainingPlacements() {
-                for (let i = 0; i < selected_pieces.length; i++) {
-                    if (used_pieces[my_player_num - 1][i]) continue; // Skip used pieces
+            if (selected_piece_index !== undefined) {
+                used_pieces[my_player_num - 1][selected_piece_index] = true;
+                selected_piece = null;
+                selected_piece_index = undefined;
+            }
+        }
 
-                    let piece = selected_pieces[i];
+        function checkRemainingPlacements(player_num) {
+            for (let i = 0; i < selected_pieces.length; i++) {
+                if (used_pieces[player_num - 1][i]) continue; // Skip used pieces
+                console.log("checking piece", i)
 
-                    // Try all 4 rotations and 2 flipped versions (total 8 orientations)
-                    for (let flip = 0; flip < 2; flip++) {
-                        let testPiece = flip ? flipPiece(piece) : piece;
+                let piece = selected_pieces[i];
 
-                        for (let r = 0; r < 4; r++) {
-                            if (r > 0) testPiece = rotatePiece(testPiece);
+                // Try all 4 rotations and 2 flipped versions (total 8 orientations)
+                for (let flip = 0; flip < 2; flip++) {
+                    let testPiece = flip ? flipPiece(piece) : piece;
 
-                            for (let y = 0; y < 22; y++) {
-                                for (let x = 0; x < 22; x++) {
-                                    if (checkPlacement(x, y, testPiece)) {
-                                        console.log(`Piece ${i} is placeable at (${x},${y})`);
-                                        return true;
-                                    }
+                    for (let r = 0; r < 4; r++) {
+                        if (r > 0) testPiece = rotatePiece(testPiece);
+
+                        for (let y = 0; y < 22; y++) {
+                            for (let x = 0; x < 22; x++) {
+                                if (checkPlacement(x, y, testPiece, player_num)) {
+                                    console.log(`Piece ${i} is placeable at (${x},${y})`);
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-
-                return false;
             }
 
-            function rotatePiece(piece) {
-                return piece[0].map((_, i) => piece.map(row => row[i]).reverse());
-            }
+            return false;
+        }
 
-            function flipPiece(piece) {
-                return piece.map(row => row.slice().reverse());
-            }
+        function rotatePiece(piece) {
+            return piece[0].map((_, i) => piece.map(row => row[i]).reverse());
+        }
 
-            function sumRemainingPieceTiles(player_num) {
-                let total = 0;
+        function flipPiece(piece) {
+            return piece.map(row => row.slice().reverse());
+        }
 
-                for (let i = 0; i < selected_pieces.length; i++) {
-                    if (used_pieces[player_num - 1][i]) continue; // skip used pieces
+        function sumRemainingPieceTiles(player_num) {
+            let total = 0;
 
-                    let piece = selected_pieces[i];
+            for (let i = 0; i < selected_pieces.length; i++) {
+                if (used_pieces[player_num - 1][i]) continue; // skip used pieces
 
-                    for (let y = 0; y < piece.length; y++) {
-                        for (let x = 0; x < piece[y].length; x++) {
-                            if (piece[y][x] === 1) total++;
-                        }
+                let piece = selected_pieces[i];
+
+                for (let y = 0; y < piece.length; y++) {
+                    for (let x = 0; x < piece[y].length; x++) {
+                        if (piece[y][x] === 1) total++;
                     }
                 }
-
-                return total;
             }
 
+            return total;
+        }
 
+    </script>
 
-        </script>
-        
-	</body>
+</body>
+
 </html>
