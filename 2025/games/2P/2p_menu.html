@@ -331,12 +331,12 @@
 
     function launchGame(gameid, game_name) {
         console.log("Opening", gameid);
-        window.location.href = `./${game_name}_2p.html?hash=${hash}&gameid=${gameid}`;
+        window.location.href = `./${game_name.toLowercase()}_2p.html?hash=${hash}&gameid=${gameid}`;
     }
 
     function localGame(game_name) {
         console.log("Redirecting to local game");
-        window.location.href = `./${game_name}.html?hash=${hash}`;
+        window.location.href = `./${game_name.toLowercase}.html?hash=${hash}`;
     }
 
     // ---- Program 2 logic ----
