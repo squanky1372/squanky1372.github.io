@@ -31,7 +31,7 @@ async function issueChallenge(player, game_name="Gobblet") {
 
     try {
         await submitGameUpdate(game, hash, player.hash, gameid, game_name);
-        window.location.href = `${game_name}_2p.html?hash=${hash}&gameid=${gameid}`;
+        window.location.href = `${game_name.toLowerCase()}_2p.html?hash=${hash}&gameid=${gameid}`;
     } catch (error) {
         console.error("Failed to submit game update:", error);
         alert("An error occurred while starting the game. Please try again.");
