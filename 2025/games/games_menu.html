@@ -167,6 +167,41 @@
             let rotationSensitivity = 0.01;
             let tapped = false;       // You can respond to this flag in your draw()
 
+            let isDragging = false;
+            let lastMouseX = null;
+
+            function mousePressed() {
+                isDragging = true;
+                lastMouseX = mouseX;
+                return false;
+            }
+
+            function mouseDragged() {
+                if (isDragging && lastMouseX !== null) {
+                    let dx = mouseX - lastMouseX;
+                    angle -= dx * rotationSensitivity;
+                    lastMouseX = mouseX;
+                }
+                return false;
+            }
+
+            function mouseReleased() {
+                if (isDragging) {
+                    let totalMovement = abs(mouseX - lastMouseX);
+                    if (totalMovement < tapThreshold) {
+                        // mimic a tap
+                        tapped = !tapped;
+                        console.log("mouse tapped")
+                        window.location.href = `${circles[circles.length - 1].ball.link}?hash=${hash}`;
+                    }
+                }
+
+                isDragging = false;
+                lastMouseX = null;
+                return false;
+            }
+
+
             function touchStarted() {
             if (touches.length > 0) {
                 touchStartX = touches[0].x;
