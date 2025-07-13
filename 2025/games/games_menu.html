@@ -1,217 +1,193 @@
 <!DOCTYPE html>
 <html>
-	<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
-	<link rel="icon" href="/html/img/Boxes37.png">
-    <head>
-		<title>Felipe</title>
-		<style>
-			body { margin: 0; overflow: hidden}
-			canvas {width: 100%; height: 100%; overflow: hidden}
-		</style>
-	</head>
-    <body style="background-color:#0066ff;">
-        <script src="../aa_libraries/matter.js"></script>        
-		<script src="../aa_libraries/p5.js"></script>    
-		<script src="../aa_libraries/fj_games_library.js"></script>    
-		<script src="../aa_libraries/fj_window_library.js"></script>
-		<script>
-            // let angle = 0;              // current angle of orbit
-            var redirected = false
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
 
-            let a = 200;                // horizontal radius (major axis)
-            let b = 50;                 // vertical radius (minor axis)
-            let vertical_oscillate = 10 // oscillate the whole orbit up and down
-			function setup() {
-                verifyHash()
-                setupStars()
-                let size = min(windowWidth, windowHeight) * 0.95;
-  
-                // Create the canvas with the calculated size
-                canvas = createCanvas(size, size);
-                
-                // Center the canvas on the screen
-                centerCanvas();
-                disableCanvasDefaults()
-			}
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
 
-            var circles = []
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
 
-			function draw() {
-                if(redirected) return
-                scaleContent();
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+    <script src="../aa_libraries/p5.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script>
+        // let angle = 0;              // current angle of orbit
+        var redirected = false
 
-                background(0, 0, 0, 30);
+        let a = 200;                // horizontal radius (major axis)
+        let b = 50;                 // vertical radius (minor axis)
+        let vertical_oscillate = 10 // oscillate the whole orbit up and down
+        function setup() {
+            verifyHash()
+            setupStars()
+            let size = min(windowWidth, windowHeight) * 0.95;
 
-                drawStars()
-                translate(300, 300); // move origin to center of canvas
+            // Create the canvas with the calculated size
+            canvas = createCanvas(size, size);
 
-                // Create list of orbiting circles with calculated positions
-                var balls = [
-                    {color:"red",       title:"Gyro",    link:"gyro_darts.html", icon: "🎯"},
-                    {color:"orange",    title:"Stardunk",    link:"stardunk.html", icon:"🏀"},
-                    {color:"yellow",    title:"Hexes",    link:"hexes.html", icon:"⬡"},
-                    // {color:"lime",     title:"for", link:"link.html"},
-                    {color:"green",      title:"Blokus", link:"2P/blokus.html", icon:"🏁"},
-                    // {color:"turquoise",    title:"six", link:"link.html"},
-                    // {color:"cyan",    title:"six", link:"link.html"},
-                    {color:"DodgerBlue",    title:"Gobblet", link:"2P/gobblet.html", icon:"🍴"}, //🪆🔘
-                    // {color:"blue",    title:"six", link:"link.html"},
-                    {color:"purple",    title:"Morse", link:"morse_alphabet.html", icon:"•-•"},
-                    // {color:"magenta",    title:"six", link:"link.html"},
-                    // {color:"violet",    title:"six", link:"link.html"},
-                    // {color:"gray",      title:"FAQ", link:"help.html", icon:"?"},
-                    {color:"gray",      title:"Versus", link:"2P/2p_menu.html", icon:"?"},
-                    {color:"lightgray", title:"You", link:"player_data.html", icon:""},
-                    {color:"lightgray", title:"Achievements", link:"achievements.html", icon:"🏆"},
-                ]
-                let total_size = 60
+            // Center the canvas on the screen
+            centerCanvas();
+            disableCanvasDefaults()
+        }
 
-                circles = [];
-                for (let i = 0; i < balls.length; i++) {
-                    let theta = angle + ((Math.PI / 2) * 1 / balls.length) * i * 4;
-                    let x = a * cos(theta);
-                    let y = b * sin(theta);
-                    let size = cos(theta - Math.PI / 2) * (total_size) + total_size*2;
-                    circles.push({ x, y, size, theta, ball:balls[i] });
-                }
-                white_ball = {color:"white",     title:"zer", link:"link.html"},
-                circles.push({x:0,y:0,theta:0,ball:white_ball,size:100})
+        var circles = []
 
-                // Sort by y to draw further circles first
-                circles.sort((a, b) => a.y - b.y);
+        function draw() {
+            if (redirected) return
+            scaleContent();
 
-                // Draw central point
-                fill(0);
-                ellipse(0, 0, 10);
+            background(0, 0, 0, 30);
 
-                // Draw orbiting circles in sorted order
-                for (let circle of circles) {
-                    // console.log(circle)
-                    push()
-                    translate(circle.x, circle.y, sin(angle)*vertical_oscillate)
-                    scale(circle.size)
-                    
-                    if(circle.ball.title == "You"){
-                        scale(0.01)
-                        drawPlayerIcon()
-                    }
-                    else{
-                        noStroke()
-                        fill(circle.ball.color);
-                        ellipse(0, 0, 1);
-                        fill(0)
-                        textAlign(CENTER, CENTER)
-                        textSize(0.8)
-                        text(circle.ball.icon, 0,0.05)
-                    }
-                    pop()
-                }
-                
-                stroke(255)
-                fill(255)
-                textAlign(CENTER, CENTER)
-                textSize(circles[circles.length-1].size/4)
-                text(circles[circles.length-1].ball.title, 
-                    circles[circles.length-1].x, 
-                    circles[circles.length-1].y+ sin(angle)*vertical_oscillate + circles[circles.length-1].size*0.6)
+            drawStars()
+            translate(300, 300); // move origin to center of canvas
 
-                // angle += 0.03;
+            // Create list of orbiting circles with calculated positions
+            var balls = [
+                { color: "red", title: "Gyro", link: "gyro_darts.html", icon: "🎯" },
+                { color: "orange", title: "Stardunk", link: "stardunk.html", icon: "🏀" },
+                { color: "yellow", title: "Hexes", link: "hexes.html", icon: "⬡" },
+                // {color:"lime",     title:"for", link:"link.html"},
+                { color: "green", title: "Blokus", link: "2P/blokus.html", icon: "🏁" },
+                // {color:"turquoise",    title:"six", link:"link.html"},
+                // {color:"cyan",    title:"six", link:"link.html"},
+                { color: "DodgerBlue", title: "Gobblet", link: "2P/gobblet.html", icon: "🍴" }, //🪆🔘
+                // {color:"blue",    title:"six", link:"link.html"},
+                { color: "purple", title: "Morse", link: "morse_alphabet.html", icon: "•-•" },
+                // {color:"magenta",    title:"six", link:"link.html"},
+                // {color:"violet",    title:"six", link:"link.html"},
+                // {color:"gray",      title:"FAQ", link:"help.html", icon:"?"},
+                { color: "gray", title: "Versus", link: "2P/2p_menu.html", icon: "?" },
+                { color: "lightgray", title: "You", link: "player_data.html", icon: "" },
+                { color: "lightgray", title: "Achievements", link: "achievements.html", icon: "🏆" },
+            ]
+            let total_size = 60
+
+            circles = [];
+            for (let i = 0; i < balls.length; i++) {
+                let theta = angle + ((Math.PI / 2) * 1 / balls.length) * i * 4;
+                let x = a * cos(theta);
+                let y = b * sin(theta);
+                let size = cos(theta - Math.PI / 2) * (total_size) + total_size * 2;
+                circles.push({ x, y, size, theta, ball: balls[i] });
             }
+            white_ball = { color: "white", title: "zer", link: "link.html" },
+                circles.push({ x: 0, y: 0, theta: 0, ball: white_ball, size: 100 })
 
-            function drawPlayerIcon(){
-                if(newPlayerFlag) {
-                    redirectPlayerData()
-                    return
-                }
-                console.log(playerDataFetched)
+            // Sort by y to draw further circles first
+            circles.sort((a, b) => a.y - b.y);
+
+            // Draw central point
+            fill(0);
+            ellipse(0, 0, 10);
+
+            // Draw orbiting circles in sorted order
+            for (let circle of circles) {
+                // console.log(circle)
                 push()
-                if(playerDataFetched == 2){
-                    setFill(pattern, bufferCnv);
-                    bufferCnv.circle(0.5 * iconsize,0.5 * iconsize,iconsize)
-                    image(bufferCnv, -iconsize/2, -iconsize/2);
+                translate(circle.x, circle.y, sin(angle) * vertical_oscillate)
+                scale(circle.size)
+
+                if (circle.ball.title == "You") {
+                    scale(0.01)
+                    drawPlayerIcon()
+                }
+                else {
+                    noStroke()
+                    fill(circle.ball.color);
+                    ellipse(0, 0, 1);
+                    fill(0)
+                    textAlign(CENTER, CENTER)
+                    textSize(0.8)
+                    text(circle.ball.icon, 0, 0.05)
                 }
                 pop()
-
-                if(playerDataFetched == 1) {
-                    console.log("done waiting")
-                    //setup buffer canvas
-                    let size = min(windowWidth, windowHeight) * 0.95;
-                    bufferCnv = createGraphics(size, size);
-                    bufferCnv.pixelDensity(1);
-
-                    //setup pattern
-                    iconsize = 100
-                    makePattern(iconsize)
-
-                    playerDataFetched = 2
-                    
-                }
             }
 
-            function redirectPlayerData(){
-                alert("Welcome, new player!  Before we start, let's go over a few things!")
-                alert("This is the main menu, where you can navigate to all the available pages by scrolling and clicking on one of the icons.")
-                alert("Your player icon will be available as one of the icons, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
-                window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
-                redirected = true
+            stroke(255)
+            fill(255)
+            textAlign(CENTER, CENTER)
+            textSize(circles[circles.length - 1].size / 4)
+            text(circles[circles.length - 1].ball.title,
+                circles[circles.length - 1].x,
+                circles[circles.length - 1].y + sin(angle) * vertical_oscillate + circles[circles.length - 1].size * 0.6)
+
+            // angle += 0.03;
+        }
+
+        function drawPlayerIcon() {
+            if (newPlayerFlag) {
+                redirectPlayerData()
+                return
             }
-
-		</script>
-
-        <script> //touch controls
-            let angle = 0;
-            let lastTouchX = null;
-            let touchStartX = null;
-            let touchStartTime = null;
-            let tapThreshold = 10;    // Max movement to count as a tap
-            let rotationSensitivity = 0.01;
-            let tapped = false;       // You can respond to this flag in your draw()
-
-            let isDragging = false;
-            let lastMouseX = null;
-
-            function mousePressed() {
-                isDragging = true;
-                lastMouseX = mouseX;
-                return false;
+            console.log(playerDataFetched)
+            push()
+            if (playerDataFetched == 2) {
+                setFill(pattern, bufferCnv);
+                bufferCnv.circle(0.5 * iconsize, 0.5 * iconsize, iconsize)
+                image(bufferCnv, -iconsize / 2, -iconsize / 2);
             }
+            pop()
 
-            function mouseDragged() {
-                if (isDragging && lastMouseX !== null) {
-                    let dx = mouseX - lastMouseX;
-                    angle -= dx * rotationSensitivity;
-                    lastMouseX = mouseX;
-                }
-                return false;
+            if (playerDataFetched == 1) {
+                console.log("done waiting")
+                //setup buffer canvas
+                let size = min(windowWidth, windowHeight) * 0.95;
+                bufferCnv = createGraphics(size, size);
+                bufferCnv.pixelDensity(1);
+
+                //setup pattern
+                iconsize = 100
+                makePattern(iconsize)
+
+                playerDataFetched = 2
+
             }
+        }
 
-            function mouseReleased() {
-                if (isDragging) {
-                    let totalMovement = abs(mouseX - lastMouseX);
-                    if (totalMovement < tapThreshold) {
-                        // mimic a tap
-                        tapped = !tapped;
-                        console.log("mouse tapped")
-                        window.location.href = `${circles[circles.length - 1].ball.link}?hash=${hash}`;
-                    }
-                }
+        function redirectPlayerData() {
+            alert("Welcome, new player!  Before we start, let's go over a few things!")
+            alert("This is the main menu, where you can navigate to all the available pages by scrolling and clicking on one of the icons.")
+            alert("Your player icon will be available as one of the icons, and clicking it will allow you to see and edit your profile.  But right now you don't have one yet! Redirecting to profile builder...")
+            window.location.assign(`./player_data.html?hash=${hash}&firstTime=1`)
+            redirected = true
+        }
 
-                isDragging = false;
-                lastMouseX = null;
-                return false;
-            }
+    </script>
+
+    <script> //touch controls
+        let angle = 0;
+        let lastTouchX = null;
+        let touchStartX = null;
+        let touchStartTime = null;
+        let tapThreshold = 10;    // Max movement to count as a tap
+        let rotationSensitivity = 0.01;
+        let tapped = false;       // You can respond to this flag in your draw()
 
 
-            function touchStarted() {
+        function touchStarted() {
             if (touches.length > 0) {
                 touchStartX = touches[0].x;
                 lastTouchX = touchStartX;
                 touchStartTime = millis();
             }
             return false;
-            }
+        }
 
-            function touchMoved() {
+        function touchMoved() {
             if (touches.length > 0 && lastTouchX !== null) {
                 let currentX = touches[0].x;
                 let dx = currentX - lastTouchX;
@@ -221,9 +197,9 @@
                 lastTouchX = currentX;
             }
             return false;
-            }
+        }
 
-            function touchEnded() {
+        function touchEnded() {
             if (touchStartX !== null && touches.length === 0) {
                 let totalMovement = abs(mouseX - touchStartX);
                 let duration = millis() - touchStartTime;
@@ -231,7 +207,7 @@
                 if (totalMovement < tapThreshold) {
                     tapped = !tapped;
                     console.log("tapped")
-                    window.location.href=`${circles[circles.length-1].ball.link}?hash=${hash}`
+                    window.location.href = `${circles[circles.length - 1].ball.link}?hash=${hash}`
                 }
             }
 
@@ -239,22 +215,61 @@
             touchStartX = null;
             touchStartTime = null;
             return false;
+        }
+        let isDragging = false;
+        let mouseStartX = null;
+        let mouseStartTime = null;
+
+        function mousePressed() {
+            isDragging = true;
+            mouseStartX = mouseX;
+            lastMouseX = mouseX;
+            mouseStartTime = millis();
+            return false;
+        }
+
+        function mouseDragged() {
+            if (isDragging && lastMouseX !== null) {
+                let dx = mouseX - lastMouseX;
+                angle -= dx * rotationSensitivity;
+                lastMouseX = mouseX;
+            }
+            return false;
+        }
+
+        function mouseReleased() {
+            if (!isDragging) return false;
+
+            let totalMovement = abs(mouseX - mouseStartX);
+            let duration = millis() - mouseStartTime;
+
+            if (totalMovement < tapThreshold) {
+                tapped = !tapped;
+                console.log("mouse tapped");
+                window.location.href = `${circles[circles.length - 1].ball.link}?hash=${hash}`;
             }
 
-        </script>
+            isDragging = false;
+            mouseStartX = null;
+            lastMouseX = null;
+            return false;
+        }
 
-        <script>//stars
-        
 
-        function setupStars(){
+    </script>
+
+    <script>//stars
+
+
+        function setupStars() {
             stars = []
             var stars_count = 500
             var star_size = 2
-            for(var i = 0; i < stars_count; i++){
+            for (var i = 0; i < stars_count; i++) {
                 stars.push([random(600), random(600), random(star_size)])
             }
         }
-        function drawStars(){
+        function drawStars() {
             push()
             fill(255)
             noStroke()
@@ -263,10 +278,11 @@
             var star_minimum = 0
             strokeWeight(random(2))
             stars.forEach(star => {
-                circle((star[0]+((millis()) / star_rate))%600, star[1], random(star_variance)+star_minimum+star[2])
+                circle((star[0] + ((millis()) / star_rate)) % 600, star[1], random(star_variance) + star_minimum + star[2])
             })
             pop()
         }
-        </script>
-    </body>
+    </script>
+</body>
+
 </html>
