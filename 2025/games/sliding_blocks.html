@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
+
+<body style="background-color:#0066ff;">
+    <!-- <script src="../aa_libraries/matter.js"></script> -->
+    <script src="../aa_libraries/p5.js"></script>
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+
+
+    <script>
+
+        // function draw() {
+        //     scaleContent()
+
+        //     background(100)
+        // }
+        // const N = 500;
+        let gridSize = 80;
+        let offsetX, offsetY;
+
+        let rows = 5;
+        let cols = 4;
+        let blocks = [];
+        let selected = null;
+        let grabX, grabY;
+        let winningSpace = [1, 3]
+        let moveCount = 0;
+
+        var gameOver = false
+        var canvas
+
+        function setup() {
+            let N = min(windowWidth, windowHeight) * 0.95;
+            canvas = createCanvas(N, N);
+
+            centerCanvas();
+            disableCanvasDefaults()
+
+            gridSize = N / max(rows, cols);  // scale to fit both directions
+            offsetX = (N - cols * gridSize) / 2;
+            offsetY = (N - rows * gridSize) / 2;
+
+            // --- Classic Klotski layout ---
+            blocks.push(new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"));   // 2x2 target
+            blocks.push(new Block(0, 0, [[0, 0], [1, 0]], "blue"));              // left vertical
+            blocks.push(new Block(0, 3, [[0, 0], [1, 0]], "navy"));              // right vertical
+            blocks.push(new Block(2, 0, [[0, 0], [1, 0]], "green"));             // bottom left horizontal
+            blocks.push(new Block(2, 3, [[0, 0], [1, 0]], "darkgreen"));             // bottom right horizontal
+            blocks.push(new Block(2, 1, [[0, 0], [0, 1]], "purple"));             // bottom right horizontal
+            blocks.push(new Block(3, 1, [[0, 0]], "yellow"));                  // center 1x1
+            blocks.push(new Block(3, 2, [[0, 0]], "gold"));                  // center 1x1
+            blocks.push(new Block(4, 0, [[0, 0]], "orange"));                  // bottom left 1x1
+            blocks.push(new Block(4, 3, [[0, 0]], "darkorange"));                  // bottom right 1x1
+        }
+
+        function draw() {
+            background(0);
+
+            fill(240);         // slightly lighter gray
+            noStroke();
+            rect(offsetX, offsetY, cols * gridSize, rows * gridSize);
+
+            stroke(0);
+            for (let b of blocks) b.show();
+        }
+
+        function mousePressed() {
+
+            for (let b of blocks) {
+                for (let [dr, dc] of b.cells) {
+                    let x = offsetX + (b.col + dc) * gridSize;
+                    let y = offsetY + (b.row + dr) * gridSize;
+                    if (mouseX >= x && mouseX < x + gridSize &&
+                        mouseY >= y && mouseY < y + gridSize) {
+                        selected = b;
+                        grabX = mouseX;
+                        grabY = mouseY;
+                        return;
+                    }
+                }
+            }
+        }
+
+        function mouseDragged() {
+            if (!selected) return;
+
+            let dx = mouseX - grabX;
+            let dy = mouseY - grabY;
+
+            if (abs(dx) > abs(dy)) {
+                if (dx > gridSize / 2) {
+                    tryMove(selected, 0, 1);
+                    grabX = mouseX; // reset grab point
+                } else if (dx < -gridSize / 2) {
+                    tryMove(selected, 0, -1);
+                    grabX = mouseX;
+                }
+            } else {
+                if (dy > gridSize / 2) {
+                    tryMove(selected, 1, 0);
+                    grabY = mouseY;
+                } else if (dy < -gridSize / 2) {
+                    tryMove(selected, -1, 0);
+                    grabY = mouseY;
+                }
+            }
+        }
+
+        function mouseReleased() {
+            selected = null;
+            if(!gameOver) moveCount++;
+
+            checkWin()
+            
+        }
+
+        function tryMove(block, dr, dc) {
+            if (canMove(block, dr, dc)) {
+                block.row += dr;
+                block.col += dc;
+            }
+        }
+
+        function canMove(block, dr, dc) {
+            for (let [r, c] of block.cells) {
+                let nr = block.row + r + dr;
+                let nc = block.col + c + dc;
+                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return false;
+
+                for (let other of blocks) {
+                    if (other === block) continue;
+                    for (let [rr, cc] of other.cells) {
+                        if (nr === other.row + rr && nc === other.col + cc) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function checkWin() {
+            let winBlock = blocks[0]; // red block is always first
+            console.log(winBlock)
+            if (winBlock.col === winningSpace[0] && winBlock.row === winningSpace[1] && !gameOver) {
+                alert(`🎉 You won in ${moveCount} moves! 🎉`);
+                gameOver = true
+            }
+        }
+
+        class Block {
+            constructor(row, col, cells, color) {
+                this.row = row;
+                this.col = col;
+                this.cells = cells; // relative coords
+                this.color = color;
+            }
+
+            show() {
+                fill(this.color);
+                noStroke();
+                for (let [dr, dc] of this.cells) {
+                    rect(offsetX + (this.col + dc) * gridSize,
+                        offsetY + (this.row + dr) * gridSize,
+                        gridSize, gridSize);
+
+                    
+                }
+                if (this.color === "red") {
+                        fill(255);          // white text
+                        textAlign(CENTER, CENTER);
+                        textSize(gridSize / 2);
+                        text(moveCount,
+                            (this.col + 1.5) * gridSize,
+                            (this.row + 1.0) * gridSize);
+                    }
+            }
+        }
+
+
+
+    </script>
+</body>
+
+</html>
