@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+        let vertices = [];
+
+        // Example input: a string of numbers
+        let inputString = "1234";  // will draw lines [1,2] and [3,4]
+
+        let alphabet = [
+            "",
+            "136251",
+            "21166554433652",
+            "2116655443",
+            "12233441",
+            "2116655463",
+            "211453",
+            "211665544335",
+            "1665633432",
+            "2116144345",
+            "12233445",
+            "16656362",
+            "166553",
+            "5661122314",
+            "233665",
+            "122334455661",
+            "56611226",
+            "61122334455663",
+            "5661122663",
+            "2116633445",
+            "611214",
+            "65544332",
+            "6442",
+            "6554433241",
+            "6325",
+            "65533234",
+            "622553"
+        ];
+
+
+        function setup() {
+            createCanvas(400, 400);
+            angleMode(RADIANS);
+
+            let cx = width / 2;
+            let cy = height / 2;
+            let r = 150;
+
+            // Calculate hexagon vertices (1 is top)
+            for (let i = 0; i < 6; i++) {
+                let angle = -PI / 2 + TWO_PI / 6 * i; // 1 at top
+                let x = cx + r * cos(angle);
+                let y = cy + r * sin(angle);
+                vertices.push(createVector(x, y));
+            }
+        }
+
+        function draw() {
+            var width = 13
+            var scaler = 0.1
+
+            background(0);
+            scale(scaler)
+            "felipe jannarone is cool and a fun person marianna rogers".split("").forEach((letter, i) => {
+                letterToHexagon(letter, "yellow", true);
+                translate(300, 0)
+                if (i % width == width-1) translate(-(300 * width), 400)
+            })
+        }
+
+        function drawHexagon(str, color="red", drawOutline=false) {
+            if(drawOutline){
+                // Draw hexagon outline
+                stroke(0);
+                strokeWeight(2);
+                noFill();
+                beginShape();
+                for (let v of vertices) {
+                    vertex(v.x, v.y);
+                }
+                endShape(CLOSE);
+
+            }
+
+            if(str == "") return
+
+            // Draw lines based on consecutive pairs in string
+            stroke(color);
+            strokeWeight(30);
+            for (let i = 0; i < str.length - 1; i += 2) {
+                let startIdx = parseInt(str[i]) - 1;
+                let endIdx = parseInt(str[i + 1]) - 1;
+                line(vertices[startIdx].x, vertices[startIdx].y, vertices[endIdx].x, vertices[endIdx].y);
+            }
+        }
+
+        function letterToNumber(letter) {
+            // Convert to uppercase to handle both cases
+            let upper = letter.toUpperCase();
+            let code = upper.charCodeAt(0); // 'A' = 65
+            if (code >= 65 && code <= 90) {
+                return code - 64; // 'A' → 1, 'B' → 2, ...
+            } else {
+                return 0; // not a letter
+            }
+        }
+
+        function letterToHexagon(letter, color="red", drawOutline=false) {
+            var letterNum = letterToNumber(letter)
+            drawHexagon(alphabet[letterNum], color, drawOutline)
+        }
+
+    </script>
+</body>
+
+</html>
