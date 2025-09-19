@@ -163,7 +163,7 @@
 
 
         function drawBoard() {
-            stroke(0);
+            noStroke();
             textAlign(CENTER, CENTER);
             textSize(cellSize * 0.4);
 
@@ -177,9 +177,12 @@
                         continue;
                     }
 
+                    fill(0);
                     // highlight target cells
                     if (labels[y][x] === TARGET_MONTH || labels[y][x] === TARGET_DAY) {
-                        noFill(); 
+                        fill("yellow")
+                        text(labels[y][x], px + cellSize / 2, py + cellSize / 2);
+                        continue
                     } else {
                         fill(board[y][x] ? board[y][x].col : 255);
                     }
@@ -187,8 +190,8 @@
 
                     // draw label
                     if (labels[y][x]) {
-                        fill(0);
                         noStroke();
+                        fill(0)
                         text(labels[y][x], px + cellSize / 2, py + cellSize / 2);
                     }
                 }
