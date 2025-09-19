@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes37.png">
+<link rel="icon" href="/html/img/Boxes37.png">
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
+
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+
+        let cols = 7, rows = 7;
+        let cellSize = 40;
+        let board = [];
+        let pieces = [];
+
+        let gridOffsetX, gridOffsetY;
+        var canvas;
+
+        const TARGET_MONTH = "OCT";  // example month
+        const TARGET_DAY = "13";   // example day
+
+
+        function setup() {
+            let size = min(windowWidth, windowHeight) * 0.95;
+            canvas = createCanvas(size, size);
+            centerCanvas();
+            disableCanvasDefaults();
+
+            // calculate offsets so board is centered
+            gridOffsetX = (width - cols * cellSize) / 2;
+            gridOffsetY = (height - rows * cellSize) / 2;
+
+            initBoard();
+            initPieces();
+        }
+
+        function draw() {
+            clear();
+            background(0, 0, 0, 10);
+
+            drawBoard();
+            drawPieces();
+
+            if (checkWin()) {
+                fill(0, 200, 0);
+                textSize(32);
+                textAlign(CENTER, CENTER);
+                text("You Win!", width / 2, height / 2);
+            }
+        }
+
+        function initBoard() {
+            board = [];
+            labels = [];
+            let months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+                "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+            let monthIndex = 0;
+            let dayIndex = 1;
+
+            for (let y = 0; y < rows; y++) {
+                let row = [];
+                let labelRow = [];
+                for (let x = 0; x < cols; x++) {
+                    row.push(null);
+
+                    // skip blocked cells
+                    if ((x === 6 && y === 0) || (x === 6 && y === 1) ||
+                        (x === 6 && y === 6) || (x === 5 && y === 6) ||
+                        (x === 4 && y === 6) || (x === 3 && y === 6)) {
+                        labelRow.push(null);
+                        continue;
+                    }
+
+                    let label = "";
+                    if (monthIndex < months.length) {
+                        label = months[monthIndex++];
+                    } else if (dayIndex <= 31) {
+                        label = dayIndex.toString();
+                        dayIndex++;
+                    }
+                    labelRow.push(label);
+                }
+                board.push(row);
+                labels.push(labelRow);
+            }
+        }
+
+
+        // function initBoard() {
+        //     board = [];
+        //     for (let y = 0; y < rows; y++) {
+        //         let row = [];
+        //         for (let x = 0; x < cols; x++) {
+        //             row.push(null);
+        //         }
+        //         board.push(row);
+        //     }
+
+        //     // mark blocked cells with a special value
+        //     blockedCells = [
+        //         [6, 0], [6, 1],        // top-right two cells
+        //         [6, 6], [5, 6], [4, 6], [3, 6] // bottom-right four cells
+        //     ];
+        // }
+
+
+        function initPieces() {
+            let shapes = [
+                [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]],    // 2x3 rect
+                [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],           // 3x3 L
+                [[0, 0], [1, 0], [1, 1], [1, 2], [2, 2]],           // 3x3 Z
+                [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]],           // 2x3 d
+                [[0, 0], [1, 0], [0, 1], [1, 2], [0, 2]],           // 2x3 U
+                [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1]],           // 2x4 L
+                [[0, 0], [1, 0], [1, 1], [2, 1], [3, 1]],           // 2x4 Z
+                [[0, 0], [1, 0], [2, 0], [3, 0], [2, 1]],           // 2x4 T
+            ];
+
+            pieces = shapes.map(shape => {
+                // find piece dimensions in cells
+                let maxX = max(shape.map(([dx, _]) => dx));
+                let maxY = max(shape.map(([_, dy]) => dy));
+                let w = (maxX + 1) * cellSize;
+                let h = (maxY + 1) * cellSize;
+
+                let side = floor(random(4)); // 0=top,1=right,2=bottom,3=left
+                let x, y;
+                if (side === 0) { // top
+                    x = random(10, width - w - 10);
+                    y = 10;
+                } else if (side === 1) { // right
+                    x = width - w - 10;
+                    y = random(10, height - h - 10);
+                } else if (side === 2) { // bottom
+                    x = random(10, width - w - 10);
+                    y = height - h - 10;
+                } else { // left
+                    x = 10;
+                    y = random(10, height - h - 10);
+                }
+
+                return new Piece(shape, x, y);
+            });
+        }
+
+
+        function drawBoard() {
+            stroke(0);
+            textAlign(CENTER, CENTER);
+            textSize(cellSize * 0.4);
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    let px = gridOffsetX + x * cellSize;
+                    let py = gridOffsetY + y * cellSize;
+
+                    // blocked cells gray
+                    if (labels[y][x] === null) {
+                        // fill(150);
+                        // rect(px, py, cellSize, cellSize);
+                        continue;
+                    }
+                    else fill(board[y][x] ? board[y][x].col : 255);
+                    rect(px, py, cellSize, cellSize);
+
+                    // draw label
+                    if (labels[y][x]) {
+                        fill(0);
+                        noStroke();
+                        text(labels[y][x], px + cellSize / 2, py + cellSize / 2);
+                    }
+                }
+            }
+        }
+
+
+
+
+        function drawPieces() {
+            for (let piece of pieces) {
+                piece.show();
+            }
+        }
+
+        function mousePressed() {
+            for (let i = pieces.length - 1; i >= 0; i--) {
+                if (pieces[i].contains(mouseX, mouseY)) {
+                    let piece = pieces.splice(i, 1)[0];
+                    pieces.push(piece);
+                    piece.removeFromBoard();
+                    piece.dragging = true;
+                    piece.offsetX = mouseX - piece.x;
+                    piece.offsetY = mouseY - piece.y;
+                    break;
+                }
+            }
+        }
+
+        function doubleTapped() {
+            for (let piece of pieces) {
+                if (piece.dragging) {
+                    piece.rotate();
+                    break;
+                }
+            }
+        }
+        let lastTap = 0;
+
+        // --- Touch Handling ---
+        function touchStarted() {
+            if (touches.length === 1) {
+                // One finger: pick up piece like mousePressed
+                for (let i = pieces.length - 1; i >= 0; i--) {
+                    if (pieces[i].contains(touches[0].x, touches[0].y)) {
+                        let piece = pieces.splice(i, 1)[0];
+                        pieces.push(piece);
+                        piece.removeFromBoard();
+                        piece.dragging = true;
+                        piece.offsetX = touches[0].x - piece.x;
+                        piece.offsetY = touches[0].y - piece.y;
+                        break;
+                    }
+                }
+
+                // Detect double-tap for rotate
+                let currentTime = millis();
+                if (currentTime - lastTap < 300) { // 300ms threshold
+                    for (let piece of pieces) {
+                        if (piece.dragging) {
+                            piece.rotate();
+                            break;
+                        }
+                    }
+                }
+                lastTap = currentTime;
+            }
+
+            // Two-finger tap = flip
+            if (touches.length === 2) {
+                for (let piece of pieces) {
+                    if (piece.dragging) {
+                        piece.flip();
+                        break;
+                    }
+                }
+            }
+            return false; // prevent default scrolling
+        }
+
+        function touchMoved() {
+            if (touches.length === 1) {
+                for (let piece of pieces) {
+                    if (piece.dragging) {
+                        piece.x = touches[0].x - piece.offsetX;
+                        piece.y = touches[0].y - piece.offsetY;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function touchEnded() {
+            for (let piece of pieces) {
+                if (piece.dragging) {
+                    piece.dragging = false;
+                    let gx = Math.round((piece.x - gridOffsetX) / cellSize);
+                    let gy = Math.round((piece.y - gridOffsetY) / cellSize);
+                    if (piece.canPlace(gx, gy)) {
+                        piece.place(gx, gy);
+                    }
+                }
+            }
+            return false;
+        }
+
+
+
+        function mouseDragged() {
+            for (let piece of pieces) {
+                if (piece.dragging) {
+                    piece.x = mouseX - piece.offsetX;
+                    piece.y = mouseY - piece.offsetY;
+                }
+            }
+        }
+
+        function mouseReleased() {
+            for (let piece of pieces) {
+                if (piece.dragging) {
+                    piece.dragging = false;
+                    let gx = Math.round((piece.x - gridOffsetX) / cellSize);
+                    let gy = Math.round((piece.y - gridOffsetY) / cellSize);
+                    if (piece.canPlace(gx, gy)) {
+                        piece.place(gx, gy);
+                    }
+                }
+            }
+        }
+
+        function keyPressed() {
+            if (key === 'r' || key === 'R') {
+                for (let piece of pieces) {
+                    if (piece.dragging) {
+                        piece.rotate();
+                        break;
+                    }
+                }
+            }
+
+            if (key === 'f' || key === 'F') {
+                for (let piece of pieces) {
+                    if (piece.dragging) {
+                        piece.flip();
+                        break;
+                    }
+                }
+            }
+        }
+
+        function checkWin() {
+            let uncovered = [];
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    if (labels[y][x] === null) continue; // skip blocked
+                    if (!board[y][x]) {
+                        uncovered.push(labels[y][x]);
+                    }
+                }
+            }
+
+            // must have exactly 2 uncovered
+            if (uncovered.length !== 2) return false;
+
+            // check if they match target month/day (order doesn’t matter)
+            return (uncovered.includes(TARGET_MONTH) && uncovered.includes(TARGET_DAY));
+        }
+
+
+        class Piece {
+            constructor(shape, x, y) {
+                this.shape = shape;
+                this.x = x;
+                this.y = y;
+                this.col = color(random(50, 255), random(50, 255), random(50, 255));
+                this.dragging = false;
+                this.offsetX = 0;
+                this.offsetY = 0;
+            }
+
+            show() {
+                fill(this.col);
+                stroke(0);
+                for (let [dx, dy] of this.shape) {
+                    rect(this.x + dx * cellSize, this.y + dy * cellSize, cellSize, cellSize);
+                }
+            }
+
+            contains(mx, my) {
+                for (let [dx, dy] of this.shape) {
+                    let px = this.x + dx * cellSize;
+                    let py = this.y + dy * cellSize;
+                    if (mx > px && mx < px + cellSize && my > py && my < py + cellSize) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            canPlace(gx, gy) {
+                for (let [dx, dy] of this.shape) {
+                    let x = gx + dx;
+                    let y = gy + dy;
+
+                    // check bounds
+                    if (x < 0 || x >= cols || y < 0 || y >= rows) return false;
+
+                    // reject blocked cells (labels[y][x] === null means blocked)
+                    if (labels[y][x] === null) return false;
+
+                    // reject already occupied
+                    if (board[y][x]) return false;
+                }
+                return true;
+            }
+
+
+
+            place(gx, gy) {
+                this.x = gridOffsetX + gx * cellSize;
+                this.y = gridOffsetY + gy * cellSize;
+                for (let [dx, dy] of this.shape) {
+                    board[gy + dy][gx + dx] = this;
+                }
+            }
+
+            removeFromBoard() {
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        if (board[y][x] === this) {
+                            board[y][x] = null;
+                        }
+                    }
+                }
+            }
+
+            rotate() {
+                // rotate 90° clockwise around (0,0)
+                this.shape = this.shape.map(([dx, dy]) => [dy, -dx]);
+
+                // normalize so no negative coords remain
+                let minX = Math.min(...this.shape.map(([dx]) => dx));
+                let minY = Math.min(...this.shape.map(([, dy]) => dy));
+                this.shape = this.shape.map(([dx, dy]) => [dx - minX, dy - minY]);
+            }
+
+            flip() {
+                // flip horizontally (mirror over y-axis)
+                this.shape = this.shape.map(([dx, dy]) => [-dx, dy]);
+
+                // normalize so coords start at (0,0)
+                let minX = Math.min(...this.shape.map(([dx]) => dx));
+                let minY = Math.min(...this.shape.map(([, dy]) => dy));
+                this.shape = this.shape.map(([dx, dy]) => [dx - minX, dy - minY]);
+            }
+
+        }
+
+    </script>
+
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+</body>
+
+</html>

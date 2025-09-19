@@ -40,6 +40,7 @@ var links_database = [
     ["/2025/games/gobblet/gobblet.html", "/html/img/Boxes48.png"], //Goblett
     ["/2025/games_dev/blokus.html", "/html/img/Boxes49.png"], //Blokus
     ["/2025/games/sliding_blocks.html", "/html/img/Boxes50.png"], //Blokus
+    ["/2025/games/daily_mino.html", "/html/img/Boxes51.png"], //Daily Mino puzzle
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
