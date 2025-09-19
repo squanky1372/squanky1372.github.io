@@ -32,11 +32,12 @@
         let gridOffsetX, gridOffsetY;
         var canvas;
 
-        const TARGET_MONTH = "OCT";  // example month
-        const TARGET_DAY = "13";   // example day
+        var TARGET_MONTH = "OCT";  // example month
+        var TARGET_DAY = "13";   // example day
 
 
         function setup() {
+            setTargetToToday();
             let size = min(windowWidth, windowHeight) * 0.95;
             canvas = createCanvas(size, size);
             centerCanvas();
@@ -106,25 +107,6 @@
             }
         }
 
-
-        // function initBoard() {
-        //     board = [];
-        //     for (let y = 0; y < rows; y++) {
-        //         let row = [];
-        //         for (let x = 0; x < cols; x++) {
-        //             row.push(null);
-        //         }
-        //         board.push(row);
-        //     }
-
-        //     // mark blocked cells with a special value
-        //     blockedCells = [
-        //         [6, 0], [6, 1],        // top-right two cells
-        //         [6, 6], [5, 6], [4, 6], [3, 6] // bottom-right four cells
-        //     ];
-        // }
-
-
         function initPieces() {
             let shapes = [
                 [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]],    // 2x3 rect
@@ -137,7 +119,20 @@
                 [[0, 0], [1, 0], [2, 0], [3, 0], [2, 1]],           // 2x4 T
             ];
 
-            pieces = shapes.map(shape => {
+
+
+            let colors = [
+                color(255, 0, 0),    // red
+                color(0, 255, 0),    // green
+                color(0, 0, 255),    // blue
+                color(255, 165, 0),  // orange
+                color(255, 0, 255),  // magenta
+                color(0, 255, 255),  // cyan
+                color(128, 0, 255),// pink
+                color(255, 255, 0)   // yellow
+            ];
+
+            pieces = shapes.map((shape,i) => {
                 // find piece dimensions in cells
                 let maxX = max(shape.map(([dx, _]) => dx));
                 let maxY = max(shape.map(([_, dy]) => dy));
@@ -160,14 +155,15 @@
                     y = random(10, height - h - 10);
                 }
 
-                return new Piece(shape, x, y);
+                let piece = new Piece(shape, x, y);
+                piece.col = colors[i]
+                return piece
             });
         }
 
 
         function drawBoard() {
-            fill(0);
-            noStroke();
+            stroke(0);
             textAlign(CENTER, CENTER);
             textSize(cellSize * 0.4);
 
@@ -178,11 +174,15 @@
 
                     // blocked cells gray
                     if (labels[y][x] === null) {
-                        // fill(150);
-                        // rect(px, py, cellSize, cellSize);
                         continue;
                     }
-                    else fill(board[y][x] ? board[y][x].col : 255);
+
+                    // highlight target cells
+                    if (labels[y][x] === TARGET_MONTH || labels[y][x] === TARGET_DAY) {
+                        noFill(); 
+                    } else {
+                        fill(board[y][x] ? board[y][x].col : 255);
+                    }
                     rect(px, py, cellSize, cellSize);
 
                     // draw label
@@ -196,6 +196,18 @@
         }
 
 
+        function setTargetToToday() {
+
+            const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+                "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+            const today = new Date();
+            const monthIndex = today.getMonth(); // 0 = Jan, 11 = Dec
+            const day = today.getDate();         // 1-31
+
+            TARGET_MONTH = MONTHS[monthIndex];
+            TARGET_DAY = day.toString();
+        }
 
 
         function drawPieces() {
@@ -249,7 +261,7 @@
                 if (currentTime - lastTap < 300) { // 300ms threshold
                     for (let piece of pieces) {
                         if (piece.dragging) {
-                            piece.rotate();
+                            piece.flip();
                             break;
                         }
                     }
@@ -261,7 +273,7 @@
             if (touches.length === 2) {
                 for (let piece of pieces) {
                     if (piece.dragging) {
-                        piece.flip();
+                        piece.rotate();
                         break;
                     }
                 }
@@ -282,6 +294,7 @@
         }
 
         function touchEnded() {
+            if (touches.length === 0) {
             for (let piece of pieces) {
                 if (piece.dragging) {
                     piece.dragging = false;
@@ -291,6 +304,7 @@
                         piece.place(gx, gy);
                     }
                 }
+            }
             }
             return false;
         }
@@ -372,6 +386,7 @@
 
             show() {
                 fill(this.col);
+                strokeWeight(0.5)
                 stroke(0);
                 for (let [dx, dy] of this.shape) {
                     rect(this.x + dx * cellSize, this.y + dy * cellSize, cellSize, cellSize);
