@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Local Multiplayer Catan (Simplified)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="left panel">
+      <header>
+        <h1>Local Catan — Pass & Play (Simplified)</h1>
+        <div class="controls">
+          <label class="notice">Players:</label>
+          <select id="playerCount">
+            <option>2</option><option selected>3</option><option>4</option>
+          </select>
+          <button id="newGame">New Game</button>
+        </div>
+      </header>
+
+      <div class="toolbar">
+        <button id="rollBtn" class="btn-primary">Roll Dice</button>
+        <button id="buildRoad">Build Road</button>
+        <button id="buildSettlement">Build Settlement</button>
+        <button id="upgradeCity">Upgrade to City</button>
+        <button id="bankTrade">Bank Trade 4:1</button>
+        <button id="endTurn">End Turn</button>
+        <div style="margin-left:auto">
+          <span class="notice">Turn:</span> <span id="turnIndicator" class="big">—</span>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <svg id="board" viewBox="-420 -360 840 720" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+
+      <footer>
+        Rules simplified: no development cards, no harbors, no longest road / largest army auto-awards.  
+        First to 10 victory points wins. Roll a 7 to move the robber.
+      </footer>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div class="notice">Dice Result:</div>
+            <div id="diceResult" class="big">—</div>
+          </div>
+          <div>
+            <div class="notice">Robber on:</div>
+            <div id="robberOn" class="big">—</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:8px">Players</h3>
+        <div id="players" class="players"></div>
+
+        <div class="hud">
+          <div>
+            <div class="notice">Active Build Mode</div>
+            <div id="mode" class="notice">Normal</div>
+          </div>
+          <div style="margin-left:auto">
+            <div class="notice">Victory goal</div>
+            <div class="big">10 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Game Log</h3>
+        <div id="log" class="log"></div>
+        <div style="display:flex; gap:6px; margin-top:8px;">
+          <button id="clearLog">Clear</button>
+          <div class="notice" style="margin-left:auto">Local offline only — pass & play</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
