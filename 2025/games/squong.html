@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes10.png">
+<link rel="icon" href="/html/img/Boxes10.png">
 
 <head>
     <meta charset="UTF-8">
@@ -66,18 +68,32 @@
     <h1>🎵 Squong 🎵</h1>
 
     <div id="setupSection">
-        <input id="artistInput" type="text" placeholder="Enter artist name..." />
-        <label for="modeSelect">Difficulty:</label>
+        <label for="artistInput">Enter an artist name or a Spotify playlist URL:</label>
+        <br>
+        <input id="artistInput" type="text" placeholder="Enter artist/URL" />
+
+        <br> <br> <br>
+
+        <label for="modeSelect">Select a difficulty level:</label>
+        <br>
         <select id="modeSelect">
-            <option value="inOrderShow">Reveal in order (show word boxes)</option>
-            <option value="inOrderHide">Reveal in order (hide word boxes)</option>
-            <option value="randomShowSingle">Reveal random (show word boxes, single instance)</option>
-            <option value="randomHideSingle">Reveal random (hide word boxes, single instance)</option>
-            <option value="randomShowAll">Reveal random (all instances)</option>
+            <option value="inOrderShow">Easy</option>
+            <option value="inOrderHide">Medium</option>
+            <option value="randomShowAll">Hard</option>
+            <option value="randomShowSingle">Expert</option>
+            <option value="randomHideSingle">Master</option>
         </select>
-        <label for="numSongsInput">Rounds:</label>
+
+        <div id="modeDescription" style="margin-top: 8px; font-style: italic;">
+            Reveal in order (show word boxes)
+        </div>
+
+        <br> <br>
+
+        <label for="numSongsInput">Select number of rounds:</label>
         <input type="number" id="numSongsInput" min="1" max="10" value="3" style="width:30px">
-        <button id="loadSongBtn">Load Game</button>
+        <br>
+        <button id="loadSongBtn">Start Game</button>
     </div>
     <br>
     <input id="guessInput" type="text" placeholder="Type the song name..." disabled />
@@ -88,6 +104,8 @@
     <div id="lyricsDisplay">Enter an artist and press "Load Song"</div>
     <br>
 
+    <!-- Hash and Pattern -->
+    <script src="../aa_libraries/fj_games_library.js"></script>
     <script>
         let allSongs = [];
         let currentSongIndex = 0;
@@ -105,6 +123,10 @@
         let artistName = "";
         let currentMode = "inOrderShow";
 
+        let songStartTime = 0;
+        let songStats = { time: 0, guesses: 0, words: 0 };
+
+
         const lyricsDisplay = document.getElementById("lyricsDisplay");
         const nextWordBtn = document.getElementById("nextWordBtn");
         const guessInput = document.getElementById("guessInput");
@@ -113,6 +135,15 @@
         const numSongsInput = document.getElementById("numSongsInput"); // ⬅️ new element
         const loadSongBtn = document.getElementById("loadSongBtn");
         const modeSelect = document.getElementById("modeSelect");
+        const modeDescription = document.getElementById("modeDescription");
+
+        const descriptions = {
+            "inOrderShow": "Reveal in order (show word boxes)",
+            "inOrderHide": "Reveal in order (hide word boxes)",
+            "randomShowAll": "Reveal random (all instances)",
+            "randomShowSingle": "Reveal random (show word boxes, single instance)",
+            "randomHideSingle": "Reveal random (hide word boxes, single instance)"
+        };
 
         // --- Handle URL parameters ---
         const params = new URLSearchParams(window.location.search);
@@ -120,8 +151,8 @@
         const paramMode = params.get("mode");
         const paramRounds = params.get("rounds");
 
+        // If URL params exist, fill inputs and start game automatically
         if (paramArtist && paramMode && paramRounds) {
-            // Fill inputs and start game automatically
             artistInput.value = decodeURIComponent(paramArtist);
             modeSelect.value = paramMode;
             numSongsInput.value = paramRounds;
@@ -129,9 +160,62 @@
             loadAllSongs(); // automatically start game
         }
 
-        modeSelect.addEventListener("change", () => {
-            currentMode = modeSelect.value;
-        });
+        function setupListeners() {
+
+            //Listener for "Load Song" button: runs function to fetch and load all songs
+            loadSongBtn.addEventListener("click", loadAllSongs);
+
+            //Listener for mode selector dropdown
+            modeSelect.addEventListener("change", () => {
+                currentMode = modeSelect.value;
+                const value = modeSelect.value;
+                modeDescription.textContent = descriptions[value] || "";
+            });
+
+            //Listener for "Next Word" button: reveals new words
+            nextWordBtn.addEventListener("click", setNextWord);
+
+
+            guessInput.addEventListener("keydown", e => {
+                if (e.key === "Enter") checkGuessedSong()
+            });
+        }
+
+        function setNextWord() {
+            if (currentMode.startsWith("inOrder")) {
+                if (revealIndex < hiddenWords.length) {
+                    revealedWords[revealIndex] = hiddenWords[revealIndex];
+                    if (currentMode.includes("Hide")) revealedWordsDisplay.push(hiddenWords[revealIndex]);
+                    revealIndex++;
+                }
+            } else if (currentMode.startsWith("random")) {
+                if (randomOrderList.length > 0) {
+                    const word = randomOrderList.shift();
+                    const cleanedSelected = word.replace(/[^\w]/g, "").toLowerCase();
+
+                    if (currentMode.includes("Show")) {
+                        if (currentMode.includes("All")) {
+                            for (let i = 0; i < hiddenWords.length; i++) {
+                                const cleaned = hiddenWords[i].replace(/[^\w]/g, "").toLowerCase();
+                                if (cleaned === cleanedSelected) revealedWords[i] = hiddenWords[i];
+                            }
+                        } else {
+                            for (let i = 0; i < hiddenWords.length; i++) {
+                                const cleaned = hiddenWords[i].replace(/[^\w]/g, "").toLowerCase();
+                                if (cleaned === cleanedSelected && revealedWords[i] === null) {
+                                    revealedWords[i] = hiddenWords[i];
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        revealedWordsDisplay.push(word);
+                    }
+                }
+            }
+            songStats.words++;
+            renderLyrics();
+        }
 
         function renderLyrics() {
             if (currentMode.includes("Show")) {
@@ -142,7 +226,40 @@
             }
         }
 
-        function prepareRandomList() {
+        // --- Deterministic random generator (Mulberry32) ---
+        function seededRandom(seed) {
+            let t = seed + 0x6D2B79F5;
+            return function () {
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        // --- Deterministic shuffle using our seeded RNG ---
+        function seededShuffle(arr, seed) {
+            const random = seededRandom(seed); // create one generator
+            let shuffled = [...arr];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(random() * (i + 1)); // use same RNG
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function prepareRandomList(songTitle, hiddenWords, artist = "") {
+
+            // --- Generate numeric seed from title and artist ---
+            function stringToSeed(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+                }
+                return hash;
+            }
+            const seed = stringToSeed(songTitle + artist);
+
+            // --- Build unique cleaned words ---
             let uniqueWordsMap = new Map();
             hiddenWords.forEach(w => {
                 const cleanedKey = w.replace(/^[^\w]+|[^\w]+$/g, "").toLowerCase();
@@ -150,6 +267,7 @@
             });
             let uniqueWords = Array.from(uniqueWordsMap.values());
 
+            // --- Categorize words ---
             const titleWords = songTitle.toLowerCase().split(/\s+/);
             let smallWords = [];
             let titleWordsInLyrics = [];
@@ -162,18 +280,13 @@
                 else normalWords.push(w);
             });
 
-            function shuffleArray(arr) {
-                return arr.map(v => ({ v, r: Math.random() }))
-                    .sort((a, b) => a.r - b.r)
-                    .map(o => o.v);
-            }
-
-            normalWords = shuffleArray(normalWords);
-            smallWords = shuffleArray(smallWords);
-            titleWordsInLyrics = shuffleArray(titleWordsInLyrics);
+            normalWords = seededShuffle(normalWords, seed);
+            smallWords = seededShuffle(smallWords, seed);
+            titleWordsInLyrics = seededShuffle(titleWordsInLyrics, seed);
 
             return normalWords.concat(smallWords, titleWordsInLyrics);
         }
+
 
         async function loadAllSongs() {
             const input = artistInput.value.trim();
@@ -184,9 +297,18 @@
                 return;
             }
 
-            // Update URL with current selections
-            const newUrl = `${window.location.pathname}?artist=${encodeURIComponent(input)}&mode=${encodeURIComponent(currentMode)}&rounds=${numSongs}`;
-            window.history.replaceState(null, "", newUrl);
+            // Only redirect if the current URL doesn't already match the desired parameters
+            const params = new URLSearchParams(window.location.search);
+            const alreadyHasParams =
+                params.get("artist") === input &&
+                params.get("mode") === currentMode &&
+                params.get("rounds") === String(numSongs);
+
+            if (!alreadyHasParams) {
+                const newUrl = `${window.location.origin}${window.location.pathname}?artist=${encodeURIComponent(input)}&mode=${encodeURIComponent(currentMode)}&rounds=${numSongs}&hash=${hash}`;
+                window.location.href = newUrl;
+                return; // ⛔️ stop here — the new page will load with params and auto-start
+            }
 
             document.getElementById("setupSection").style.display = "none";
 
@@ -234,7 +356,7 @@
             revealIndex = 0;
 
             if (currentMode.startsWith("random")) {
-                randomOrderList = prepareRandomList();
+                randomOrderList = prepareRandomList(songTitle, hiddenWords, artistInput.value);
             }
 
             renderLyrics();
@@ -243,81 +365,77 @@
             guessInput.value = "";
             result.textContent = `Round ${currentSongIndex + 1}/${allSongs.length}`;
             nextWordBtn.textContent = "Next word";
+
+            // 🕒 Start tracking
+            songStartTime = Date.now();
+            songStats = { time: 0, guesses: 0, words: 0 };
         }
 
-        nextWordBtn.addEventListener("click", () => {
-            if (currentMode.startsWith("inOrder")) {
-                if (revealIndex < hiddenWords.length) {
-                    revealedWords[revealIndex] = hiddenWords[revealIndex];
-                    if (currentMode.includes("Hide")) revealedWordsDisplay.push(hiddenWords[revealIndex]);
-                    revealIndex++;
-                }
-            } else if (currentMode.startsWith("random")) {
-                if (randomOrderList.length > 0) {
-                    const word = randomOrderList.shift();
-                    const cleanedSelected = word.replace(/[^\w]/g, "").toLowerCase();
 
-                    if (currentMode.includes("Show")) {
-                        if (currentMode.includes("All")) {
-                            for (let i = 0; i < hiddenWords.length; i++) {
-                                const cleaned = hiddenWords[i].replace(/[^\w]/g, "").toLowerCase();
-                                if (cleaned === cleanedSelected) revealedWords[i] = hiddenWords[i];
-                            }
-                        } else {
-                            for (let i = 0; i < hiddenWords.length; i++) {
-                                const cleaned = hiddenWords[i].replace(/[^\w]/g, "").toLowerCase();
-                                if (cleaned === cleanedSelected && revealedWords[i] === null) {
-                                    revealedWords[i] = hiddenWords[i];
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        revealedWordsDisplay.push(word);
-                    }
-                }
-            }
-            renderLyrics();
-        });
+        function checkGuessedSong() {
+            const normalize = str => str.replace(/[^\w]/g, "").toLowerCase().trim();
+            const guess = normalize(guessInput.value);
+            if (!guess) return;
 
-        guessInput.addEventListener("keydown", e => {
-            if (e.key === "Enter") {
-                const normalize = str => str.replace(/[^\w]/g, "").toLowerCase().trim();
-                const guess = normalize(guessInput.value);
-                if (!guess) return;
+            songStats.guesses++; // ❌ count all guesses (wrong or right)
 
-                if (normalize(songTitle) === guess) {
-                    revealedWords = [...hiddenWords];
-                    revealedWordsDisplay = [...hiddenWords];
-                    renderLyrics();
+            if (normalize(songTitle) === guess) {
+                revealedWords = [...hiddenWords];
+                revealedWordsDisplay = [...hiddenWords];
 
-                    currentSongIndex++;
+                songStats.time = Math.floor((Date.now() - songStartTime) / 1000); // seconds
+                allSongs[currentSongIndex].score = { ...songStats };
 
-                    result.textContent = `✅ Correct! (Round ${currentSongIndex}/${allSongs.length})`;
-                    result.style.color = "lime";
+                renderLyrics();
+
+                currentSongIndex++;
+
+                result.textContent = `✅ Correct! (Round ${currentSongIndex}/${allSongs.length})`;
+                result.style.color = "lime";
+                guessInput.disabled = true;
+
+                if (currentSongIndex >= allSongs.length) {
+                    result.textContent = "🎉 You win! All songs guessed!";
+                    nextWordBtn.disabled = true;
                     guessInput.disabled = true;
 
-                    if (currentSongIndex >= allSongs.length) {
-                        result.textContent = "🎉 You win! All songs guessed!";
-                        nextWordBtn.disabled = true;
-                        guessInput.disabled = true;
-                    } else {
-                        nextWordBtn.textContent = "Load Next Song";
-                        nextWordBtn.disabled = false;
-                        nextWordBtn.onclick = () => {
-                            loadCurrentSong();
-                            nextWordBtn.onclick = null;
-                        };
+                    const urlParams = {};
+                    for (const [key, value] of params.entries()) {
+                        urlParams[key] = value;
                     }
-                } else {
-                    result.textContent = "❌ Wrong! Try again.";
-                    result.style.color = "red";
-                    guessInput.value = "";
-                }
-            }
-        });
 
-        loadSongBtn.addEventListener("click", loadAllSongs);
+                    // Build the payload in the correct format
+                    const payload = {
+                        score: 0,
+                        songs: allSongs.map(song => ({
+                            artist: song.artist,
+                            title: song.songTitle,
+                            score: song.score || { time: 0, guesses: 0, words: 0 }
+                        })),
+                        seed: urlParams.seed || 0,
+                        difficulty: urlParams.mode || "unknown"
+                    };
+
+                    // Send to backend
+                    submitScore("squong", playerData.hash, payload);    
+
+                } else {
+                    nextWordBtn.textContent = "Load Next Song";
+                    nextWordBtn.disabled = false;
+                    nextWordBtn.onclick = () => {
+                        loadCurrentSong();
+                        nextWordBtn.onclick = null;
+                    };
+                }
+            } else {
+                result.textContent = "❌ Wrong! Try again.";
+                result.style.color = "red";
+                guessInput.value = "";
+            }
+        }
+
+        setupListeners()
+        verifyHash()
 
     </script>
 </body>
