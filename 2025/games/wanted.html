@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes10.png">
+<link rel="icon" href="/html/img/Boxes10.png">
+
+<head>
+    <title>Felipe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+</head>
+
+<body style="background-color:#0066ff;">
+    <script src="../aa_libraries/matter.js"></script>
+
+
+    <script src="../aa_libraries/p5.js"></script>
+    <script>
+
+        var faces = `\
+😀😃😄😁😆😅🤣😂🙂🙃🫠\
+😉😊😇🥰😍🤩😘😗😙🥲😋\
+😛😜🤪😝🤑🤗🤭🫢🫣🤫🤔\
+🫡🤐😐😑😶🫥😏😒🙄😬\
+🤥🫨😌😔😪🤤😴🫩😷🤒🤕\
+🤢🤮🤧🥵🥶🥴😵🤯🤠🥳🥸\
+😎🤓🧐😕🫤😟🙁😮😳\
+🥺🥹😦😨😥😢😭😱😖\
+😣😞😓😩😫🥱😤😡😠🤬😈\
+💀🤡👹👺👽🤖\
+`;
+
+        var facesShuffled = shuffle(Array.from(faces));
+        var emojiStructs = [];
+        var emojiSize = 50;
+        var emojiRows = 10;
+        var t = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ---------------------------------------------------------
+        // EMOJI STRUCT — pre-renders emoji as a p5.Graphics object
+        // ---------------------------------------------------------
+        class Emoji {
+            constructor(symbol, position, pathFunction) {
+                this.symbol = symbol;
+                this.position = position;
+                this.path = pathFunction;
+
+                // Pre-render the emoji ONCE into its own graphics buffer
+                this.gfx = createGraphics(emojiSize, emojiSize);
+                this.gfx.textAlign(CENTER, CENTER);
+                this.gfx.textSize(emojiSize);
+                this.gfx.text(this.symbol, emojiSize / 2, emojiSize / 2);
+            }
+
+            draw(t) {
+                const pos = this.path(t);
+                image(this.gfx, pos[0] - emojiSize / 2, pos[1] - emojiSize / 2);
+            }
+        }
+
+        // ---------------------------------------------------------
+
+        function setup() {
+            let size = min(windowWidth, windowHeight) * 0.95;
+  
+            // Create the canvas with the calculated size
+            canvas = createCanvas(size, size);
+            
+            // Center the canvas on the screen
+            centerCanvas();
+            disableCanvasDefaults()
+
+            placeEmojis();
+        }
+
+        function placeEmojis() {
+            facesShuffled.forEach((face, i) => {
+                const x = (i % emojiRows) * emojiSize + emojiSize / 2;
+                const y = floor(i / emojiRows) * emojiSize + emojiSize / 2;
+
+                emojiStructs.push(
+                    new Emoji(
+                        face,
+                        [x, y],
+                        function (t) {
+                            deltaPos = [0,0]
+                            deltaPos = moveLine(t)
+                            newPos = [this.position[0] + deltaPos[0], this.position[1]+deltaPos[1]]
+                            newPos[0] = newPos[0] % 600 
+                            newPos[1] = newPos[1] % 600 
+                            console.log(newPos)
+                            return [newPos[0], newPos[1]];
+                        }
+                    )
+                );
+            });
+        }
+
+        function moveCircle(t){
+            period = 0.005
+            amplitude = 100
+            return [cos(period*t)*amplitude, sin(period*t)*amplitude]
+        }
+
+        function moveLine(t){
+            amplitude = 0.1
+            return [amplitude*t, amplitude*t]
+        }
+
+        function draw() {
+            
+            scaleContent()
+            background(0);
+            t += 10;
+
+            for (let e of emojiStructs) {
+                e.draw(t);
+            }
+        }
+
+    </script>
+
+    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../aa_libraries/fj_games_library.js"></script>
+</body>
+
+</html>
