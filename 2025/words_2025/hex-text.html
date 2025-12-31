@@ -22,9 +22,6 @@
     <script>
         let vertices = [];
 
-        // Example input: a string of numbers
-        let inputString = "1234";  // will draw lines [1,2] and [3,4]
-
         let alphabet = [
             "",
             "136251",
@@ -79,7 +76,7 @@
 
             background(0);
             scale(scaler)
-            "felipe jannarone is cool and a fun person marianna rogers".split("").forEach((letter, i) => {
+            "the quick    brown fox    jumps over   the lazy dog".split("").forEach((letter, i) => {
                 letterToHexagon(letter, "yellow", true);
                 translate(300, 0)
                 if (i % width == width-1) translate(-(300 * width), 400)
