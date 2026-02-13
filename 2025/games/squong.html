@@ -435,7 +435,7 @@
 
             songStats.guesses++;
 
-            if (areCloseEnough(songTitle, guess, threshold = 0.75)) {
+            if (areCloseEnough(songNormalizer(songTitle), songNormalizer(guess), 0.75)) {
                 revealedWords = [...hiddenWords];
                 revealedWordsDisplay = [...hiddenWords];
 
