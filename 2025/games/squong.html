@@ -97,6 +97,7 @@
     </div>
     <br>
     <input id="guessInput" type="text" placeholder="Type the song name..." disabled />
+    <button id="submitGuessBtn" disabled>Submit</button>
     <button id="nextWordBtn" disabled>Next word</button>
     <button id="giveUpBtn" disabled>Give up</button>
     <span id="result"></span>
@@ -132,6 +133,7 @@
         const nextWordBtn = document.getElementById("nextWordBtn");
         const giveUpBtn = document.getElementById("giveUpBtn");
         const guessInput = document.getElementById("guessInput");
+        const submitGuessBtn = document.getElementById("submitGuessBtn");
         const result = document.getElementById("result");
         const artistInput = document.getElementById("artistInput");
         const numSongsInput = document.getElementById("numSongsInput"); // ⬅️ new element
@@ -177,10 +179,8 @@
             //Listener for "Next Word" button: reveals new words
             nextWordBtn.addEventListener("click", setNextWord);
             giveUpBtn.addEventListener("click", giveUp);
+            submitGuessBtn.addEventListener("click", checkGuessedSong);
 
-            guessInput.addEventListener("keydown", e => {
-                if (e.key === "Enter") checkGuessedSong()
-            });
         }
 
         function giveUp() {
@@ -201,15 +201,19 @@
 
             guessInput.disabled = true;
             giveUpBtn.disabled = true;
+            submitGuessBtn.disabled = false;
 
             currentSongIndex++;
 
             if (currentSongIndex >= allSongs.length) {
                 nextWordBtn.disabled = true;
+                submitGuessBtn.disabled = true;
                 result.textContent = "Game Over!";
             } else {
                 nextWordBtn.textContent = "Load Next Song";
                 nextWordBtn.disabled = false;
+                submitGuessBtn.disabled = true;
+
                 nextWordBtn.onclick = () => {
                     loadCurrentSong();
                     nextWordBtn.onclick = null;
@@ -400,6 +404,8 @@
             nextWordBtn.disabled = false;
             giveUpBtn.disabled = false;
             guessInput.disabled = false;
+            submitGuessBtn.disabled = false;
+
             guessInput.value = "";
             result.textContent = `Round ${currentSongIndex + 1}/${allSongs.length}`;
             nextWordBtn.textContent = "Next word";
@@ -487,12 +493,14 @@
                 result.textContent = `✅ Correct! (Round ${currentSongIndex}/${allSongs.length})`;
                 result.style.color = "lime";
                 guessInput.disabled = true;
+                submitGuessBtn.disabled = true;
 
                 if (currentSongIndex >= allSongs.length) {
                     result.textContent = "🎉 You win! All songs guessed!";
                     nextWordBtn.disabled = true;
                     giveUpBtn.disabled = true;
                     guessInput.disabled = true;
+                    submitGuessBtn.disabled = true;
 
                     const urlParams = {};
                     for (const [key, value] of params.entries()) {
