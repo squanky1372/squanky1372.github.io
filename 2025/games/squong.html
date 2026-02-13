@@ -201,7 +201,7 @@
 
             guessInput.disabled = true;
             giveUpBtn.disabled = true;
-            submitGuessBtn.disabled = false;
+            submitGuessBtn.disabled = true;
 
             currentSongIndex++;
 
@@ -463,7 +463,7 @@
                 "for", "with"
             ]);
 
-            return input
+            return string
                 .replace(/\([^)]*\)/g, "") // Remove anything in parentheses (including nested simple cases)
                 .toLowerCase() // Convert to lowercase
                 .replace(/[^\w\s]/g, "") // Remove punctuation (keeps letters, numbers, spaces)
@@ -493,6 +493,7 @@
                 result.textContent = `✅ Correct! (Round ${currentSongIndex}/${allSongs.length})`;
                 result.style.color = "lime";
                 guessInput.disabled = true;
+                giveUpBtn.disabled = true;
                 submitGuessBtn.disabled = true;
 
                 if (currentSongIndex >= allSongs.length) {
