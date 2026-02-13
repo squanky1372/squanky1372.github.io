@@ -307,7 +307,7 @@
             if (!alreadyHasParams) {
                 const newUrl = `${window.location.origin}${window.location.pathname}?artist=${encodeURIComponent(input)}&mode=${encodeURIComponent(currentMode)}&rounds=${numSongs}&hash=${hash}`;
                 window.location.href = newUrl;
-                return; // ⛔️ stop here — the new page will load with params and auto-start
+                return;
             }
 
             document.getElementById("setupSection").style.display = "none";
@@ -371,15 +371,71 @@
             songStats = { time: 0, guesses: 0, words: 0 };
         }
 
+        // Levenshtein Distance
+        function levenshtein(a, b) {
+            const matrix = Array.from({ length: b.length + 1 }, () =>
+                new Array(a.length + 1).fill(0)
+            );
+
+            for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
+            for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
+
+            for (let j = 1; j <= b.length; j++) {
+                for (let i = 1; i <= a.length; i++) {
+                    if (a[i - 1] === b[j - 1]) {
+                        matrix[j][i] = matrix[j - 1][i - 1];
+                    } else {
+                        matrix[j][i] = Math.min(
+                            matrix[j - 1][i] + 1,     // deletion
+                            matrix[j][i - 1] + 1,     // insertion
+                            matrix[j - 1][i - 1] + 1  // substitution
+                        );
+                    }
+                }
+            }
+
+            return matrix[b.length][a.length];
+        }
+
+        // Similarity check
+        function areCloseEnough(str1, str2, threshold = 0.8) {
+            if (!str1 || !str2) return false;
+
+            const distance = levenshtein(str1, str2);
+            const maxLength = Math.max(str1.length, str2.length);
+
+            if (maxLength === 0) return true;
+
+            const similarity = 1 - distance / maxLength;
+
+            return similarity >= threshold;
+        }
+
+        function songNormalizer(string) {
+            const stopWords = new Set([
+                "a", "an", "the",
+                "and", "or", "but",
+                "of", "in", "on", "at", "to",
+                "for", "with"
+            ]);
+
+            return input
+                .replace(/\([^)]*\)/g, "") // Remove anything in parentheses (including nested simple cases)
+                .toLowerCase() // Convert to lowercase
+                .replace(/[^\w\s]/g, "") // Remove punctuation (keeps letters, numbers, spaces)
+                .split(/\s+/) // Split into words
+                .filter(word => word && !stopWords.has(word)) // Remove stopwords
+                .join(" ") // Join back into string
+                .trim();
+        }
 
         function checkGuessedSong() {
-            const normalize = str => str.replace(/[^\w]/g, "").toLowerCase().trim();
-            const guess = normalize(guessInput.value);
+            const guess = guessInput.value;
             if (!guess) return;
 
-            songStats.guesses++; // ❌ count all guesses (wrong or right)
+            songStats.guesses++;
 
-            if (normalize(songTitle) === guess) {
+            if (areCloseEnough(songTitle, guess, threshold = 0.75)) {
                 revealedWords = [...hiddenWords];
                 revealedWordsDisplay = [...hiddenWords];
 
@@ -417,7 +473,7 @@
                     };
 
                     // Send to backend
-                    submitScore("squong", playerData.hash, payload);    
+                    submitScore("squong", playerData.hash, payload);
 
                 } else {
                     nextWordBtn.textContent = "Load Next Song";
