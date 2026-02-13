@@ -98,6 +98,7 @@
     <br>
     <input id="guessInput" type="text" placeholder="Type the song name..." disabled />
     <button id="nextWordBtn" disabled>Next word</button>
+    <button id="giveUpBtn" disabled>Give up</button>
     <span id="result"></span>
     <br>
     <br>
@@ -129,6 +130,7 @@
 
         const lyricsDisplay = document.getElementById("lyricsDisplay");
         const nextWordBtn = document.getElementById("nextWordBtn");
+        const giveUpBtn = document.getElementById("giveUpBtn");
         const guessInput = document.getElementById("guessInput");
         const result = document.getElementById("result");
         const artistInput = document.getElementById("artistInput");
@@ -174,12 +176,47 @@
 
             //Listener for "Next Word" button: reveals new words
             nextWordBtn.addEventListener("click", setNextWord);
-
+            giveUpBtn.addEventListener("click", giveUp);
 
             guessInput.addEventListener("keydown", e => {
                 if (e.key === "Enter") checkGuessedSong()
             });
         }
+
+        function giveUp() {
+            // Add 100 penalty guesses
+            songStats.guesses += 100;
+
+            // Reveal the full song
+            revealedWords = [...hiddenWords];
+            revealedWordsDisplay = [...hiddenWords];
+            renderLyrics();
+
+            // End this round immediately
+            songStats.time = Math.floor((Date.now() - songStartTime) / 1000);
+            allSongs[currentSongIndex].score = { ...songStats };
+
+            result.textContent = `💀 Gave up! (+100 guesses penalty)`;
+            result.style.color = "orange";
+
+            guessInput.disabled = true;
+            giveUpBtn.disabled = true;
+
+            currentSongIndex++;
+
+            if (currentSongIndex >= allSongs.length) {
+                nextWordBtn.disabled = true;
+                result.textContent = "Game Over!";
+            } else {
+                nextWordBtn.textContent = "Load Next Song";
+                nextWordBtn.disabled = false;
+                nextWordBtn.onclick = () => {
+                    loadCurrentSong();
+                    nextWordBtn.onclick = null;
+                };
+            }
+        }
+
 
         function setNextWord() {
             if (currentMode.startsWith("inOrder")) {
@@ -361,6 +398,7 @@
 
             renderLyrics();
             nextWordBtn.disabled = false;
+            giveUpBtn.disabled = false;
             guessInput.disabled = false;
             guessInput.value = "";
             result.textContent = `Round ${currentSongIndex + 1}/${allSongs.length}`;
@@ -453,6 +491,7 @@
                 if (currentSongIndex >= allSongs.length) {
                     result.textContent = "🎉 You win! All songs guessed!";
                     nextWordBtn.disabled = true;
+                    giveUpBtn.disabled = true;
                     guessInput.disabled = true;
 
                     const urlParams = {};
