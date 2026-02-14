@@ -1,98 +1,248 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nested Array Output</title>
 
-  <title>Nested Array to HTML</title>
-  
-  <style>
-    body {
-      background-color: black;
-      color: white;
-      font-size: 20px; /* Updated font size */
-      font-family: Arial, sans-serif;
-    }
-  
-    summary {
-      font-size: inherit;
-    }
-  </style>
-  
-  
-  
+<style>
+body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: clamp(16px, 3vw, 24px);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.section {
+    margin: 30px 0;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: white;
+    margin: 40px 0;
+}
+
+/* PLAYER BUTTON GRID */
+#playerButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.player-button {
+    background-color: #222;
+    border: 2px solid #555;
+    color: white;
+    border-radius: 12px;
+    padding: 14px;
+    flex: 0 1 calc(33.33% - 12px);
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-button:hover {
+    background-color: #333;
+    transform: scale(1.03);
+}
+
+.emoji {
+    font-size: clamp(28px, 9vw, 70px);
+    line-height: 1;
+}
+
+.username {
+    font-size: clamp(14px, 4.5vw, 40px);
+    margin-top: 8px;
+}
+
+.hash {
+    font-size: clamp(10px, 3vw, 18px);
+    margin-top: 4px;
+    color: #aaa;
+    word-break: break-all;
+}
+
+#playerScoreContainer {
+    margin-top: 30px;
+}
+
+/* Reverse Section */
+summary {
+    cursor: pointer;
+}
+
+#playerScoreContainer,
+#playerScoreContainer ul,
+#reverseContainer,
+#reverseContainer ul {
+    text-align: left;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#playerScoreContainer li,
+#reverseContainer li {
+    text-align: left;
+}
+
+</style>
 </head>
+
 <body>
-  <h2>Nested Array Output</h2>
-  <div id="output"></div>
-  <div id="container"></div>
-</body>
-</html>
 
+<h2>Nested Array Output</h2>
 
+<!-- SECTION 1 -->
+<div class="section">
+    <h3>Grouped By User</h3>
+    <div id="playerButtonContainer"></div>
+    <div id="playerScoreContainer"></div>
+</div>
+
+<hr>
+
+<!-- SECTION 2 -->
+<div class="section">
+    <details>
+        <summary>All Scores (Reverse JSON Order)</summary>
+        <div id="reverseContainer"></div>
+    </details>
+</div>
 
 <script>
-  const response = fetch(`https://squanky.net/scores/getDev`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json()
-        }) // Parse the response body as JSON
-        .then(data => {
-            console.log(data)
 
-            var players = {}
+fetch(`https://squanky.net/scores/getDev`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+})
+.then(response => {
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    return response.json();
+})
+.then(data => {
 
-            data.playerArray.forEach(player_data => {
-                players[player_data.hash] = player_data
-                players[player_data.hash].scores = []
-            })
+    let players = {};
 
-            console.log(players)
+    // Build player lookup
+    data.playerArray.forEach(player_data => {
+        players[player_data.hash] = player_data;
+        players[player_data.hash].scores = [];
+    });
 
-            data.scoresArray.forEach(score => {
-                if(players[score.hash]){
-                  players[score.hash].scores.push(score)
-                }
-            })
-            
-            const container = document.getElementById('container');
+    // Assign scores to players
+    data.scoresArray.forEach(score => {
+        if (players[score.hash]) {
+            players[score.hash].scores.push(score);
+        }
+    });
 
-            for(let person in players){
-                console.log(person)
-                console.log(players[person])
-                const details = document.createElement('details');
-                const summary = document.createElement('summary');
-                if(players[person].visuals) summary.textContent = `${players[person].visuals.emoji}:${players[person].username}`;
-                else summary.textContent = `New:${players[person].username}`;
-                details.appendChild(summary);
+    /* =======================================================
+       SECTION 1 — PLAYER BUTTON GRID
+    ======================================================== */
 
-                const ul = document.createElement('ul');
-                console.log(players[person].scores)
+    const buttonContainer = document.getElementById('playerButtonContainer');
+    const scoreContainer = document.getElementById('playerScoreContainer');
 
-                const li = document.createElement('li');
-                var score_text = `Hash: ${players[person].hash}`
-                li.textContent = score_text;
-                ul.appendChild(li);
+    for (let person in players) {
 
-                [...players[person].scores].reverse().forEach(score => {
-                    const li = document.createElement('li');
-                    var score_text = `${score.gameTitle}: ${JSON.stringify(score.data)}`
-                    li.textContent = score_text;
-                    ul.appendChild(li);
-                });
+        const player = players[person];
 
-                details.appendChild(ul);
-                container.appendChild(details);
-            };
-        })   // Log the parsed data
-        .catch(error => console.error(error)); // Handle errors
+        // Skip undefined usernames
+        if (!player.username) continue;
 
-    
+        const emoji = player.visuals?.emoji || "🆕";
+
+        const button = document.createElement('button');
+        button.className = 'player-button';
+
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'emoji';
+        emojiSpan.textContent = emoji;
+
+        const usernameDiv = document.createElement('div');
+        usernameDiv.className = 'username';
+        usernameDiv.textContent = player.username;
+
+        const hashDiv = document.createElement('div');
+        hashDiv.className = 'hash';
+        hashDiv.textContent = player.hash;
+
+        button.appendChild(emojiSpan);
+        button.appendChild(usernameDiv);
+        button.appendChild(hashDiv);
+
+        button.onclick = () => displayPlayerScores(player);
+
+        buttonContainer.appendChild(button);
+    }
+
+    function displayPlayerScores(player) {
+        scoreContainer.innerHTML = '';
+
+        const title = document.createElement('h4');
+        title.textContent = `${player.visuals?.emoji || "🆕"} ${player.username}`;
+        scoreContainer.appendChild(title);
+
+        const ul = document.createElement('ul');
+
+        [...player.scores].reverse().forEach(score => {
+            const li = document.createElement('li');
+            li.textContent = `${score.gameTitle}: ${JSON.stringify(score.data)}`;
+            ul.appendChild(li);
+        });
+
+        scoreContainer.appendChild(ul);
+    }
+
+    /* =======================================================
+       SECTION 2 — REVERSE JSON ORDER
+    ======================================================== */
+
+    const reverseContainer = document.getElementById('reverseContainer');
+
+    [...data.scoresArray].reverse().forEach(score => {
+
+        const player = players[score.hash];
+        const emoji = player?.visuals?.emoji || "🆕";
+        const username = player?.username || "Unknown";
+
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+
+        summary.textContent = `${emoji} ${username} — ${score.gameTitle}`;
+
+        details.appendChild(summary);
+
+        const ul = document.createElement('ul');
+
+        const hashLi = document.createElement('li');
+        hashLi.textContent = `Hash: ${score.hash}`;
+        ul.appendChild(hashLi);
+
+        const dataLi = document.createElement('li');
+        dataLi.textContent = `Score Data: ${JSON.stringify(score.data)}`;
+        ul.appendChild(dataLi);
+
+        details.appendChild(ul);
+        reverseContainer.appendChild(details);
+    });
+
+})
+.catch(error => console.error(error));
+
 </script>
+
+</body>
+</html>
