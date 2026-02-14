@@ -548,7 +548,7 @@
         }
 
         function showFinalScore() {
-            // Hide lyrics display and buttons
+            // Hide lyrics and controls
             lyricsDisplay.style.display = "none";
             nextWordBtn.style.display = "none";
             giveUpBtn.style.display = "none";
@@ -558,13 +558,18 @@
             const container = document.getElementById("finalScoreContainer");
             container.style.display = "block";
 
-            // Build table
+            let totalWordsRevealed = 0;
+            let totalGuesses = 0;
+            let totalTime = 0;
+            let totalLyricsWords = 0;
+
             let tableHTML = `
         <h2>🏁 Final Score</h2>
-        <table style="margin:auto; border-collapse: collapse; min-width: 600px;">
+        <table style="margin:auto; border-collapse: collapse; min-width: 750px;">
             <tr style="background:#1f1f1f;">
                 <th style="padding:10px; border:1px solid #444;">Song</th>
                 <th style="padding:10px; border:1px solid #444;">Words Revealed</th>
+                <th style="padding:10px; border:1px solid #444;">Words Revealed (%)</th>
                 <th style="padding:10px; border:1px solid #444;">Guesses</th>
                 <th style="padding:10px; border:1px solid #444;">Time (s)</th>
             </tr>
@@ -573,20 +578,49 @@
             allSongs.forEach(song => {
                 const score = song.score || { words: 0, guesses: 0, time: 0 };
 
+                const lyricsWordCount = song.lyrics
+                    ? song.lyrics.split(/\s+/).length
+                    : (song.words ? song.words.length : 0);
+
+                const percent = lyricsWordCount > 0
+                    ? ((score.words / lyricsWordCount) * 100).toFixed(1)
+                    : 0;
+
+                totalWordsRevealed += score.words;
+                totalGuesses += score.guesses;
+                totalTime += score.time;
+                totalLyricsWords += lyricsWordCount;
+
                 tableHTML += `
             <tr>
                 <td style="padding:10px; border:1px solid #444;">${song.songTitle}</td>
                 <td style="padding:10px; border:1px solid #444; text-align:center;">${score.words}</td>
+                <td style="padding:10px; border:1px solid #444; text-align:center;">${percent}%</td>
                 <td style="padding:10px; border:1px solid #444; text-align:center;">${score.guesses}</td>
                 <td style="padding:10px; border:1px solid #444; text-align:center;">${score.time}</td>
             </tr>
         `;
             });
 
+            const totalPercent = totalLyricsWords > 0
+                ? ((totalWordsRevealed / totalLyricsWords) * 100).toFixed(1)
+                : 0;
+
+            tableHTML += `
+        <tr style="background:#1f1f1f; font-weight:bold;">
+            <td style="padding:10px; border:1px solid #444;">TOTAL</td>
+            <td style="padding:10px; border:1px solid #444; text-align:center;">${totalWordsRevealed}</td>
+            <td style="padding:10px; border:1px solid #444; text-align:center;">${totalPercent}%</td>
+            <td style="padding:10px; border:1px solid #444; text-align:center;">${totalGuesses}</td>
+            <td style="padding:10px; border:1px solid #444; text-align:center;">${totalTime}</td>
+        </tr>
+    `;
+
             tableHTML += `</table>`;
 
             container.innerHTML = tableHTML;
         }
+
 
 
         setupListeners()
