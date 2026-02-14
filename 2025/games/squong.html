@@ -104,6 +104,7 @@
     <br>
     <br>
     <div id="lyricsDisplay">Enter an artist and press "Load Song"</div>
+    <div id="finalScoreContainer" style="display:none; margin-top:20px;"></div>
     <br>
 
     <!-- Hash and Pattern -->
@@ -206,9 +207,13 @@
             currentSongIndex++;
 
             if (currentSongIndex >= allSongs.length) {
+                // nextWordBtn.disabled = true;
+                // submitGuessBtn.disabled = true;
+                // result.textContent = "Game Over!";
                 nextWordBtn.disabled = true;
                 submitGuessBtn.disabled = true;
                 result.textContent = "Game Over!";
+
             } else {
                 nextWordBtn.textContent = "Load Next Song";
                 nextWordBtn.disabled = false;
@@ -497,11 +502,15 @@
                 submitGuessBtn.disabled = true;
 
                 if (currentSongIndex >= allSongs.length) {
+                    // result.textContent = "🎉 You win! All songs guessed!";
+                    // nextWordBtn.disabled = true;
+                    // giveUpBtn.disabled = true;
+                    // guessInput.disabled = true;
+                    // submitGuessBtn.disabled = true;
+
                     result.textContent = "🎉 You win! All songs guessed!";
-                    nextWordBtn.disabled = true;
-                    giveUpBtn.disabled = true;
-                    guessInput.disabled = true;
-                    submitGuessBtn.disabled = true;
+                    showFinalScore();
+
 
                     const urlParams = {};
                     for (const [key, value] of params.entries()) {
@@ -537,6 +546,48 @@
                 guessInput.value = "";
             }
         }
+
+        function showFinalScore() {
+            // Hide lyrics display and buttons
+            lyricsDisplay.style.display = "none";
+            nextWordBtn.style.display = "none";
+            giveUpBtn.style.display = "none";
+            submitGuessBtn.style.display = "none";
+            guessInput.style.display = "none";
+
+            const container = document.getElementById("finalScoreContainer");
+            container.style.display = "block";
+
+            // Build table
+            let tableHTML = `
+        <h2>🏁 Final Score</h2>
+        <table style="margin:auto; border-collapse: collapse; min-width: 600px;">
+            <tr style="background:#1f1f1f;">
+                <th style="padding:10px; border:1px solid #444;">Song</th>
+                <th style="padding:10px; border:1px solid #444;">Words Revealed</th>
+                <th style="padding:10px; border:1px solid #444;">Guesses</th>
+                <th style="padding:10px; border:1px solid #444;">Time (s)</th>
+            </tr>
+    `;
+
+            allSongs.forEach(song => {
+                const score = song.score || { words: 0, guesses: 0, time: 0 };
+
+                tableHTML += `
+            <tr>
+                <td style="padding:10px; border:1px solid #444;">${song.songTitle}</td>
+                <td style="padding:10px; border:1px solid #444; text-align:center;">${score.words}</td>
+                <td style="padding:10px; border:1px solid #444; text-align:center;">${score.guesses}</td>
+                <td style="padding:10px; border:1px solid #444; text-align:center;">${score.time}</td>
+            </tr>
+        `;
+            });
+
+            tableHTML += `</table>`;
+
+            container.innerHTML = tableHTML;
+        }
+
 
         setupListeners()
         verifyHash()
