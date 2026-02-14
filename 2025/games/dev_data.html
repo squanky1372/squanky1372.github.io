@@ -27,7 +27,9 @@ hr {
     margin: 40px 0;
 }
 
-/* PLAYER BUTTON GRID */
+/* ===============================
+   SECTION 1 PLAYER GRID (3/row)
+================================ */
 #playerButtonContainer {
     display: flex;
     flex-wrap: wrap;
@@ -56,6 +58,55 @@ hr {
     transform: scale(1.03);
 }
 
+/* ===============================
+   SECTION 2 SCORE GRID (5/row)
+================================ */
+#scoreButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+}
+
+.score-button {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 10px;
+    padding: 8px;
+    flex: 0 1 calc(20% - 10px); /* 5 per row */
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.15s, background-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-button:hover {
+    background-color: #2a2a2a;
+    transform: scale(1.05);
+}
+
+.small-emoji {
+    font-size: clamp(18px, 4vw, 30px);
+}
+
+.small-username {
+    font-size: clamp(10px, 2.5vw, 16px);
+    margin-top: 4px;
+    text-align: center;
+}
+
+.small-game {
+    font-size: clamp(9px, 2vw, 14px);
+    margin-top: 2px;
+    color: #bbb;
+    text-align: center;
+}
+
+/* Shared */
 .emoji {
     font-size: clamp(28px, 9vw, 70px);
     line-height: 1;
@@ -73,30 +124,22 @@ hr {
     word-break: break-all;
 }
 
-#playerScoreContainer {
-    margin-top: 30px;
-}
-
-/* Reverse Section */
-summary {
-    cursor: pointer;
-}
-
+/* Score content left-aligned */
 #playerScoreContainer,
-#playerScoreContainer ul,
-#reverseContainer,
-#reverseContainer ul {
+#scoreDetailContainer {
     text-align: left;
     max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 20px auto 0 auto;
 }
 
-#playerScoreContainer li,
-#reverseContainer li {
+#playerScoreContainer ul,
+#scoreDetailContainer ul {
     text-align: left;
 }
 
+li {
+    word-break: break-word;
+}
 </style>
 </head>
 
@@ -115,10 +158,9 @@ summary {
 
 <!-- SECTION 2 -->
 <div class="section">
-    <details>
-        <summary>All Scores (Reverse JSON Order)</summary>
-        <div id="reverseContainer"></div>
-    </details>
+    <h3>All Scores (Reverse JSON Order)</h3>
+    <div id="scoreButtonContainer"></div>
+    <div id="scoreDetailContainer"></div>
 </div>
 
 <script>
@@ -135,22 +177,20 @@ fetch(`https://squanky.net/scores/getDev`, {
 
     let players = {};
 
-    // Build player lookup
     data.playerArray.forEach(player_data => {
         players[player_data.hash] = player_data;
         players[player_data.hash].scores = [];
     });
 
-    // Assign scores to players
     data.scoresArray.forEach(score => {
         if (players[score.hash]) {
             players[score.hash].scores.push(score);
         }
     });
 
-    /* =======================================================
-       SECTION 1 — PLAYER BUTTON GRID
-    ======================================================== */
+    /* ===============================
+       SECTION 1 — PLAYER BUTTONS
+    ================================ */
 
     const buttonContainer = document.getElementById('playerButtonContainer');
     const scoreContainer = document.getElementById('playerScoreContainer');
@@ -158,8 +198,6 @@ fetch(`https://squanky.net/scores/getDev`, {
     for (let person in players) {
 
         const player = players[person];
-
-        // Skip undefined usernames
         if (!player.username) continue;
 
         const emoji = player.visuals?.emoji || "🆕";
@@ -167,50 +205,32 @@ fetch(`https://squanky.net/scores/getDev`, {
         const button = document.createElement('button');
         button.className = 'player-button';
 
-        const emojiSpan = document.createElement('span');
-        emojiSpan.className = 'emoji';
-        emojiSpan.textContent = emoji;
+        button.innerHTML = `
+            <span class="emoji">${emoji}</span>
+            <div class="username">${player.username}</div>
+            <div class="hash">${player.hash}</div>
+        `;
 
-        const usernameDiv = document.createElement('div');
-        usernameDiv.className = 'username';
-        usernameDiv.textContent = player.username;
-
-        const hashDiv = document.createElement('div');
-        hashDiv.className = 'hash';
-        hashDiv.textContent = player.hash;
-
-        button.appendChild(emojiSpan);
-        button.appendChild(usernameDiv);
-        button.appendChild(hashDiv);
-
-        button.onclick = () => displayPlayerScores(player);
+        button.onclick = () => {
+            scoreContainer.innerHTML = `
+                <h4>${emoji} ${player.username}</h4>
+                <ul>
+                    ${[...player.scores].reverse().map(s =>
+                        `<li>${s.gameTitle}: ${JSON.stringify(s.data)}</li>`
+                    ).join('')}
+                </ul>
+            `;
+        };
 
         buttonContainer.appendChild(button);
     }
 
-    function displayPlayerScores(player) {
-        scoreContainer.innerHTML = '';
+    /* ===============================
+       SECTION 2 — SCORE BUTTON GRID
+    ================================ */
 
-        const title = document.createElement('h4');
-        title.textContent = `${player.visuals?.emoji || "🆕"} ${player.username}`;
-        scoreContainer.appendChild(title);
-
-        const ul = document.createElement('ul');
-
-        [...player.scores].reverse().forEach(score => {
-            const li = document.createElement('li');
-            li.textContent = `${score.gameTitle}: ${JSON.stringify(score.data)}`;
-            ul.appendChild(li);
-        });
-
-        scoreContainer.appendChild(ul);
-    }
-
-    /* =======================================================
-       SECTION 2 — REVERSE JSON ORDER
-    ======================================================== */
-
-    const reverseContainer = document.getElementById('reverseContainer');
+    const scoreButtonContainer = document.getElementById('scoreButtonContainer');
+    const scoreDetailContainer = document.getElementById('scoreDetailContainer');
 
     [...data.scoresArray].reverse().forEach(score => {
 
@@ -218,25 +238,26 @@ fetch(`https://squanky.net/scores/getDev`, {
         const emoji = player?.visuals?.emoji || "🆕";
         const username = player?.username || "Unknown";
 
-        const details = document.createElement('details');
-        const summary = document.createElement('summary');
+        const button = document.createElement('button');
+        button.className = 'score-button';
 
-        summary.textContent = `${emoji} ${username} — ${score.gameTitle}`;
+        button.innerHTML = `
+            <div class="small-emoji">${emoji}</div>
+            <div class="small-username">${username}</div>
+            <div class="small-game">${score.gameTitle}</div>
+        `;
 
-        details.appendChild(summary);
+        button.onclick = () => {
+            scoreDetailContainer.innerHTML = `
+                <h4>${emoji} ${username} — ${score.gameTitle}</h4>
+                <ul>
+                    <li>Hash: ${score.hash}</li>
+                    <li>Score Data: ${JSON.stringify(score.data)}</li>
+                </ul>
+            `;
+        };
 
-        const ul = document.createElement('ul');
-
-        const hashLi = document.createElement('li');
-        hashLi.textContent = `Hash: ${score.hash}`;
-        ul.appendChild(hashLi);
-
-        const dataLi = document.createElement('li');
-        dataLi.textContent = `Score Data: ${JSON.stringify(score.data)}`;
-        ul.appendChild(dataLi);
-
-        details.appendChild(ul);
-        reverseContainer.appendChild(details);
+        scoreButtonContainer.appendChild(button);
     });
 
 })
