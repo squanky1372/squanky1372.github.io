@@ -41,10 +41,10 @@ var links_database = [
     ["/2025/games_dev/blokus.html", "/html/img/Boxes49.png"], //Blokus
     ["/2025/games/sliding_blocks.html", "/html/img/Boxes50.png"], //Blokus
     ["/2025/games/daily_mino.html", "/html/img/Boxes51.png"], //Daily Mino puzzle
-    ["/2025/games/squong.html", "/html/img/Boxes10.png"], //Squong
-    ["/2025/games/wanted.html", "/html/img/Boxes10.png"], //Wanted
-    ["/2026/superclock.html", "/html/img/Boxes10.png"], //superclock
-    ["/2026/icosahedron.html", "/html/img/Boxes10.png"], //icosahedron
+    ["/2025/games/squong.html", "/html/img/Boxes53.png"], //Squong
+    ["/2026/superclock.html", "/html/img/Boxes52.png"], //superclock
+    ["/2026/icosahedron.html", "/html/img/Boxes54.png"], //icosahedron
+    ["/2026/HA.html", "/html/img/Boxes10.png"], //icosahedron
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
@@ -52,4 +52,5 @@ var links_database = [
     // ["./html/images.html", "/html/img/Boxes2.png"], //Rotating images of cats
     // ["./planets/Planets.html","/html/img/Boxes4.png"], //Final graphics solar system project (broken)  
     // ["index.html", "/html/img/Boxes9.png"] //this page
+    // ["/2025/games/wanted.html", "/html/img/Boxes10.png"], //Wanted
 ]
