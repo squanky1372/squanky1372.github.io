@@ -39,6 +39,9 @@
 
 <div class="status" id="status"></div>
 
+<button class="scene-button" onclick="movieMode()">
+    Movie Mode
+</button>
 
 <script>
 
@@ -135,8 +138,70 @@ async function toggle(alias, button) {
 }
 
 
+// Set multiple states
+async function setStates(states) {
+
+    /*
+        Example:
+
+        setStates({
+            KI: "on",
+            KM: "off",
+            TV: "on"
+        });
+
+    */
+
+    const requests = [];
+
+
+    for (const alias in states) {
+
+        const state = states[alias];
+
+        requests.push(
+            fetch(`${API}/${state}/${alias}`)
+        );
+
+    }
+
+
+    await Promise.all(requests);
+}
+
+
+
+// Example scenes
+
+function movieMode() {
+
+    setStates({
+
+        // Kitchen off
+        KI: "off",
+
+        // Kitchen main off
+        KM: "off",
+
+        // Kitchen Oven on
+        KO: "on",
+
+        // Dresser light off
+        OM: "off",
+
+        // Bedroom main off
+        BM: "off",
+
+        // TV on
+        TV: "on"
+
+    });
+
+}
+
 loadDevices();
 
+movieMode()
 </script>
 
 </body>
