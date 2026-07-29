@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixiJS Card Draw Table</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0f172a;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    #app {
+      position: fixed;
+      inset: 0;
+    }
+
+    .hud {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 10;
+      max-width: 560px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(8, 15, 28, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e5e7eb;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .hud h1 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .hud p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+
+    .chip {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #dbeafe;
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(59, 130, 246, 0.24);
+    }
+
+    .hint {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 10;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(8, 15, 28, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div class="hud">
+    <h1>Draw pile, hand, and table</h1>
+    <p>Click the deck to draw a card. Click a card in your hand to select it. Click the selected card again to place it on the table. Table cards can be dragged, and the dragged card comes to the front.</p>
+    <span class="chip">Edit CARD_COUNT, TABLE_CARD_SCALE, and HAND_CARD_SCALE near the top</span>
+  </div>
+
+  <div class="hint">Hand cards sit at the bottom. Table cards stay where you place them.</div>
+
+  <script type="module">
+    import {
+      Application,
+      Container,
+      Graphics,
+      Rectangle,
+      Text,
+      TextStyle
+    } from 'https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.mjs';
+
+    let CARD_COUNT = 52;
+    let TABLE_CARD_SCALE = 0.95;
+    let HAND_CARD_SCALE = 0.78;
+
+    const BASE_CARD_W = 108;
+    const BASE_CARD_H = 152;
+    const CARD_RADIUS = 14;
+
+    const suits = [
+      { symbol: '♠', name: 'spades', color: 0x111111 },
+      { symbol: '♥', name: 'hearts', color: 0xd81b60 },
+      { symbol: '♦', name: 'diamonds', color: 0xd81b60 },
+      { symbol: '♣', name: 'clubs', color: 0x111111 }
+    ];
+    const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+    const app = new Application();
+    await app.init({
+      resizeTo: window,
+      background: '#0f172a',
+      antialias: true,
+      resolution: Math.min(window.devicePixelRatio || 1, 2),
+      preference: 'webgl'
+    });
+
+    document.getElementById('app').appendChild(app.canvas);
+
+    const world = new Container();
+    world.sortableChildren = true;
+    app.stage.addChild(world);
+
+    app.stage.eventMode = 'static';
+    app.stage.hitArea = app.screen;
+
+    const state = {
+      deck: [],
+      hand: [],
+      table: [],
+      selectedCard: null,
+      draggingCard: null,
+      dragOffsetX: 0,
+      dragOffsetY: 0,
+      zCounter: 1
+    };
+
+    function shuffle(array) {
+      const a = array.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildFullDeck() {
+      const deck = [];
+      for (const suit of suits) {
+        for (const rank of ranks) {
+          deck.push({ rank, suit });
+        }
+      }
+      return deck;
+    }
+
+    state.deck = shuffle(buildFullDeck()).slice(0, Math.min(CARD_COUNT, 52));
+
+    const background = new Graphics();
+    world.addChild(background);
+
+    const tableLayer = new Container();
+    tableLayer.sortableChildren = true;
+    tableLayer.zIndex = 20;
+    world.addChild(tableLayer);
+
+    const deckLayer = new Container();
+    deckLayer.sortableChildren = true;
+    deckLayer.zIndex = 40;
+    world.addChild(deckLayer);
+
+    const handLayer = new Container();
+    handLayer.sortableChildren = true;
+    handLayer.zIndex = 80;
+    world.addChild(handLayer);
+
+    const deckCountText = new Text({
+      text: '',
+      style: new TextStyle({
+        fontFamily: 'Inter, system-ui, sans-serif',
+        fontSize: 14,
+        fontWeight: '800',
+        fill: 0xffffff
+      })
+    });
+    deckCountText.anchor.set(0.5);
+    deckLayer.addChild(deckCountText);
+
+    function setCardHitArea(card) {
+      card.hitArea = new Rectangle(0, 0, BASE_CARD_W, BASE_CARD_H);
+    }
+
+    function buildCardBack() {
+      const c = new Container();
+
+      const shadow = new Graphics();
+      shadow.roundRect(6, 8, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).fill({ color: 0x000000, alpha: 0.20 });
+      c.addChild(shadow);
+
+      const base = new Graphics();
+      base.roundRect(0, 0, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).fill(0x1d4ed8);
+      base.roundRect(0, 0, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).stroke({ color: 0xbfdbfe, width: 2 });
+      c.addChild(base);
+
+      const border = new Graphics();
+      border.roundRect(8, 8, BASE_CARD_W - 16, BASE_CARD_H - 16, 10).stroke({ color: 0xffffff, alpha: 0.22, width: 1 });
+      c.addChild(border);
+
+      const pattern = new Graphics();
+      pattern.stroke({ color: 0xffffff, alpha: 0.16, width: 2 });
+      for (let y = 18; y < BASE_CARD_H; y += 18) {
+        pattern.moveTo(12, y).lineTo(BASE_CARD_W - 12, y);
+      }
+      pattern.stroke({ color: 0x93c5fd, alpha: 0.18, width: 2 });
+      for (let x = 18; x < BASE_CARD_W; x += 18) {
+        pattern.moveTo(x, 12).lineTo(x, BASE_CARD_H - 12);
+      }
+      c.addChild(pattern);
+
+      const emblem = new Graphics();
+      emblem.circle(BASE_CARD_W / 2, BASE_CARD_H / 2, 30).stroke({ color: 0xffffff, alpha: 0.55, width: 3 });
+      emblem.circle(BASE_CARD_W / 2, BASE_CARD_H / 2, 16).fill({ color: 0xffffff, alpha: 0.20 });
+      c.addChild(emblem);
+
+      const label = new Text({
+        text: 'BACK',
+        style: new TextStyle({
+          fontFamily: 'Arial, sans-serif',
+          fontSize: 14,
+          fontWeight: '800',
+          letterSpacing: 2,
+          fill: 0xffffff,
+          alpha: 0.75
+        })
+      });
+      label.anchor.set(0.5);
+      label.position.set(BASE_CARD_W / 2, BASE_CARD_H / 2 + 50);
+      c.addChild(label);
+
+      return c;
+    }
+
+    function buildCardFront(rank, suit) {
+      const c = new Container();
+
+      const shadow = new Graphics();
+      shadow.roundRect(6, 8, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).fill({ color: 0x000000, alpha: 0.20 });
+      c.addChild(shadow);
+
+      const face = new Graphics();
+      face.roundRect(0, 0, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).fill(0xf8fafc);
+      face.roundRect(0, 0, BASE_CARD_W, BASE_CARD_H, CARD_RADIUS).stroke({ color: 0xe2e8f0, width: 2 });
+      c.addChild(face);
+
+      const border = new Graphics();
+      border.roundRect(8, 8, BASE_CARD_W - 16, BASE_CARD_H - 16, 10).stroke({ color: 0x94a3b8, alpha: 0.18, width: 1 });
+      c.addChild(border);
+
+      const suitColor = suit.color;
+      const cornerStyle = new TextStyle({
+        fontFamily: 'Georgia, Times New Roman, serif',
+        fontSize: 18,
+        fontWeight: '700',
+        fill: suitColor
+      });
+
+      const topLeft = new Container();
+      const rankTop = new Text({ text: rank, style: cornerStyle });
+      const suitTop = new Text({ text: suit.symbol, style: cornerStyle });
+      topLeft.addChild(rankTop, suitTop);
+      topLeft.position.set(12, 10);
+      suitTop.position.set(0, 20);
+      c.addChild(topLeft);
+
+      const bottomRight = new Container();
+      const rankBottom = new Text({ text: rank, style: cornerStyle });
+      const suitBottom = new Text({ text: suit.symbol, style: cornerStyle });
+      rankBottom.anchor.set(1, 1);
+      suitBottom.anchor.set(1, 1);
+      bottomRight.addChild(rankBottom, suitBottom);
+      bottomRight.position.set(BASE_CARD_W - 12, BASE_CARD_H - 12);
+      rankBottom.position.set(0, 0);
+      suitBottom.position.set(0, 20);
+      c.addChild(bottomRight);
+
+      const centerSuit = new Text({
+        text: suit.symbol,
+        style: new TextStyle({
+          fontFamily: 'Georgia, Times New Roman, serif',
+          fontSize: 54,
+          fontWeight: '700',
+          fill: suitColor
+        })
+      });
+      centerSuit.anchor.set(0.5);
+      centerSuit.position.set(BASE_CARD_W / 2, BASE_CARD_H / 2 + 4);
+      c.addChild(centerSuit);
+
+      const ornament = new Graphics();
+      ornament.stroke({ color: suitColor, alpha: 0.08, width: 2 });
+      ornament.moveTo(20, 42).lineTo(BASE_CARD_W - 20, BASE_CARD_H - 42);
+      ornament.moveTo(20, BASE_CARD_H - 42).lineTo(BASE_CARD_W - 20, 42);
+      c.addChild(ornament);
+
+      const selectedOverlay = new Graphics();
+      selectedOverlay.roundRect(2, 2, BASE_CARD_W - 4, BASE_CARD_H - 4, CARD_RADIUS - 2).stroke({ color: 0xfbbf24, width: 4, alpha: 0.95 });
+      selectedOverlay.visible = false;
+      c.addChild(selectedOverlay);
+
+      return { container: c, selectedOverlay };
+    }
+
+    function setCardScale(card, scale) {
+      card.scale.set(scale);
+      setCardHitArea(card);
+    }
+
+    function bringToFront(card) {
+      card.zIndex = ++state.zCounter;
+      if (card.parent && typeof card.parent.sortChildren === 'function') {
+        card.parent.sortChildren();
+      }
+    }
+
+    function createCard(rank, suit) {
+      const card = new Container();
+      card.sortableChildren = true;
+      card.eventMode = 'static';
+      card.cursor = 'pointer';
+
+      const back = buildCardBack();
+      const frontData = buildCardFront(rank, suit);
+      const front = frontData.container;
+      const selectedOverlay = frontData.selectedOverlay;
+
+      card.addChild(back);
+      card.addChild(front);
+      card.addChild(selectedOverlay);
+
+      card.back = back;
+      card.front = front;
+      card.selectedOverlay = selectedOverlay;
+      card.faceUp = false;
+      card.mode = 'deck';
+      card.cardData = { rank, suit: suit.name, symbol: suit.symbol, color: suit.color };
+
+      card.setFaceUp = (isFaceUp) => {
+        card.faceUp = isFaceUp;
+        front.visible = isFaceUp;
+        back.visible = !isFaceUp;
+      };
+
+      card.setSelected = (isSelected) => {
+        selectedOverlay.visible = isSelected;
+        const baseScale = card.mode === 'hand' ? HAND_CARD_SCALE : TABLE_CARD_SCALE;
+        card.scale.set(isSelected ? baseScale * 1.04 : baseScale);
+      };
+
+      card.setMode = (mode) => {
+        card.mode = mode;
+        card.rotation = 0;
+        if (mode === 'deck') {
+          setCardScale(card, TABLE_CARD_SCALE);
+          card.cursor = 'default';
+        } else if (mode === 'hand') {
+          setCardScale(card, HAND_CARD_SCALE);
+          card.cursor = 'pointer';
+        } else {
+          setCardScale(card, TABLE_CARD_SCALE);
+          card.cursor = 'grab';
+        }
+      };
+
+      setCardScale(card, TABLE_CARD_SCALE);
+      card.setFaceUp(false);
+      setCardHitArea(card);
+
+      card.on('pointerdown', (event) => {
+        if (card.mode !== 'table') return;
+        state.draggingCard = card;
+        const p = event.global;
+        state.dragOffsetX = p.x - card.x;
+        state.dragOffsetY = p.y - card.y;
+        bringToFront(card);
+      });
+
+      card.on('pointertap', () => {
+        if (card.mode !== 'hand') return;
+
+        if (state.selectedCard && state.selectedCard !== card) {
+          state.selectedCard.setSelected(false);
+        }
+
+        if (state.selectedCard === card) {
+          playSelectedCard();
+          return;
+        }
+
+        state.selectedCard = card;
+        card.setSelected(true);
+      });
+
+      return card;
+    }
+
+    function drawBackground() {
+      const w = app.screen.width;
+      const h = app.screen.height;
+
+      background.clear();
+      background.rect(0, 0, w, h).fill(0x0b5d3b);
+      background.circle(w * 0.35, h * 0.28, Math.min(w, h) * 0.35).fill({ color: 0xffffff, alpha: 0.06 });
+      background.circle(w * 0.72, h * 0.66, Math.min(w, h) * 0.28).fill({ color: 0x000000, alpha: 0.12 });
+
+      const grid = new Graphics();
+      grid.stroke({ color: 0xffffff, alpha: 0.045, width: 1 });
+      const step = 60;
+      for (let x = 0; x <= w; x += step) grid.moveTo(x, 0).lineTo(x, h);
+      for (let y = 0; y <= h; y += step) grid.moveTo(0, y).lineTo(w, y);
+      background.addChild(grid);
+    }
+
+    function updateStageHitArea() {
+      app.stage.hitArea = app.screen;
+    }
+
+    function layoutDeck() {
+      const cx = app.screen.width / 2;
+      const cy = app.screen.height * 0.36;
+
+      deckLayer.position.set(cx, cy);
+      deckLayer.pivot.set(BASE_CARD_W / 2, BASE_CARD_H / 2);
+      deckLayer.removeChildren();
+      deckLayer.addChild(deckCountText);
+
+      const deckVisibleWidth = BASE_CARD_W * TABLE_CARD_SCALE;
+      const deckVisibleHeight = BASE_CARD_H * TABLE_CARD_SCALE;
+      const remaining = state.deck.length;
+      const stackLayers = Math.min(6, Math.max(1, remaining));
+
+      for (let i = stackLayers - 1; i >= 0; i--) {
+        const back = buildCardBack();
+        back.scale.set(TABLE_CARD_SCALE);
+        back.x = i * 1.4;
+        back.y = -i * 1.4;
+        back.alpha = 0.98 - i * 0.05;
+        deckLayer.addChildAt(back, 0);
+      }
+
+      const label = new Graphics();
+      label.roundRect(-22, deckVisibleHeight + 10, deckVisibleWidth + 44, 28, 10).fill({ color: 0x000000, alpha: 0.24 });
+      deckLayer.addChild(label);
+
+      deckCountText.text = `${remaining} card${remaining === 1 ? '' : 's'} left`;
+      deckCountText.position.set(deckVisibleWidth / 2, deckVisibleHeight + 24);
+      deckCountText.scale.set(1 / TABLE_CARD_SCALE);
+
+      deckLayer.eventMode = remaining > 0 ? 'static' : 'none';
+      deckLayer.cursor = remaining > 0 ? 'pointer' : 'default';
+      deckLayer.hitArea = new Rectangle(-deckVisibleWidth / 2 - 20, -deckVisibleHeight / 2 - 20, deckVisibleWidth + 40, deckVisibleHeight + 80);
+    }
+
+    function layoutHand() {
+      const handCardW = BASE_CARD_W * HAND_CARD_SCALE;
+      const handCardH = BASE_CARD_H * HAND_CARD_SCALE;
+      const y = app.screen.height - 200//handCardH / 2 - 12;
+
+      const count = state.hand.length;
+      const gap = count <= 1 ? 0 : Math.min(handCardW * 0.76, Math.max(28, (app.screen.width - 110) / Math.max(1, count - 1)));
+      const startX = app.screen.width / 2 - gap * (count - 1) / 2;
+
+      state.hand.forEach((card, index) => {
+        const selectedBoost = state.selectedCard === card ? 1.04 : 1;
+        card.setMode('hand');
+        card.scale.set(HAND_CARD_SCALE * selectedBoost);
+        card.x = count <= 1 ? app.screen.width / 2 : startX + index * gap;
+        card.y = y;
+        card.zIndex = 100 + index;
+      });
+    }
+
+    function clearSelection() {
+      if (state.selectedCard) {
+        state.selectedCard.setSelected(false);
+        state.selectedCard = null;
+      }
+    }
+
+    function drawCardToHand() {
+      if (state.deck.length === 0) return;
+
+      const data = state.deck.pop();
+      const card = createCard(data.rank, data.suit);
+      card.setMode('hand');
+      card.setFaceUp(true);
+
+      state.hand.push(card);
+      handLayer.addChild(card);
+
+      layoutDeck();
+      layoutHand();
+    }
+
+    function playSelectedCard() {
+      const card = state.selectedCard;
+      if (!card) return;
+
+      const idx = state.hand.indexOf(card);
+      if (idx !== -1) {
+        state.hand.splice(idx, 1);
+      }
+
+      card.setSelected(false);
+      card.setFaceUp(true);
+      card.setMode('table');
+      card.cursor = 'grab';
+
+      card.x = app.screen.width / 2;
+      card.y = app.screen.height * 0.62;
+
+      state.table.push(card);
+      tableLayer.addChild(card);
+      bringToFront(card);
+
+      clearSelection();
+      layoutHand();
+    }
+
+    deckLayer.on('pointertap', () => {
+      drawCardToHand();
+    });
+
+    app.stage.on('pointermove', (event) => {
+      const card = state.draggingCard;
+      if (!card) return;
+
+      const p = event.global;
+      card.x = p.x - state.dragOffsetX;
+      card.y = p.y - state.dragOffsetY;
+      bringToFront(card);
+    });
+
+    app.stage.on('pointerup', () => {
+      state.draggingCard = null;
+    });
+
+    app.stage.on('pointerupoutside', () => {
+      state.draggingCard = null;
+    });
+
+    function rebuildScene() {
+      drawBackground();
+      updateStageHitArea();
+      layoutDeck();
+      layoutHand();
+    }
+
+    rebuildScene();
+    window.addEventListener('resize', rebuildScene);
+  </script>
+</body>
+</html>

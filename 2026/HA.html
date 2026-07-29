@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Assistant Controller</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #devices {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        button {
+            height: 80px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Home Assistant</h1>
+
+<div id="devices">
+    Loading devices...
+</div>
+
+<div class="status" id="status"></div>
+
+
+<script>
+
+const API = "http://192.168.4.72:3021";
+
+
+async function loadDevices() {
+
+    const container = document.getElementById("devices");
+
+    try {
+
+        const response = await fetch(`${API}/devices`);
+        const devices = await response.json();
+
+        container.innerHTML = "";
+
+        /*
+            Expected API response:
+
+            {
+                "KI": {
+                    "entity": "light.kitchen",
+                    "friendly": "Kitchen Light"
+                },
+                "TV": {
+                    "entity": "media_player.tv",
+                    "friendly": "TV"
+                }
+            }
+        */
+
+        for (const alias in devices) {
+
+            const device = devices[alias];
+
+            const button = document.createElement("button");
+
+            button.innerHTML = `
+                ${alias}<br>
+                <small>${device.friendly ?? ""}</small>
+            `;
+
+            button.onclick = () => toggle(alias, button);
+
+            container.appendChild(button);
+        }
+
+
+    } catch (err) {
+
+        container.innerHTML = "Failed to load devices";
+        console.error(err);
+
+    }
+}
+
+
+async function toggle(alias, button) {
+
+    button.disabled = true;
+
+    const status = document.getElementById("status");
+
+    status.innerText = `Toggling ${alias}...`;
+
+    try {
+
+        const response = await fetch(
+            `${API}/toggle/${alias}`
+        );
+
+        const result = await response.json();
+
+        console.log(result);
+
+        status.innerText =
+            `Toggled ${alias}`;
+
+    }
+    catch(err) {
+
+        console.error(err);
+
+        status.innerText =
+            `Error toggling ${alias}`;
+
+    }
+
+    setTimeout(() => {
+        button.disabled = false;
+    }, 300);
+}
+
+
+loadDevices();
+
+</script>
+
+</body>
+</html>
