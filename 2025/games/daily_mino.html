@@ -16,11 +16,28 @@
             height: 100%;
             overflow: hidden
         }
+
+        #resetButton {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 16px;
+            font-size: 16px;
+        }
+
+        @media (orientation: portrait) {
+            #resetButton {
+                display: block;
+            }
+        }
     </style>
 </head>
 
 <body style="background-color:#0066ff;">
-    <script src="../aa_libraries/matter.js"></script>
+    <!-- <script src="../aa_libraries/matter.js"></script> -->
     <script src="../aa_libraries/p5.js"></script>
     <script>
 
@@ -110,11 +127,11 @@
         function initPieces() {
             let shapes = [
                 [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2]],    // 2x3 rect
-                [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],           // 3x3 L
+                [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2]],           // 3x3 L
                 [[0, 0], [1, 0], [1, 1], [1, 2], [2, 2]],           // 3x3 Z
                 [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]],           // 2x3 d
                 [[0, 0], [1, 0], [0, 1], [1, 2], [0, 2]],           // 2x3 U
-                [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1]],           // 2x4 L
+                [[0, 0], [0, 1], [0, 2], [0, 3], [-1, 3]],           // 2x4 L
                 [[0, 0], [1, 0], [1, 1], [2, 1], [3, 1]],           // 2x4 Z
                 [[0, 0], [1, 0], [2, 0], [3, 0], [2, 1]],           // 2x4 T
             ];
@@ -128,9 +145,20 @@
                 color(255, 165, 0),  // orange
                 color(255, 0, 255),  // magenta
                 color(0, 255, 255),  // cyan
-                color(128, 0, 255),// pink
+                color(128, 0, 255),  // pink
                 color(255, 255, 0)   // yellow
             ];
+
+            let positions = [
+                [10,                            width/2 - cellSize*1.5],
+                [width - cellSize * 3 - 10,     10],
+                [width - cellSize*3 - 10,       width - cellSize*3 - 10],
+                [10,                            10],
+                [10,                            width - cellSize*3 - 10],
+                [width - cellSize - 10,         width/2 - cellSize*2],
+                [width - cellSize*8 - 10,       width - cellSize*2 - 10],
+                [width/2 - cellSize*2.5,        10],
+            ]
 
             pieces = shapes.map((shape,i) => {
                 // find piece dimensions in cells
@@ -155,7 +183,7 @@
                     y = random(10, height - h - 10);
                 }
 
-                let piece = new Piece(shape, x, y);
+                let piece = new Piece(shape, positions[i][0], positions[i][1]);
                 piece.col = colors[i]
                 return piece
             });
@@ -354,6 +382,10 @@
                     }
                 }
             }
+
+            if (key === 'p' || key === 'P') {
+                location.reload()
+            }
         }
 
         function checkWin() {
@@ -470,6 +502,22 @@
 
     <script src="../aa_libraries/fj_window_library.js"></script>
     <script src="../aa_libraries/fj_games_library.js"></script>
+
+    <button id="resetButton" onclick="location.reload()">
+        Reset
+    </button>
+
+    <script>
+        const resetButton = document.getElementById("resetButton");
+
+        function updateResetButton() {
+            resetButton.style.display =
+                window.innerWidth < window.innerHeight ? "block" : "none";
+        }
+
+        updateResetButton();
+        window.addEventListener("resize", updateResetButton);
+    </script>
 </body>
 
 </html>
