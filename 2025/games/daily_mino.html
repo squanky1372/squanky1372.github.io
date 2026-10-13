@@ -515,16 +515,21 @@
     </button>
 
     <script>
-        const resetButton = document.getElementById("resetButton");
+        document.addEventListener("DOMContentLoaded", function () {
+            const resetButton = document.getElementById("resetButton");
 
-        function updateResetButton() {
-            resetButton.style.display =
-                window.innerWidth < window.innerHeight ? "block" : "none";
-        }
+            if (!resetButton) return;
 
-        updateResetButton();
-        window.addEventListener("resize", updateResetButton);
-    </script>
+            function updateResetButton() {
+                resetButton.style.display =
+                    window.innerWidth < window.innerHeight ? "block" : "none";
+            }
+
+            updateResetButton();
+            window.addEventListener("resize", updateResetButton);
+            window.addEventListener("orientationchange", updateResetButton);
+        });
+</script>
 </body>
 
 </html>
