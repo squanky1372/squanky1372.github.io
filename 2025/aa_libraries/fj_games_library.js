@@ -86,7 +86,7 @@ function checkDataFetchSuccess2(){
         bufferCnv.pixelDensity(1);
 
         //setup pattern
-        makePattern(width)
+        makePattern(width*10)
 
         playerDataFetched = 2
         
