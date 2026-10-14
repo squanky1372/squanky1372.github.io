@@ -45,6 +45,7 @@ var links_database = [
     ["/2026/icosahedron.html", "/html/img/Boxes54.png"], //icosahedron
     ["/2026/HA.html", "/html/img/Boxes10.png"], //home assistant
     ["/2025/games/slider.html", "/html/img/Boxes10.png"], //slider
+    ["/2025/games/slider_img.html?hash=feli13", "/html/img/Boxes10.png"], //slider
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
