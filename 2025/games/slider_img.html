@@ -83,6 +83,7 @@
         }
 
         function draw() {
+
             background(0);
 
             fill(240);         // slightly lighter gray
@@ -127,7 +128,7 @@
             }
         }
 
-        function mousePressed() {
+        function old_mousePressed() {
 
             for (let b of blocks) {
                 for (let [dr, dc] of b.cells) {
@@ -140,6 +141,23 @@
                         grabY = mouseY;
                         return;
                     }
+                }
+            }
+        }
+
+        function mousePressed() {
+            if (gameOver) return;
+
+            for (let b of blocks) {
+                let x = offsetX + b.col * gridSize;
+                let y = offsetY + b.row * gridSize;
+
+                if (
+                    mouseX >= x && mouseX < x + gridSize &&
+                    mouseY >= y && mouseY < y + gridSize
+                ) {
+                    slideToEmpty(b);
+                    return;
                 }
             }
         }
@@ -176,6 +194,57 @@
             checkWin()
 
         }
+        
+function slideToEmpty(block) {
+    // Find the empty cell.
+    let empty = null;
+
+    for (let r = 0; r < rows && !empty; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (!blocks.some(b => b.row === r && b.col === c)) {
+                empty = { row: r, col: c };
+                break;
+            }
+        }
+    }
+
+    if (!empty) return;
+
+    const dr = Math.sign(empty.row - block.row);
+    const dc = Math.sign(empty.col - block.col);
+
+    // The clicked tile must share a row or column with the gap.
+    if (dr !== 0 && dc !== 0) return;
+
+    // Save the clicked tile's original position.
+    const startRow = block.row;
+    const startCol = block.col;
+
+    // Move each tile between the clicked tile and the gap
+    // one cell toward the empty space.
+    let r = empty.row;
+    let c = empty.col;
+
+    while (r !== startRow || c !== startCol) {
+        const previousRow = r - dr;
+        const previousCol = c - dc;
+
+        const tile = blocks.find(
+            b => b.row === previousRow && b.col === previousCol
+        );
+
+        if (!tile) return;
+
+        tile.row = r;
+        tile.col = c;
+
+        r = previousRow;
+        c = previousCol;
+    }
+
+    moveCount++;
+    checkWin();
+}
 
         function tryMove(block, dr, dc) {
             if (canMove(block, dr, dc)) {
@@ -201,11 +270,18 @@
         }
 
         function checkWin() {
-            let winBlock = blocks[0]; // red block is always first
-            console.log(winBlock)
-            if (winBlock.col === winningSpace[0] && winBlock.row === winningSpace[1] && !gameOver) {
+            // Each numbered tile belongs at:
+            // 1 -> (0,0), 2 -> (0,1), ... 15 -> (3,2)
+            const won = blocks.every(b => {
+                const correctRow = Math.floor((b.num - 1) / cols);
+                const correctCol = (b.num - 1) % cols;
+
+                return b.row === correctRow && b.col === correctCol;
+            });
+
+            if (won && !gameOver) {
+                gameOver = true;
                 alert(`🎉 You won in ${moveCount} moves! 🎉`);
-                gameOver = true
             }
         }
 
