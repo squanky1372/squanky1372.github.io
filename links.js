@@ -17,7 +17,6 @@ var links_database = [
     ["http://squanky.net:3000/", "/html/img/Boxes22.png"], //Raycaster
     ["http://squanky.net:3002/", "/html/img/Boxes23.png"], //3D house
     ["http://squanky.net:3006/", "/html/img/Boxes19.png"], //3D Earth
-    ["http://squanky.net:3003/", "/html/img/Boxes20.png"], //Buzzer server
     ["http://squanky.net:3005", "/html/img/Boxes21.png"], //Boston trains program
     ["http://squanky.net:3007/", "/html/img/Boxes11.png"], //racing game
     ["http://squanky.net:3011/", "/html/img/Boxes31.png"], //spotify
@@ -39,12 +38,13 @@ var links_database = [
     ["/2025/words_2025/copier.html", "/html/img/Boxes47.png"], //Copier
     ["/2025/games/gobblet/gobblet.html", "/html/img/Boxes48.png"], //Goblett
     ["/2025/games_dev/blokus.html", "/html/img/Boxes49.png"], //Blokus
-    ["/2025/games/sliding_blocks.html", "/html/img/Boxes50.png"], //Blokus
+    ["/2025/games/sliding_blocks.html", "/html/img/Boxes50.png"], //Klotski
     ["/2025/games/daily_mino.html", "/html/img/Boxes51.png"], //Daily Mino puzzle
     ["/2025/games/squong.html", "/html/img/Boxes53.png"], //Squong
     ["/2026/superclock.html", "/html/img/Boxes52.png"], //superclock
     ["/2026/icosahedron.html", "/html/img/Boxes54.png"], //icosahedron
-    ["/2026/HA.html", "/html/img/Boxes10.png"], //icosahedron
+    ["/2026/HA.html", "/html/img/Boxes10.png"], //home assistant
+    ["/2025/games/slider.html", "/html/img/Boxes10.png"], //slider
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game
@@ -53,4 +53,5 @@ var links_database = [
     // ["./planets/Planets.html","/html/img/Boxes4.png"], //Final graphics solar system project (broken)  
     // ["index.html", "/html/img/Boxes9.png"] //this page
     // ["/2025/games/wanted.html", "/html/img/Boxes10.png"], //Wanted
+    // ["http://squanky.net:3003/", "/html/img/Boxes20.png"], //Buzzer server
 ]
