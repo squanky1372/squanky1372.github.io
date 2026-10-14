@@ -45448,16 +45448,12 @@
   ]
 }
     
-    for (let wordLength = 2; wordLength <= 15; wordLength++) {
+    for (let wordLength = 3; wordLength <= 7; wordLength++) {
 
     if (!wordlist[wordLength] || wordlist[wordLength].length === 0) {
         console.log(`Skipping ${wordLength}-letter words.`);
         continue;
     }
-
-    // Can't overlap if fewer than 3 letters
-    if (wordLength < 3)
-        continue;
 
     console.log("");
     console.log("======================================");
@@ -45466,11 +45462,11 @@
 
     const words = wordlist[wordLength];
 
-    // Prefix = all but last 2 letters
+    // prefix -> words beginning with that prefix
     const graph = new Map();
 
     for (const word of words) {
-        const prefix = word.slice(0, wordLength - 2).toLowerCase();
+        const prefix = word.slice(0, wordLength - 1).toLowerCase();
 
         if (!graph.has(prefix))
             graph.set(prefix, []);
@@ -45478,13 +45474,13 @@
         graph.get(prefix).push(word);
     }
 
+    // Store every chain by its length
     const chainsByLength = new Map();
     let longestLength = 0;
 
     function dfs(currentWord, chain, used) {
 
-        // Suffix = all but first 2 letters
-        const suffix = currentWord.slice(2).toLowerCase();
+        const suffix = currentWord.slice(1).toLowerCase();
         const nextWords = graph.get(suffix);
 
         let extended = false;
@@ -45507,8 +45503,10 @@
             }
         }
 
+        // Dead end
         if (!extended) {
 
+            // Ignore chains of length 1 or 2
             if (chain.length < 3)
                 return;
 
