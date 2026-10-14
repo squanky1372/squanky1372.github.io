@@ -43,6 +43,12 @@ function makePattern(size) {
     // using the pattern canvas to create the pattern
     pattern = setupPattern(patternCnv, bufferCnv);
 
+    // Draw a border around the entire original image
+    patternCnv.noFill();
+    patternCnv.stroke(0);
+    patternCnv.strokeWeight(size * 0.02);
+    patternCnv.rect(-size / 2, -size / 2, size, size);
+
 }
 function setupPattern(p, b) {
     return b.drawingContext.createPattern(p.canvas, 'repeat');
@@ -64,6 +70,23 @@ function checkDataFetchSuccess(){
 
         //setup pattern
         makePattern(ball.circleRadius*2)
+
+        playerDataFetched = 2
+        
+    }
+}
+
+function checkDataFetchSuccess2(){
+    
+    if(playerDataFetched == 1) {
+        console.log("done waiting")
+        //setup buffer canvas
+        let size = min(windowWidth, windowHeight) * 0.95;
+        bufferCnv = createGraphics(size, size);
+        bufferCnv.pixelDensity(1);
+
+        //setup pattern
+        makePattern(width)
 
         playerDataFetched = 2
         
