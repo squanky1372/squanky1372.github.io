@@ -76,7 +76,7 @@
                     blocks[random_nums[0]].col = blocks[random_nums[1]].col
                     blocks[random_nums[1]].row = temp.row
                     blocks[random_nums[1]].col = temp.col
-                    console.log("did swap " + i)
+                    // console.log("did swap " + i)
                 }
                 else i--
             }
@@ -204,55 +204,66 @@
         }
 
         function slideToEmpty(block) {
-            // Find the empty cell.
-            let empty = null;
+    print("slideToEmpty called:", block.row, block.col);
 
-            for (let r = 0; r < rows && !empty; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (!blocks.some(b => b.row === r && b.col === c)) {
-                        empty = { row: r, col: c };
-                        break;
-                    }
-                }
+    let empty = null;
+
+    for (let r = 0; r < rows && !empty; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (!blocks.some(b => b.row === r && b.col === c)) {
+                empty = { row: r, col: c };
+                break;
             }
-
-            if (!empty) return;
-
-            const dr = Math.sign(empty.row - block.row);
-            const dc = Math.sign(empty.col - block.col);
-
-            // The clicked tile must share a row or column with the gap.
-            if (dr !== 0 && dc !== 0) return;
-
-            // Save the clicked tile's original position.
-            const startRow = block.row;
-            const startCol = block.col;
-
-            // Move each tile between the clicked tile and the gap
-            // one cell toward the empty space.
-            let r = empty.row;
-            let c = empty.col;
-
-            while (r !== startRow || c !== startCol) {
-                const previousRow = r - dr;
-                const previousCol = c - dc;
-
-                const tile = blocks.find(
-                    b => b.row === previousRow && b.col === previousCol
-                );
-
-                if (!tile) return;
-
-                tile.row = r;
-                tile.col = c;
-
-                r = previousRow;
-                c = previousCol;
-            }
-
-            moveCount++;
-            checkWin();
         }
+    }
+
+    print("Empty cell:", empty);
+
+    if (!empty) return;
+
+    const dr = Math.sign(empty.row - block.row);
+    const dc = Math.sign(empty.col - block.col);
+
+    print("Direction:", dr, dc);
+
+    if (dr !== 0 && dc !== 0) {
+        print("Rejected: tile not in same row or column");
+        return;
+    }
+
+    const startRow = block.row;
+    const startCol = block.col;
+
+    let r = empty.row;
+    let c = empty.col;
+
+    while (r !== startRow || c !== startCol) {
+        const previousRow = r - dr;
+        const previousCol = c - dc;
+
+        const tile = blocks.find(
+            b => b.row === previousRow && b.col === previousCol
+        );
+
+        if (!tile) {
+            print("Rejected: no tile found at", previousRow, previousCol);
+            return;
+        }
+
+        tile.row = r;
+        tile.col = c;
+
+        r = previousRow;
+        c = previousCol;
+    }
+
+    print("Positions updated");
+    moveCount++;
+
+    checkWin();
+
+    print("checkWin finished");
+}
 
         function tryMove(block, dr, dc) {
             if (canMove(block, dr, dc)) {
