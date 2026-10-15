@@ -146,8 +146,12 @@
         }
 
         function mousePressed() {
-            print("presss")
-            if (gameOver) return;
+            print("press", mouseX, mouseY);
+
+            if (gameOver) {
+                print("Game is over");
+                return;
+            }
 
             for (let b of blocks) {
                 let x = offsetX + b.col * gridSize;
@@ -157,10 +161,13 @@
                     mouseX >= x && mouseX < x + gridSize &&
                     mouseY >= y && mouseY < y + gridSize
                 ) {
+                    print("Hit block", b.col, b.row);
                     slideToEmpty(b);
                     return;
                 }
             }
+
+            print("No block hit");
         }
 
         function mouseDragged() {
