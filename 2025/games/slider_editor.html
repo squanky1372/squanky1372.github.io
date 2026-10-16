@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Board Editor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            font-family: Arial, sans-serif;
+            color: #202124;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #0066ff;
+            padding: 16px;
+        }
+
+        header {
+            color: white;
+            margin: 0 auto 14px;
+            max-width: 1500px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0 0 5px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .layout {
+            max-width: 1500px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: minmax(250px, 0.8fr) minmax(280px, 1fr) minmax(320px, 1.15fr);
+            gap: 14px;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            min-width: 0;
+            box-shadow: 0 2px 8px #003b9940;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 0 0 12px;
+        }
+
+        h3 {
+            font-size: 15px;
+            margin: 16px 0 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 10px 0 5px;
+        }
+
+        input,
+        select,
+        button,
+        textarea {
+            font: inherit;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 36px;
+            padding: 2px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 5px;
+            padding: 9px 11px;
+            background: #0066ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #004ecc;
+        }
+
+        button.secondary {
+            background: #555;
+        }
+
+        button.secondary:hover {
+            background: #333;
+        }
+
+        button.active {
+            background: #b42332;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: end;
+        }
+
+        .row>* {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .hint {
+            color: #555;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .shape-tools {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        #shapeGrid {
+            display: grid;
+            grid-template-columns: repeat(5, 34px);
+            grid-template-rows: repeat(5, 34px);
+            gap: 3px;
+            justify-content: center;
+            padding: 10px;
+            background: #f1f3f5;
+            border-radius: 8px;
+        }
+
+        .shape-cell {
+            padding: 0;
+            border-radius: 3px;
+            background: white;
+            border: 1px solid #aaa;
+        }
+
+        .shape-cell.on {
+            background: #ff3333;
+            border-color: #9b1111;
+        }
+
+        .shape-cell:hover {
+            outline: 2px solid #0066ff;
+            outline-offset: -2px;
+        }
+
+        #board {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2px;
+            padding: 3px;
+            background: #202124;
+            border: 2px solid #202124;
+            aspect-ratio: var(--board-ratio, 4 / 5);
+        }
+
+        .board-cell {
+            min-width: 0;
+            min-height: 0;
+            padding: 0;
+            border-radius: 0;
+            background: #eee;
+        }
+
+        .board-cell.occupied {
+            outline: 1px solid #222;
+            outline-offset: -2px;
+        }
+
+        #output {
+            display: block;
+            width: 100%;
+            height: min(62vh, 540px);
+            min-height: 260px;
+            margin-top: 8px;
+            padding: 10px;
+            resize: vertical;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            background: #f8f9fa;
+            font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+            white-space: pre;
+        }
+
+        #status {
+            min-height: 32px;
+            margin: 10px 0 0;
+            color: #444;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .board-panel {
+            position: sticky;
+            top: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .layout {
+                grid-template-columns: minmax(240px, 0.8fr) minmax(280px, 1fr);
+            }
+
+            .code-panel {
+                grid-column: 1 / -1;
+            }
+
+            #output {
+                height: 260px;
+            }
+
+            .board-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 10px;
+            }
+
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .code-panel {
+                grid-column: auto;
+            }
+
+            #shapeGrid {
+                grid-template-columns: repeat(5, min(34px, 8vw));
+                grid-template-rows: repeat(5, min(34px, 8vw));
+            }
+
+            #output {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Board Editor</h1>
+        <p>Draw arbitrary piece shapes, arrange them on the board, and export JavaScript.</p>
+    </header>
+
+    <main class="layout">
+        <section class="panel">
+            <h2>Piece editor</h2>
+            <p class="hint">Toggle squares to draw a shape. The red squares make up one piece. At least one square must
+                be selected.</p>
+            <div id="shapeGrid" aria-label="Piece shape editor"></div>
+            <div class="actions">
+                <button id="clearShape" class="secondary">Clear shape</button>
+                <button id="fillShape" class="secondary">Fill 5 × 5</button>
+            </div>
+            <label for="color">Piece color</label>
+            <input id="color" type="color" value="#ff3333">
+            <div class="actions">
+                <button id="fixedTile" class="secondary" type="button">Place fixed black tiles: OFF</button>
+            </div>
+            <p class="hint">When enabled, the next placements are black obstacle tiles. They block movement but cannot
+                be moved themselves.</p>
+            <div class="row">
+                <div>
+                    <label for="rows">Board rows</label>
+                    <input id="rows" type="number" min="1" max="30" value="5">
+                </div>
+                <div>
+                    <label for="cols">Board columns</label>
+                    <input id="cols" type="number" min="1" max="30" value="4">
+                </div>
+            </div>
+            <div class="actions">
+                <button id="resize">Resize board</button>
+                <button id="erase" class="secondary">Erase mode: OFF</button>
+            </div>
+            <div class="actions">
+                <button id="clearBoard" class="secondary">Clear board</button>
+                <button id="removeLast" class="secondary">Undo last piece</button>
+            </div>
+            <p class="hint">Click an empty board cell to place your drawn shape with that cell as its top-left anchor.
+                Click a placed piece to remove it. Pieces cannot overlap or extend beyond the board.</p>
+        </section>
+
+        <section class="panel board-panel">
+            <h2>Board preview</h2>
+            <div id="board"></div>
+            <p id="status" role="status"></p>
+        </section>
+
+        <section class="panel code-panel">
+            <h2>Generated JavaScript</h2>
+            <p class="hint">Paste this into your game where you define boards. Coordinates are zero-based:
+                <code>[row, column]</code>.</p>
+            <textarea id="output" readonly spellcheck="false"></textarea>
+            <div class="actions">
+                <button id="copy">Copy code</button>
+                <button id="refresh" class="secondary">Regenerate</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            const shapeGrid = document.getElementById('shapeGrid');
+            const boardElement = document.getElementById('board');
+            const rowsInput = document.getElementById('rows');
+            const colsInput = document.getElementById('cols');
+            const colorInput = document.getElementById('color');
+            const output = document.getElementById('output');
+            const status = document.getElementById('status');
+
+            let rows = 5, cols = 4, nextId = 1, eraseMode = false, fixedTileMode = false;
+            let pieces = [];
+            const shapeSize = 5;
+            let shape = new Set(['0,0', '0,1', '1,0', '1,1']);
+
+            function shapeCells() {
+                if (!shape.size) return [];
+                const coords = [...shape].map(key => key.split(',').map(Number));
+                const minR = Math.min(...coords.map(p => p[0]));
+                const minC = Math.min(...coords.map(p => p[1]));
+                return coords.map(([r, c]) => [r - minR, c - minC])
+                    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+            }
+
+            function drawShapeGrid() {
+                shapeGrid.innerHTML = '';
+                for (let r = 0; r < shapeSize; r++) {
+                    for (let c = 0; c < shapeSize; c++) {
+                        const key = `${r},${c}`;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'shape-cell' + (shape.has(key) ? ' on' : '');
+                        button.setAttribute('aria-label', `Shape row ${r + 1}, column ${c + 1}`);
+                        button.setAttribute('aria-pressed', String(shape.has(key)));
+                        button.addEventListener('click', () => {
+                            if (shape.has(key)) shape.delete(key);
+                            else shape.add(key);
+                            drawShapeGrid();
+                        });
+                        shapeGrid.appendChild(button);
+                    }
+                }
+            }
+
+            function cellsFor(piece) {
+                return piece.cells.map(([dr, dc]) => ({ row: piece.row + dr, col: piece.col + dc }));
+            }
+
+            function findPieceAt(row, col) {
+                return pieces.find(piece => cellsFor(piece).some(cell => cell.row === row && cell.col === col));
+            }
+
+            function canPlace(cells, row, col) {
+                return cells.every(([dr, dc]) => {
+                    const r = row + dr, c = col + dc;
+                    return r >= 0 && r < rows && c >= 0 && c < cols && !findPieceAt(r, c);
+                });
+            }
+
+            function placePiece(row, col) {
+                const cells = shapeCells();
+                if (!cells.length) {
+                    status.textContent = 'Draw a shape by selecting at least one square in the piece editor.';
+                    return;
+                }
+                if (!canPlace(cells, row, col)) {
+                    status.textContent = 'That shape would overlap another piece or extend outside the board.';
+                    return;
+                }
+                pieces.push({ id: nextId++, row, col, cells, color: fixedTileMode ? '#000000' : colorInput.value, fixed: fixedTileMode });
+                status.textContent = '';
+                renderBoard();
+            }
+
+            function renderBoard() {
+                boardElement.innerHTML = '';
+                boardElement.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+                boardElement.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+                boardElement.style.setProperty('--board-ratio', `${cols} / ${rows}`);
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const cell = document.createElement('button');
+                        cell.type = 'button';
+                        cell.className = 'board-cell';
+                        cell.title = `Row ${r}, column ${c}`;
+                        const piece = findPieceAt(r, c);
+                        if (piece) {
+                            cell.classList.add('occupied');
+                            cell.style.backgroundColor = piece.fixed ? '#000000' : piece.color;
+                            cell.setAttribute('aria-label', `${piece.fixed ? 'Remove fixed tile' : 'Remove piece'} at row ${r}, column ${c}`);
+                        } else {
+                            cell.setAttribute('aria-label', `Place piece at row ${r}, column ${c}`);
+                        }
+                        cell.addEventListener('click', () => {
+                            const existing = findPieceAt(r, c);
+                            if (existing) {
+                                if (eraseMode || !eraseMode) {
+                                    pieces = pieces.filter(piece => piece.id !== existing.id);
+                                    status.textContent = 'Piece removed.';
+                                    renderBoard();
+                                }
+                            } else if (!eraseMode) {
+                                placePiece(r, c);
+                            }
+                        });
+                        boardElement.appendChild(cell);
+                    }
+                }
+                generateCode();
+            }
+
+            function generateCode() {
+                const lines = [`const my_board = new Board([${rows}, ${cols}], [`];
+                for (const piece of pieces) {
+                    lines.push(`    new Block(${piece.row}, ${piece.col}, ${JSON.stringify(piece.cells)}, ${JSON.stringify(piece.fixed ? 'black' : piece.color)}, ${piece.fixed}),`);
+                }
+                lines.push('])');
+                output.value = lines.join('\n');
+            }
+
+            function resizeBoard() {
+                const newRows = Number(rowsInput.value), newCols = Number(colsInput.value);
+                if (!Number.isInteger(newRows) || !Number.isInteger(newCols) ||
+                    newRows < 1 || newRows > 30 || newCols < 1 || newCols > 30) {
+                    status.textContent = 'Rows and columns must be whole numbers between 1 and 30.';
+                    return;
+                }
+                rows = newRows; cols = newCols;
+                pieces = pieces.filter(piece => cellsFor(piece).every(cell =>
+                    cell.row >= 0 && cell.row < rows && cell.col >= 0 && cell.col < cols));
+                status.textContent = 'Board resized. Pieces that no longer fit were removed.';
+                renderBoard();
+            }
+
+            document.getElementById('clearShape').addEventListener('click', () => {
+                shape.clear(); drawShapeGrid();
+            });
+            document.getElementById('fillShape').addEventListener('click', () => {
+                shape = new Set();
+                for (let r = 0; r < shapeSize; r++) for (let c = 0; c < shapeSize; c++) shape.add(`${r},${c}`);
+                drawShapeGrid();
+            });
+            document.getElementById('resize').addEventListener('click', resizeBoard);
+            document.getElementById('fixedTile').addEventListener('click', event => {
+                fixedTileMode = !fixedTileMode;
+                event.currentTarget.textContent = `Place fixed black tiles: ${fixedTileMode ? 'ON' : 'OFF'}`;
+                event.currentTarget.classList.toggle('active', fixedTileMode);
+            });
+            document.getElementById('erase').addEventListener('click', event => {
+                eraseMode = !eraseMode;
+                event.currentTarget.textContent = `Erase mode: ${eraseMode ? 'ON' : 'OFF'}`;
+                event.currentTarget.classList.toggle('active', eraseMode);
+            });
+            document.getElementById('clearBoard').addEventListener('click', () => {
+                pieces = []; status.textContent = 'Board cleared.'; renderBoard();
+            });
+            document.getElementById('removeLast').addEventListener('click', () => {
+                pieces.pop(); status.textContent = 'Removed the last piece.'; renderBoard();
+            });
+            document.getElementById('refresh').addEventListener('click', generateCode);
+            document.getElementById('copy').addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(output.value);
+                    status.textContent = 'JavaScript copied to clipboard.';
+                } catch {
+                    output.focus(); output.select();
+                    status.textContent = 'Clipboard access unavailable; code selected so you can copy it manually.';
+                }
+            });
+
+            drawShapeGrid();
+            renderBoard();
+        })();
+    </script>
+</body>
+
+</html>
