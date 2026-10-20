@@ -90,7 +90,7 @@
         let menu_board
         const menuColors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", "brown", "gray"]
 
-        function setup_boards(){
+        function setup_boards() {
             boards.push(new Board("Klotski", [5, 4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
@@ -541,22 +541,24 @@
 
             let dx = mouseX - grabX;
             let dy = mouseY - grabY;
-            
+
             if (abs(dx) > abs(dy)) {
-                while (mouseX - grabX >= gridSize) {
+                while (mouseX - grabX >= gridSize * 0.5) {
                     tryMove(selected, 0, 1);
                     grabX += gridSize;
                 }
-                while (mouseX - grabX <= -gridSize) {
+
+                while (mouseX - grabX <= -gridSize * 0.5) {
                     tryMove(selected, 0, -1);
                     grabX -= gridSize;
                 }
             } else {
-                while (mouseY - grabY >= gridSize) {
+                while (mouseY - grabY >= gridSize * 0.5) {
                     tryMove(selected, 1, 0);
                     grabY += gridSize;
                 }
-                while (mouseY - grabY <= -gridSize) {
+
+                while (mouseY - grabY <= -gridSize * 0.5) {
                     tryMove(selected, -1, 0);
                     grabY -= gridSize;
                 }
