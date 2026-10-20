@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
-<link rel="apple-touch-icon" sizes="128x128" href="/html/img/Boxes50.png">
-<link rel="icon" href="/html/img/Boxes50.png">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="apple-touch-icon" sizes="128x128" href="https://squanky1372.github.io/html/img/Boxes50.png">
+<link rel="icon" href="https://squanky1372.github.io/html/img/Boxes50.png">
 
-<head>
+
     <title>Felipe</title>
     <style>
         body {
@@ -16,6 +15,17 @@
             height: 100%;
             overflow: hidden
         }
+        button {
+            position: fixed;
+            top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        #resetButton { left: 15px; }
+        #homeButton { right: 15px; }
     </style>
 </head>
 
@@ -25,6 +35,23 @@
     <script src="../aa_libraries/fj_window_library.js"></script>
     <script src="../aa_libraries/fj_games_library.js"></script>
 
+
+    <button id="resetButton" onclick="resetBoard()">Reset</button>
+    <button id="homeButton" onclick="goHome()">Home</button>
+
+    <script>
+        function resetBoard() {
+            board.setup();
+            moveCount = 0;
+            gameOver = false;
+            selected = null;
+        }
+
+        function goHome() {
+            board = menu_board;
+            resetBoard();
+        }
+    </script>
 
     <script>
 
@@ -47,6 +74,10 @@
 
         var gameOver = false
         var canvas
+        let boards = []
+        let levels = {}
+        let menu_board
+        const menuColors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", "brown", "gray"]
 
         function setup() {
             N = min(windowWidth, windowHeight) * 0.95;
@@ -55,7 +86,7 @@
             centerCanvas();
             disableCanvasDefaults()
 
-            klotski_board = new Board("Klotski", [5,4], [
+            boards.push(new Board("Klotski", [5,4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -66,9 +97,9 @@
                 new Block(3, 2, [[0, 0]], "gold"),                  // center 1x1
                 new Block(4, 0, [[0, 0]], "orange"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "darkorange"),                  // bottom right 1x1
-            ])
+            ]))
 
-            klotski_easy_board = new Board("Klotski (Easy)", [5,4], [
+            boards.push(new Board("Klotski (Easy)", [5,4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -81,9 +112,9 @@
                 new Block(3, 2, [[0, 0]], "gold"),                  // center 1x1
                 new Block(4, 0, [[0, 0]], "orange"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "darkorange"),                  // bottom right 1x1
-            ])
+            ]))
 
-            klotski_medium_board = new Board("Klotski (Medium)", [5,4], [
+            boards.push(new Board("Klotski (Medium)", [5,4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -95,9 +126,9 @@
                 new Block(3, 2, [[0, 0], [0, 1]], "magenta"),             // bottom right horizontal
                 new Block(4, 0, [[0, 0]], "gold"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "orange"),                  // bottom right 1x1
-            ])
+            ]))
 
-            pennant_board = new Board("Pennant", [5,4], [
+            boards.push(new Board("Pennant", [5,4], [
                 new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),
                 new Block(0, 2, [[0, 0], [0, 1]], "blue"),
                 new Block(1, 2, [[0, 0], [0, 1]], "darkblue"),
@@ -107,9 +138,9 @@
                 new Block(3, 1, [[0, 0], [1, 0]], "magenta"),
                 new Block(2, 0, [[0, 0]], "yellow"),
                 new Block(2, 1, [[0, 0]], "orange"),
-            ])
+            ]))
 
-            mas_board = new Board("Ma's Puzzle", [5,5], [
+            boards.push(new Board("Ma's Puzzle", [5,5], [
                 new Block(0, 3, [[0,0],[0,1],[1,1]], "crimson"),    //L MA
                 new Block(2, 0, [[0,0],[1,0],[1,1]], "maroon"),     //L MY BOY
                 new Block(0, 0, [[0,0],[0,1],[0,2]], "green"),      //3x1 NO WORK
@@ -119,10 +150,10 @@
                 new Block(2, 1, [[0,0],[0,1]], "teal"),             //2x1 WORRY
                 new Block(2, 3, [[0,0],[0,1]], "cyan"),             //2x1 TROUBLE
                 new Block(4, 2, [[0,0]], "yellow"),                 //1x1 ILL
-            ])
+            ]))
 
             //Oops, this one isn't a rectangle lol
-            baggage_board = new Board("Baggage Claim", [4,5], [
+            boards.push(new Board("Baggage Claim", [4,5], [
                 new Block(0,0, [[0,0],[0,1]], "black", true),
                 new Block(0,3, [[0,0],[0,1]], "black", true),
                 new Block(0,2, [[0,0]], "red"),
@@ -133,9 +164,9 @@
                 new Block(1,0, [[1,0]], "yellow"),
                 new Block(3,0, [[0,0]], "gold"),
                 new Block(2,4, [[0,0]], "orange"),
-            ])
+            ]))
 
-            cluttered_board = new Board("Cluttered Bag", [6, 7], [
+            boards.push(new Board("Cluttered Bag", [6, 7], [
                 new Block(1, 0, [[0,1],[0,2],[1,0],[1,1]], "orange"),
                 new Block(3, 0, [[0,0],[0,1],[1,0],[2,0],[2,1]], "yellow"),
                 new Block(2, 4, [[0,2],[1,0],[1,1],[1,2]], "green"),
@@ -145,9 +176,9 @@
                 new Block(4, 1, [[0,0],[0,1],[1,1]], "brown"),
                 new Block(5, 3, [[0,0]], "red"),
                 new Block(0, 0, [[0,0],[0,1],[1,0]], "gray"),
-            ])
+            ]))
 
-            diabolical_board = new Board("The Diabolical Box", [9, 7], [
+            boards.push(new Board("The Diabolical Box", [9, 7], [
                 new Block(0, 4, [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,2],[3,2]], "black", true),
                 new Block(5, 4, [[0,2],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]], "black", true),
                 new Block(6, 0, [[0,0],[1,0],[1,1],[2,0],[2,1]], "black", true),
@@ -160,18 +191,38 @@
                 new Block(2, 0, [[0,1],[1,0],[1,1],[1,2],[2,1]], "#ff9752", false),
                 new Block(0, 2, [[0,0],[0,1],[1,0],[1,1]], "#ff0000", false),
                 new Block(0, 0, [[0,0],[0,1],[1,0],[1,1],[2,0]], "black", true),
-            ])
+            ]))
 
-            board = diabolical_board
+            // Stable IDs: A1, A2, B1, B2, A3, B3, C1, C2, C3, ...
+            // Adding boards only appends IDs; existing assignments never change.
+            if (boards.length > menuColors.length ** 2) throw new Error("Maximum of 100 boards supported")
+            for (let i = 0; i < boards.length; i++) {
+                let id = levelId(i)
+                levels[id] = boards[i]
+            }
+
+            let count = max(2, ceil(sqrt(boards.length)))
+            let cols = max(4, count)
+            let slotLeft = floor((cols - 2) / 2)
+            let menuPieces = [
+                ...menuColors.slice(0, count).map((color, i) => new Block(0, i, [[0,0]], color, false, String(i + 1))),
+                ...menuColors.slice(0, count).map((color, i) => new Block(4, i, [[0,0]], color, false, String.fromCharCode(65 + i))),
+                ...Array.from({length: cols}, (_, i) => i).filter(i => i !== slotLeft && i !== slotLeft + 1)
+                    .map(i => new Block(2, i, [[0,0]], "black", true)),
+            ]
+            menu_board = new Board("Menu", [5, cols], menuPieces)
+            menu_board.slotColumns = [slotLeft, slotLeft + 1]
+
+            board = menu_board
             
                 
             board.setup()
         }
 
         function draw() {
-            background(0);
+            background("#0066ff");
 
-            fill(240);         // slightly lighter gray
+            fill(0);         // slightly lighter gray
             noStroke();
             rect(offsetX, offsetY, board.cols * gridSize, board.rows * gridSize);
 
@@ -225,9 +276,10 @@
 
         function mouseReleased() {
             selected = null;
-            if(!gameOver) moveCount++;
+            if(!gameOver && board !== menu_board) moveCount++;
 
-            checkWin()
+            if (board === menu_board) checkMenu()
+            else checkWin()
             
         }
 
@@ -254,7 +306,43 @@
             return true;
         }
 
+        function levelId(index) {
+            let size = 1
+            while (index >= size * size) size++
+            let previous = (size - 1) * (size - 1)
+            let offset = index - previous
+            let letterIndex, numberIndex
+            if (offset < size - 1) {
+                letterIndex = offset
+                numberIndex = size - 1
+            } else {
+                letterIndex = size - 1
+                numberIndex = offset - (size - 1)
+            }
+            return String.fromCharCode(65 + letterIndex) + (numberIndex + 1)
+        }
+
+        function checkMenu() {
+            let slots = menu_board.slotColumns.map(col => blocks.find(b => !b.fixed && b.row === 2 && b.col === col))
+            if (!slots[0] || !slots[1]) return
+
+            let labels = slots.map(b => b.label)
+            let number = labels.find(label => /^([1-9]|10)$/.test(label))
+            let letter = labels.find(label => /^[A-J]$/.test(label))
+            if (!number || !letter) return
+
+            let nextBoard = levels[letter + number]
+            if (nextBoard) {
+                board = nextBoard
+                moveCount = 0
+                gameOver = false
+                selected = null
+                board.setup()
+            }
+        }
+
         function checkWin() {
+            if (board === menu_board || !["Klotski", "Klotski (Easy)", "Klotski (Medium)"].includes(board.name)) return
             let winBlock = blocks[0]; // red block is always first
             console.log(winBlock)
             if (winBlock.col === winningSpace[0] && winBlock.row === winningSpace[1] && !gameOver) {
@@ -272,50 +360,133 @@
             }
 
             setup(){
-                gridSize = N / max(this.rows, this.cols);  // scale to fit both directions
-                offsetX = (N - this.cols * gridSize) / 2;
-                offsetY = (N - this.rows * gridSize) / 2;
+                blocks = []
+                gridSize = floor(N / max(this.rows, this.cols));  // whole pixels prevent seams
+                offsetX = round((N - this.cols * gridSize) / 2);
+                offsetY = round((N - this.rows * gridSize) / 2);
 
-                // --- Classic Klotski layout ---
-                this.pieces.forEach((piece, i) => {
-                    blocks.push(piece)
-                })
+                blocks = this.pieces.map(piece =>
+                    new Block(piece.row, piece.col, piece.cells, piece.color, piece.fixed, piece.label)
+                );
             }
         }
 
         class Block {
-            constructor(row, col, cells, color, fixed = false) {
+            constructor(row, col, cells, color, fixed = false, label = null) {
                 this.row = row;
                 this.col = col;
                 this.cells = cells;
                 this.color = color;
                 this.fixed = fixed;
+                this.label = label;
             }
 
             show() {
-                fill(this.color);
+                if (this.fixed) {
+                    fill("#0066ff");
+                    noStroke();
+                    for (let [dr, dc] of this.cells) {
+                        rect(offsetX + (this.col + dc) * gridSize,
+                            offsetY + (this.row + dr) * gridSize, gridSize + 0.5, gridSize + 0.5);
+                    }
+                    return;
+                }
+
+                let s = gridSize;
+                let bevel = s * 0.08;
+                let baseColor = color(this.color);
+                let light = lerpColor(baseColor, color(255), 0.45);
+                let mediumLight = lerpColor(baseColor, color(255), 0.25);
+                let dark = lerpColor(baseColor, color(0), 0.35);
+                let darkest = lerpColor(baseColor, color(0), 0.5);
+                let occupied = new Set(this.cells.map(([r, c]) => `${r},${c}`));
+                let hasCell = (r, c) => occupied.has(`${r},${c}`);
+
                 noStroke();
                 for (let [dr, dc] of this.cells) {
-                    rect(offsetX + (this.col + dc) * gridSize,
-                        offsetY + (this.row + dr) * gridSize,
-                        gridSize, gridSize);
-
-                    
+                    let x = offsetX + (this.col + dc) * s;
+                    let y = offsetY + (this.row + dr) * s;
+                    fill(baseColor);
+                    rect(x - 0.25, y - 0.25, s + 0.5, s + 0.5);
                 }
-                if (this.color === "red") {
-                        fill(255);          // white text
-                        textAlign(CENTER, CENTER);
-                        textSize(gridSize / 2);
-                        text(moveCount,
-                            (this.col + 1.5) * gridSize,
-                            (this.row + 1.0) * gridSize);
+
+                for (let [dr, dc] of this.cells) {
+                    let x = offsetX + (this.col + dc) * s;
+                    let y = offsetY + (this.row + dr) * s;
+                    let top = !hasCell(dr - 1, dc);
+                    let bottom = !hasCell(dr + 1, dc);
+                    let left = !hasCell(dr, dc - 1);
+                    let right = !hasCell(dr, dc + 1);
+
+                    if (top) {
+                        fill(light);
+                        quad(x - (left ? 0 : 0.5), y, x + s + (right ? 0 : 0.5), y,
+                            x + s - (right ? bevel : -0.5), y + bevel + 0.25,
+                            x + (left ? bevel : -0.5), y + bevel + 0.25);
                     }
+                    if (left) {
+                        fill(mediumLight);
+                        quad(x, y - (top ? 0 : 0.5), x + bevel + 0.25, y + (top ? bevel : -0.5),
+                            x + bevel + 0.25, y + s - (bottom ? bevel : -0.5), x, y + s + (bottom ? 0 : 0.5));
+                    }
+                    if (right) {
+                        fill(dark);
+                        quad(x + s, y - (top ? 0 : 0.5), x + s, y + s + (bottom ? 0 : 0.5),
+                            x + s - bevel - 0.25, y + s - (bottom ? bevel : -0.5),
+                            x + s - bevel - 0.25, y + (top ? bevel : -0.5));
+                    }
+                    if (bottom) {
+                        fill(darkest);
+                        quad(x - (left ? 0 : 0.5), y + s, x + s + (right ? 0 : 0.5), y + s,
+                            x + s - (right ? bevel : -0.5), y + s - bevel - 0.25,
+                            x + (left ? bevel : -0.5), y + s - bevel - 0.25);
+                    }
+                }
+
+                // Show the move count on the red target block, as in the second program.
+                if (board !== menu_board && this === blocks[0]) {
+                    let centerX = 0;
+                    let centerY = 0;
+                    for (let [dr, dc] of this.cells) {
+                        centerX += this.col + dc + 0.5;
+                        centerY += this.row + dr + 0.5;
+                    }
+                    centerX = offsetX + centerX / this.cells.length * s;
+                    centerY = offsetY + centerY / this.cells.length * s;
+                    fill(255);
+                    noStroke();
+                    textAlign(CENTER, CENTER);
+                    textSize(s * 0.45);
+                    textStyle(BOLD);
+                    text(moveCount, centerX, centerY);
+                    textStyle(NORMAL);
+                }
+
+                if (this.label !== undefined && this.label !== null) {
+                    let centerX = 0;
+                    let centerY = 0;
+                    for (let [dr, dc] of this.cells) {
+                        centerX += this.col + dc + 0.5;
+                        centerY += this.row + dr + 0.5;
+                    }
+                    centerX = offsetX + centerX / this.cells.length * s;
+                    centerY = offsetY + centerY / this.cells.length * s;
+                    fill(255);
+                    stroke(0, 0, 0, 100);
+                    strokeWeight(s * 0.025);
+                    textAlign(CENTER, CENTER);
+                    textSize(s * 0.45);
+                    textStyle(BOLD);
+                    text(this.label, centerX, centerY);
+                    noStroke();
+                    textStyle(NORMAL);
+                }
             }
         }
 
 
 
     </script>
-</body>
 
-</html>
+
+<main><canvas id="defaultCanvas0" class="p5Canvas" width="1263" height="1263" style="width: 631.75px; height: 631.75px; position: absolute; left: 324.125px; top: 16.625px; touch-action: none;"></canvas></main></body></html>
