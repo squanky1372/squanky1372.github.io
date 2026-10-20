@@ -541,22 +541,24 @@
 
             let dx = mouseX - grabX;
             let dy = mouseY - grabY;
-
+            
             if (abs(dx) > abs(dy)) {
-                if (dx > gridSize / 2) {
+                while (mouseX - grabX >= gridSize) {
                     tryMove(selected, 0, 1);
-                    grabX = mouseX; // reset grab point
-                } else if (dx < -gridSize / 2) {
+                    grabX += gridSize;
+                }
+                while (mouseX - grabX <= -gridSize) {
                     tryMove(selected, 0, -1);
-                    grabX = mouseX;
+                    grabX -= gridSize;
                 }
             } else {
-                if (dy > gridSize / 2) {
+                while (mouseY - grabY >= gridSize) {
                     tryMove(selected, 1, 0);
-                    grabY = mouseY;
-                } else if (dy < -gridSize / 2) {
+                    grabY += gridSize;
+                }
+                while (mouseY - grabY <= -gridSize) {
                     tryMove(selected, -1, 0);
-                    grabY = mouseY;
+                    grabY -= gridSize;
                 }
             }
         }
