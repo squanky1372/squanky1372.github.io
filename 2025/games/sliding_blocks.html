@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="apple-touch-icon" sizes="128x128" href="https://squanky1372.github.io/html/img/Boxes50.png">
-<link rel="icon" href="https://squanky1372.github.io/html/img/Boxes50.png">
+<!-- saved from url=(0060)https://squanky1372.github.io/2025/games/sliding_blocks.html -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="apple-touch-icon" sizes="128x128" href="https://squanky1372.github.io/html/img/Boxes50.png">
+    <link rel="icon" href="https://squanky1372.github.io/html/img/Boxes50.png">
 
 
     <title>Felipe</title>
@@ -15,6 +20,7 @@
             height: 100%;
             overflow: hidden
         }
+
         button {
             position: fixed;
             top: 15px;
@@ -24,8 +30,13 @@
             z-index: 100;
         }
 
-        #resetButton { left: 15px; }
-        #homeButton { right: 15px; }
+        #resetButton {
+            left: 15px;
+        }
+
+        #homeButton {
+            right: 15px;
+        }
     </style>
 </head>
 
@@ -79,14 +90,8 @@
         let menu_board
         const menuColors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", "brown", "gray"]
 
-        function setup() {
-            N = min(windowWidth, windowHeight) * 0.95;
-            canvas = createCanvas(N, N);
-
-            centerCanvas();
-            disableCanvasDefaults()
-
-            boards.push(new Board("Klotski", [5,4], [
+        function setup_boards(){
+            boards.push(new Board("Klotski", [5, 4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -97,9 +102,9 @@
                 new Block(3, 2, [[0, 0]], "gold"),                  // center 1x1
                 new Block(4, 0, [[0, 0]], "orange"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "darkorange"),                  // bottom right 1x1
-            ]))
+            ], [1, 3]))
 
-            boards.push(new Board("Klotski (Easy)", [5,4], [
+            boards.push(new Board("Klotski (Easy)", [5, 4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -112,9 +117,9 @@
                 new Block(3, 2, [[0, 0]], "gold"),                  // center 1x1
                 new Block(4, 0, [[0, 0]], "orange"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "darkorange"),                  // bottom right 1x1
-            ]))
+            ], [1, 3]))
 
-            boards.push(new Board("Klotski (Medium)", [5,4], [
+            boards.push(new Board("Klotski (Medium)", [5, 4], [
                 new Block(0, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),   // 2x2 target
                 new Block(0, 0, [[0, 0], [1, 0]], "blue"),              // left vertical
                 new Block(0, 3, [[0, 0], [1, 0]], "navy"),              // right vertical
@@ -126,9 +131,9 @@
                 new Block(3, 2, [[0, 0], [0, 1]], "magenta"),             // bottom right horizontal
                 new Block(4, 0, [[0, 0]], "gold"),                  // bottom left 1x1
                 new Block(4, 3, [[0, 0]], "orange"),                  // bottom right 1x1
-            ]))
+            ], [1, 3]))
 
-            boards.push(new Board("Pennant", [5,4], [
+            boards.push(new Board("Pennant", [5, 4], [
                 new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "red"),
                 new Block(0, 2, [[0, 0], [0, 1]], "blue"),
                 new Block(1, 2, [[0, 0], [0, 1]], "darkblue"),
@@ -138,60 +143,321 @@
                 new Block(3, 1, [[0, 0], [1, 0]], "magenta"),
                 new Block(2, 0, [[0, 0]], "yellow"),
                 new Block(2, 1, [[0, 0]], "orange"),
-            ]))
-
-            boards.push(new Board("Ma's Puzzle", [5,5], [
-                new Block(0, 3, [[0,0],[0,1],[1,1]], "crimson"),    //L MA
-                new Block(2, 0, [[0,0],[1,0],[1,1]], "maroon"),     //L MY BOY
-                new Block(0, 0, [[0,0],[0,1],[0,2]], "green"),      //3x1 NO WORK
-                new Block(3, 2, [[0,0],[0,1],[0,2]], "darkgreen"),  //3x1 HOMESICK
-                new Block(1, 0, [[0,0],[0,1]], "blue"),             //2x1 DANGER
-                new Block(1, 2, [[0,0],[0,1]], "darkblue"),         //2x1 BROKE
-                new Block(2, 1, [[0,0],[0,1]], "teal"),             //2x1 WORRY
-                new Block(2, 3, [[0,0],[0,1]], "cyan"),             //2x1 TROUBLE
-                new Block(4, 2, [[0,0]], "yellow"),                 //1x1 ILL
-            ]))
+            ], [0, 3]))
 
             //Oops, this one isn't a rectangle lol
-            boards.push(new Board("Baggage Claim", [4,5], [
-                new Block(0,0, [[0,0],[0,1]], "black", true),
-                new Block(0,3, [[0,0],[0,1]], "black", true),
-                new Block(0,2, [[0,0]], "red"),
-                new Block(1,2, [[0,0],[0,1],[1,1]], "blue"),
-                new Block(1,1, [[0,0],[1,0],[1,1]], "darkblue"),
-                new Block(3,1, [[0, 0], [0,1]], "purple"),
-                new Block(3,3, [[0, 0], [0,1]], "magenta"),
-                new Block(1,0, [[1,0]], "yellow"),
-                new Block(3,0, [[0,0]], "gold"),
-                new Block(2,4, [[0,0]], "orange"),
-            ]))
+            boards.push(new Board("Baggage Claim", [4, 5], [
+                new Block(0, 0, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 2, [[0, 0]], "red"),
+                new Block(1, 2, [[0, 0], [0, 1], [1, 1]], "blue"),
+                new Block(1, 1, [[0, 0], [1, 0], [1, 1]], "darkblue"),
+                new Block(3, 1, [[0, 0], [0, 1]], "purple"),
+                new Block(3, 3, [[0, 0], [0, 1]], "magenta"),
+                new Block(1, 0, [[1, 0]], "yellow"),
+                new Block(3, 0, [[0, 0]], "gold"),
+                new Block(2, 4, [[0, 0]], "orange"),
+            ], [2, 3]))
 
             boards.push(new Board("Cluttered Bag", [6, 7], [
-                new Block(1, 0, [[0,1],[0,2],[1,0],[1,1]], "orange"),
-                new Block(3, 0, [[0,0],[0,1],[1,0],[2,0],[2,1]], "yellow"),
-                new Block(2, 4, [[0,2],[1,0],[1,1],[1,2]], "green"),
-                new Block(4, 4, [[0,0],[0,2],[1,0],[1,1],[1,2]], "blue"),
-                new Block(1, 4, [[0,0],[0,1],[0,2],[1,1]], "purple"),
-                new Block(2, 2, [[0,1],[1,0],[1,1]], "pink"),
-                new Block(4, 1, [[0,0],[0,1],[1,1]], "brown"),
-                new Block(5, 3, [[0,0]], "red"),
-                new Block(0, 0, [[0,0],[0,1],[1,0]], "gray"),
-            ]))
+                new Block(1, 0, [[0, 1], [0, 2], [1, 0], [1, 1]], "orange"),
+                new Block(3, 0, [[0, 0], [0, 1], [1, 0], [2, 0], [2, 1]], "yellow"),
+                new Block(2, 4, [[0, 2], [1, 0], [1, 1], [1, 2]], "green"),
+                new Block(4, 4, [[0, 0], [0, 2], [1, 0], [1, 1], [1, 2]], "blue"),
+                new Block(1, 4, [[0, 0], [0, 1], [0, 2], [1, 1]], "purple"),
+                new Block(2, 2, [[0, 1], [1, 0], [1, 1]], "pink"),
+                new Block(4, 1, [[0, 0], [0, 1], [1, 1]], "brown"),
+                new Block(5, 3, [[0, 0]], "red"),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0]], "gray"),
+            ], [3, 0]))
 
             boards.push(new Board("The Diabolical Box", [9, 7], [
-                new Block(0, 4, [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,2],[3,2]], "black", true),
-                new Block(5, 4, [[0,2],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]], "black", true),
-                new Block(6, 0, [[0,0],[1,0],[1,1],[2,0],[2,1]], "black", true),
-                new Block(5, 1, [[0,0],[0,1],[1,1]], "#3341ff", false),
-                new Block(5, 3, [[0,0],[1,0]], "#f1ff33", false),
-                new Block(5, 4, [[0,0],[0,1],[1,0]], "#33ff36", false),
-                new Block(4, 4, [[0,0],[0,1]], "#33ffb1", false),
-                new Block(2, 4, [[0,0],[1,0],[1,1]], "#33bbff", false),
-                new Block(4, 3, [[0,0]], "#7f0e95", false),
-                new Block(2, 0, [[0,1],[1,0],[1,1],[1,2],[2,1]], "#ff9752", false),
-                new Block(0, 2, [[0,0],[0,1],[1,0],[1,1]], "#ff0000", false),
-                new Block(0, 0, [[0,0],[0,1],[1,0],[1,1],[2,0]], "black", true),
-            ]))
+                new Block(0, 4, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 2], [3, 2]], "black", true),
+                new Block(5, 4, [[0, 2], [1, 2], [2, 0], [2, 1], [2, 2], [3, 0], [3, 1], [3, 2]], "black", true),
+                new Block(6, 0, [[0, 0], [1, 0], [1, 1], [2, 0], [2, 1]], "black", true),
+                new Block(5, 1, [[0, 0], [0, 1], [1, 1]], "#3341ff", false),
+                new Block(5, 3, [[0, 0], [1, 0]], "#f1ff33", false),
+                new Block(5, 4, [[0, 0], [0, 1], [1, 0]], "#33ff36", false),
+                new Block(4, 4, [[0, 0], [0, 1]], "#33ffb1", false),
+                new Block(2, 4, [[0, 0], [1, 0], [1, 1]], "#33bbff", false),
+                new Block(4, 3, [[0, 0]], "#7f0e95", false),
+                new Block(2, 0, [[0, 1], [1, 0], [1, 1], [1, 2], [2, 1]], "#ff9752", false),
+                new Block(0, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff0000", false),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0]], "black", true),
+            ], [2, 7]))
+
+            // boards.push(new Board("Ma's Puzzle", [5,5], [
+            //     new Block(0, 3, [[0,0],[0,1],[1,1]], "crimson"),    //L MA
+            //     new Block(2, 0, [[0,0],[1,0],[1,1]], "maroon"),     //L MY BOY
+            //     new Block(0, 0, [[0,0],[0,1],[0,2]], "green"),      //3x1 NO WORK
+            //     new Block(3, 2, [[0,0],[0,1],[0,2]], "darkgreen"),  //3x1 HOMESICK
+            //     new Block(1, 0, [[0,0],[0,1]], "blue"),             //2x1 DANGER
+            //     new Block(1, 2, [[0,0],[0,1]], "darkblue"),         //2x1 BROKE
+            //     new Block(2, 1, [[0,0],[0,1]], "teal"),             //2x1 WORRY
+            //     new Block(2, 3, [[0,0],[0,1]], "cyan"),             //2x1 TROUBLE
+            //     new Block(4, 2, [[0,0]], "yellow"),                 //1x1 ILL
+            // ], [2, 2]))
+
+            boards.push(new Board("Blocked In", [8, 5], [
+                new Block(6, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff3333", false),
+                new Block(6, 3, [[0, 0], [1, 0]], "#ffdd33", false),
+                new Block(6, 4, [[0, 0], [1, 0]], "#ff7300", false),
+                new Block(4, 3, [[0, 0], [0, 1]], "#ff9d4d", false),
+                new Block(5, 3, [[0, 0], [0, 1]], "#4dfcff", false),
+                new Block(2, 2, [[0, 0], [0, 1], [1, 1]], "#4dc3ff", false),
+                new Block(3, 1, [[0, 1], [1, 0], [1, 1], [2, 0], [2, 1]], "#4dff82", false),
+                new Block(2, 0, [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0]], "#d84dff", false),
+                new Block(0, 0, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2]], "black", true),
+            ], [3, 0], 0))
+
+            boards.push(new Board("Cave Blockade", [7, 6], [
+                new Block(4, 0, [[0, 0], [1, 0]], "#e68aff", false),
+                new Block(2, 2, [[0, 1], [1, 0], [1, 1]], "#00ff7b", false),
+                new Block(2, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffae00", false),
+                new Block(4, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "#aeff9e", false),
+                new Block(4, 3, [[0, 0], [1, 0], [1, 1]], "#ffd29e", false),
+                new Block(4, 4, [[0, 0], [0, 1], [1, 1]], "#9ef9ff", false),
+                new Block(6, 2, [[0, 0], [0, 1]], "#00c24a", false),
+                new Block(2, 5, [[0, 0]], "#ff0000", false),
+                new Block(3, 5, [[0, 0]], "black", true),
+                new Block(0, 1, [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [2, 1]], "black", true),
+            ], [0, 0], 7))
+
+            boards.push(new Board("Ball Out 1", [6, 5], [
+                new Block(0, 2, [[0, 0]], "red", false),
+                new Block(1, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffe433", false),
+                new Block(3, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffdd00", false),
+                new Block(2, 3, [[0, 0], [0, 1]], "#00ccff", false),
+                new Block(3, 0, [[0, 0], [0, 1]], "#009bc2", false),
+                new Block(1, 0, [[0, 0], [1, 0]], "#00942c", false),
+                new Block(3, 4, [[0, 0]], "#430094", false),
+                new Block(4, 4, [[0, 0]], "#b070ff", false),
+                new Block(0, 0, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1]], "black", true),
+                new Block(5, 0, [[0, 0], [0, 1]], "black", true),
+                new Block(5, 3, [[0, 0], [0, 1]], "black", true),
+            ], [2, 5], 0))
+
+            boards.push(new Board("Ball Out 2", [6, 6], [
+                new Block(2, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffe433", false),
+                new Block(2, 1, [[0, 0]], "#c933ff", false),
+                new Block(4, 2, [[0, 0]], "#74009e", false),
+                new Block(1, 3, [[0, 0]], "#9e0081", false),
+                new Block(3, 4, [[0, 0]], "#ff00d0", false),
+                new Block(3, 1, [[0, 0], [1, 0]], "#44ff00", false),
+                new Block(1, 4, [[0, 0], [1, 0]], "#30b300", false),
+                new Block(1, 1, [[0, 0], [0, 1]], "#3884ff", false),
+                new Block(4, 3, [[0, 0], [0, 1]], "#0062ff", false),
+                new Block(2, 0, [[0, 0], [1, 0]], "black", true),
+                new Block(2, 5, [[0, 0], [1, 0]], "black", true),
+                new Block(0, 0, [[0, 0], [0, 1]], "black", true),
+                new Block(5, 4, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(5, 0, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(0, 2, [[0, 0]], "#ff0000", false),
+            ], [3, 5], 15))
+
+            boards.push(new Board("Ball Out 3", [6, 6], [
+                new Block(2, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffe433", false),
+                new Block(4, 2, [[0, 0]], "#74009e", false),
+                new Block(1, 3, [[0, 0]], "#9e0081", false),
+                new Block(3, 1, [[0, 0], [1, 0]], "#44ff00", false),
+                new Block(1, 4, [[0, 0], [1, 0]], "#30b300", false),
+                new Block(1, 1, [[0, 0], [0, 1]], "#3884ff", false),
+                new Block(4, 3, [[0, 0], [0, 1]], "#0062ff", false),
+                new Block(0, 0, [[0, 0], [0, 1]], "black", true),
+                new Block(5, 4, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(5, 0, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(0, 2, [[0, 0]], "#ff0000", false),
+                new Block(3, 0, [[0, 0]], "black", true),
+                new Block(2, 5, [[0, 0]], "black", true),
+                new Block(2, 0, [[0, 0], [0, 1]], "#00e1ff", false),
+                new Block(3, 4, [[0, 0], [0, 1]], "#009eb3", false),
+            ], [3, 5], 11))
+
+            boards.push(new Board("Ball Out 4", [6, 4], [
+                new Block(0, 1, [[0, 0], [0, 1]], "black", true),
+                new Block(5, 1, [[0, 0], [0, 1]], "black", true),
+                new Block(0, 0, [[0, 0]], "#ff0000", false),
+                new Block(1, 0, [[0, 0], [0, 1]], "#00aaff", false),
+                new Block(4, 2, [[0, 0], [0, 1]], "#62cafe", false),
+                new Block(2, 0, [[0, 0], [1, 0]], "#62fe74", false),
+                new Block(2, 3, [[0, 0], [1, 0]], "#00b815", false),
+                new Block(2, 1, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffdd00", false),
+                new Block(4, 0, [[0, 0]], "#e100ff", false),
+                new Block(4, 1, [[0, 0]], "#680075", false),
+                new Block(1, 2, [[0, 0]], "#410075", false),
+                new Block(1, 3, [[0, 0]], "#aa43fe", false),
+            ], [3, 5], 2))
+
+            boards.push(new Board("Garbage Disposal", [8, 6], [
+                new Block(0, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff0000", false),
+                new Block(6, 2, [[0, 0], [0, 1]], "#00fbff", false),
+                new Block(4, 1, [[0, 0], [1, 0], [1, 1]], "#eeff00", false),
+                new Block(3, 1, [[0, 0], [0, 1], [1, 1]], "#e100ff", false),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(4, 0, [[0, 0], [1, 0], [2, 0], [2, 1], [3, 0], [3, 1]], "black", true),
+                new Block(4, 4, [[0, 1], [1, 1], [2, 0], [2, 1], [3, 0], [3, 1]], "black", true),
+                new Block(4, 3, [[0, 1], [1, 0], [1, 1]], "#2bff00", false),
+                new Block(3, 3, [[0, 0], [0, 1], [1, 0]], "#ffae00", false),
+            ], [2, 6], 0))
+
+            boards.push(new Board("Taking Out Trash", [8, 6], [
+                new Block(0, 2, [[0, 0], [0, 1], [0, 2], [0, 3], [1, 0], [1, 1], [1, 2], [1, 3]], "black", true),
+                new Block(3, 4, [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [4, 1]], "black", true),
+                new Block(6, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff3333", false),
+                new Block(2, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffea00", false),
+                new Block(2, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ffc800", false),
+                new Block(4, 0, [[0, 0], [0, 1]], "#00b3ff", false),
+                new Block(5, 0, [[0, 0], [0, 1]], "#66d1ff", false),
+                new Block(4, 2, [[0, 0], [0, 1]], "#00ffee", false),
+                new Block(5, 2, [[0, 0], [0, 1]], "#00b3a7", false),
+            ], [2, 6], 3))
+
+            boards.push(new Board("Gate 1", [8, 6], [
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(3, 0, [[0, 0]], "black", true),
+                new Block(3, 5, [[0, 0]], "black", true),
+                new Block(6, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff0000", false),
+                new Block(5, 0, [[0, 0], [0, 1], [0, 2], [1, 0]], "#ffc800", false),
+                new Block(5, 3, [[0, 0], [0, 1], [0, 2], [1, 2]], "#ff7b00", false),
+                new Block(2, 3, [[0, 0], [0, 1], [0, 2]], "#00b315", false),
+                new Block(3, 1, [[0, 1], [1, 0], [1, 1]], "#009eb3", false),
+                new Block(2, 1, [[0, 0], [0, 1], [1, 0]], "#e69100", false),
+            ], [2, 0], 4))
+
+            boards.push(new Board("Gate 2", [8, 6], [
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(3, 0, [[0, 0]], "black", true),
+                new Block(3, 5, [[0, 0]], "black", true),
+                new Block(6, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff0000", false),
+                new Block(5, 0, [[0, 0], [0, 1], [0, 2], [1, 0]], "#ffc800", false),
+                new Block(5, 3, [[0, 0], [0, 1], [0, 2], [1, 2]], "#ff7b00", false),
+                new Block(2, 4, [[0, 0], [0, 1], [1, 0]], "#ffa552", false),
+                new Block(2, 2, [[0, 1], [1, 0], [1, 1]], "#0086b3", false),
+                new Block(2, 0, [[0, 0], [0, 1], [0, 2]], "#00b315", false),
+            ], [2, 0], 4))
+
+            boards.push(new Board("Gate 3", [8, 6], [
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(3, 0, [[0, 0]], "black", true),
+                new Block(3, 5, [[0, 0]], "black", true),
+                new Block(6, 2, [[0, 0], [0, 1], [1, 0], [1, 1]], "#ff0000", false),
+                new Block(4, 3, [[0, 0], [0, 1], [1, 0]], "#ff9500", false),
+                new Block(2, 4, [[0, 0], [0, 1], [1, 0]], "#00ffbf", false),
+                new Block(2, 0, [[0, 0], [0, 1], [0, 2]], "#b85300", false),
+                new Block(4, 1, [[0, 0], [0, 1], [1, 1]], "#006eff", false),
+                new Block(5, 0, [[0, 0], [0, 1], [1, 0]], "#00a313", false),
+                new Block(5, 4, [[0, 0], [0, 1], [1, 1]], "#a000a3", false),
+                new Block(3, 2, [[0, 0], [0, 1]], "#d20fae", false),
+            ], [2, 0], 4))
+
+            boards.push(new Board("Underground Escape", [8, 7], [
+                new Block(7, 3, [[0, 0]], "#ff3333", false),
+                new Block(5, 5, [[0, 0], [0, 1]], "#ffd500", false),
+                new Block(2, 3, [[0, 0], [0, 1], [0, 2]], "#007502", false),
+                new Block(1, 2, [[0, 0], [0, 1], [1, 0], [2, 0], [2, 1]], "#750000", false),
+                new Block(0, 0, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [4, 1]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [0, 2], [1, 1], [1, 2]], "black", true),
+                new Block(3, 5, [[0, 0], [0, 1]], "black", true),
+                new Block(6, 0, [[0, 0], [0, 1], [1, 0], [1, 1], [1, 2]], "black", true),
+                new Block(6, 4, [[0, 1], [0, 2], [1, 0], [1, 1], [1, 2]], "black", true),
+                new Block(5, 3, [[0, 1], [1, 0], [1, 1]], "#00b3b0", false),
+                new Block(5, 1, [[0, 0], [0, 1], [0, 2]], "#00cc03", false),
+            ], [3, 0], 0))
+
+            boards.push(new Board("Grab the Key", [9, 5], [
+                new Block(0, 2, [[0, 0], [1, 0]], "#ff0000", false),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(7, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(7, 3, [[0, 0], [0, 1], [1, 0], [1, 1]], "black", true),
+                new Block(4, 2, [[0, 0]], "black", true),
+                new Block(2, 0, [[0, 0], [0, 1], [1, 0], [1, 1]], "#b80000", false),
+                new Block(4, 3, [[0, 0], [0, 1], [1, 0], [1, 1]], "#800000", false),
+                new Block(4, 0, [[0, 0], [1, 0], [1, 1]], "#028000", false),
+                new Block(2, 3, [[0, 0], [1, 0], [1, 1]], "#03d100", false),
+                new Block(5, 2, [[0, 0], [1, 0]], "#d19900", false),
+            ], [2, 7], 0))
+
+            boards.push(new Board("Diabolical Box 2", [8, 7], [
+                new Block(0, 0, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [0, 2]], "black", true),
+                new Block(1, 0, [[0, 0]], "black", true),
+                new Block(1, 6, [[0, 0]], "black", true),
+                new Block(7, 6, [[0, 0]], "black", true),
+                new Block(7, 0, [[0, 0]], "black", true),
+                new Block(5, 4, [[0, 1], [1, 1], [2, 0], [2, 1]], "#ad0000", false),
+                new Block(4, 3, [[0, 0]], "#ff0000", false),
+                new Block(2, 5, [[0, 0], [0, 1], [1, 1], [2, 0], [2, 1]], "#c252ff", false),
+                new Block(1, 1, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], "#c4ce3b", false),
+                new Block(4, 0, [[0, 0], [0, 1], [1, 0]], "#3bccce", false),
+                new Block(6, 0, [[0, 0], [0, 1]], "#009b9e", false),
+                new Block(6, 3, [[0, 0], [1, 0]], "#fe4d4d", false),
+                new Block(2, 2, [[0, 0], [1, 0], [2, 0]], "#850000", false),
+                new Block(5, 1, [[0, 0], [0, 1], [0, 2]], "#8c009e", false),
+                new Block(3, 3, [[0, 0], [0, 1], [0, 2]], "#00696b", false),
+                new Block(4, 4, [[0, 0], [1, 0], [2, 0]], "#7c8500", false),
+            ], [3, 0], 7))
+
+            boards.push(new Board("Mouse Escape", [9, 5], [
+                new Block(7, 1, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], "#0050b8", false),
+                new Block(5, 1, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], "#348cfe", false),
+                new Block(3, 1, [[0, 0], [1, 0], [1, 1]], "#b000b3", false),
+                new Block(2, 3, [[0, 0], [1, 0], [1, 1]], "#fb29ff", false),
+                new Block(2, 0, [[0, 0], [0, 1], [1, 0]], "#5cffb3", false),
+                new Block(1, 2, [[0, 0], [0, 1], [1, 0]], "#00c267", false),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1], [1, 1]], "black", true),
+                new Block(7, 0, [[0, 0], [1, 0]], "black", true),
+                new Block(7, 4, [[0, 0], [1, 0]], "black", true),
+                new Block(8, 2, [[0, 0]], "#ff0000", false),
+            ], [2, 0], 10))
+
+            boards.push(new Board("Mouse Loose", [9, 5], [
+                new Block(7, 1, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], "#0050b8", false),
+                new Block(0, 0, [[0, 0], [0, 1], [1, 0]], "black", true),
+                new Block(0, 3, [[0, 0], [0, 1], [1, 1]], "black", true),
+                new Block(7, 0, [[0, 0], [1, 0]], "black", true),
+                new Block(7, 4, [[0, 0], [1, 0]], "black", true),
+                new Block(8, 2, [[0, 0]], "#ff0000", false),
+                new Block(1, 1, [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], "#0091ff", false),
+                new Block(4, 3, [[0, 0], [0, 1], [1, 1], [2, 0], [2, 1]], "#ffa200", false),
+                new Block(4, 0, [[0, 0], [0, 1]], "#feca71", false),
+                new Block(5, 0, [[0, 0], [1, 0], [1, 1]], "#fe71f3", false),
+            ], [2, 0], 5))
+
+            boards.push(new Board("Packed In", [8, 7], [
+                new Block(5, 0, [[0, 0], [1, 0], [2, 0]], "black", true),
+                new Block(3, 0, [[0, 0]], "black", true),
+                new Block(0, 0, [[0, 0], [0, 1], [0, 2], [1, 0]], "black", true),
+                new Block(0, 4, [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [3, 2]], "black", true),
+                new Block(5, 6, [[0, 0]], "black", true),
+                new Block(7, 6, [[0, 0]], "black", true),
+                new Block(1, 1, [[0, 1], [1, 0], [1, 1], [2, 1]], "#85ff33", false),
+                new Block(1, 4, [[0, 1], [1, 0], [1, 1], [2, 1]], "#47b300", false),
+                new Block(1, 3, [[0, 0], [0, 1], [1, 0], [2, 0], [2, 1]], "#405e2b", false),
+                new Block(5, 1, [[0, 1], [0, 2], [1, 0], [1, 1], [1, 2]], "#8f5a00", false),
+                new Block(5, 4, [[0, 1], [1, 0], [1, 1]], "#919191", false),
+                new Block(4, 3, [[0, 0], [0, 1], [0, 2], [1, 1]], "#ae00ff", false),
+                new Block(3, 1, [[0, 0], [1, 0], [1, 1], [2, 0]], "#ff00a2", false),
+                new Block(7, 3, [[0, 0]], "#ff0000", false),
+            ], [3, 0], 13))
+        }
+        function setup() {
+            N = min(windowWidth, windowHeight) * 0.95;
+            canvas = createCanvas(N, N);
+
+            centerCanvas();
+            disableCanvasDefaults()
+
+            setup_boards()
 
             // Stable IDs: A1, A2, B1, B2, A3, B3, C1, C2, C3, ...
             // Adding boards only appends IDs; existing assignments never change.
@@ -205,29 +471,50 @@
             let cols = max(4, count)
             let slotLeft = floor((cols - 2) / 2)
             let menuPieces = [
-                ...menuColors.slice(0, count).map((color, i) => new Block(0, i, [[0,0]], color, false, String(i + 1))),
-                ...menuColors.slice(0, count).map((color, i) => new Block(4, i, [[0,0]], color, false, String.fromCharCode(65 + i))),
-                ...Array.from({length: cols}, (_, i) => i).filter(i => i !== slotLeft && i !== slotLeft + 1)
-                    .map(i => new Block(2, i, [[0,0]], "black", true)),
+                ...menuColors.slice(0, count).map((color, i) => new Block(0, i, [[0, 0]], color, false, String.fromCharCode(65 + i))),
+                ...menuColors.slice(0, count).map((color, i) => new Block(4, i, [[0, 0]], color, false, String(i + 1))),
+                ...Array.from({ length: cols }, (_, i) => i).filter(i => i !== slotLeft && i !== slotLeft + 1)
+                    .map(i => new Block(2, i, [[0, 0]], "black", true)),
             ]
             menu_board = new Board("Menu", [5, cols], menuPieces)
             menu_board.slotColumns = [slotLeft, slotLeft + 1]
 
             board = menu_board
-            
-                
+
+
             board.setup()
         }
 
         function draw() {
             background("#0066ff");
 
-            fill(0);         // slightly lighter gray
+            fill(240);         // slightly lighter gray
             noStroke();
             rect(offsetX, offsetY, board.cols * gridSize, board.rows * gridSize);
 
+            drawTarget();
+
             stroke(0);
             for (let b of blocks) b.show();
+        }
+
+        function targetBlock() {
+            return board.pieces[board.targetPieceIndex] || null;
+        }
+
+        function drawTarget() {
+            if (board === menu_board || !board.targetPosition) return;
+            let target = targetBlock();
+            if (!target) return;
+
+            let [x, y] = board.targetPosition;
+            noStroke();
+            fill(255, 60, 60, 100);
+            for (let [dr, dc] of target.cells) {
+                rect(offsetX + (x + dc) * gridSize,
+                    offsetY + (y + dr) * gridSize,
+                    gridSize, gridSize);
+            }
         }
 
         function mousePressed() {
@@ -276,11 +563,11 @@
 
         function mouseReleased() {
             selected = null;
-            if(!gameOver && board !== menu_board) moveCount++;
+            if (!gameOver && board !== menu_board) moveCount++;
 
             if (board === menu_board) checkMenu()
             else checkWin()
-            
+
         }
 
         function tryMove(block, dr, dc) {
@@ -342,24 +629,27 @@
         }
 
         function checkWin() {
-            if (board === menu_board || !["Klotski", "Klotski (Easy)", "Klotski (Medium)"].includes(board.name)) return
-            let winBlock = blocks[0]; // red block is always first
-            console.log(winBlock)
-            if (winBlock.col === winningSpace[0] && winBlock.row === winningSpace[1] && !gameOver) {
+            if (board === menu_board || !board.targetPosition || gameOver) return;
+            let winBlock = blocks[board.targetPieceIndex];
+            if (!winBlock) return;
+            if (winBlock.col === board.targetPosition[0] && winBlock.row === board.targetPosition[1]) {
+                gameOver = true;
                 alert(`🎉 You won in ${moveCount} moves! 🎉`);
-                gameOver = true
             }
         }
 
-        class Board{
-            constructor(name, size, pieces){
+        class Board {
+            constructor(name, size, pieces, targetPosition = null, targetPieceIndex = null) {
                 this.name = name
                 this.rows = size[0]
                 this.cols = size[1]
                 this.pieces = pieces
+                this.targetPosition = targetPosition // [x, y] = [column, row] of red block origin
+                this.targetPieceIndex = targetPieceIndex ?? pieces.findIndex(b => !b.fixed &&
+                    (b.color === "red" || b.color === "#ff0000"));
             }
 
-            setup(){
+            setup() {
                 blocks = []
                 gridSize = floor(N / max(this.rows, this.cols));  // whole pixels prevent seams
                 offsetX = round((N - this.cols * gridSize) / 2);
@@ -443,8 +733,8 @@
                     }
                 }
 
-                // Show the move count on the red target block, as in the second program.
-                if (board !== menu_board && this === blocks[0]) {
+                // Keep the move counter visible on the target block, as in the previous merged version.
+                if (board !== menu_board && this === blocks[board.targetPieceIndex]) {
                     let centerX = 0;
                     let centerY = 0;
                     for (let [dr, dc] of this.cells) {
@@ -487,6 +777,6 @@
 
 
     </script>
+</body>
 
-
-<main><canvas id="defaultCanvas0" class="p5Canvas" width="1263" height="1263" style="width: 631.75px; height: 631.75px; position: absolute; left: 324.125px; top: 16.625px; touch-action: none;"></canvas></main></body></html>
+</html>
