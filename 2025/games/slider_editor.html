@@ -1,517 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Board Editor</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        :root {
-            font-family: Arial, sans-serif;
-            color: #202124;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: #0066ff;
-            padding: 16px;
-        }
-
-        header {
-            color: white;
-            margin: 0 auto 14px;
-            max-width: 1500px;
-        }
-
-        header h1 {
-            font-size: 24px;
-            margin: 0 0 5px;
-        }
-
-        header p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        .layout {
-            max-width: 1500px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: minmax(250px, 0.8fr) minmax(280px, 1fr) minmax(320px, 1.15fr);
-            gap: 14px;
-            align-items: start;
-        }
-
-        .panel {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            min-width: 0;
-            box-shadow: 0 2px 8px #003b9940;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin: 0 0 12px;
-        }
-
-        h3 {
-            font-size: 15px;
-            margin: 16px 0 8px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            margin: 10px 0 5px;
-        }
-
-        input,
-        select,
-        button,
-        textarea {
-            font: inherit;
-        }
-
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #bbb;
-            border-radius: 5px;
-        }
-
-        input[type="color"] {
-            width: 100%;
-            height: 36px;
-            padding: 2px;
-            border: 1px solid #bbb;
-            border-radius: 5px;
-        }
-
-        button {
-            border: 0;
-            border-radius: 5px;
-            padding: 9px 11px;
-            background: #0066ff;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #004ecc;
-        }
-
-        button.secondary {
-            background: #555;
-        }
-
-        button.secondary:hover {
-            background: #333;
-        }
-
-        button.active {
-            background: #b42332;
-        }
-
-        .row {
-            display: flex;
-            gap: 8px;
-            align-items: end;
-        }
-
-        .row>* {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .hint {
-            color: #555;
-            font-size: 12px;
-            line-height: 1.45;
-        }
-
-        .shape-tools {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        #shapeGrid {
-            display: grid;
-            grid-template-columns: repeat(5, 34px);
-            grid-template-rows: repeat(5, 34px);
-            gap: 3px;
-            justify-content: center;
-            padding: 10px;
-            background: #f1f3f5;
-            border-radius: 8px;
-        }
-
-        .shape-cell {
-            padding: 0;
-            border-radius: 3px;
-            background: white;
-            border: 1px solid #aaa;
-        }
-
-        .shape-cell.on {
-            background: #ff3333;
-            border-color: #9b1111;
-        }
-
-        .shape-cell:hover {
-            outline: 2px solid #0066ff;
-            outline-offset: -2px;
-        }
-
-        #board {
-            width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
-            display: grid;
-            gap: 2px;
-            padding: 3px;
-            background: #202124;
-            border: 2px solid #202124;
-            aspect-ratio: var(--board-ratio, 4 / 5);
-        }
-
-        .board-cell {
-            min-width: 0;
-            min-height: 0;
-            padding: 0;
-            border-radius: 0;
-            background: #eee;
-        }
-
-        .board-cell.occupied {
-            outline: 1px solid #222;
-            outline-offset: -2px;
-        }
-
-        #output {
-            display: block;
-            width: 100%;
-            height: min(62vh, 540px);
-            min-height: 260px;
-            margin-top: 8px;
-            padding: 10px;
-            resize: vertical;
-            border: 1px solid #bbb;
-            border-radius: 5px;
-            background: #f8f9fa;
-            font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
-            white-space: pre;
-        }
-
-        #status {
-            min-height: 32px;
-            margin: 10px 0 0;
-            color: #444;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .board-panel {
-            position: sticky;
-            top: 12px;
-        }
-
-        @media (max-width: 1050px) {
-            .layout {
-                grid-template-columns: minmax(240px, 0.8fr) minmax(280px, 1fr);
-            }
-
-            .code-panel {
-                grid-column: 1 / -1;
-            }
-
-            #output {
-                height: 260px;
-            }
-
-            .board-panel {
-                position: static;
-            }
-        }
-
-        @media (max-width: 650px) {
-            body {
-                padding: 10px;
-            }
-
-            .layout {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .code-panel {
-                grid-column: auto;
-            }
-
-            #shapeGrid {
-                grid-template-columns: repeat(5, min(34px, 8vw));
-                grid-template-rows: repeat(5, min(34px, 8vw));
-            }
-
-            #output {
-                height: 240px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sliding Block Level Generator</title>
+<style>
+body { margin:0; background:#0066ff; color:#17212f; font:15px system-ui,Arial,sans-serif; }
+main { max-width:1150px; margin:24px auto; padding:0 16px 30px; }
+h1 { color:white; margin:0 0 16px; font-size:24px; }
+.layout { display:grid; grid-template-columns:minmax(320px,1fr) minmax(320px,1fr); gap:16px; }
+.panel { background:#f5f7fa; border-radius:10px; padding:16px; }
+.row { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin:9px 0; }
+label { display:inline-flex; align-items:center; gap:5px; }
+input,select,button,textarea { font:inherit; }
+input[type=number] { width:58px; }
+input[type=text] { width:175px; }
+button { cursor:pointer; border:1px solid #b8c4d1; background:white; padding:7px 11px; border-radius:5px; }
+button:hover { background:#e8eff7; }
+button.active { background:#d5e7ff; border-color:#3673bb; }
+button.primary { background:#1768c6; color:white; border-color:#1768c6; }
+#grid { display:grid; width:min(100%,510px); aspect-ratio:1; background:#0066ff; padding:0; margin:12px auto; align-content:center; justify-content:center; }
+.cell { width:var(--cell); height:var(--cell); box-sizing:border-box; border:1px solid rgba(0,0,0,.22); padding:0; border-radius:0; background:#f0f0f0; position:relative; }
+.cell.fixed { background:#0066ff !important; }
+.cell.target { outline:3px dashed #e50000; outline-offset:-4px; z-index:1; }
+.cell.selected { box-shadow:inset 0 0 0 3px white; z-index:2; }
+.cell small { position:absolute; top:1px; left:3px; font-size:10px; color:#222; text-shadow:0 0 3px white; }
+#pieces { width:100%; min-height:140px; }
+textarea { width:100%; box-sizing:border-box; height:230px; font:12px/1.5 ui-monospace,Consolas,monospace; resize:vertical; }
+.help { color:#536477; font-size:13px; }
+.status { font-size:13px; color:#344d65; min-height:20px; }
+@media(max-width:760px) { .layout { grid-template-columns:1fr; } }
+</style>
 </head>
-
 <body>
-    <header>
-        <h1>Board Editor</h1>
-        <p>Draw arbitrary piece shapes, arrange them on the board, and export JavaScript.</p>
-    </header>
-
-    <main class="layout">
-        <section class="panel">
-            <h2>Piece editor</h2>
-            <p class="hint">Toggle squares to draw a shape. The red squares make up one piece. At least one square must
-                be selected.</p>
-            <div id="shapeGrid" aria-label="Piece shape editor"></div>
-            <div class="actions">
-                <button id="clearShape" class="secondary">Clear shape</button>
-                <button id="fillShape" class="secondary">Fill 5 × 5</button>
-            </div>
-            <label for="color">Piece color</label>
-            <input id="color" type="color" value="#ff3333">
-            <div class="actions">
-                <button id="fixedTile" class="secondary" type="button">Place fixed black tiles: OFF</button>
-            </div>
-            <p class="hint">When enabled, the next placements are black obstacle tiles. They block movement but cannot
-                be moved themselves.</p>
-            <div class="row">
-                <div>
-                    <label for="rows">Board rows</label>
-                    <input id="rows" type="number" min="1" max="30" value="5">
-                </div>
-                <div>
-                    <label for="cols">Board columns</label>
-                    <input id="cols" type="number" min="1" max="30" value="4">
-                </div>
-            </div>
-            <div class="actions">
-                <button id="resize">Resize board</button>
-                <button id="erase" class="secondary">Erase mode: OFF</button>
-            </div>
-            <div class="actions">
-                <button id="clearBoard" class="secondary">Clear board</button>
-                <button id="removeLast" class="secondary">Undo last piece</button>
-            </div>
-            <p class="hint">Click an empty board cell to place your drawn shape with that cell as its top-left anchor.
-                Click a placed piece to remove it. Pieces cannot overlap or extend beyond the board.</p>
-        </section>
-
-        <section class="panel board-panel">
-            <h2>Board preview</h2>
-            <div id="board"></div>
-            <p id="status" role="status"></p>
-        </section>
-
-        <section class="panel code-panel">
-            <h2>Generated JavaScript</h2>
-            <p class="hint">Paste this into your game where you define boards. Coordinates are zero-based:
-                <code>[row, column]</code>.</p>
-            <textarea id="output" readonly spellcheck="false"></textarea>
-            <div class="actions">
-                <button id="copy">Copy code</button>
-                <button id="refresh" class="secondary">Regenerate</button>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        (() => {
-            const shapeGrid = document.getElementById('shapeGrid');
-            const boardElement = document.getElementById('board');
-            const rowsInput = document.getElementById('rows');
-            const colsInput = document.getElementById('cols');
-            const colorInput = document.getElementById('color');
-            const output = document.getElementById('output');
-            const status = document.getElementById('status');
-
-            let rows = 5, cols = 4, nextId = 1, eraseMode = false, fixedTileMode = false;
-            let pieces = [];
-            const shapeSize = 5;
-            let shape = new Set(['0,0', '0,1', '1,0', '1,1']);
-
-            function shapeCells() {
-                if (!shape.size) return [];
-                const coords = [...shape].map(key => key.split(',').map(Number));
-                const minR = Math.min(...coords.map(p => p[0]));
-                const minC = Math.min(...coords.map(p => p[1]));
-                return coords.map(([r, c]) => [r - minR, c - minC])
-                    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-            }
-
-            function drawShapeGrid() {
-                shapeGrid.innerHTML = '';
-                for (let r = 0; r < shapeSize; r++) {
-                    for (let c = 0; c < shapeSize; c++) {
-                        const key = `${r},${c}`;
-                        const button = document.createElement('button');
-                        button.type = 'button';
-                        button.className = 'shape-cell' + (shape.has(key) ? ' on' : '');
-                        button.setAttribute('aria-label', `Shape row ${r + 1}, column ${c + 1}`);
-                        button.setAttribute('aria-pressed', String(shape.has(key)));
-                        button.addEventListener('click', () => {
-                            if (shape.has(key)) shape.delete(key);
-                            else shape.add(key);
-                            drawShapeGrid();
-                        });
-                        shapeGrid.appendChild(button);
-                    }
-                }
-            }
-
-            function cellsFor(piece) {
-                return piece.cells.map(([dr, dc]) => ({ row: piece.row + dr, col: piece.col + dc }));
-            }
-
-            function findPieceAt(row, col) {
-                return pieces.find(piece => cellsFor(piece).some(cell => cell.row === row && cell.col === col));
-            }
-
-            function canPlace(cells, row, col) {
-                return cells.every(([dr, dc]) => {
-                    const r = row + dr, c = col + dc;
-                    return r >= 0 && r < rows && c >= 0 && c < cols && !findPieceAt(r, c);
-                });
-            }
-
-            function placePiece(row, col) {
-                const cells = shapeCells();
-                if (!cells.length) {
-                    status.textContent = 'Draw a shape by selecting at least one square in the piece editor.';
-                    return;
-                }
-                if (!canPlace(cells, row, col)) {
-                    status.textContent = 'That shape would overlap another piece or extend outside the board.';
-                    return;
-                }
-                pieces.push({ id: nextId++, row, col, cells, color: fixedTileMode ? '#000000' : colorInput.value, fixed: fixedTileMode });
-                status.textContent = '';
-                renderBoard();
-            }
-
-            function renderBoard() {
-                boardElement.innerHTML = '';
-                boardElement.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
-                boardElement.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-                boardElement.style.setProperty('--board-ratio', `${cols} / ${rows}`);
-
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        const cell = document.createElement('button');
-                        cell.type = 'button';
-                        cell.className = 'board-cell';
-                        cell.title = `Row ${r}, column ${c}`;
-                        const piece = findPieceAt(r, c);
-                        if (piece) {
-                            cell.classList.add('occupied');
-                            cell.style.backgroundColor = piece.fixed ? '#000000' : piece.color;
-                            cell.setAttribute('aria-label', `${piece.fixed ? 'Remove fixed tile' : 'Remove piece'} at row ${r}, column ${c}`);
-                        } else {
-                            cell.setAttribute('aria-label', `Place piece at row ${r}, column ${c}`);
-                        }
-                        cell.addEventListener('click', () => {
-                            const existing = findPieceAt(r, c);
-                            if (existing) {
-                                if (eraseMode || !eraseMode) {
-                                    pieces = pieces.filter(piece => piece.id !== existing.id);
-                                    status.textContent = 'Piece removed.';
-                                    renderBoard();
-                                }
-                            } else if (!eraseMode) {
-                                placePiece(r, c);
-                            }
-                        });
-                        boardElement.appendChild(cell);
-                    }
-                }
-                generateCode();
-            }
-
-            function generateCode() {
-                const lines = [`const my_board = new Board([${rows}, ${cols}], [`];
-                for (const piece of pieces) {
-                    lines.push(`    new Block(${piece.row}, ${piece.col}, ${JSON.stringify(piece.cells)}, ${JSON.stringify(piece.fixed ? 'black' : piece.color)}, ${piece.fixed}),`);
-                }
-                lines.push('])');
-                output.value = lines.join('\n');
-            }
-
-            function resizeBoard() {
-                const newRows = Number(rowsInput.value), newCols = Number(colsInput.value);
-                if (!Number.isInteger(newRows) || !Number.isInteger(newCols) ||
-                    newRows < 1 || newRows > 30 || newCols < 1 || newCols > 30) {
-                    status.textContent = 'Rows and columns must be whole numbers between 1 and 30.';
-                    return;
-                }
-                rows = newRows; cols = newCols;
-                pieces = pieces.filter(piece => cellsFor(piece).every(cell =>
-                    cell.row >= 0 && cell.row < rows && cell.col >= 0 && cell.col < cols));
-                status.textContent = 'Board resized. Pieces that no longer fit were removed.';
-                renderBoard();
-            }
-
-            document.getElementById('clearShape').addEventListener('click', () => {
-                shape.clear(); drawShapeGrid();
-            });
-            document.getElementById('fillShape').addEventListener('click', () => {
-                shape = new Set();
-                for (let r = 0; r < shapeSize; r++) for (let c = 0; c < shapeSize; c++) shape.add(`${r},${c}`);
-                drawShapeGrid();
-            });
-            document.getElementById('resize').addEventListener('click', resizeBoard);
-            document.getElementById('fixedTile').addEventListener('click', event => {
-                fixedTileMode = !fixedTileMode;
-                event.currentTarget.textContent = `Place fixed black tiles: ${fixedTileMode ? 'ON' : 'OFF'}`;
-                event.currentTarget.classList.toggle('active', fixedTileMode);
-            });
-            document.getElementById('erase').addEventListener('click', event => {
-                eraseMode = !eraseMode;
-                event.currentTarget.textContent = `Erase mode: ${eraseMode ? 'ON' : 'OFF'}`;
-                event.currentTarget.classList.toggle('active', eraseMode);
-            });
-            document.getElementById('clearBoard').addEventListener('click', () => {
-                pieces = []; status.textContent = 'Board cleared.'; renderBoard();
-            });
-            document.getElementById('removeLast').addEventListener('click', () => {
-                pieces.pop(); status.textContent = 'Removed the last piece.'; renderBoard();
-            });
-            document.getElementById('refresh').addEventListener('click', generateCode);
-            document.getElementById('copy').addEventListener('click', async () => {
-                try {
-                    await navigator.clipboard.writeText(output.value);
-                    status.textContent = 'JavaScript copied to clipboard.';
-                } catch {
-                    output.focus(); output.select();
-                    status.textContent = 'Clipboard access unavailable; code selected so you can copy it manually.';
-                }
-            });
-
-            drawShapeGrid();
-            renderBoard();
-        })();
-    </script>
+<main>
+<h1>Sliding Block Level Generator</h1>
+<div class="layout">
+<section class="panel">
+<div class="row"><label>Level name <input id="name" type="text" value="New Puzzle"></label></div>
+<div class="row"><label>Rows <input id="rows" type="number" min="1" max="30" value="5"></label><label>Columns <input id="cols" type="number" min="1" max="30" value="4"></label><button id="resize">Resize board</button></div>
+<div class="row"><label>Editing mode <select id="mode"><option value="paint">Paint selected block</option><option value="erase">Erase cells</option><option value="target">Set target origin</option></select></label></div>
+<div id="grid" aria-label="Interactive puzzle board"></div>
+<p class="help">Select a block on the right, then click cells to add or remove its shape. Each block's origin is the top-left corner of its occupied bounding box. Choose “Set target origin” and click a cell to position the selected target block there.</p>
+<div class="row"><label>Target X <input id="targetX" type="number" min="0" value="1"></label><label>Target Y <input id="targetY" type="number" min="0" value="3"></label></div>
+<div class="row"><label>Target block <select id="targetPiece"></select></label></div>
+<p id="status" class="status" role="status"></p>
+</section>
+<section class="panel">
+<h2 style="margin-top:0">Blocks</h2>
+<div class="row"><button id="add" class="primary">Add block</button><button id="remove">Remove selected</button><button id="up">Move up</button><button id="down">Move down</button></div>
+<label>Selected block <select id="pieces" size="8"></select></label>
+<div class="row"><label>Color <input id="color" type="color" value="#ff0000"></label><label><input id="fixed" type="checkbox"> Immovable</label><label>Label <input id="label" type="text" style="width:65px"></label></div>
+<div class="row"><button id="sample">Load Klotski example</button><button id="clear">Clear board</button></div>
+<h2>Export</h2>
+<p class="help">Generated code uses <code>boards.push(new Board(name, [rows, cols], pieces, [x, y], targetPieceIndex))</code>. Copy it into <code>setup_boards()</code> in your game.</p>
+<div class="row"><button id="generate" class="primary">Generate JavaScript</button><button id="copy">Copy code</button><button id="download">Download .js</button></div>
+<textarea id="output" spellcheck="false" aria-label="Generated JavaScript"></textarea>
+<div class="row"><button id="save">Download editable JSON</button><label>Load JSON <input id="load" type="file" accept=".json,application/json"></label></div>
+</section>
+</div>
+</main>
+<script>
+let rows=5, cols=4, pieces=[], selected=0, target=[1,3], targetPiece=0;
+const $=id=>document.getElementById(id);
+const occupied=(p,r,c)=>p.cells.some(([rr,cc])=>rr===r&&cc===c);
+const inBounds=(r,c)=>r>=0&&r<rows&&c>=0&&c<cols;
+function message(s){$('status').textContent=s;}
+function addPiece(cells=[],color='#ff0000',fixed=false,label=null){pieces.push({cells:cells.map(a=>a.slice()),color,fixed,label});selected=pieces.length-1;refresh();}
+function refresh(){
+ $('rows').value=rows;$('cols').value=cols;$('targetX').value=target[0];$('targetY').value=target[1];
+ $('pieces').innerHTML='';$('targetPiece').innerHTML='';
+ pieces.forEach((p,i)=>{
+  let opt=document.createElement('option');opt.value=i;opt.textContent=`${i}: ${p.color} (${p.cells.length} cells)${p.fixed?' [fixed]':''}${p.label?' '+p.label:''}`;$('pieces').append(opt);
+  let t=document.createElement('option');t.value=i;t.textContent=`${i}: ${p.color}${p.fixed?' [fixed]':''}`;$('targetPiece').append(t);
+ });
+ if(pieces.length){selected=Math.min(Math.max(0,selected),pieces.length-1);targetPiece=Math.min(Math.max(0,targetPiece),pieces.length-1);$('pieces').value=selected;$('targetPiece').value=targetPiece;
+  let p=pieces[selected];$('color').value=/^#[0-9a-f]{6}$/i.test(p.color)?p.color:'#ff0000';$('fixed').checked=p.fixed;$('label').value=p.label??'';
+ }else{$('label').value='';$('fixed').checked=false;}
+ drawGrid();
+}
+function drawGrid(){
+ const grid=$('grid');grid.innerHTML='';let size=Math.max(12,Math.floor(500/Math.max(rows,cols)));grid.style.setProperty('--cell',size+'px');grid.style.gridTemplateColumns=`repeat(${cols}, ${size}px)`;
+ const tp=pieces[targetPiece];const tr=tp&&tp.cells.length?Math.min(...tp.cells.map(a=>a[0])):0;const tc=tp&&tp.cells.length?Math.min(...tp.cells.map(a=>a[1])):0;
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+  const cell=document.createElement('button');cell.type='button';cell.className='cell';cell.title=`Column ${c}, row ${r}`;
+  let i=pieces.findIndex(p=>occupied(p,r,c));if(i>=0){cell.style.background=pieces[i].color;if(pieces[i].fixed)cell.classList.add('fixed');if(i===selected)cell.classList.add('selected');let n=document.createElement('small');n.textContent=i;cell.append(n);}
+  if(tp&&tp.cells.some(([rr,cc])=>target[1]+rr-tr===r&&target[0]+cc-tc===c))cell.classList.add('target');
+  cell.onclick=()=>clickCell(r,c);grid.append(cell);
+ }
+}
+function clickCell(r,c){
+ const mode=$('mode').value;
+ if(mode==='target'){target=[c,r];refresh();return;}
+ let owner=pieces.findIndex(p=>occupied(p,r,c));
+ if(mode==='erase'){if(owner>=0){pieces[owner].cells=pieces[owner].cells.filter(([rr,cc])=>rr!==r||cc!==c);refresh();}return;}
+ if(!pieces.length){message('Add a block first.');return;}
+ if(owner>=0&&owner!==selected){message(`Cell belongs to block ${owner}. Select that block or erase the cell first.`);return;}
+ let p=pieces[selected];if(owner===selected)p.cells=p.cells.filter(([rr,cc])=>rr!==r||cc!==c);else p.cells.push([r,c]);refresh();
+}
+function code(){
+ const name=$('name').value.trim()||'Untitled';
+ if(!pieces.length||pieces.some(p=>!p.cells.length)){message('Every exported block must contain at least one cell.');return null;}
+ if(!pieces[targetPiece]||pieces[targetPiece].fixed){message('Choose a movable target block.');return null;}
+ const normalized=pieces.map(p=>{let minR=Math.min(...p.cells.map(a=>a[0])),minC=Math.min(...p.cells.map(a=>a[1]));return {row:minR,col:minC,cells:p.cells.map(([r,c])=>[r-minR,c-minC]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]),color:p.color,fixed:p.fixed,label:p.label};});
+ const targetShape=normalized[targetPiece].cells;
+ if(targetShape.some(([dr,dc])=>!inBounds(target[1]+dr,target[0]+dc))){message('Target shape extends outside the board. Move the target origin.');return null;}
+ let lines=[`boards.push(new Board(${JSON.stringify(name)}, [${rows}, ${cols}], [`];
+ normalized.forEach(p=>{let args=[p.row,p.col,p.cells,p.color];let str=`    new Block(${p.row}, ${p.col}, ${JSON.stringify(p.cells)}, ${JSON.stringify(p.color)}`;if(p.fixed||p.label!==null&&p.label!=='')str+=`, ${p.fixed}`;if(p.label!==null&&p.label!=='')str+=`, ${JSON.stringify(p.label)}`;lines.push(str+'),');});
+ lines.push(`], [${target[0]}, ${target[1]}], ${targetPiece}))`);
+ message('JavaScript generated. Target position is an estimate you can adjust; solvability is not checked.');return lines.join('\n');
+}
+$('generate').onclick=()=>{let result=code();if(result!==null)$('output').value=result;};
+$('copy').onclick=async()=>{if(!$('output').value)$('generate').click();if(!$('output').value)return;try{await navigator.clipboard.writeText($('output').value);message('Copied to clipboard.');}catch(e){$('output').select();message('Select the code and copy it manually.');}};
+function download(text,filename,type){let url=URL.createObjectURL(new Blob([text],{type}));let a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$('download').onclick=()=>{let result=code();if(result!==null){$('output').value=result;download(result,'sliding_block_level.js','text/javascript');}};
+$('save').onclick=()=>download(JSON.stringify({name:$('name').value,rows,cols,pieces,target,targetPiece},null,2),'sliding_block_level.json','application/json');
+$('load').onchange=async e=>{let file=e.target.files[0];if(!file)return;try{let data=JSON.parse(await file.text());if(!Number.isInteger(data.rows)||!Number.isInteger(data.cols)||data.rows<1||data.cols<1||data.rows>30||data.cols>30||!Array.isArray(data.pieces)||!Array.isArray(data.target))throw Error('Invalid level JSON');rows=data.rows;cols=data.cols;pieces=data.pieces;target=data.target;targetPiece=data.targetPiece??0;selected=0;$('name').value=data.name??'New Puzzle';refresh();message('Loaded editable level.');}catch(err){message('Unable to load JSON: '+err.message);}e.target.value='';};
+$('add').onclick=()=>addPiece([], '#ff0000');
+$('remove').onclick=()=>{if(!pieces.length)return;pieces.splice(selected,1);if(targetPiece>=pieces.length)targetPiece=Math.max(0,pieces.length-1);else if(selected<targetPiece)targetPiece--;selected=Math.max(0,selected-1);refresh();};
+function reorder(delta){let to=selected+delta;if(to<0||to>=pieces.length)return;[pieces[selected],pieces[to]]=[pieces[to],pieces[selected]];if(targetPiece===selected)targetPiece=to;else if(targetPiece===to)targetPiece=selected;selected=to;refresh();}
+$('up').onclick=()=>reorder(-1);$('down').onclick=()=>reorder(1);
+$('pieces').onchange=e=>{selected=Number(e.target.value);refresh();};
+$('targetPiece').onchange=e=>{targetPiece=Number(e.target.value);refresh();};
+$('color').oninput=e=>{if(pieces[selected]){pieces[selected].color=e.target.value;drawGrid();$('pieces').options[selected].textContent=`${selected}: ${pieces[selected].color} (${pieces[selected].cells.length} cells)`;}};
+$('fixed').onchange=e=>{if(pieces[selected]){pieces[selected].fixed=e.target.checked;refresh();}};
+$('label').oninput=e=>{if(pieces[selected])pieces[selected].label=e.target.value||null;};
+$('targetX').onchange=e=>{target[0]=Number(e.target.value);drawGrid();};$('targetY').onchange=e=>{target[1]=Number(e.target.value);drawGrid();};
+$('resize').onclick=()=>{let r=Number($('rows').value),c=Number($('cols').value);if(!Number.isInteger(r)||!Number.isInteger(c)||r<1||c<1||r>30||c>30){message('Rows and columns must be between 1 and 30.');return;}if(pieces.some(p=>p.cells.some(([rr,cc])=>rr>=r||cc>=c))){if(!confirm('Resizing will discard block cells outside the new board. Continue?'))return;}rows=r;cols=c;pieces.forEach(p=>p.cells=p.cells.filter(([rr,cc])=>inBounds(rr,cc)));refresh();};
+$('clear').onclick=()=>{if(!confirm('Clear all blocks?'))return;pieces=[];selected=0;targetPiece=0;refresh();};
+$('sample').onclick=()=>{rows=5;cols=4;$('name').value='Klotski';target=[1,3];targetPiece=0;selected=0;pieces=[
+ {cells:[[0,1],[0,2],[1,1],[1,2]],color:'#ff0000',fixed:false,label:null},
+ {cells:[[0,0],[1,0]],color:'#0000ff',fixed:false,label:null},
+ {cells:[[0,3],[1,3]],color:'#000080',fixed:false,label:null},
+ {cells:[[2,0],[3,0]],color:'#008000',fixed:false,label:null},
+ {cells:[[2,3],[3,3]],color:'#006400',fixed:false,label:null},
+ {cells:[[2,1],[2,2]],color:'#800080',fixed:false,label:null},
+ {cells:[[3,1]],color:'#ffff00',fixed:false,label:null},
+ {cells:[[3,2]],color:'#ffd700',fixed:false,label:null},
+ {cells:[[4,0]],color:'#ffa500',fixed:false,label:null},
+ {cells:[[4,3]],color:'#ff8c00',fixed:false,label:null}
+ ];refresh();message('Loaded Klotski example.');};
+$('sample').click();
+</script>
 </body>
-
 </html>
