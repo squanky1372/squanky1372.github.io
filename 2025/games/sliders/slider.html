@@ -21,9 +21,9 @@
 
 <body style="background-color:#0066ff;">
     <!-- <script src="../aa_libraries/matter.js"></script> -->
-    <script src="../aa_libraries/p5.js"></script>
-    <script src="../aa_libraries/fj_window_library.js"></script>
-    <script src="../aa_libraries/fj_games_library.js"></script>
+    <script src="../../aa_libraries/p5.js"></script>
+    <script src="../../aa_libraries/fj_window_library.js"></script>
+    <script src="../../aa_libraries/fj_games_library.js"></script>
 
 
     <script>
@@ -49,9 +49,6 @@
         var canvas
 
         function setup() {
-
-            verifyHash()
-
             let N = min(windowWidth, windowHeight) * 0.95;
             canvas = createCanvas(N, N);
 
@@ -76,14 +73,13 @@
                     blocks[random_nums[0]].col = blocks[random_nums[1]].col
                     blocks[random_nums[1]].row = temp.row
                     blocks[random_nums[1]].col = temp.col
-                    // console.log("did swap " + i)
+                    console.log("did swap " + i)
                 }
                 else i--
             }
         }
 
         function draw() {
-
             background(0);
 
             fill(240);         // slightly lighter gray
@@ -92,43 +88,9 @@
 
             stroke(0);
             for (let b of blocks) b.show();
-
-            checkDataFetchSuccess2()
-            drawLogo()
         }
 
-        function drawLogo() {
-            if (playerDataFetched != 2) return;
-
-            for (let b of blocks) {
-                let x = offsetX + b.col * gridSize;
-                let y = offsetY + b.row * gridSize;
-
-                // Original position of this tile in the image
-                let sourceCol = (b.num - 1) % cols;
-                let sourceRow = floor((b.num - 1) / cols);
-
-                // Clip to the tile's current position
-                drawingContext.save();
-                drawingContext.beginPath();
-                drawingContext.rect(x, y, gridSize, gridSize);
-                drawingContext.clip();
-
-                // Draw this tile's original portion of the image
-                image(
-                    patternCnv,
-                    x, y, gridSize, gridSize,
-                    sourceCol * patternCnv.width / cols,
-                    sourceRow * patternCnv.height / rows,
-                    patternCnv.width / cols,
-                    patternCnv.height / rows
-                );
-
-                drawingContext.restore();
-            }
-        }
-
-        function old_mousePressed() {
+        function mousePressed() {
 
             for (let b of blocks) {
                 for (let [dr, dc] of b.cells) {
@@ -143,31 +105,6 @@
                     }
                 }
             }
-        }
-
-        function mousePressed() {
-            print("press", mouseX, mouseY);
-
-            if (gameOver) {
-                print("Game is over");
-                return;
-            }
-
-            for (let b of blocks) {
-                let x = offsetX + b.col * gridSize;
-                let y = offsetY + b.row * gridSize;
-
-                if (
-                    mouseX >= x && mouseX < x + gridSize &&
-                    mouseY >= y && mouseY < y + gridSize
-                ) {
-                    print("Hit block", b.col, b.row);
-                    slideToEmpty(b);
-                    return;
-                }
-            }
-
-            print("No block hit");
         }
 
         function mouseDragged() {
@@ -203,68 +140,6 @@
 
         }
 
-        function slideToEmpty(block) {
-    print("slideToEmpty called:", block.row, block.col);
-
-    let empty = null;
-
-    for (let r = 0; r < rows && !empty; r++) {
-        for (let c = 0; c < cols; c++) {
-            if (!blocks.some(b => b.row === r && b.col === c)) {
-                empty = { row: r, col: c };
-                break;
-            }
-        }
-    }
-
-    print("Empty cell:", empty);
-
-    if (!empty) return;
-
-    const dr = Math.sign(empty.row - block.row);
-    const dc = Math.sign(empty.col - block.col);
-
-    print("Direction:", dr, dc);
-
-    if (dr !== 0 && dc !== 0) {
-        print("Rejected: tile not in same row or column");
-        return;
-    }
-
-    const startRow = block.row;
-    const startCol = block.col;
-
-    let r = empty.row;
-    let c = empty.col;
-
-    while (r !== startRow || c !== startCol) {
-        const previousRow = r - dr;
-        const previousCol = c - dc;
-
-        const tile = blocks.find(
-            b => b.row === previousRow && b.col === previousCol
-        );
-
-        if (!tile) {
-            print("Rejected: no tile found at", previousRow, previousCol);
-            return;
-        }
-
-        tile.row = r;
-        tile.col = c;
-
-        r = previousRow;
-        c = previousCol;
-    }
-
-    print("Positions updated");
-    moveCount++;
-
-    checkWin();
-
-    print("checkWin finished");
-}
-
         function tryMove(block, dr, dc) {
             if (canMove(block, dr, dc)) {
                 block.row += dr;
@@ -289,18 +164,11 @@
         }
 
         function checkWin() {
-            // Each numbered tile belongs at:
-            // 1 -> (0,0), 2 -> (0,1), ... 15 -> (3,2)
-            const won = blocks.every(b => {
-                const correctRow = Math.floor((b.num - 1) / cols);
-                const correctCol = (b.num - 1) % cols;
-
-                return b.row === correctRow && b.col === correctCol;
-            });
-
-            if (won && !gameOver) {
-                gameOver = true;
+            let winBlock = blocks[0]; // red block is always first
+            console.log(winBlock)
+            if (winBlock.col === winningSpace[0] && winBlock.row === winningSpace[1] && !gameOver) {
                 alert(`🎉 You won in ${moveCount} moves! 🎉`);
+                gameOver = true
             }
         }
 

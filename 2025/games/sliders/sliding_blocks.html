@@ -42,12 +42,12 @@
 
 <body style="background-color:#0066ff;">
     <!-- <script src="../aa_libraries/matter.js"></script> -->
-    <script src="../aa_libraries/p5.js"></script>
+    <script src="../../aa_libraries/p5.js"></script>
     <!-- Canvas -->
-    <script src="../aa_libraries/fj_window_library.js"></script>
+    <script src="../../aa_libraries/fj_window_library.js"></script>
 
     <!-- Hash and Pattern -->
-    <script src="../aa_libraries/fj_games_library.js"></script>
+    <script src="../../aa_libraries/fj_games_library.js"></script>
 
 
     <button id="resetButton" onclick="resetBoard()">Reset</button>
@@ -176,11 +176,21 @@
             boards = createBoards()
 
             // Each letter represents a page of 9 levels, with 12 letter blocks around a 3x3 grid.
-            // Appending boards preserves existing IDs.
+            // Each entry can be either:
+            //   1. A Board instance (the level loads inside this page, as before), or
+            //   2. A URL string, or { url: "..." } (the level opens as another page).
+            // Appending entries preserves existing IDs.
             if (boards.length > 108) throw new Error("Maximum of 108 boards supported")
             levels = {}
             for (let i = 0; i < boards.length; i++) {
-                levels[levelId(i)] = boards[i]
+                const entry = boards[i]
+                const isBoard = entry instanceof Board
+                const isLink = typeof entry === "string" ||
+                    (entry && typeof entry === "object" && typeof entry.url === "string")
+                if (!isBoard && !isLink) {
+                    throw new Error(`Invalid level definition at index ${i}. Expected a Board or a URL.`)
+                }
+                levels[levelId(i)] = entry
             }
 
             let count = ceil(boards.length / 9)
@@ -413,17 +423,33 @@
 
             let letter = releasedBlock.label
             let number = row * 3 + col + 1
-            let nextBoard = levels[letter + "-" + number]
-            if (nextBoard) {
-                board = nextBoard
-                currentLevelId = letter + "-" + number
-                moveCount = 0
-                gameOver = false
-                scoreSubmitted = false
-                selected = null
-                board.setup()
-                levelStartTime = performance.now()
+            const selectedLevelId = letter + "-" + number
+            const nextLevel = levels[selectedLevelId]
+            if (!nextLevel) return
+
+            // A string or { url: "..." } represents a level hosted on another page.
+            // Resolve relative URLs against this page and carry the player's login hash
+            // forward so the destination can continue using the same player identity.
+            const destinationUrl = typeof nextLevel === "string" ? nextLevel : nextLevel.url
+            if (destinationUrl) {
+                const destination = new URL(destinationUrl, window.location.href)
+                const playerHash = new URLSearchParams(window.location.search).get("hash")
+                if (playerHash && !destination.searchParams.has("hash")) {
+                    destination.searchParams.set("hash", playerHash)
+                }
+                window.location.assign(destination.href)
+                return
             }
+
+            // Existing behavior: Board entries load directly into this page.
+            board = nextLevel
+            currentLevelId = selectedLevelId
+            moveCount = 0
+            gameOver = false
+            scoreSubmitted = false
+            selected = null
+            board.setup()
+            levelStartTime = performance.now()
         }
 
         function checkWin() {

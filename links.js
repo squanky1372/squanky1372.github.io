@@ -38,15 +38,15 @@ var links_database = [
     ["/2025/words_2025/copier.html", "/html/img/Boxes47.png"], //Copier
     ["/2025/games/gobblet/gobblet.html", "/html/img/Boxes48.png"], //Goblett
     ["/2025/games_dev/blokus.html", "/html/img/Boxes49.png"], //Blokus
-    ["/2025/games/sliding_blocks.html", "/html/img/Boxes50.png"], //Klotski
+    ["/2025/games/sliders/sliding_blocks.html", "/html/img/Boxes50.png"], //Klotski
     ["/2025/games/daily_mino.html", "/html/img/Boxes51.png"], //Daily Mino puzzle
     ["/2025/games/squong.html", "/html/img/Boxes53.png"], //Squong
     ["/2026/superclock.html", "/html/img/Boxes52.png"], //superclock
     ["/2026/icosahedron.html", "/html/img/Boxes54.png"], //icosahedron
     ["/2026/HA.html", "/html/img/Boxes10.png"], //home assistant
-    ["/2025/games/slider.html", "/html/img/Boxes50.png"], //slider 15
-    ["/2025/games/slider_img.html?hash=feli13", "/html/img/Boxes50.png"], //slider 15 with logo
-    ["/2025/games/slider_editor.html", "/html/img/Boxes50.png"], //slider editor
+    ["/2025/games/sliders/slider.html", "/html/img/Boxes50.png"], //slider 15
+    ["/2025/games/sliders/slider_img.html?hash=feli13", "/html/img/Boxes50.png"], //slider 15 with img
+    ["/2025/games/sliders/slider_editor.html", "/html/img/Boxes50.png"], //slider editor
 
     // ["http://squanky.net:3001/", "/html/img/Boxes19.png"], //MorseMate
     // ["/controller/multicanvas.html", "/html/img/Boxes11.png"], //multicanvas racing game

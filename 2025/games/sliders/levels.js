@@ -549,6 +549,8 @@ function createBoards() {
                 new Block(3, 5, [[0,0],[0,1],[1,0],[1,1]], "#2d770e"),
                 new Block(2, 6, [[0,0],[0,1],[1,1]], "#00e1ff"),
                 new Block(3, 0, [[0,0],[1,0],[1,1]], "#0091ff"),
-            ])
+            ]),
+        {url:"./slider.html"},
+        {url:"./slider_img.html"}
     ];
 }
