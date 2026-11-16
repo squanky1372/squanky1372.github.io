@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="apple-touch-icon" sizes="128x128" href="https://squanky1372.github.io/html/img/Boxes50.png">
+    <link rel="icon" href="https://squanky1372.github.io/html/img/Boxes50.png">
+    <title>Panex</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block
+        }
+
+        button {
+            position: fixed;
+            top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 100
+        }
+
+        #resetButton {
+            left: 15px
+        }
+
+        #homeButton {
+            right: 15px
+        }
+
+        #help {
+            position: fixed;
+            left: 50%;
+            top: 18px;
+            transform: translateX(-50%);
+            font: 16px Arial, sans-serif;
+            color: #fff;
+            text-shadow: 1px 1px 2px #003;
+            z-index: 90;
+            white-space: nowrap
+        }
+    </style>
+</head>
+
+<body style="background:#0066ff">
+    <script src="../../aa_libraries/p5.js"></script>
+    <script src="../../aa_libraries/fj_window_library.js"></script>
+    <script src="../../aa_libraries/fj_games_library.js"></script>
+    <button id="resetButton" onclick="resetGame()">Reset</button>
+    <button id="homeButton" onclick="goHome()">Home</button>
+    <div id="help">Panex</div>
+    <script>
+        const scoreGame = "panex";
+        const params = new URLSearchParams(location.search);
+        const layerCount = Math.max(3, Math.min(5, parseInt(params.get("count") || "4", 10) || 4));
+        let N, canvas, pegs, pegTops, selected = null, moveCount = 0, gameOver = false;
+        let levelStartTime = null, scoreSubmitted = false, playerVerified = false;
+        let boardX, boardY, boardW, boardH, trackXs, topY, baseY, tileH, tileWidths;
+        const colors = { blue: "#087cff", orange: "#ff7900" };
+        const history = [];
+        async function verifyPlayer() {
+            const hash = params.get("hash");
+            if (!hash) { location.href = "https://squanky1372.github.io/2025/games/login.html"; return; }
+            try {
+                const r = await fetch(`https://squanky.net/scores/getPlayer?hash=${encodeURIComponent(hash)}`);
+                if (!r.ok) throw Error(`HTTP ${r.status}`); const d = await r.json(); if (!d.foundRow) throw Error("Player not found"); playerVerified = true;
+            } catch (e) { console.error("Player verification failed:", e); location.href = "https://squanky1372.github.io/2025/games/login.html"; }
+        }
+        async function submitScore(moves, time) {
+            if (!playerVerified) return; const hash = params.get("hash");
+            const r = await fetch("https://squanky.net/scores/addscore", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ game: scoreGame, hash, data: { level: `panex-${layerCount}`, layers: layerCount, moves, time } })
+            });
+            if (!r.ok) throw Error(`Score submission failed: HTTP ${r.status}`);
+        }
+        function setup() { verifyPlayer(); N = min(windowWidth, windowHeight) * .95; canvas = createCanvas(N, N); centerCanvas(); disableCanvasDefaults(); resetGame(); }
+        function resetGame() {
+            // Each peg has fixed physical levels 0..layerCount (bottom to top).
+            // A disk never changes its permitted depth; empty spaces remain empty.
+            pegs = [Array(layerCount + 1).fill(null), Array(layerCount + 1).fill(null), Array(layerCount + 1).fill(null)];
+            for (let rank = 1; rank <= layerCount; rank++) {
+                const level = layerCount - rank;
+                pegs[0][level] = { rank, color: "blue", id: "L" + rank };
+                pegs[2][level] = { rank, color: "orange", id: "R" + rank };
+            }
+            pegTops = pegs.map(peg => highestOccupied(peg) + 1);
+            selected = null; moveCount = 0; gameOver = false; scoreSubmitted = false; history.length = 0; levelStartTime = performance.now(); layoutBoard();
+        }
+        function highestOccupied(peg) {
+            for (let level = peg.length - 1; level >= 0; level--)if (peg[level] !== null) return level;
+            return -1;
+        }
+        function goHome() { location.href = "./sliding_blocks.html" + (params.has("hash") ? `?hash=${encodeURIComponent(params.get("hash"))}` : ""); }
+        function layoutBoard() {
+            boardW = N * .88; boardH = N * .66; boardX = (N - boardW) / 2; boardY = N * .23;
+            trackXs = [boardX + boardW * .17, boardX + boardW * .5, boardX + boardW * .83];
+            topY = boardY + boardH * .12; baseY = boardY + boardH * .83;
+            tileH = (baseY - topY) / (layerCount + 1);
+            const maxW = boardW * .27, minW = boardW * .11;
+            // Width grows with rank. A piece's rank also fixes its depth (level = layerCount - rank),
+            // so the biggest piece always sits lowest and the smallest sits highest.
+            // Indexed by rank - 1. Visual size is inverted: rank 1 (which sits highest) is the
+            // widest tile, and rank layerCount (which sits lowest) is the narrowest.
+            // Only the drawing changes; the rank/level mechanics are untouched.
+            tileWidths = Array.from({ length: layerCount }, (_, i) => minW + (maxW - minW) * (layerCount - i) / layerCount);
+        }
+        // Width of the slot at a given physical level (0 = bottom). The top level, which never
+        // holds a permanent piece, uses the widest width so the pyramid has a flat top.
+        function levelWidth(level) {
+            return level < layerCount ? tileWidths[layerCount - level - 1] : tileWidths[0];
+        }
+        function draw() { background("#0066ff"); fill(240); noStroke(); rect(boardX, boardY, boardW, boardH); drawTracks(); drawHud(); }
+        // Gray stepped pyramid behind each column: widest at the bottom, narrowest at the top,
+        // matching the outline of a full stack of tiles.
+        function drawPyramids() {
+            noStroke(); fill(208);
+            const pad = N * .008;
+            for (let t = 0; t < 3; t++) {
+                for (let level = 0; level < layerCount; level++) {
+                    const rank = layerCount - level;
+                    const w = tileWidths[rank - 1] + pad * 2;
+                    const y = baseY - tileH * (level + 1);
+                    rect(trackXs[t] - w / 2, y, w, tileH + .5);
+                }
+            }
+        }
+        function drawTracks() {
+            const trackW = N * .018, baseH = N * .025;
+            drawPyramids();
+            // Gray inverted-pyramid backdrop behind each column (stepped to match tile widths).
+            noStroke(); fill(212);
+            for (let x of trackXs) {
+                for (let level = 0; level <= layerCount; level++) {
+                    const w = levelWidth(level);
+                    rect(x - w / 2, baseY - tileH * (level + 1), w, tileH);
+                }
+            }
+            // The horizontal groove is the shared route between the three vertical pegs.
+            fill(190); rect(trackXs[0], topY - trackW / 2, trackXs[2] - trackXs[0], trackW);
+            for (let x of trackXs) { fill(165); rect(x - trackW / 2, topY, trackW, baseY - topY); fill(125); rect(x + trackW * .15, topY, trackW * .35, baseY - topY); }
+            fill(205); rect(boardX + boardW * .04, baseY, boardW * .92, baseH);
+            for (let t = 0; t < 3; t++) {
+                fill(75); noStroke(); textAlign(CENTER, CENTER); textSize(N * .035); text(["A", "B", "C"][t], trackXs[t], baseY + baseH + N * .045);
+                // Draw fixed levels independently. Vacated levels stay vacant; pieces do not
+                // collapse into a conventional stack when another piece is removed.
+                for (let level = 0; level <= layerCount; level++) {
+                    const piece = pegs[t][level];
+                    if (!piece) continue;
+                    const w = tileWidths[piece.rank - 1], x = trackXs[t] - w / 2, y = baseY - tileH * (level + 1);
+                    const isTop = (level === pegTops[t] - 1);
+                    drawTile(x, y, w, tileH, colors[piece.color], selected === t && isTop, piece.rank);
+                }
+            }
+        }
+        function drawTile(x, y, w, h, c, highlight, label) {
+            const bevel = h * .18, base = color(c), light = lerpColor(base, color(255), .48), mid = lerpColor(base, color(255), .22), dark = lerpColor(base, color(0), .35), deep = lerpColor(base, color(0), .52);
+            noStroke(); fill(base); rect(x, y, w, h); fill(light); quad(x, y, x + w, y, x + w - bevel, y + bevel, x + bevel, y + bevel);
+            fill(mid); quad(x, y, x + bevel, y + bevel, x + bevel, y + h - bevel, x, y + h);
+            fill(dark); quad(x + w, y, x + w, y + h, x + w - bevel, y + h - bevel, x + w - bevel, y + bevel);
+            fill(deep); quad(x, y + h, x + w, y + h, x + w - bevel, y + h - bevel, x + bevel, y + h - bevel);
+            fill(255); stroke(0, 0, 0, 100); strokeWeight(h * .025); textAlign(CENTER, CENTER); textStyle(BOLD); textSize(h * .48); text(label, x + w / 2, y + h * .53); noStroke(); textStyle(NORMAL);
+            if (highlight) { noFill(); stroke(255); strokeWeight(max(2, N * .006)); rect(x + 2, y + 2, w - 4, h - 4); }
+        }
+        function drawHud() {
+            fill(255); noStroke(); textAlign(CENTER, CENTER); textStyle(BOLD); textSize(N * .035);
+            text(`Panex ${layerCount}  •  Moves: ${moveCount}`, N / 2, N * .12); textStyle(NORMAL); textSize(N * .025);
+            text(gameOver ? "Stacks exchanged!" : selected === null ? "Click a column to select its top tile" : "Click another column to move the tile", N / 2, N * .17);
+        }
+        function mousePressed() {
+            if (gameOver) return; const t = nearestTrack(mouseX, mouseY); if (t < 0) return;
+            if (selected === null) { if (pegTops[t] > 0) selected = t; return; }
+            if (t === selected) { selected = null; return; }
+            if (tryMove(selected, t)) { moveCount++; selected = null; checkWin(); }
+            // Illegal moves retain the current selection.
+        }
+        function nearestTrack(x, y) {
+            if (y < topY - N * .04 || y > baseY + N * .08) return -1; let best = -1, d = N * .12;
+            trackXs.forEach((rx, i) => { if (abs(x - rx) < d) { best = i; d = abs(x - rx); } }); return best;
+        }
+        function tryMove(from, to) {
+            if (from === to) return false;
+            const sourceLevel = pegTops[from] - 1;
+            if (sourceLevel < 0) return false;
+            const piece = pegs[from][sourceLevel];
+            if (!piece) return false;
+
+            // A side-to-side move must pass through the center peg's top channel.
+            // It is blocked only when a piece occupies the center peg's highest level.
+            if (from !== 1 && to !== 1 && pegTops[1] > layerCount) return false;
+
+            // The piece descends in the destination until it reaches either its own
+            // deepest permitted level or the first level above the destination's top piece.
+            const destinationLevel = Math.max(pegTops[to], layerCount - piece.rank);
+            if (destinationLevel > layerCount) return false;
+
+            history.push(pegs.map(peg => peg.slice()));
+            pegs[from][sourceLevel] = null;
+            pegs[to][destinationLevel] = piece;
+            pegTops[from] = highestOccupied(pegs[from]) + 1;
+            pegTops[to] = Math.max(pegTops[to], destinationLevel + 1);
+            return true;
+        }
+        function checkWin() {
+            let solved = pegTops[1] === 0;
+            for (let rank = 1; rank <= layerCount && solved; rank++) {
+                const homeLevel = layerCount - rank;
+                const left = pegs[0][homeLevel], right = pegs[2][homeLevel];
+                if (!left || left.color !== "orange" || left.rank !== rank || !right || right.color !== "blue" || right.rank !== rank) solved = false;
+            }
+            if (solved && pegTops[0] === layerCount && pegTops[2] === layerCount) {
+                gameOver = true; const elapsed = Math.round((performance.now() - levelStartTime) / 100) / 10;
+                if (!scoreSubmitted) { scoreSubmitted = true; submitScore(moveCount, elapsed).catch(e => console.error("Unable to submit score:", e)); }
+                setTimeout(() => alert(`🎉 Panex ${layerCount} solved in ${moveCount} moves and ${elapsed} seconds! 🎉`), 30);
+            }
+        }
+        function keyPressed() {
+            if ((key === "z" || key === "Z") && history.length && !gameOver) {
+                pegs = history.pop(); pegTops = pegs.map(peg => highestOccupied(peg) + 1); moveCount = Math.max(0, moveCount - 1); selected = null;
+            }
+        }
+        function windowResized() { N = min(windowWidth, windowHeight) * .95; resizeCanvas(N, N); layoutBoard(); }
+    </script>
+</body>
+
+</html>

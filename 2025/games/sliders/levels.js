@@ -551,6 +551,12 @@ function createBoards() {
                 new Block(3, 0, [[0,0],[1,0],[1,1]], "#0091ff"),
             ]),
         {url:"./slider.html"},
-        {url:"./slider_img.html"}
+        {url:"./slider_img.html"},
+        {url:"./hanoi.html?count=3"},
+        {url:"./hanoi.html?count=4"},
+        {url:"./hanoi.html?count=5"},
+        {url:"./panex.html?count=3"},
+        {url:"./panex.html?count=4"},
+        {url:"./panex.html?count=5"},
     ];
 }

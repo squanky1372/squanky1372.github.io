@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="apple-touch-icon" sizes="128x128" href="https://squanky1372.github.io/html/img/Boxes50.png">
+<link rel="icon" href="https://squanky1372.github.io/html/img/Boxes50.png">
+<title>Tower of Hanoi</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+canvas{width:100%;height:100%;display:block}
+button{position:fixed;top:15px;padding:10px 20px;font-size:16px;cursor:pointer;z-index:100}
+#resetButton{left:15px}#homeButton{right:15px}
+#help{position:fixed;left:50%;top:18px;transform:translateX(-50%);font:16px Arial,sans-serif;color:#fff;text-shadow:1px 1px 2px #003;z-index:90;white-space:nowrap}
+</style>
+</head>
+<body style="background:#0066ff">
+<script src="../../aa_libraries/p5.js"></script>
+<script src="../../aa_libraries/fj_window_library.js"></script>
+<script src="../../aa_libraries/fj_games_library.js"></script>
+<button id="resetButton" onclick="resetGame()">Reset</button>
+<button id="homeButton" onclick="goHome()">Home</button>
+<div id="help">Tower of Hanoi</div>
+<script>
+const scoreGame = "tower_hanoi";
+const params = new URLSearchParams(location.search);
+const discCount = Math.max(3, Math.min(5, parseInt(params.get("count") || "5", 10) || 5));
+let N, canvas, towers, selectedTower = null, moveCount = 0, gameOver = false;
+let levelStartTime = null, scoreSubmitted = false, playerVerified = false;
+let boardX, boardY, boardW, boardH, rodXs, baseY, diskH, diskWidths;
+const diskColors = ["#ff0000","#ff8800","#ffd500","#00c853","#0091ff"];
+
+async function verifyPlayer(){
+  const hash=params.get("hash");
+  if(!hash){location.href="https://squanky1372.github.io/2025/games/login.html";return;}
+  try{
+    const r=await fetch(`https://squanky.net/scores/getPlayer?hash=${encodeURIComponent(hash)}`);
+    if(!r.ok)throw Error(`HTTP ${r.status}`);
+    const d=await r.json(); if(!d.foundRow)throw Error("Player not found");
+    playerVerified=true;
+  }catch(e){console.error("Player verification failed:",e);location.href="https://squanky1372.github.io/2025/games/login.html";}
+}
+async function submitScore(moves,time){
+  if(!playerVerified)return;
+  const hash=params.get("hash");
+  const r=await fetch("https://squanky.net/scores/addscore",{method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({game:scoreGame,hash,data:{level:`hanoi-${discCount}`,discs:discCount,moves,time}})
+  });
+  if(!r.ok)throw Error(`Score submission failed: HTTP ${r.status}`);
+}
+function setup(){
+  verifyPlayer();
+  N=min(windowWidth,windowHeight)*.95;
+  canvas=createCanvas(N,N);centerCanvas();disableCanvasDefaults();
+  resetGame();
+}
+function resetGame(){
+  towers=[Array.from({length:discCount},(_,i)=>discCount-i),[],[]];
+  selectedTower=null;moveCount=0;gameOver=false;scoreSubmitted=false;
+  levelStartTime=performance.now();
+  layoutBoard();
+}
+function goHome(){location.href="./sliding_blocks.html"+(params.has("hash")?`?hash=${encodeURIComponent(params.get("hash"))}`:"");}
+function layoutBoard(){
+  boardW=N*.9;boardH=N*.68;boardX=(N-boardW)/2;boardY=N*.22;
+  rodXs=[boardX+boardW/6,boardX+boardW/2,boardX+boardW*5/6];
+  baseY=boardY+boardH*.78;diskH=boardH*.085;
+  const maxW=boardW*.27,minW=boardW*.10;
+  diskWidths=Array.from({length:discCount},(_,i)=>minW+(maxW-minW)*(i+1)/discCount);
+}
+function draw(){
+  background("#0066ff");
+  fill(240);noStroke();rect(boardX,boardY,boardW,boardH);
+  drawBoard();
+  drawHud();
+}
+function drawBoard(){
+  const rodW=N*.018,rodTop=boardY+boardH*.15,baseH=N*.025;
+  // subtle board frame
+  fill(205);rect(boardX+boardW*.04,baseY,boardW*.92,baseH);
+  for(let t=0;t<3;t++){
+    fill(165);rect(rodXs[t]-rodW/2,rodTop,rodW,baseY-rodTop);
+    fill(125);rect(rodXs[t]+rodW*.15,rodTop,rodW*.35,baseY-rodTop);
+    // tower labels
+    fill(80);noStroke();textAlign(CENTER,CENTER);textStyle(NORMAL);textSize(N*.035);
+    text(["A","B","C"][t],rodXs[t],baseY+baseH+N*.045);
+  }
+  for(let t=0;t<3;t++){
+    for(let i=0;i<towers[t].length;i++){
+      const disk=towers[t][i],w=diskWidths[disk-1],x=rodXs[t]-w/2;
+      const y=baseY-diskH*(i+1);
+      drawDisk(x,y,w,diskH,diskColors[(disk-1)%diskColors.length],selectedTower===t&&i===towers[t].length-1);
+    }
+  }
+}
+function drawDisk(x,y,w,h,c,highlight){
+  const bevel=h*.18,base=color(c),light=lerpColor(base,color(255),.48),mid=lerpColor(base,color(255),.22),dark=lerpColor(base,color(0),.35),deep=lerpColor(base,color(0),.52);
+  noStroke();fill(base);rect(x,y,w,h);
+  fill(light);quad(x,y,x+w,y,x+w-bevel,y+bevel,x+bevel,y+bevel);
+  fill(mid);quad(x,y,x+bevel,y+bevel,x+bevel,y+h-bevel,x,y+h);
+  fill(dark);quad(x+w,y,x+w,y+h,x+w-bevel,y+h-bevel,x+w-bevel,y+bevel);
+  fill(deep);quad(x,y+h,x+w,y+h,x+w-bevel,y+h-bevel,x+bevel,y+h-bevel);
+  if(highlight){noFill();stroke(255);strokeWeight(max(2,N*.006));rect(x+2,y+2,w-4,h-4);}
+}
+function drawHud(){
+  fill(255);noStroke();textAlign(CENTER,CENTER);textSize(N*.035);textStyle(BOLD);
+  text(`${discCount} discs  •  Moves: ${moveCount}`,N/2,N*.12);
+  textStyle(NORMAL);textSize(N*.025);
+  text(gameOver?"Completed!":selectedTower===null?"Click a tower to pick up its top disc":"Choose a destination tower",N/2,N*.17);
+}
+function mousePressed(){
+  if(gameOver)return;
+  const t=nearestTower(mouseX,mouseY);
+  if(t<0)return;
+  if(selectedTower===null){
+    if(towers[t].length){selectedTower=t;}
+    return;
+  }
+  if(t===selectedTower){selectedTower=null;return;}
+  const disk=towers[selectedTower][towers[selectedTower].length-1];
+  const top=towers[t][towers[t].length-1];
+  if(top===undefined||disk<top){
+    towers[t].push(towers[selectedTower].pop());moveCount++;selectedTower=null;checkWin();
+  }else{
+    // Invalid move: keep selection so the player can choose another tower.
+  }
+}
+function nearestTower(x,y){
+  if(y<boardY||y>baseY+N*.08)return -1;
+  let best=-1,d=N*.12;
+  rodXs.forEach((rx,i)=>{if(abs(x-rx)<d){best=i;d=abs(x-rx);}});
+  return best;
+}
+function checkWin(){
+  if(towers[2].length!==discCount)return;
+  gameOver=true;const elapsed=Math.round((performance.now()-levelStartTime)/100)/10;
+  if(!scoreSubmitted){scoreSubmitted=true;submitScore(moveCount,elapsed).catch(e=>console.error("Unable to submit score:",e));}
+  setTimeout(()=>alert(`🎉 You solved Tower of Hanoi (${discCount} discs) in ${moveCount} moves and ${elapsed} seconds! 🎉`),30);
+}
+function windowResized(){N=min(windowWidth,windowHeight)*.95;resizeCanvas(N,N);layoutBoard();}
+</script>
+</body>
+</html>
